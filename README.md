@@ -1,5 +1,5 @@
 Hi there 👋</p>
-💬 Ask me about ...
+💬 Ask me about whatever... :)
 
 <!--
 **johnserra/johnserra** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.

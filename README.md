@@ -1,4 +1,4 @@
-Hi there 👋</p>
+Hi there! I'm John.</p>
 💬 Ask me about whatever... :)
 
 <!--

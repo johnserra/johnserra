@@ -2,12 +2,6 @@ Hi there! I'm John.</p>
 
 I’m currently working on perfecting my python skills for data analysis.
 
-I install and integrate Odoo into small and medium size businesses, helping them keep track of business functions and start to collect data relative to their customers and market.
-
-I like to use WordPress for content management, although Odoo has a good solution too. However, I have been using them on the back-end.
-
-For the front-end I am using Gatsby.js for content sites, and experimenting with Next.js for e-commerce sites. Cioè ;-) Javascript/React for front-end web development.
-
 💬 Ask me about anything... :)
 
 <!--

@@ -5,6 +5,7 @@ import { BentoBox } from "@/components/bento/BentoBox";
 import { HeroBox } from "@/components/bento/HeroBox";
 import { FeatureBox } from "@/components/bento/FeatureBox";
 import { AboutTeaserBox } from "@/components/bento/AboutTeaserBox";
+import { BlogTeaserBox } from "@/components/bento/BlogTeaserBox";
 import { PortfolioBox } from "@/components/bento/PortfolioBox";
 import { AIChatWidget } from "@/components/widgets/AIChatWidget";
 import { FEATURES, PORTFOLIO_PROJECTS } from "@/lib/constants";
@@ -34,6 +35,11 @@ export default function Home() {
           {/* About Me Teaser */}
           <BentoBox span={8} variant="gradient">
             <AboutTeaserBox />
+          </BentoBox>
+
+          {/* Blog Teaser */}
+          <BentoBox span={4}>
+            <BlogTeaserBox />
           </BentoBox>
 
           {/* Portfolio Projects */}

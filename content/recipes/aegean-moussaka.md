@@ -2,9 +2,11 @@
 title: "Aegean Style Eggplant Moussaka"
 description: "A Turkish-style moussaka with layered eggplant, spiced ground meat, and a tomato sauce. No béchamel, no cheese — lighter and more honest to its roots."
 tags: ["Turkish", "eggplant", "lamb", "Aegean"]
+cuisine: "Turkish"
 servings: 6
 prepTime: "45 minutes"
 cookTime: "1 hour"
+totalTime: "1 hour 45 minutes"
 story: false
 coverImage: "/images/recipes/moussaka.jpg"
 ---

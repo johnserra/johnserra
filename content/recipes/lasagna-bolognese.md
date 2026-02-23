@@ -2,9 +2,11 @@
 title: "Lasagna Bolognese"
 description: "A classic layered meat lasagna made with fresh hand-rolled pasta and a slow-cooked Bolognese ragù."
 tags: ["Italian", "pasta", "comfort-food", "entertaining"]
+cuisine: "Italian"
 servings: 8
 prepTime: "1 hour"
 cookTime: "3 hours"
+totalTime: "4 hours"
 story: true
 coverImage: "/images/recipes/lasagna.jpg"
 ---

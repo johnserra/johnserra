@@ -7,7 +7,7 @@ import { getContentBySlug, getContentSlugs } from "@/lib/content";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ProseLayout } from "@/components/ui/ProseLayout";
-import { ArrowLeft, Clock, Users } from "lucide-react";
+import { ArrowLeft, Clock, Globe, Users } from "lucide-react";
 import type { Metadata } from "next";
 
 interface Props {
@@ -74,8 +74,16 @@ export default async function RecipePage({ params }: Props) {
           )}
 
           {/* Recipe meta */}
-          {(frontmatter.servings || frontmatter.prepTime || frontmatter.cookTime) && (
+          {(frontmatter.cuisine || frontmatter.servings || frontmatter.prepTime || frontmatter.cookTime || frontmatter.totalTime) && (
             <div className="flex flex-wrap gap-6 p-6 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 mb-10">
+              {frontmatter.cuisine && (
+                <div className="flex items-center gap-2">
+                  <Globe size={16} className="text-zinc-400" />
+                  <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                    <strong className="text-zinc-900 dark:text-zinc-50">{frontmatter.cuisine}</strong>
+                  </span>
+                </div>
+              )}
               {frontmatter.servings && (
                 <div className="flex items-center gap-2">
                   <Users size={16} className="text-zinc-400" />
@@ -97,6 +105,14 @@ export default async function RecipePage({ params }: Props) {
                   <Clock size={16} className="text-zinc-400" />
                   <span className="text-sm text-zinc-600 dark:text-zinc-400">
                     Cook <strong className="text-zinc-900 dark:text-zinc-50">{frontmatter.cookTime}</strong>
+                  </span>
+                </div>
+              )}
+              {frontmatter.totalTime && (
+                <div className="flex items-center gap-2">
+                  <Clock size={16} className="text-zinc-400" />
+                  <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                    Total <strong className="text-zinc-900 dark:text-zinc-50">{frontmatter.totalTime}</strong>
                   </span>
                 </div>
               )}

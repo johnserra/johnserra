@@ -12,9 +12,11 @@ export interface Frontmatter {
   status?: string;
   coverImage?: string;
   // Recipe-specific
+  cuisine?: string;
   servings?: number;
   prepTime?: string;
   cookTime?: string;
+  totalTime?: string;
   story?: boolean;
   [key: string]: unknown;
 }

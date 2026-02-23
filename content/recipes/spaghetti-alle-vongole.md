@@ -2,9 +2,11 @@
 title: "Spaghetti alle Vongole"
 description: "Fresh clams, white wine, garlic, and good olive oil. One of the great simple pastas."
 tags: ["Italian", "seafood", "pasta", "quick"]
+cuisine: "Italian"
 servings: 2
 prepTime: "30 minutes"
 cookTime: "15 minutes"
+totalTime: "45 minutes"
 story: false
 coverImage: "/images/recipes/vongole.jpg"
 ---

@@ -2,9 +2,11 @@
 title: "Farmer's Market Risotto"
 description: "A risotto built around whatever looked best at the market that week. The technique is fixed; everything else is seasonal."
 tags: ["Italian", "rice", "seasonal", "vegetarian"]
+cuisine: "Italian"
 servings: 4
 prepTime: "15 minutes"
 cookTime: "35 minutes"
+totalTime: "50 minutes"
 story: false
 coverImage: "/images/recipes/risotto.jpg"
 ---

@@ -1,22 +1,96 @@
 "use client";
 
-import { useState } from "react";
-import { MessageCircle, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { MessageCircle, X, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+interface Message {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+}
+
+const WELCOME: Message = {
+  id: "welcome",
+  role: "assistant",
+  content:
+    "Hi! I'm John's AI assistant. Ask me about his background, projects, skills, or anything else you'd like to know.",
+};
 
 export function AIChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([WELCOME]);
+  const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const text = input.trim();
+    if (!text || isLoading) return;
+
+    const userMsg: Message = { id: crypto.randomUUID(), role: "user", content: text };
+    const assistantId = crypto.randomUUID();
+    const assistantMsg: Message = { id: assistantId, role: "assistant", content: "" };
+
+    setMessages((prev) => [...prev, userMsg, assistantMsg]);
+    setInput("");
+    setIsLoading(true);
+
+    try {
+      // Build conversation history (exclude the welcome message and the empty placeholder)
+      const history = [...messages, userMsg]
+        .filter((m) => m.id !== "welcome")
+        .map(({ role, content }) => ({ role, content }));
+
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: history }),
+      });
+
+      if (!res.ok || !res.body) throw new Error("Request failed");
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let accumulated = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        accumulated += decoder.decode(value, { stream: true });
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantId ? { ...m, content: accumulated } : m
+          )
+        );
+      }
+    } catch {
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === assistantId
+            ? { ...m, content: "Sorry, something went wrong. Try emailing John directly at john@johnserra.com." }
+            : m
+        )
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
     <>
       {/* Floating Button */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setIsOpen(true)}
         className={cn(
           "fixed bottom-4 right-4 z-50 p-4 rounded-full shadow-lg transition-all duration-300",
-          "bg-blue-600 hover:bg-blue-700 text-white",
-          "hover:scale-110",
-          isOpen && "scale-0"
+          "bg-blue-600 hover:bg-blue-700 text-white hover:scale-110",
+          isOpen && "scale-0 pointer-events-none"
         )}
         aria-label="Open AI Chat"
       >
@@ -26,16 +100,20 @@ export function AIChatWidget() {
       {/* Chat Window */}
       <div
         className={cn(
-          "fixed bottom-4 right-4 z-50 w-[90vw] md:w-96 h-[600px] bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl transition-all duration-300 flex flex-col overflow-hidden",
-          "border border-zinc-200 dark:border-zinc-800",
-          isOpen ? "scale-100 opacity-100" : "scale-0 opacity-0"
+          "fixed bottom-4 right-4 z-50 w-[90vw] md:w-96 h-[600px] rounded-2xl shadow-2xl flex flex-col overflow-hidden",
+          "bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800",
+          "transition-all duration-300",
+          isOpen ? "scale-100 opacity-100" : "scale-0 opacity-0 pointer-events-none"
         )}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-zinc-200 dark:border-zinc-800 bg-blue-600">
           <div className="flex items-center gap-2">
             <MessageCircle size={20} className="text-white" />
-            <h3 className="font-semibold text-white">AI Assistant</h3>
+            <div>
+              <h3 className="font-semibold text-white text-sm">John&apos;s AI Assistant</h3>
+              <p className="text-blue-200 text-xs">Ask me anything</p>
+            </div>
           </div>
           <button
             onClick={() => setIsOpen(false)}
@@ -46,37 +124,57 @@ export function AIChatWidget() {
           </button>
         </div>
 
-        {/* Chat Content - Placeholder */}
-        <div className="flex-1 p-4 overflow-y-auto bg-zinc-50 dark:bg-zinc-950">
-          <div className="text-center text-zinc-500 dark:text-zinc-400 mt-8">
-            <MessageCircle size={48} className="mx-auto mb-4 opacity-50" />
-            <p className="text-sm">AI Chat integration coming soon!</p>
-            <p className="text-xs mt-2">
-              This widget will connect to your AI assistant.
-            </p>
-          </div>
+        {/* Messages */}
+        <div className="flex-1 p-4 overflow-y-auto bg-zinc-50 dark:bg-zinc-950 flex flex-col gap-3">
+          {messages.map((m) => (
+            <div
+              key={m.id}
+              className={cn(
+                "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
+                m.role === "user"
+                  ? "self-end bg-blue-600 text-white rounded-br-sm"
+                  : "self-start bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-sm rounded-bl-sm"
+              )}
+            >
+              {m.content || (
+                <span className="flex gap-1 items-center py-0.5">
+                  <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                  <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                  <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce" />
+                </span>
+              )}
+            </div>
+          ))}
+          <div ref={messagesEndRef} />
         </div>
 
-        {/* Input Area - Placeholder */}
-        <div className="p-4 border-t border-zinc-200 dark:border-zinc-800">
+        {/* Input */}
+        <form
+          onSubmit={handleSubmit}
+          className="p-4 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900"
+        >
           <div className="flex gap-2">
             <input
               type="text"
-              placeholder="Type your message..."
-              className="flex-1 px-4 py-2 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 placeholder-zinc-500 dark:placeholder-zinc-400 outline-none focus:ring-2 focus:ring-blue-600"
-              disabled
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Ask me anything..."
+              disabled={isLoading}
+              className="flex-1 px-4 py-2 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 placeholder-zinc-500 dark:placeholder-zinc-400 outline-none focus:ring-2 focus:ring-blue-600 text-sm disabled:opacity-60"
             />
             <button
-              className="px-6 py-2 rounded-full bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled
+              type="submit"
+              disabled={isLoading || !input.trim()}
+              className="p-2.5 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Send message"
             >
-              Send
+              <Send size={16} />
             </button>
           </div>
-        </div>
+        </form>
       </div>
 
-      {/* Backdrop */}
+      {/* Mobile backdrop */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden"

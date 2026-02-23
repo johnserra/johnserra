@@ -11,7 +11,7 @@ export function Footer() {
           {/* Social Links */}
           <div className="flex items-center gap-6">
             <Link
-              href="https://linkedin.com"
+              href="https://linkedin.com/in/johnserra"
               target="_blank"
               rel="noopener noreferrer"
               className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
@@ -20,7 +20,7 @@ export function Footer() {
               <Linkedin size={20} />
             </Link>
             <Link
-              href="mailto:contact@example.com"
+              href="mailto:john@johnserra.com"
               className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
               aria-label="Email"
             >

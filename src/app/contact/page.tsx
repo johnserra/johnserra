@@ -19,9 +19,9 @@ const CONTACT_LINKS = [
   },
   {
     label: "Email",
-    href: "mailto:john@johnserra.com",
+    href: "mailto:john@serra.us",
     icon: Mail,
-    description: "john@johnserra.com",
+    description: "john@serra.us",
   },
 ];
 

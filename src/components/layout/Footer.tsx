@@ -20,7 +20,7 @@ export function Footer() {
               <Linkedin size={20} />
             </Link>
             <Link
-              href="mailto:john@johnserra.com"
+              href="mailto:john@serra.us"
               className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
               aria-label="Email"
             >

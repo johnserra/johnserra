@@ -73,7 +73,7 @@ export function AIChatWidget() {
       setMessages((prev) =>
         prev.map((m) =>
           m.id === assistantId
-            ? { ...m, content: "Sorry, something went wrong. Try emailing John directly at john@johnserra.com." }
+            ? { ...m, content: "Sorry, something went wrong. Try emailing John directly at john@serra.us." }
             : m
         )
       );

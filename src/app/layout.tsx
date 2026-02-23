@@ -13,6 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://johnserra.com"),
   title: "John Serra - Data-Driven Problem Solver",
   description: "Leveraging decades of experience across manufacturing, education, and urban mobility to solve complex challenges with modern, data-driven approaches.",
 };

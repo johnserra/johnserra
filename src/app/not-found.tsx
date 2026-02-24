@@ -1,7 +1,5 @@
-import Link from "next/link";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { NAV_LINKS } from "@/lib/constants";
 
 export default function NotFound() {
   return (
@@ -20,23 +18,6 @@ export default function NotFound() {
             The page you&apos;re looking for doesn&apos;t exist or has been moved.
           </p>
 
-          {/* Sitemap */}
-          <div className="border-t border-zinc-200 dark:border-zinc-800 pt-12">
-            <h2 className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-6">
-              Sitemap
-            </h2>
-            <nav className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {NAV_LINKS.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-zinc-900 dark:text-zinc-50 font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-          </div>
         </div>
       </main>
       <Footer />

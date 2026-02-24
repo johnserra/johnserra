@@ -1,4 +1,5 @@
-import Link from "next/link";
+"use client";
+
 import { Button } from "@/components/ui/Button";
 import { HERO_CONTENT } from "@/lib/constants";
 
@@ -16,11 +17,14 @@ export function HeroBox() {
         <p className="text-lg md:text-xl text-blue-50 mb-8 leading-relaxed">
           {HERO_CONTENT.introduction}
         </p>
-        <Link href={HERO_CONTENT.ctaLink}>
-          <Button variant="primary" size="lg" className="bg-white text-blue-700 hover:bg-blue-50">
-            {HERO_CONTENT.ctaText}
-          </Button>
-        </Link>
+        <Button
+          variant="primary"
+          size="lg"
+          className="bg-white text-blue-700 hover:bg-blue-50"
+          onClick={() => window.dispatchEvent(new CustomEvent("openChat"))}
+        >
+          {HERO_CONTENT.ctaText}
+        </Button>
       </div>
     </div>
   );

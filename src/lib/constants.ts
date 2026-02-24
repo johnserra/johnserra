@@ -5,6 +5,7 @@ export const NAV_LINKS: NavLink[] = [
   { label: "About", href: "/about" },
   { label: "Blog", href: "/blog" },
   { label: "Portfolio", href: "/portfolio" },
+  { label: "Recipes", href: "/recipes" },
   { label: "Contact", href: "/contact" },
 ];
 

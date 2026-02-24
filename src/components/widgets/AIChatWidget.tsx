@@ -28,6 +28,12 @@ export function AIChatWidget() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  useEffect(() => {
+    const handler = () => setIsOpen(true);
+    window.addEventListener("openChat", handler);
+    return () => window.removeEventListener("openChat", handler);
+  }, []);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const text = input.trim();

@@ -54,7 +54,7 @@ function getSiteContent(query: string): string {
     sections.push(`## Blog Posts\n${blogSection}`);
   }
 
-  // Recipes — always include an index; include full content for a matched recipe
+  // Recipes — always include an index with URLs; include the story for a matched recipe
   const recipes = getAllContent("recipes");
   if (recipes.length) {
     const index = recipes
@@ -62,7 +62,8 @@ function getSiteContent(query: string): string {
         const meta = [r.frontmatter.cuisine, r.frontmatter.totalTime]
           .filter(Boolean)
           .join(", ");
-        return `- **${r.frontmatter.title}**${meta ? ` (${meta})` : ""}: ${r.frontmatter.description ?? ""}`;
+        const url = `/recipes/${r.slug}`;
+        return `- **${r.frontmatter.title}**${meta ? ` (${meta})` : ""}: ${r.frontmatter.description ?? ""} — page: ${url}`;
       })
       .join("\n");
 
@@ -78,11 +79,11 @@ function getSiteContent(query: string): string {
       );
     });
 
-    const recipeContent = match
-      ? `\n\n### Full recipe: ${match.frontmatter.title}\n${match.content.trim()}`
+    const recipeStory = match
+      ? `\n\n### About this recipe: ${match.frontmatter.title} (/recipes/${match.slug})\n${match.content.trim()}`
       : "";
 
-    sections.push(`## Recipes\n${index}${recipeContent}`);
+    sections.push(`## Recipes\n${index}${recipeStory}`);
   }
 
   return sections.join("\n\n===\n\n");
@@ -117,7 +118,7 @@ When answering questions:
 - Speak as John in first person ("I led...", "My experience includes...", "That lasagna is one of my favorites...")
 - Be warm, direct, and confident — not corporate or stiff
 - Draw on the context provided below when relevant
-- For recipe questions, share the recipe details and the story behind them if there is one
+- For recipe questions, share the story behind the recipe if there is one, then invite them to view the full recipe by linking to its page — do not recite the full ingredients list or method in chat
 - If asked about something outside the context, answer based on what you know about John's background, or say you'd love to chat more about it directly
 - Keep answers conversational and concise (2–4 paragraphs max)
 - Never invent specific facts not in the context

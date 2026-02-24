@@ -42,11 +42,11 @@ export default async function RecipePage({ params }: Props) {
         <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
           {/* Back link */}
           <Link
-            href="/about"
+            href="/recipes"
             className="inline-flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors mb-10"
           >
             <ArrowLeft size={16} />
-            Back
+            All Recipes
           </Link>
 
           {/* Tags */}

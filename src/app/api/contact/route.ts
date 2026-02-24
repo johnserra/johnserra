@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: NextRequest) {
   const { name, email, message } = await req.json();
@@ -17,6 +20,14 @@ export async function POST(req: NextRequest) {
     console.error("Supabase insert error:", error);
     return NextResponse.json({ error: "Failed to save message" }, { status: 500 });
   }
+
+  await resend.emails.send({
+    from: "Contact Form <contact@serra.us>",
+    to: "john@serra.us",
+    replyTo: email,
+    subject: `New message from ${name}`,
+    text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
+  });
 
   return NextResponse.json({ success: true });
 }

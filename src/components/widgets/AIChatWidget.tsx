@@ -4,6 +4,40 @@ import { useEffect, useRef, useState } from "react";
 import { MessageCircle, X, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+function renderContent(content: string): React.ReactNode {
+  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+  const parts: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = linkRegex.exec(content)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(content.slice(lastIndex, match.index));
+    }
+    const [, text, url] = match;
+    const isExternal = url.startsWith("http");
+    parts.push(
+      <a
+        key={match.index}
+        href={url}
+        className="underline text-blue-500 hover:text-blue-700"
+        {...(isExternal
+          ? { target: "_blank", rel: "noopener noreferrer" }
+          : {})}
+      >
+        {text}
+      </a>
+    );
+    lastIndex = match.index + match[0].length;
+  }
+
+  if (lastIndex < content.length) {
+    parts.push(content.slice(lastIndex));
+  }
+
+  return parts.length > 0 ? parts : content;
+}
+
 interface Message {
   id: string;
   role: "user" | "assistant";
@@ -142,7 +176,7 @@ export function AIChatWidget() {
                   : "self-start bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-sm rounded-bl-sm"
               )}
             >
-              {m.content || (
+              {m.content ? renderContent(m.content) : (
                 <span className="flex gap-1 items-center py-0.5">
                   <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
                   <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce [animation-delay:-0.15s]" />

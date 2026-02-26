@@ -35,11 +35,11 @@ export const FEATURES: FeatureHighlight[] = [
 
 export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
   {
-    id: "cny-market",
-    title: "CNY Market Development",
-    description: "Strategic market development and growth initiatives in Central New York.",
-    image: "/images/projects/cny-market.jpg",
-    link: "/portfolio/cny-market-development",
+    id: "bd-automation-suite",
+    title: "BD Automation Suite",
+    description: "A modular Python pipeline that automates multi-stream business development, from prospect research to AI-drafted outreach.",
+    image: "/images/projects/bd-automation-suite.jpg",
+    link: "/portfolio/bd-automation-suite",
     span: 4,
   },
   {

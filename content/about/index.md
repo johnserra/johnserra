@@ -5,19 +5,25 @@ description: "Account Manager, business development strategist, and data-driven 
 
 ## My Story
 
-My career doesn't follow a straight line — and that's exactly the point.
+I don't have a linear career path; I have a toolkit built across industries.
 
-I've led the re-engineering of a patented manufacturing process for a national food packaging company. I guided a language school through the abrupt chaos of a global pandemic, rebuilding its entire operation from paper to digital in a matter of weeks. Today, I develop new markets and strategic partnerships in the urban mobility space in Central New York.
+I've led the re-engineering of a patented manufacturing process for a national food packaging company. I guided a language school through the abrupt chaos of a global pandemic, rebuilding its entire operation from paper to digital in a matter of weeks. Today, I develop new markets and strategic partnerships in the urban mobility space.
 
 What connects all of it is a single discipline: looking at a complex situation, finding the signal in the noise, and building something that works.
 
-## What I Do Now
+## What I'm Building
 
-I'm an Account Manager at **Premium Parking**, where I focus on business development in the Central New York market. My work sits at the intersection of market research, lead generation, and strategic relationship-building. I'm currently architecting an automated business development engine to bring data-driven precision to what has traditionally been a manual process.
+I currently drive market growth and operational excellence within the urban mobility sector. My work sits at the intersection of technical strategy and human-centric execution. I’m less interested in just "managing accounts" and more focused on building the systems that allow a market to scale.
+
+**Architecting Growth:** I am currently developing an automated business development engine to transform market research and lead generation from a manual grind into a data-driven precision tool.
+
+**Scaling Culture:** I lead the recruitment, hiring, and training processes that ensure teams don’t just fill roles, but embody a specific culture of service excellence.
+
+**Managing Complexity:** I bridge the gap between high-level client expectations and ground-level reality, maintaining the communication rhythms and visibility required to turn a contract into a long-term partnership.
 
 ## How I Work
 
-I'm a generalist by design. I believe that the most interesting problems live at the edges of disciplines — and that the best solutions usually come from someone willing to look across all of them.
+I'm a Multi-disciplinary Problem Solver by design. I believe that the most interesting problems live at the edges of disciplines — and that the best solutions usually come from someone willing to look across all of them.
 
 My approach is simple: understand the problem deeply, use data to find clarity, build something concrete, and iterate.
 
@@ -31,10 +37,9 @@ I also tinker. I analyze my own fitness data. I build automation tools for probl
 
 ## Skills & Expertise
 
-- Business Development & Market Research
-- Lead Generation & Pipeline Management
-- Data Analysis & Reporting
-- Process Improvement & Automation
-- Digital Transformation
-- Client Relations & Strategic Partnerships
-- Cross-functional Team Leadership
+| Strategy & Growth   | Technical & Process  | Leadership & Relations      |
+| :------------------ | :------------------- | :-------------------------- |
+| Market Research     | Process Automation   | Strategic Partnerships      |
+| Lead Generation     | Data Analysis        | Digital Transformation      |
+| Pipeline Management | Systems Architecture | Cross-functional Leadership |
+| Market Expansion    | Operational Audits   | Talent Recruitment          |

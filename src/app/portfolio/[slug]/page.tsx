@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function PortfolioCaseStudy({ params }: Props) {
   const { slug } = await params;
   const content = getContentBySlug("portfolio", slug);
-  if (!content) notFound();
+  if (!content) return notFound();
 
   return (
     <>

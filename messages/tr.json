@@ -1,0 +1,130 @@
+{
+  "Metadata": {
+    "title": "[TR] John Serra - Veri Odaklı Problem Çözücü",
+    "description": "[TR] Üretim, eğitim ve kentsel mobilite alanlarında onlarca yıllık deneyimi modern, veri odaklı yaklaşımlarla birleştirerek karmaşık sorunlara çözüm üretmek."
+  },
+  "Nav": {
+    "home": "Ana Sayfa",
+    "about": "Hakkımda",
+    "blog": "Blog",
+    "portfolio": "Portföy",
+    "recipes": "Tarifler",
+    "contact": "İletişim"
+  },
+  "Hero": {
+    "headline": "[TR] Onlarca Yıllık Deneyim. Modern, Veri Odaklı Bir Yaklaşım.",
+    "introduction": "[TR] Üretim, eğitim ve kentsel mobiliteyi kapsayan bir kariyer deneyimiyle, karmaşık zorlukları çözmede uzmanlaşıyorum. Odak noktam, sektör fark etmeksizin netlik bulmak ve ölçülebilir büyümeyi sağlamak için veriyi kullanmaktır.",
+    "ctaText": "[TR] Yapay Zeka Asistanımla Sohbet Edin"
+  },
+  "AboutTeaser": {
+    "heading": "[TR] Hakkımda",
+    "content": "[TR] Uygulamalı üretim uzmanlığı, eğitim liderliği ve veri analitiği becerilerinin benzersiz bir birleşimiyle her projeye kapsamlı bir bakış açısı getiriyorum. Yaklaşımım, onlarca yıllık gerçek dünya deneyimini modern teknolojik çözümlerle birleştirerek somut sonuçlar sunmaktır.",
+    "ctaText": "[TR] Hakkımda Daha Fazla Bilgi"
+  },
+  "BlogTeaser": {
+    "heading": "[TR] Blogdan",
+    "readMore": "[TR] Blogu oku"
+  },
+  "Features": {
+    "patentedProcess": {
+      "title": "[TR] Patentli Süreç İnovasyonu",
+      "description": "[TR] Ulusal et ve kümes hayvanı ambalajı için kendinden emici polistiren köpük tepsilerinin patentli sürecinin yeniden mühendisliğine liderlik etmek."
+    },
+    "digitalTransformation": {
+      "title": "[TR] Krizde Dijital Dönüşüm",
+      "description": "[TR] COVID-19 kapanması sırasında Eğitim Koordinatörü olarak, bir dil okulunun kağıt tabanlı yöntemlerden canlı, çevrimiçi öğrenme ortamına tam geçişini yönettim."
+    },
+    "strategicGrowth": {
+      "title": "[TR] Stratejik Büyüme Otomasyonu",
+      "description": "[TR] Pazar araştırması ve potansiyel müşteri değerlendirmesini kolaylaştırmak için otomatik bir iş geliştirme motoru tasarlamak."
+    }
+  },
+  "PortfolioProjects": {
+    "bdAutomation": {
+      "title": "[TR] İş Geliştirme Otomasyon Paketi",
+      "description": "[TR] Potansiyel müşteri araştırmasından yapay zeka destekli iletişime kadar çok kanallı iş geliştirmeyi otomatikleştiren modüler bir Python pipeline'ı."
+    },
+    "digitalTransformation": {
+      "title": "[TR] Krizde Dijital Dönüşüm",
+      "description": "[TR] COVID-19 sırasında bir dil okulunun çevrimiçi eğitime tam geçişini yönetmek."
+    },
+    "comingSoon": {
+      "title": "[TR] Yakında",
+      "description": "[TR] Sonraki vaka çalışması hazırlanıyor."
+    }
+  },
+  "About": {
+    "title": "[TR] Hakkımda — John Serra",
+    "description": "[TR] Hesap Yöneticisi, iş geliştirme stratejisti ve üretim, eğitim ve kentsel mobilite alanlarında onlarca yıllık deneyime sahip veri odaklı problem çözücü."
+  },
+  "Blog": {
+    "title": "Blog",
+    "metaTitle": "[TR] Blog — John Serra",
+    "metaDescription": "[TR] Veri, operasyonlar, teknoloji ve daha fazlası hakkında kişisel ve teknik yazılar.",
+    "subtitle": "[TR] Kişisel ve teknik yazılar — veri, operasyonlar, teknoloji ve hayat üzerine.",
+    "backToBlog": "[TR] Bloga Dön"
+  },
+  "Portfolio": {
+    "title": "Portföy",
+    "metaTitle": "[TR] Portföy — John Serra",
+    "metaDescription": "[TR] İş geliştirme, dijital dönüşüm ve veri odaklı problem çözme alanlarında vaka çalışmaları.",
+    "subtitle": "[TR] İş geliştirme, dijital dönüşüm ve veri odaklı problem çözme alanlarında vaka çalışmaları.",
+    "backToPortfolio": "[TR] Tüm Projeler",
+    "viewOnGithub": "[TR] GitHub'da Görüntüle"
+  },
+  "Recipes": {
+    "title": "Tarifler",
+    "metaTitle": "[TR] Tarifler — John Serra",
+    "metaDescription": "[TR] John Serra'nın mutfağından tarifler koleksiyonu.",
+    "subtitle": "[TR] Pişirdiğim şeyler. Çoğunlukla İtalyan, bazen değil.",
+    "backToRecipes": "[TR] Tüm Tarifler",
+    "cuisine": "[TR] Mutfak",
+    "serves": "[TR] Porsiyon",
+    "prep": "[TR] Hazırlık",
+    "cook": "[TR] Pişirme",
+    "total": "[TR] Toplam",
+    "servings": "[TR] {count} porsiyon"
+  },
+  "Contact": {
+    "title": "[TR] İletişime Geçin",
+    "metaTitle": "[TR] İletişim — John Serra",
+    "metaDescription": "[TR] John Serra ile iletişime geçin.",
+    "subtitle": "[TR] Bir proje hakkında konuşmak, iş birliği keşfetmek veya sadece merhaba demek isterseniz — sizden haber almayı çok isterim.",
+    "sendMessage": "[TR] Mesaj Gönderin",
+    "linkedin": "LinkedIn",
+    "connectProfessionally": "[TR] Profesyonel bağlantı kurun",
+    "email": "E-posta",
+    "form": {
+      "name": "[TR] İsim",
+      "email": "E-posta",
+      "message": "[TR] Mesaj",
+      "namePlaceholder": "[TR] Adınız",
+      "emailPlaceholder": "email@adresiniz.com",
+      "messagePlaceholder": "[TR] Aklınızda ne var?",
+      "submit": "[TR] Mesaj Gönder",
+      "submitting": "[TR] Gönderiliyor…",
+      "success": "[TR] Mesaj gönderildi! En kısa sürede size dönüş yapacağım.",
+      "error": "[TR] Bir şeyler yanlış gitti. Doğrudan e-posta göndermeyi deneyin."
+    }
+  },
+  "Chat": {
+    "title": "[TR] John'un Yapay Zeka Asistanı",
+    "subtitle": "[TR] Bana her şeyi sorun",
+    "welcome": "[TR] Merhaba! Ben John'un yapay zeka asistanıyım. Bana geçmişi, projeleri, becerileri veya bilmek istediğiniz herhangi bir şey hakkında soru sorabilirsiniz.",
+    "placeholder": "[TR] Bana bir şey sorun...",
+    "error": "[TR] Üzgünüm, bir şeyler yanlış gitti. John'a doğrudan john@serra.us adresinden e-posta göndermeyi deneyin.",
+    "openChat": "[TR] Yapay Zeka Sohbetini Aç",
+    "closeChat": "[TR] Sohbeti kapat",
+    "sendMessage": "[TR] Mesaj gönder"
+  },
+  "NotFound": {
+    "title": "[TR] Sayfa bulunamadı",
+    "description": "[TR] Aradığınız sayfa mevcut değil veya taşınmış."
+  },
+  "Footer": {
+    "copyright": "Copyright"
+  },
+  "Common": {
+    "toggleMenu": "[TR] Menüyü aç/kapat"
+  }
+}

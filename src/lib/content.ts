@@ -1,8 +1,10 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
+import { defaultLocale } from "@/types";
+import type { Locale } from "@/types";
 
-const contentDirectory = path.join(process.cwd(), "content");
+const contentRoot = path.join(process.cwd(), "content");
 
 export interface Frontmatter {
   title: string;
@@ -19,6 +21,7 @@ export interface Frontmatter {
   cookTime?: string;
   totalTime?: string;
   story?: boolean;
+  translationOf?: string;
   [key: string]: unknown;
 }
 
@@ -31,20 +34,28 @@ export interface ContentItem {
 /**
  * Transform Obsidian [[wiki links]] into standard markdown links.
  * Handles [[Link]] and [[Link|Display Text]] syntax.
+ * For non-default locales, prefixes links with /{locale}.
  */
-export function transformObsidianLinks(content: string): string {
+export function transformObsidianLinks(
+  content: string,
+  locale: Locale = defaultLocale
+): string {
   return content.replace(
     /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g,
     (_, link: string, displayText?: string) => {
       const text = displayText ?? link;
       const slug = link.toLowerCase().replace(/\s+/g, "-");
-      return `[${text}](/${slug})`;
+      const prefix = locale !== defaultLocale ? `/${locale}` : "";
+      return `[${text}](${prefix}/${slug})`;
     }
   );
 }
 
-export function getContentSlugs(type: string): string[] {
-  const dir = path.join(contentDirectory, type);
+export function getContentSlugs(
+  type: string,
+  locale: Locale = defaultLocale
+): string[] {
+  const dir = path.join(contentRoot, locale, type);
   if (!fs.existsSync(dir)) return [];
   return fs
     .readdirSync(dir)
@@ -52,9 +63,14 @@ export function getContentSlugs(type: string): string[] {
     .map((file) => file.replace(/\.mdx?$/, ""));
 }
 
-export function getContentBySlug(type: string, slug: string): ContentItem | null {
-  const mdPath = path.join(contentDirectory, type, `${slug}.md`);
-  const mdxPath = path.join(contentDirectory, type, `${slug}.mdx`);
+export function getContentBySlug(
+  type: string,
+  slug: string,
+  locale: Locale = defaultLocale
+): ContentItem | null {
+  const dir = path.join(contentRoot, locale, type);
+  const mdPath = path.join(dir, `${slug}.md`);
+  const mdxPath = path.join(dir, `${slug}.mdx`);
   const fullPath = fs.existsSync(mdPath) ? mdPath : mdxPath;
 
   if (!fs.existsSync(fullPath)) return null;
@@ -65,14 +81,17 @@ export function getContentBySlug(type: string, slug: string): ContentItem | null
   return {
     slug,
     frontmatter: data as Frontmatter,
-    content: transformObsidianLinks(content),
+    content: transformObsidianLinks(content, locale),
   };
 }
 
-export function getAllContent(type: string): ContentItem[] {
-  const slugs = getContentSlugs(type);
+export function getAllContent(
+  type: string,
+  locale: Locale = defaultLocale
+): ContentItem[] {
+  const slugs = getContentSlugs(type, locale);
   const items = slugs
-    .map((slug) => getContentBySlug(type, slug))
+    .map((slug) => getContentBySlug(type, slug, locale))
     .filter((item): item is ContentItem => item !== null);
 
   // Sort by date descending if date exists, otherwise preserve file order
@@ -80,4 +99,41 @@ export function getAllContent(type: string): ContentItem[] {
     if (!a.frontmatter.date || !b.frontmatter.date) return 0;
     return a.frontmatter.date > b.frontmatter.date ? -1 : 1;
   });
+}
+
+/**
+ * Find the translated slug for a piece of content in another locale.
+ * Looks for content in targetLocale whose `translationOf` frontmatter
+ * matches the given slug, or vice versa.
+ */
+export function getTranslationSlug(
+  type: string,
+  slug: string,
+  currentLocale: Locale,
+  targetLocale: Locale
+): string | null {
+  // Check if the current content has a translationOf field
+  const currentContent = getContentBySlug(type, slug, currentLocale);
+  const sourceSlug = currentContent?.frontmatter.translationOf || slug;
+
+  // If targeting default locale, the source slug IS the target slug
+  if (targetLocale === defaultLocale) {
+    const exists = getContentBySlug(type, sourceSlug, targetLocale);
+    return exists ? sourceSlug : null;
+  }
+
+  // Search target locale for content with matching translationOf
+  const targetSlugs = getContentSlugs(type, targetLocale);
+  for (const targetSlug of targetSlugs) {
+    const targetContent = getContentBySlug(type, targetSlug, targetLocale);
+    if (targetContent?.frontmatter.translationOf === sourceSlug) {
+      return targetSlug;
+    }
+    // Also check if same slug exists
+    if (targetSlug === slug) {
+      return targetSlug;
+    }
+  }
+
+  return null;
 }

@@ -2,20 +2,32 @@ import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getContentBySlug } from "@/lib/content";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ProseLayout } from "@/components/ui/ProseLayout";
 import type { Metadata } from "next";
+import type { Locale } from "@/types";
 
-export const metadata: Metadata = {
-  title: "About — John Serra",
-  description:
-    "Account Manager, business development strategist, and data-driven problem solver with decades of experience across manufacturing, education, and urban mobility.",
-};
+interface Props {
+  params: Promise<{ locale: string }>;
+}
 
-export default function AboutPage() {
-  const content = getContentBySlug("about", "index");
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "About" });
+  return {
+    title: t("title"),
+    description: t("description"),
+  };
+}
+
+export default async function AboutPage({ params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const content = getContentBySlug("about", "index", locale as Locale);
   if (!content) notFound();
 
   return (

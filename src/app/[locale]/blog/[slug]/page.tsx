@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
@@ -8,19 +8,29 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ProseLayout } from "@/components/ui/ProseLayout";
 import { ArrowLeft } from "lucide-react";
+import { setRequestLocale, getTranslations } from "next-intl/server";
+import { routing } from "@/i18n/routing";
 import type { Metadata } from "next";
+import type { Locale } from "@/types";
 
 interface Props {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }
 
 export async function generateStaticParams() {
-  return getContentSlugs("blog").map((slug) => ({ slug }));
+  const params: { locale: string; slug: string }[] = [];
+  for (const locale of routing.locales) {
+    const slugs = getContentSlugs("blog", locale);
+    for (const slug of slugs) {
+      params.push({ locale, slug });
+    }
+  }
+  return params;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const content = getContentBySlug("blog", slug);
+  const { locale, slug } = await params;
+  const content = getContentBySlug("blog", slug, locale as Locale);
   if (!content) return {};
   return {
     title: `${content.frontmatter.title} — John Serra`,
@@ -29,11 +39,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function BlogPostPage({ params }: Props) {
-  const { slug } = await params;
-  const content = getContentBySlug("blog", slug);
+  const { locale, slug } = await params;
+  setRequestLocale(locale);
+
+  const t = await getTranslations("Blog");
+  const content = getContentBySlug("blog", slug, locale as Locale);
   if (!content) notFound();
 
   const { frontmatter } = content;
+  const dateLocale = locale === "tr" ? "tr-TR" : "en-US";
 
   return (
     <>
@@ -46,7 +60,7 @@ export default async function BlogPostPage({ params }: Props) {
             className="inline-flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors mb-10"
           >
             <ArrowLeft size={16} />
-            Back to Blog
+            {t("backToBlog")}
           </Link>
 
           {/* Tags */}
@@ -76,7 +90,7 @@ export default async function BlogPostPage({ params }: Props) {
 
           {frontmatter.date && (
             <time className="block text-sm text-zinc-400 dark:text-zinc-500 mb-10">
-              {new Date(frontmatter.date).toLocaleDateString("en-US", {
+              {new Date(frontmatter.date).toLocaleDateString(dateLocale, {
                 year: "numeric",
                 month: "long",
                 day: "numeric",

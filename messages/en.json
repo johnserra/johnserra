@@ -1,0 +1,130 @@
+{
+  "Metadata": {
+    "title": "John Serra - Data-Driven Problem Solver",
+    "description": "Leveraging decades of experience across manufacturing, education, and urban mobility to solve complex challenges with modern, data-driven approaches."
+  },
+  "Nav": {
+    "home": "Home",
+    "about": "About",
+    "blog": "Blog",
+    "portfolio": "Portfolio",
+    "recipes": "Recipes",
+    "contact": "Contact"
+  },
+  "Hero": {
+    "headline": "Decades of Experience. A Modern, Data-Driven Approach.",
+    "introduction": "Leveraging a career that spans manufacturing, education, and urban mobility, I specialize in solving complex challenges. My focus is on using data to find clarity and drive measurable growth, regardless of the industry.",
+    "ctaText": "Chat with my AI Assistant"
+  },
+  "AboutTeaser": {
+    "heading": "About Me",
+    "content": "With a unique blend of hands-on manufacturing expertise, educational leadership, and data analytics skills, I bring a comprehensive perspective to every project. My approach combines decades of real-world experience with modern technological solutions to deliver tangible results.",
+    "ctaText": "Learn More About Me"
+  },
+  "BlogTeaser": {
+    "heading": "From the Blog",
+    "readMore": "Read the blog"
+  },
+  "Features": {
+    "patentedProcess": {
+      "title": "Patented Process Innovation",
+      "description": "Led the re-engineering of a patented process for self-absorbent polystyrene foam trays, enhancing product functionality for national meat and poultry packaging."
+    },
+    "digitalTransformation": {
+      "title": "Digital Transformation in Crisis",
+      "description": "As Education Coordinator during the abrupt COVID-19 shutdown, I led the complete transition of a language school from paper-based methods to a live, online learning environment, ensuring educational continuity by digitizing all curriculum and training the entire teaching staff on new technologies."
+    },
+    "strategicGrowth": {
+      "title": "Strategic Growth Automation",
+      "description": "Architecting an automated business development engine to streamline market research and lead evaluation. This system is designed to generate highly targeted prospect lists, shifting team focus from manual data collection to strategic networking and client communication."
+    }
+  },
+  "PortfolioProjects": {
+    "bdAutomation": {
+      "title": "BD Automation Suite",
+      "description": "A modular Python pipeline that automates multi-stream business development, from prospect research to AI-drafted outreach."
+    },
+    "digitalTransformation": {
+      "title": "Digital Transformation in Crisis",
+      "description": "Leading a language school's complete pivot to online learning during COVID-19."
+    },
+    "comingSoon": {
+      "title": "Coming Soon",
+      "description": "Next case study in progress."
+    }
+  },
+  "About": {
+    "title": "About — John Serra",
+    "description": "Account Manager, business development strategist, and data-driven problem solver with decades of experience across manufacturing, education, and urban mobility."
+  },
+  "Blog": {
+    "title": "Blog",
+    "metaTitle": "Blog — John Serra",
+    "metaDescription": "Personal and technical writing on data, operations, technology, and more.",
+    "subtitle": "Personal and technical writing — on data, operations, technology, and life.",
+    "backToBlog": "Back to Blog"
+  },
+  "Portfolio": {
+    "title": "Portfolio",
+    "metaTitle": "Portfolio — John Serra",
+    "metaDescription": "Case studies in business development, digital transformation, and data-driven problem solving.",
+    "subtitle": "Case studies in business development, digital transformation, and data-driven problem solving.",
+    "backToPortfolio": "All Projects",
+    "viewOnGithub": "View on GitHub"
+  },
+  "Recipes": {
+    "title": "Recipes",
+    "metaTitle": "Recipes — John Serra",
+    "metaDescription": "A collection of recipes from John Serra's kitchen.",
+    "subtitle": "Things I cook. Mostly Italian, occasionally not.",
+    "backToRecipes": "All Recipes",
+    "cuisine": "Cuisine",
+    "serves": "Serves",
+    "prep": "Prep",
+    "cook": "Cook",
+    "total": "Total",
+    "servings": "{count} servings"
+  },
+  "Contact": {
+    "title": "Get in Touch",
+    "metaTitle": "Contact — John Serra",
+    "metaDescription": "Get in touch with John Serra.",
+    "subtitle": "Whether you want to discuss a project, explore a collaboration, or just say hello — I'd love to hear from you.",
+    "sendMessage": "Send a Message",
+    "linkedin": "LinkedIn",
+    "connectProfessionally": "Connect professionally",
+    "email": "Email",
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "message": "Message",
+      "namePlaceholder": "Your name",
+      "emailPlaceholder": "your@email.com",
+      "messagePlaceholder": "What's on your mind?",
+      "submit": "Send Message",
+      "submitting": "Sending…",
+      "success": "Message sent! I'll be in touch soon.",
+      "error": "Something went wrong. Try emailing directly."
+    }
+  },
+  "Chat": {
+    "title": "John's AI Assistant",
+    "subtitle": "Ask me anything",
+    "welcome": "Hi! I'm John's AI assistant. Ask me about his background, projects, skills, or anything else you'd like to know.",
+    "placeholder": "Ask me anything...",
+    "error": "Sorry, something went wrong. Try emailing John directly at john@serra.us.",
+    "openChat": "Open AI Chat",
+    "closeChat": "Close chat",
+    "sendMessage": "Send message"
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "description": "The page you're looking for doesn't exist or has been moved."
+  },
+  "Footer": {
+    "copyright": "Copyright"
+  },
+  "Common": {
+    "toggleMenu": "Toggle menu"
+  }
+}

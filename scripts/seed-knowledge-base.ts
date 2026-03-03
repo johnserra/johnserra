@@ -85,9 +85,9 @@ async function processDirectory(dir: string, type: string) {
 async function main() {
   console.log("Seeding knowledge base...\n");
 
-  await processDirectory(path.join(CONTENT_DIR, "about"), "about");
-  await processDirectory(path.join(CONTENT_DIR, "portfolio"), "portfolio");
-  await processDirectory(path.join(CONTENT_DIR, "recipes"), "recipes");
+  await processDirectory(path.join(CONTENT_DIR, "en", "about"), "about");
+  await processDirectory(path.join(CONTENT_DIR, "en", "portfolio"), "portfolio");
+  await processDirectory(path.join(CONTENT_DIR, "en", "recipes"), "recipes");
 
   console.log("\nDone!");
 }

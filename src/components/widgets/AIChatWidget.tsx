@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { MessageCircle, X, Send } from "lucide-react";
+import { useTranslations, useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
 
 function renderContent(content: string): React.ReactNode {
@@ -44,14 +45,16 @@ interface Message {
   content: string;
 }
 
-const WELCOME: Message = {
-  id: "welcome",
-  role: "assistant",
-  content:
-    "Hi! I'm John's AI assistant. Ask me about his background, projects, skills, or anything else you'd like to know.",
-};
-
 export function AIChatWidget() {
+  const t = useTranslations("Chat");
+  const locale = useLocale();
+
+  const WELCOME: Message = {
+    id: "welcome",
+    role: "assistant",
+    content: t("welcome"),
+  };
+
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([WELCOME]);
   const [input, setInput] = useState("");
@@ -90,7 +93,7 @@ export function AIChatWidget() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history }),
+        body: JSON.stringify({ messages: history, locale }),
       });
 
       if (!res.ok || !res.body) throw new Error("Request failed");
@@ -113,7 +116,7 @@ export function AIChatWidget() {
       setMessages((prev) =>
         prev.map((m) =>
           m.id === assistantId
-            ? { ...m, content: "Sorry, something went wrong. Try emailing John directly at john@serra.us." }
+            ? { ...m, content: t("error") }
             : m
         )
       );
@@ -132,7 +135,7 @@ export function AIChatWidget() {
           "bg-blue-600 hover:bg-blue-700 text-white hover:scale-110",
           isOpen && "scale-0 pointer-events-none"
         )}
-        aria-label="Open AI Chat"
+        aria-label={t("openChat")}
       >
         <MessageCircle size={24} />
       </button>
@@ -151,14 +154,14 @@ export function AIChatWidget() {
           <div className="flex items-center gap-2">
             <MessageCircle size={20} className="text-white" />
             <div>
-              <h3 className="font-semibold text-white text-sm">John&apos;s AI Assistant</h3>
-              <p className="text-blue-200 text-xs">Ask me anything</p>
+              <h3 className="font-semibold text-white text-sm">{t("title")}</h3>
+              <p className="text-blue-200 text-xs">{t("subtitle")}</p>
             </div>
           </div>
           <button
             onClick={() => setIsOpen(false)}
             className="text-white hover:bg-blue-700 p-1 rounded transition-colors"
-            aria-label="Close chat"
+            aria-label={t("closeChat")}
           >
             <X size={20} />
           </button>
@@ -198,7 +201,7 @@ export function AIChatWidget() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask me anything..."
+              placeholder={t("placeholder")}
               disabled={isLoading}
               className="flex-1 px-4 py-2 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 placeholder-zinc-500 dark:placeholder-zinc-400 outline-none focus:ring-2 focus:ring-blue-600 text-sm disabled:opacity-60"
             />
@@ -206,7 +209,7 @@ export function AIChatWidget() {
               type="submit"
               disabled={isLoading || !input.trim()}
               className="p-2.5 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              aria-label="Send message"
+              aria-label={t("sendMessage")}
             >
               <Send size={16} />
             </button>

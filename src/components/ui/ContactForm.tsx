@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
@@ -8,6 +9,7 @@ type FormState = "idle" | "submitting" | "success" | "error";
 
 export function ContactForm() {
   const [state, setState] = useState<FormState>("idle");
+  const t = useTranslations("Contact.form");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -37,14 +39,14 @@ export function ContactForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <Field label="Name" name="name" type="text" placeholder="Your name" required />
-        <Field label="Email" name="email" type="email" placeholder="your@email.com" required />
+        <Field label={t("name")} name="name" type="text" placeholder={t("namePlaceholder")} required />
+        <Field label={t("email")} name="email" type="email" placeholder={t("emailPlaceholder")} required />
       </div>
       <Field
-        label="Message"
+        label={t("message")}
         name="message"
         type="textarea"
-        placeholder="What's on your mind?"
+        placeholder={t("messagePlaceholder")}
         required
       />
 
@@ -54,17 +56,17 @@ export function ContactForm() {
           disabled={state === "submitting" || state === "success"}
           className="self-start"
         >
-          {state === "submitting" ? "Sending…" : "Send Message"}
+          {state === "submitting" ? t("submitting") : t("submit")}
         </Button>
 
         {state === "success" && (
           <p className="text-sm text-green-600 dark:text-green-400">
-            Message sent! I'll be in touch soon.
+            {t("success")}
           </p>
         )}
         {state === "error" && (
           <p className="text-sm text-red-600 dark:text-red-400">
-            Something went wrong. Try emailing directly.
+            {t("error")}
           </p>
         )}
       </div>

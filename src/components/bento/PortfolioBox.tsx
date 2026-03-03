@@ -1,5 +1,4 @@
-import Link from "next/link";
-import Image from "next/image";
+import { Link } from "@/i18n/navigation";
 import { PortfolioProject } from "@/types";
 import { ArrowUpRight } from "lucide-react";
 
@@ -10,7 +9,6 @@ interface PortfolioBoxProps extends PortfolioProject {
 export function PortfolioBox({
   title,
   description,
-  image,
   link,
   className,
 }: PortfolioBoxProps) {

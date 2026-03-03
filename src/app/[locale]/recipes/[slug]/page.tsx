@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
@@ -8,19 +8,29 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ProseLayout } from "@/components/ui/ProseLayout";
 import { ArrowLeft, Clock, Globe, Users } from "lucide-react";
+import { setRequestLocale, getTranslations } from "next-intl/server";
+import { routing } from "@/i18n/routing";
 import type { Metadata } from "next";
+import type { Locale } from "@/types";
 
 interface Props {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }
 
 export async function generateStaticParams() {
-  return getContentSlugs("recipes").map((slug) => ({ slug }));
+  const params: { locale: string; slug: string }[] = [];
+  for (const locale of routing.locales) {
+    const slugs = getContentSlugs("recipes", locale);
+    for (const slug of slugs) {
+      params.push({ locale, slug });
+    }
+  }
+  return params;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const content = getContentBySlug("recipes", slug);
+  const { locale, slug } = await params;
+  const content = getContentBySlug("recipes", slug, locale as Locale);
   if (!content) return {};
   return {
     title: `${content.frontmatter.title} — John Serra`,
@@ -29,8 +39,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function RecipePage({ params }: Props) {
-  const { slug } = await params;
-  const content = getContentBySlug("recipes", slug);
+  const { locale, slug } = await params;
+  setRequestLocale(locale);
+
+  const t = await getTranslations("Recipes");
+  const content = getContentBySlug("recipes", slug, locale as Locale);
   if (!content) notFound();
 
   const { frontmatter } = content;
@@ -46,7 +59,7 @@ export default async function RecipePage({ params }: Props) {
             className="inline-flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors mb-10"
           >
             <ArrowLeft size={16} />
-            All Recipes
+            {t("backToRecipes")}
           </Link>
 
           {/* Tags */}
@@ -88,7 +101,7 @@ export default async function RecipePage({ params }: Props) {
                 <div className="flex items-center gap-2">
                   <Users size={16} className="text-zinc-400" />
                   <span className="text-sm text-zinc-600 dark:text-zinc-400">
-                    Serves <strong className="text-zinc-900 dark:text-zinc-50">{frontmatter.servings}</strong>
+                    {t("serves")} <strong className="text-zinc-900 dark:text-zinc-50">{frontmatter.servings}</strong>
                   </span>
                 </div>
               )}
@@ -96,7 +109,7 @@ export default async function RecipePage({ params }: Props) {
                 <div className="flex items-center gap-2">
                   <Clock size={16} className="text-zinc-400" />
                   <span className="text-sm text-zinc-600 dark:text-zinc-400">
-                    Prep <strong className="text-zinc-900 dark:text-zinc-50">{frontmatter.prepTime}</strong>
+                    {t("prep")} <strong className="text-zinc-900 dark:text-zinc-50">{frontmatter.prepTime}</strong>
                   </span>
                 </div>
               )}
@@ -104,7 +117,7 @@ export default async function RecipePage({ params }: Props) {
                 <div className="flex items-center gap-2">
                   <Clock size={16} className="text-zinc-400" />
                   <span className="text-sm text-zinc-600 dark:text-zinc-400">
-                    Cook <strong className="text-zinc-900 dark:text-zinc-50">{frontmatter.cookTime}</strong>
+                    {t("cook")} <strong className="text-zinc-900 dark:text-zinc-50">{frontmatter.cookTime}</strong>
                   </span>
                 </div>
               )}
@@ -112,7 +125,7 @@ export default async function RecipePage({ params }: Props) {
                 <div className="flex items-center gap-2">
                   <Clock size={16} className="text-zinc-400" />
                   <span className="text-sm text-zinc-600 dark:text-zinc-400">
-                    Total <strong className="text-zinc-900 dark:text-zinc-50">{frontmatter.totalTime}</strong>
+                    {t("total")} <strong className="text-zinc-900 dark:text-zinc-50">{frontmatter.totalTime}</strong>
                   </span>
                 </div>
               )}

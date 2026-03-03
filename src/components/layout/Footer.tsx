@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Linkedin, Mail } from "lucide-react";
 
 export function Footer() {
@@ -10,7 +9,7 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           {/* Social Links */}
           <div className="flex items-center gap-6">
-            <Link
+            <a
               href="https://linkedin.com/in/johnserra"
               target="_blank"
               rel="noopener noreferrer"
@@ -18,19 +17,19 @@ export function Footer() {
               aria-label="LinkedIn"
             >
               <Linkedin size={20} />
-            </Link>
-            <Link
+            </a>
+            <a
               href="mailto:john@serra.us"
               className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
               aria-label="Email"
             >
               <Mail size={20} />
-            </Link>
+            </a>
           </div>
 
           {/* Copyright */}
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            Copyright © {currentYear}
+            Copyright &copy; {currentYear}
           </p>
         </div>
       </div>

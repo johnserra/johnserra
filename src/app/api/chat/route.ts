@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { createAdminClient } from "@/lib/supabase";
 import { getAllContent, getContentBySlug } from "@/lib/content";
+import type { Locale } from "@/types";
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -33,17 +34,17 @@ async function getCareerContext(query: string): Promise<string> {
     .join("\n\n---\n\n");
 }
 
-function getSiteContent(query: string): string {
+function getSiteContent(query: string, locale: Locale = "en"): string {
   const sections: string[] = [];
 
   // About page — always include
-  const about = getContentBySlug("about", "index");
+  const about = getContentBySlug("about", "index", locale);
   if (about) {
     sections.push(`## About John\n${about.content.trim()}`);
   }
 
   // Blog posts — always include (posts are short)
-  const posts = getAllContent("blog");
+  const posts = getAllContent("blog", locale);
   if (posts.length) {
     const blogSection = posts
       .map((p) => {
@@ -55,14 +56,15 @@ function getSiteContent(query: string): string {
   }
 
   // Recipes — always include an index with URLs; include the story for a matched recipe
-  const recipes = getAllContent("recipes");
+  const recipes = getAllContent("recipes", locale);
   if (recipes.length) {
+    const prefix = locale !== "en" ? `/${locale}` : "";
     const index = recipes
       .map((r) => {
         const meta = [r.frontmatter.cuisine, r.frontmatter.totalTime]
           .filter(Boolean)
           .join(", ");
-        const url = `/recipes/${r.slug}`;
+        const url = `${prefix}/recipes/${r.slug}`;
         return `- **${r.frontmatter.title}**${meta ? ` (${meta})` : ""}: ${r.frontmatter.description ?? ""} — page: ${url}`;
       })
       .join("\n");
@@ -80,7 +82,7 @@ function getSiteContent(query: string): string {
     });
 
     const recipeStory = match
-      ? `\n\n### About this recipe: ${match.frontmatter.title} (/recipes/${match.slug})\n${match.content.trim()}`
+      ? `\n\n### About this recipe: ${match.frontmatter.title} (${prefix}/recipes/${match.slug})\n${match.content.trim()}`
       : "";
 
     sections.push(`## Recipes\n${index}${recipeStory}`);
@@ -90,17 +92,18 @@ function getSiteContent(query: string): string {
 }
 
 export async function POST(req: Request) {
-  const { messages }: { messages: Message[] } = await req.json();
+  const { messages, locale = "en" }: { messages: Message[]; locale?: string } = await req.json();
 
   if (!messages?.length) {
     return Response.json({ error: "No messages provided" }, { status: 400 });
   }
 
   const latestUserMessage = messages.at(-1)?.content ?? "";
+  const contentLocale = (locale === "tr" ? "tr" : "en") as Locale;
 
   const [careerContext, siteContent] = await Promise.all([
     getCareerContext(latestUserMessage),
-    Promise.resolve(getSiteContent(latestUserMessage)),
+    Promise.resolve(getSiteContent(latestUserMessage, contentLocale)),
   ]);
 
   const contextBlock = [
@@ -109,6 +112,10 @@ export async function POST(req: Request) {
   ]
     .filter(Boolean)
     .join("\n\n===\n\n");
+
+  const languageInstruction = locale === "tr"
+    ? "\n\nIMPORTANT: The user is browsing the Turkish version of the site. Respond in Turkish. Use a warm, conversational Turkish tone."
+    : "";
 
   const systemPrompt = `You are John Serra's personal AI assistant — a warm, knowledgeable alter ego who speaks in first person as John across all aspects of his life: his career, his writing, and his cooking.
 
@@ -122,7 +129,7 @@ When answering questions:
 - When linking, always use descriptive anchor text (e.g. [Lasagna Bolognese](/recipes/lasagna-bolognese)) — never use generic text like "here" or "this link"
 - If asked about something outside the context, answer based on what you know about John's background, or say you'd love to chat more about it directly
 - Keep answers conversational and concise (2–4 paragraphs max)
-- Never invent specific facts not in the context
+- Never invent specific facts not in the context${languageInstruction}
 
 ${contextBlock ? `\n<context>\n${contextBlock}\n</context>` : ""}`;
 

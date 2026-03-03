@@ -1,26 +1,40 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { getAllContent } from "@/lib/content";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Clock, Users } from "lucide-react";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
+import type { Locale } from "@/types";
 
-export const metadata: Metadata = {
-  title: "Recipes — John Serra",
-  description: "A collection of recipes from John Serra's kitchen.",
-};
+interface Props {
+  params: Promise<{ locale: string }>;
+}
 
-export default function RecipesPage() {
-  const recipes = getAllContent("recipes");
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "Recipes" });
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+  };
+}
+
+export default async function RecipesPage({ params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const t = await getTranslations("Recipes");
+  const recipes = getAllContent("recipes", locale as Locale);
 
   return (
     <>
       <Header />
       <main className="min-h-screen bg-zinc-50 dark:bg-black py-16">
         <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
-          <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-50 mb-4">Recipes</h1>
+          <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-50 mb-4">{t("title")}</h1>
           <p className="text-lg text-zinc-600 dark:text-zinc-400 mb-12">
-            Things I cook. Mostly Italian, occasionally not.
+            {t("subtitle")}
           </p>
 
           <div className="flex flex-col gap-8">
@@ -54,7 +68,7 @@ export default function RecipesPage() {
                   {recipe.frontmatter.servings && (
                     <span className="flex items-center gap-1.5 text-sm text-zinc-400 dark:text-zinc-500">
                       <Users size={14} />
-                      {recipe.frontmatter.servings} servings
+                      {t("servings", { count: recipe.frontmatter.servings })}
                     </span>
                   )}
                   {recipe.frontmatter.totalTime && (

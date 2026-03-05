@@ -48,9 +48,9 @@
       "title": "Digital Transformation in Crisis",
       "description": "Leading a language school's complete pivot to online learning during COVID-19."
     },
-    "comingSoon": {
-      "title": "Coming Soon",
-      "description": "Next case study in progress."
+    "careerTalkLab": {
+      "title": "CareerTalkLab",
+      "description": "A hybrid LMS for Turkish professionals learning English — AI-assisted feedback, flipped classroom model, built with Next.js and Supabase."
     }
   },
   "About": {

@@ -48,9 +48,9 @@
       "title": "Krizde Dijital Dönüşüm",
       "description": "COVID-19 sırasında bir dil okulunun çevrimiçi eğitime tam geçişini yönetmek."
     },
-    "comingSoon": {
-      "title": "Yakında",
-      "description": "Sonraki vaka çalışması hazırlanıyor."
+    "careerTalkLab": {
+      "title": "CareerTalkLab",
+      "description": "Türk profesyoneller için hibrit bir LMS — yapay zeka destekli geri bildirim, ters yüz sınıf modeli, Next.js ve Supabase ile geliştirildi."
     }
   },
   "About": {

@@ -20,22 +20,22 @@ CareerTalkLab is a standalone hybrid LMS at careertalklab.com. It uses a "Flippe
 
 The system runs two tracks:
 
-- **Exam Track** (~90% of students) — IELTS/TOEFL candidates working through self-paced modules with auto-progression. High automation, subscription-based revenue.
-- **Executive Track** (~10% of students) — Business professionals starting at A1/A2, learning through task-based "Survival Sprints" framed around professional functions, not grammar rules. Premium pricing, high-touch engagement.
+- **Exam Track** — IELTS/TOEFL candidates working through self-paced modules with auto-progression. High automation, subscription-based revenue.
+- **Executive Track** — Business professionals starting at A1/A2, learning through task-based "Survival Sprints" framed around professional functions, not grammar rules. Premium pricing, high-touch engagement.
 
 ## The Architecture
 
 CareerTalkLab is a separate Next.js 16 project with its own domain and Vercel deployment, sharing a Supabase backend with johnserra.com.
 
-| Layer | Technology |
-|---|---|
-| Frontend | Next.js 16 (App Router), React 19, TypeScript |
-| Styling | Tailwind CSS 4, shadcn/ui |
-| Backend/Auth | Supabase (PostgreSQL, Auth, RLS, Edge Functions) |
-| Content | MDX via next-mdx-remote with custom components |
-| AI Feedback | Anthropic Claude API — drafts corrections on student writing |
-| Scheduling | Google Workspace Appointment Schedules |
-| i18n | next-intl — English + Turkish |
+| Layer        | Technology                                                   |
+| ------------ | ------------------------------------------------------------ |
+| Frontend     | Next.js 16 (App Router), React 19, TypeScript                |
+| Styling      | Tailwind CSS 4, shadcn/ui                                    |
+| Backend/Auth | Supabase (PostgreSQL, Auth, RLS, Edge Functions)             |
+| Content      | MDX via next-mdx-remote with custom components               |
+| AI Feedback  | Anthropic Claude API — drafts corrections on student writing |
+| Scheduling   | Google Workspace Appointment Schedules                       |
+| i18n         | next-intl — English + Turkish                                |
 
 ### Key Technical Decisions
 

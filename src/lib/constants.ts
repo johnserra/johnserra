@@ -3,7 +3,6 @@ export const NAV_LINK_HREFS = [
   { key: "about", href: "/about" },
   { key: "blog", href: "/blog" },
   { key: "portfolio", href: "/portfolio" },
-  { key: "recipes", href: "/recipes" },
   { key: "contact", href: "/contact" },
 ] as const;
 

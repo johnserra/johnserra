@@ -1,7 +1,8 @@
 ---
 title: "Carbonara"
 description: "The real one. No cream. Just eggs, Pecorino, guanciale, and black pepper."
-tags: ["Italian", "pasta", "quick", "classic"]
+date: "2026-03-08"
+tags: ["recipe", "Italian", "pasta", "quick", "classic"]
 cuisine: "Italian"
 servings: 2
 prepTime: "10 minutes"

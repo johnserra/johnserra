@@ -1,7 +1,8 @@
 ---
 title: "Warm Potato & Triple-Onion Soup"
 description: "A deeply savory, comforting soup built on three alliums — leeks, shallots, and onion — slow-cooked with potatoes until everything is rich and silky."
-tags: ["soup", "comfort-food", "vegetarian", "crowd-pleaser"]
+date: "2026-03-08"
+tags: ["recipe", "soup", "comfort-food", "vegetarian", "crowd-pleaser"]
 cuisine: "French"
 servings: 6
 prepTime: "20 minutes"

@@ -8,7 +8,6 @@
     "about": "About",
     "blog": "Blog",
     "portfolio": "Portfolio",
-    "recipes": "Recipes",
     "contact": "Contact"
   },
   "Hero": {
@@ -28,7 +27,7 @@
   "Features": {
     "patentedProcess": {
       "title": "Patented Process Innovation",
-      "description": "Led the re-engineering of a patented process for self-absorbent polystyrene foam trays, enhancing product functionality for national meat and poultry packaging."
+      "description": "Led the re-engineering of a patented process for self-absorbent polystyrene foam trays, enhancing product functionality for a national polystyrene foam packaging company."
     },
     "digitalTransformation": {
       "title": "Digital Transformation in Crisis",
@@ -61,7 +60,7 @@
     "title": "Blog",
     "metaTitle": "Blog — John Serra",
     "metaDescription": "Personal and technical writing on data, operations, technology, and more.",
-    "subtitle": "Personal and technical writing — on data, operations, technology, and life.",
+    "subtitle": "Personal and technical writing — on data, operations, technology, food, and life.",
     "backToBlog": "Back to Blog"
   },
   "Portfolio": {

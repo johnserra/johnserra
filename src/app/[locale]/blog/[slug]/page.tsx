@@ -7,7 +7,7 @@ import { getContentBySlug, getContentSlugs } from "@/lib/content";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ProseLayout } from "@/components/ui/ProseLayout";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Clock, Globe, Users } from "lucide-react";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import type { Metadata } from "next";
@@ -43,11 +43,18 @@ export default async function BlogPostPage({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations("Blog");
+  const tRecipes = await getTranslations("Recipes");
   const content = getContentBySlug("blog", slug, locale as Locale);
   if (!content) notFound();
 
   const { frontmatter } = content;
   const dateLocale = locale === "tr" ? "tr-TR" : "en-US";
+  const hasRecipeMeta =
+    frontmatter.cuisine ||
+    frontmatter.servings ||
+    frontmatter.prepTime ||
+    frontmatter.cookTime ||
+    frontmatter.totalTime;
 
   return (
     <>
@@ -96,6 +103,52 @@ export default async function BlogPostPage({ params }: Props) {
                 day: "numeric",
               })}
             </time>
+          )}
+
+          {/* Recipe metadata */}
+          {hasRecipeMeta && (
+            <div className="flex flex-wrap gap-6 p-6 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 mb-10">
+              {frontmatter.cuisine && (
+                <div className="flex items-center gap-2">
+                  <Globe size={16} className="text-zinc-400" />
+                  <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                    <strong className="text-zinc-900 dark:text-zinc-50">{frontmatter.cuisine}</strong>
+                  </span>
+                </div>
+              )}
+              {frontmatter.servings && (
+                <div className="flex items-center gap-2">
+                  <Users size={16} className="text-zinc-400" />
+                  <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                    {tRecipes("serves")} <strong className="text-zinc-900 dark:text-zinc-50">{frontmatter.servings}</strong>
+                  </span>
+                </div>
+              )}
+              {frontmatter.prepTime && (
+                <div className="flex items-center gap-2">
+                  <Clock size={16} className="text-zinc-400" />
+                  <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                    {tRecipes("prep")} <strong className="text-zinc-900 dark:text-zinc-50">{frontmatter.prepTime}</strong>
+                  </span>
+                </div>
+              )}
+              {frontmatter.cookTime && (
+                <div className="flex items-center gap-2">
+                  <Clock size={16} className="text-zinc-400" />
+                  <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                    {tRecipes("cook")} <strong className="text-zinc-900 dark:text-zinc-50">{frontmatter.cookTime}</strong>
+                  </span>
+                </div>
+              )}
+              {frontmatter.totalTime && (
+                <div className="flex items-center gap-2">
+                  <Clock size={16} className="text-zinc-400" />
+                  <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                    {tRecipes("total")} <strong className="text-zinc-900 dark:text-zinc-50">{frontmatter.totalTime}</strong>
+                  </span>
+                </div>
+              )}
+            </div>
           )}
 
           {/* Content */}

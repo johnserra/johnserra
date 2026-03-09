@@ -5,8 +5,6 @@ date: "2026-02-23"
 tags: [personal, writing]
 ---
 
-After years of putting it off, I'm finally starting a blog.
-
 I've always been a writer in my head — turning over ideas during a commute, drafting arguments in the shower, composing paragraphs while falling asleep. The problem was never a lack of things to say. It was the gap between thinking and publishing.
 
 So here's the deal: this blog will be a mix of whatever's on my mind. That means professional topics — data, operations, technology — alongside more personal writing about food, travel, and the strange overlaps between all of those things.

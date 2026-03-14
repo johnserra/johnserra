@@ -39,7 +39,7 @@ CareerTalkLab is a separate Next.js 16 project with its own domain and Vercel de
 
 ### Key Technical Decisions
 
-**Shared Supabase, separate codebases.** Both sites point at the same Supabase project. LMS tables coexist with portfolio tables, isolated by RLS. This avoids managing two databases while keeping the student-facing product completely independent from the portfolio site.
+**Dedicated Supabase project.** CareerTalkLab runs on its own Supabase instance, fully independent from the portfolio site. This gives the LMS its own auth user pool, independent migrations, and clean billing separation.
 
 **MDX with custom components.** Lessons are authored as MDX files with embedded interactive components — `<VocabularyCard />` for flashcard-style vocabulary, `<GrammarCallout />` for collapsible "Stealth Grammar" explanations, and `<SubmissionForm />` for inline writing and audio recording. This gives instructional designers full control over the learning experience without touching React code.
 

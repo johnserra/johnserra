@@ -52,11 +52,11 @@ async function processDirectory(dir: string, type: string) {
       await processDirectory(fullPath, type);
       continue;
     }
-    if (!entry.endsWith(".md")) continue;
+    if (!entry.endsWith(".md") && !entry.endsWith(".mdx")) continue;
 
     const raw = fs.readFileSync(fullPath, "utf-8");
     const { data: frontmatter, content } = matter(raw);
-    const slug = entry.replace(".md", "");
+    const slug = entry.replace(/\.mdx?$/, "");
     const source = `${type}/${slug}`;
 
     // Build a plain-text representation

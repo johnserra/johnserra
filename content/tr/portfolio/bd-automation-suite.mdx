@@ -1,0 +1,47 @@
+---
+title: "BD Otomasyon Paketi"
+description: "Potansiyel müşteri araştırmasından iletişim taslaklarına kadar çok kanallı iş geliştirmeyi otomatize eden modüler bir Python işleme hattı; tüm iş mantığı YAML dosyasında, kontrol ise insanda."
+date: "2025-01-01"
+tags: ["python", "otomasyon", "iş-geliştirme", "ai", "crm"]
+status: "published"
+coverImage: "/images/projects/bd-automation-suite.jpg"
+githubUrl: "https://github.com/johnserra/bd-automation-suite"
+---
+
+## Sorun
+
+İş geliştirme (BD) çalışmaları doğası gereği tekrarlayıcıdır: potansiyel müşterileri bul, verilerini zenginleştir, puanla, programa göre takip et, iletişim taslakları hazırla. Bu işlerin çoğu insan muhakemesi gerektirmez — sadece tutarlılık gerektirir. Sorun şu ki; bunu manuel olarak, birden fazla kanal üzerinden ve belirli bir hacimde tutarlı bir şekilde yapmak, manuel olarak çok yavaş, e-tablolarla bir araya getirmek için ise çok kırılgandır.
+
+## Mimari
+
+Paket, her biri işleme hattının (pipeline) bir aşamasından sorumlu olan yedi bağımsız modül olarak çalışır:
+
+1. **Potansiyel Müşteri Araştırması** — her kanalın arama yapılandırmasına göre harici veri kaynaklarından yeni hedefler çeker.
+2. **İletişim Keşfi** — nitelikli adaylar için karar verici kişilerin iletişim bilgilerini bulur.
+3. **Aday Zenginleştirme** — birden fazla harici adaptörden yapılandırılmış alanları doldurur.
+4. **Aday Puanlama** — sayısal bir puan üretmek için YAML ile tanımlanmış ağırlıklı kriterleri uygular.
+5. **İletişim Taslağı Hazırlayıcı** — kişiselleştirilmiş ilk temas e-postalarını yazmak için Claude'u kullanır (yalnızca taslaklar — asla otomatik gönderilmez).
+6. **Takip Planlayıcı** — hattın aşamasına ve 'son iletişimden beri geçen gün' kurallarına göre CRM aktiviteleri oluşturur.
+7. **Hattın Raporlayıcısı** — hattın sağlığına ilişkin haftalık Markdown özetleri oluşturur.
+
+Tüm modüller, merkezi veri merkezi olarak Odoo CRM'e yazar. Tüm modüller `--dry-run` (test çalıştırması) modunu destekler.
+
+## Kritik Tasarım Kararları
+
+**YAML tabanlı iş mantığı.** Puanlama ağırlıkları, zenginleştirme kaynakları, takip eşikleri ve iletişim tonu kodda değil, yapılandırma dosyalarında yaşar. Paketi yeni bir BD bağlamına uyarlamak, Python'a dokunmak değil, YAML dosyasını düzenlemek anlamına gelir.
+
+**Harici veriler için adaptör deseni.** Her harici kaynak — Google Haritalar, ticari veri tabanları, şirket web siteleri, haberler — asla hata yükseltmeyen (raise) bağımsız bir adaptördür. Hata durumunda `success=False` döner. Orkestrasyon modülü devam eder. Bu, işleme hattının düzensiz üçüncü taraf API'lerine karşı dirençli kalmasını sağlar.
+
+**Uçtan uca idempotent (tekrar çalıştırılabilir) yapı.** Her modülün yeniden çalıştırılması güvenlidir. Aday oluşturmada tekilleştirme, aktivite oluşturmadan önce mükerrer kontrolü yapılır. Cron işleri, çöp veri oluşturmadan yeniden tetiklenebilir.
+
+**İletişimde insan kontrolü.** İletişim modülü, e-postaları taslak haline getirmek için Claude Sonnet'i kullanır ve bunları insan incelemesi için bir CRM alanına yazar. Hiçbir şey asla otomatik olarak gönderilmez. Otomasyon araştırma ve taslak hazırlama işini halleder; insan ise ilişkiyi yönetir.
+
+**Ölçek için Haiku, kalite için Sonnet.** Toplu zenginleştirme özetleri Claude Haiku (ucuz, hızlı) kullanır. İletişim taslakları Claude Sonnet (daha yüksek kalite) kullanır. Bu ayrım, paylaşılan LLM istemcisindeki adlandırılmış sabitler aracılığıyla açıkça belirtilir.
+
+## Nelerin Yerini Aldı?
+
+E-tablolardaki manuel potansiyel müşteri araştırması, düzensiz takip hatırlatıcıları ve tutarsız aday verileri. İşleme hattı artık bir cron programına göre çalışıyor — potansiyel müşteri araştırması ve raporlama haftalık, takip planlaması ve puanlama ise günlük olarak yapılıyor.
+
+## Neler Öğrendim?
+
+En zor kısım kod değildi; puanlama kriterlerini YAML'da kodlayacak kadar hassas bir şekilde tanımlamaktı. Bu hassasiyete zorlamak asıl değerdi. Neyin iyi bir aday olduğuna dair belirsiz sezgiler, açık ağırlıklar ve eşikler talep eden bir yapılandırma dosyasıyla temas ettiğinde hayatta kalamaz.

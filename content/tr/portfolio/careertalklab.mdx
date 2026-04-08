@@ -1,0 +1,73 @@
+---
+title: "CareerTalkLab"
+description: "Türk profesyoneller için İngilizce öğrenimine yönelik hibrit bir LMS — Next.js 16.1, Supabase ve JSON tabanlı ders motoru ile inşa edildi."
+date: "2026-04-07"
+tags: ["next.js", "supabase", "ai", "education", "lms", "pwa"]
+status: "published"
+coverImage: "/images/projects/careertalklab.jpg"
+liveUrl: "https://careertalklabs.com"
+---
+
+## Sorun
+
+Türk iş profesyonellerine İngilizce öğretmek yüksek değerli bir iştir, ancak ölçeklenmesi zordur. Her öğrenci kişiselleştirilmiş geri bildirime, ilerleme takibine ve canlı pratik seanslarına ihtiyaç duyar. Belirli bir hacmin üzerindeki her öğrenci sayısında, yönetimsel iş yükü asıl öğretim süresinden daha fazla zaman almaya başlar.
+
+Zorluk: Bir özel öğretmenin 5 öğrenciye sunduğu eğitim kalitesini, ek personel almadan 50 öğrenciye sunabilecek bir sistem inşa etmek.
+
+## Çözüm
+
+CareerTalkLab, careertalklabs.com adresinde yer alan bağımsız bir hibrit LMS'dir. "Ters Yüz Edilmiş Sınıf" (Flipped Classroom) modelini kullanır: Öğrenciler web tabanlı girdileri (gramer, kelime bilgisi, profesyonel görevler) özel bir portal üzerinden tamamlar; canlı Google Meet seanslarını ise tamamen yüksek değerli çıktılara — konuşma pratiği ve gerçek zamanlı rol yapma çalışmalarına — ayırırlar.
+
+Sistem üç farklı kulvarda çalışır:
+
+- **Executive Track** — Profesyonel işlevler etrafında çerçevelenmiş, görev odaklı "Hayatta Kalma Sprintleri" (Survival Sprints) ile öğrenen iş profesyonelleri (A1–B2).
+- **Skills Lab** — 2 saatlik yoğun seanslar için haber odaklı içeriklerle (otomatik Haber-Ders hattı üzerinden) çalışan B1+ seviyesindeki öğrenciler.
+- **Exam Track** — AI destekli geri bildirimlerle kendi hızlarında ilerleyen IELTS/TOEFL adayları.
+
+## Mimari
+
+CareerTalkLab, kendi alan adına, Serwist aracılığıyla PWA desteğine ve özel bir Supabase backend'ine sahip bir Next.js 16.1 projesidir.
+
+| Katman       | Teknoloji                                                    |
+| ------------ | ------------------------------------------------------------ |
+| Frontend     | Next.js 16.1 (App Router), React 19, TypeScript              |
+| Stil         | Tailwind CSS 4, shadcn/ui                                    |
+| Backend/Auth | Supabase (PostgreSQL, Auth, RLS, Edge Functions)             |
+| İçerik       | 8+ etkileşimli blok tipi içeren JSON tabanlı Ders Motoru     |
+| AI Geri Bildirimi | Anthropic Claude API — öğrenci yazıları için düzeltme taslakları |
+| Pipeline     | Python tabanlı haber işleme hattı (RSS → Gemini → Dağıtım)    |
+| Eval Süiti   | 4 aşamalı otomatik test süreci (Unit, Pipeline, LLM-as-Judge)|
+
+### Kritik Teknik Kararlar
+
+**JSON tabanlı Ders Motoru.** Dersler MDX'ten sağlam bir JSON tabanlı şemaya taşındı. Bir `LessonRenderer`; `<VocabularyCard />`, `<GrammarCallout />`, `<TrueFalse />`, `<Matching />` ve `<SubmissionForm />` gibi özelleşmiş blok tiplerini yönetir. Bu, programlı içerik üretimine ve titiz şema doğrulamasına olanak tanır.
+
+**4 Aşamalı Değerlendirme Süiti (Eval Suite).** Pedagojik kaliteyi ölçekte korumak için proje kapsamlı bir değerlendirme mekanizması kullanır:
+1. **Birim Testleri (Unit Tests):** Çekirdek mantığı ve Zod şemalarını doğrular.
+2. **Pipeline Testleri:** "Halüsinasyon" kaynaklı kelime hatalarını veya gramer kapsam ihlallerini denetler.
+3. **LLM-as-Judge:** Ders akışını, Türkçe L1 transfer notlarını ve etkileşimi denetlemek için 7 kategorili bir rubrik kullanır.
+4. **Yörünge Testleri (Trajectory Tests):** Bir kurs boyunca kümülatif gramer ilerlemesini sağlar.
+
+**Haber-Ders İşleme Hattı (News-to-Lesson Pipeline).** Skills Lab kulvarı için Python tabanlı bir motor, BBC gibi kaynaklardan gelen RSS beslemelerini işler ve Gemini 2.0 Flash kullanarak makaleleri 10 bölümlük tam derslere dönüştürür. Pipeline, öğrencilerin geniş bir dil yapısı yelpazesi görmesini sağlamak için "Gramer Çeşitliliği" (Grammar Diversity) uygular.
+
+**PWA ve Çevrimdışı Destek.** Serwist kullanılarak, LMS mobil cihazlara tamamen kurulabilir hale getirildi. Dashboard ve ders önizlemeleri için sunulan çevrimdışı destek, yolda ders çalışan profesyoneller için kritiktir.
+
+## Müfredat
+
+İçerik, CEFR-Görev Hibrit Modelini (CEFR-Task Hybrid Model) takip eder. Başlangıç seviyeleri (A1), özgüven oluşturmak için **Hatasız Öğretim** (Errorless Teaching) çerçevesini (Prompt-Echo-Distractor-Transfer) kullanır.
+
+Müfredat şu anda şunları içerir:
+- **31 Derslik A1 Temeli:** Pre-A1'den A1 fonksiyonel bağımsızlığa kadar tam bir sekans.
+- **Skills Lab (B1–C1):** Üst düzey profesyonel tartışmalara odaklanan 15+ haber odaklı ders.
+- **Gizli Gramer (Stealth Grammar):** Gramer asla izole bir şekilde öğretilmez; profesyonel ifadelerin içine yerleştirilir ve Türkçe L1 transfer notları (eş kökenli kelime farkındalığı, yaygın Türkçe-İngilizce girişim kalıpları) ile desteklenir.
+
+## Neler İnşa Ettim
+
+- **Ders Motoru:** Zod doğrulamalı, 8'den fazla etkileşimli blok tipi için özel render sistemi.
+- **A1 Kursu:** Seviye Kalibratörü (Level Calibrator) ile üretilmiş ve doğrulanmış 31 derslik sekans.
+- **Skills Lab:** Uçtan uca otomatik işleme hattı (Ingestion → Generation → Deployment).
+- **Yönetim Merkezi:** Öğrenci CRM'i, gönderi gelen kutusu ve AI destekli geri bildirim döngüsü.
+- **PWA Entegrasyonu:** Manifest ve service worker ile tam mobil öncelikli deneyim.
+- **Değerlendirme Sistemi:** İçerik bütünlüğü için otomatik 4 aşamalı test süiti.
+- **Geri Bildirim Motoru:** Seviye duyarlı komutlarla çalışan Claude destekli taslak sistemi.
+- **i18n:** `next-intl` aracılığıyla tam İngilizce ve Türkçe yerelleştirme.

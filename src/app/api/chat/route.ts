@@ -55,6 +55,20 @@ function getSiteContent(query: string, locale: Locale = "en"): string {
     sections.push(`## Blog Posts\n${blogSection}`);
   }
 
+  // Portfolio projects — always include
+  const projects = getAllContent("portfolio", locale);
+  if (projects.length) {
+    const prefix = locale !== "en" ? `/${locale}` : "";
+    const projectSection = projects
+      .map((p) => {
+        const meta = `### ${p.frontmatter.title}${p.frontmatter.date ? ` (${p.frontmatter.date})` : ""}`;
+        const url = `${prefix}/portfolio/${p.slug}`;
+        return `${meta}\nURL: ${url}\n${p.content.trim()}`;
+      })
+      .join("\n\n---\n\n");
+    sections.push(`## Portfolio Projects\n${projectSection}`);
+  }
+
   // Recipes — always include an index with URLs; include the story for a matched recipe
   const recipes = getAllContent("recipes", locale);
   if (recipes.length) {

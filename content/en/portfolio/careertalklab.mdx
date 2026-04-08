@@ -1,22 +1,22 @@
 ---
 title: "CareerTalkLab"
-description: "A standalone hybrid LMS for Turkish professionals learning English — built with Next.js 16.1, Supabase, and a JSON-native lesson engine to scale high-quality ESL instruction."
+description: "A standalone hybrid LMS for Global professionals learning English — built with Next.js 16.1, Supabase, and a JSON-native lesson engine to scale high-quality ESL instruction."
 date: "2026-04-07"
 tags: ["next.js", "supabase", "ai", "education", "lms", "pwa"]
 status: "published"
 coverImage: "/images/projects/careertalklab.jpg"
-liveUrl: "https://careertalklabs.com"
+liveUrl: "https://careertalklab.com"
 ---
 
 ## The Problem
 
-Teaching English to Turkish business professionals is high-value work, but it doesn't scale. Every student needs personalized feedback, progress tracking, and live practice sessions. At any volume beyond a handful of students, the admin overhead consumes more time than the actual teaching.
+Teaching English to Global business professionals is high-value work, but it doesn't scale. Every student needs personalized feedback, progress tracking, and live practice sessions. At any volume beyond a handful of students, the admin overhead consumes more time than the actual teaching.
 
 The challenge: build a system that delivers the same quality of instruction to 50 students that a private tutor delivers to 5 — without hiring additional staff.
 
 ## The Solution
 
-CareerTalkLab is a standalone hybrid LMS at careertalklabs.com. It uses a "Flipped Classroom" model: students complete web-based input (grammar, vocabulary, professional tasks) through a custom portal, reserving live Google Meet sessions exclusively for high-value output — speaking practice and real-time role-play.
+CareerTalkLab is a standalone hybrid LMS at careertalklab.com. It uses a "Flipped Classroom" model: students complete web-based input (grammar, vocabulary, professional tasks) through a custom portal, reserving live Google Meet sessions exclusively for high-value output — speaking practice and real-time role-play.
 
 The system runs three distinct tracks:
 
@@ -45,7 +45,7 @@ CareerTalkLab is a Next.js 16.1 project with its own domain, PWA support via Ser
 **4-Tier Evaluation Suite.** To ensure pedagogical quality at scale, the project uses a comprehensive eval harness:
 1. **Unit Tests:** Validates core logic and Zod schemas.
 2. **Pipeline Tests:** Checks for "hallucinated" vocabulary or grammar scope violations.
-3. **LLM-as-Judge:** Uses a 7-category rubric to audit lesson flow, Turkish L1 transfer notes, and engagement.
+3. **LLM-as-Judge:** Uses a 7-category rubric to audit lesson flow, L1 transfer notes, and engagement.
 4. **Trajectory Tests:** Ensures cumulative grammar progression across a course.
 
 **News-to-Lesson Pipeline.** For the Skills Lab track, a Python engine ingests RSS feeds from sources like the BBC and uses Gemini 2.0 Flash to transform articles into full 10-section lessons. The pipeline enforces "Grammar Diversity" to ensure students see a wide range of linguistic structures.
@@ -59,7 +59,7 @@ Content follows a CEFR-Task Hybrid Model. Beginner levels (A1) employ an **Error
 The curriculum currently features:
 - **31-Lesson A1 Foundation:** A complete sequence from Pre-A1 to A1 functional independence.
 - **Skills Lab (B1–C1):** 15+ news-driven lessons focusing on high-level professional discussion.
-- **Stealth Grammar:** Grammar is never taught in isolation; it's embedded in professional phrases and supported by Turkish L1 transfer notes (cognate awareness, common Turkish-English interference patterns).
+- **Stealth Grammar:** Grammar is never taught in isolation; it's embedded in professional phrases and supported by L1 transfer notes (cognate awareness, common interference patterns).
 
 ## What I Built
 

@@ -1,7 +1,7 @@
 ---
 title: "CareerTalkLab"
 description: "Global profesyoneller için İngilizce öğrenimine yönelik hibrit bir LMS — Next.js 16.1, Supabase ve JSON tabanlı ders motoru ile inşa edildi."
-date: "2026-04-07"
+date: "2026-04-14"
 tags: ["next.js", "supabase", "ai", "education", "lms", "pwa"]
 status: "published"
 coverImage: "/images/projects/careertalklab.jpg"
@@ -18,56 +18,63 @@ Zorluk: Bir özel öğretmenin 5 öğrenciye sunduğu eğitim kalitesini, ek per
 
 CareerTalkLab, careertalklab.com adresinde yer alan bağımsız bir hibrit LMS'dir. "Ters Yüz Edilmiş Sınıf" (Flipped Classroom) modelini kullanır: Öğrenciler web tabanlı girdileri (gramer, kelime bilgisi, profesyonel görevler) özel bir portal üzerinden tamamlar; canlı Google Meet seanslarını ise tamamen yüksek değerli çıktılara — konuşma pratiği ve gerçek zamanlı rol yapma çalışmalarına — ayırırlar.
 
-Sistem üç farklı kulvarda çalışır:
+Sistem iki aktif kulvarda çalışmakta olup üçüncüsü planlanmaktadır:
 
 - **Executive Track** — Profesyonel işlevler etrafında çerçevelenmiş, görev odaklı "Hayatta Kalma Sprintleri" (Survival Sprints) ile öğrenen iş profesyonelleri (A1–B2).
 - **Skills Lab** — 2 saatlik yoğun seanslar için haber odaklı içeriklerle (otomatik Haber-Ders hattı üzerinden) çalışan B1+ seviyesindeki öğrenciler.
-- **Exam Track** — AI destekli geri bildirimlerle kendi hızlarında ilerleyen IELTS/TOEFL adayları.
+- **Exam Track** *(Yol Haritası)* — AI destekli geri bildirimlerle kendi hızlarında ilerleyecek IELTS/TOEFL adayları.
 
 ## Mimari
 
 CareerTalkLab, kendi alan adına, Serwist aracılığıyla PWA desteğine ve özel bir Supabase backend'ine sahip bir Next.js 16.1 projesidir.
 
-| Katman       | Teknoloji                                                    |
-| ------------ | ------------------------------------------------------------ |
-| Frontend     | Next.js 16.1 (App Router), React 19, TypeScript              |
-| Stil         | Tailwind CSS 4, shadcn/ui                                    |
-| Backend/Auth | Supabase (PostgreSQL, Auth, RLS, Edge Functions)             |
-| İçerik       | 8+ etkileşimli blok tipi içeren JSON tabanlı Ders Motoru     |
-| AI Geri Bildirimi | Anthropic Claude API — öğrenci yazıları için düzeltme taslakları |
-| Pipeline     | Python tabanlı haber işleme hattı (RSS → Gemini → Dağıtım)    |
-| Eval Süiti   | 4 aşamalı otomatik test süreci (Unit, Pipeline, LLM-as-Judge)|
+| Katman            | Teknoloji                                                              |
+| ----------------- | ---------------------------------------------------------------------- |
+| Frontend          | Next.js 16.1 (App Router), React 19, TypeScript                        |
+| Stil              | Tailwind CSS 4, shadcn/ui                                              |
+| Backend/Auth      | Supabase (PostgreSQL, Auth, RLS, Edge Functions)                       |
+| İçerik            | 8+ etkileşimli blok tipi içeren JSON tabanlı Ders Motoru               |
+| AI Geri Bildirimi | Anthropic Claude API — öğrenci yazıları için düzeltme taslakları       |
+| Pipeline          | Python tabanlı haber işleme hattı (RSS → Gemini → Dağıtım)            |
+| Eval Süiti        | 4 aşamalı otomatik test süreci (Unit, Pipeline, LLM-as-Judge, Trajectory) |
 
 ### Kritik Teknik Kararlar
 
-**JSON tabanlı Ders Motoru.** Dersler MDX'ten sağlam bir JSON tabanlı şemaya taşındı. Bir `LessonRenderer`; `<VocabularyCard />`, `<GrammarCallout />`, `<TrueFalse />`, `<Matching />` ve `<SubmissionForm />` gibi özelleşmiş blok tiplerini yönetir. Bu, programlı içerik üretimine ve titiz şema doğrulamasına olanak tanır.
+**JSON tabanlı Ders Motoru.** Dersler sağlam bir JSON tabanlı şema üzerine inşa edilmiştir. Bir `LessonRenderer`; `<VocabularyCard />`, `<GrammarCallout />`, `<TrueFalse />`, `<Matching />` ve `<SubmissionForm />` gibi özelleşmiş blok tiplerini yönetir. Bu, programlı içerik üretimine ve titiz şema doğrulamasına olanak tanır.
 
-**4 Aşamalı Değerlendirme Süiti (Eval Suite).** Pedagojik kaliteyi ölçekte korumak için proje kapsamlı bir değerlendirme mekanizması kullanır:
+**Seviyeye Göre Kalibre Edilmiş Eval Süiti.** İçerik kalitesi, seviyeye göre uyarlanan 4 aşamalı bir değerlendirme mekanizmasıyla güvence altına alınır:
 1. **Birim Testleri (Unit Tests):** Çekirdek mantığı ve Zod şemalarını doğrular.
-2. **Pipeline Testleri:** "Halüsinasyon" kaynaklı kelime hatalarını veya gramer kapsam ihlallerini denetler.
-3. **LLM-as-Judge:** Ders akışını, L1 transfer notlarını ve etkileşimi denetlemek için 7 kategorili bir rubrik kullanır.
+2. **Pipeline Testleri:** Halüsinasyon kaynaklı kelime hatalarını veya gramer kapsam ihlallerini denetler.
+3. **LLM-as-Judge:** A1, GSE Değerlendirme Çerçevesi ve Hatasız Öğretim yöntemini temel alan 7 kategorili rubrik kullanır. A2 ise bu sistemi 8 kategoriye taşır; Proaktif Teşhir (Parçalama) stratejisini değerlendirmek için `chunking_quality` kategorisi eklenir.
 4. **Yörünge Testleri (Trajectory Tests):** Bir kurs boyunca kümülatif gramer ilerlemesini sağlar.
 
 **Haber-Ders İşleme Hattı (News-to-Lesson Pipeline).** Skills Lab kulvarı için Python tabanlı bir motor, BBC gibi kaynaklardan gelen RSS beslemelerini işler ve Gemini 2.0 Flash kullanarak makaleleri 10 bölümlük tam derslere dönüştürür. Pipeline, öğrencilerin geniş bir dil yapısı yelpazesi görmesini sağlamak için "Gramer Çeşitliliği" (Grammar Diversity) uygular.
 
-**PWA ve Çevrimdışı Destek.** Serwist kullanılarak, LMS mobil cihazlara tamamen kurulabilir hale getirildi. Dashboard ve ders önizlemeleri için sunulan çevrimdışı destek, yolda ders çalışan profesyoneller için kritiktir.
+**PWA ve Çevrimdışı Destek.** Serwist kullanılarak LMS, mobil cihazlara tamamen kurulabilir hale getirildi. Dashboard ve ders önizlemeleri için sunulan çevrimdışı destek, yolda ders çalışan profesyoneller için kritik öneme sahiptir.
+
+**Kredi Sistemi.** AI geri bildirimi krediye bağlıdır; öğretmen, öğrenci profilinden doğrudan kredi tanımlayabilir. Bu yapı, hesaplama maliyetlerini öngörülebilir tutarken ihtiyaç duyan öğrenciler için erişimin kolayca ücretsiz hale getirilmesine olanak tanır.
 
 ## Müfredat
 
-İçerik, CEFR-Görev Hibrit Modelini (CEFR-Task Hybrid Model) takip eder. Başlangıç seviyeleri (A1), özgüven oluşturmak için **Hatasız Öğretim** (Errorless Teaching) çerçevesini (Prompt-Echo-Distractor-Transfer) kullanır.
+İçerik, CEFR-Görev Hibrit Modelini (CEFR-Task Hybrid Model) takip eder. Başlangıç seviyeleri (A1), özgüven oluşturmak için **Hatasız Öğretim** (Errorless Teaching) çerçevesini (Prompt-Echo-Distractor-Transfer) kullanır. A2 ise **Proaktif Teşhir** (Proactive Exposure) stratejisini ekler — kelime ve gramer yapıları, öğrencilerden üretmeleri beklenmeden önce bağlam içinde parçalanarak sunulur.
 
 Müfredat şu anda şunları içerir:
+
 - **31 Derslik A1 Temeli:** Pre-A1'den A1 fonksiyonel bağımsızlığa kadar tam bir sekans.
-- **Skills Lab (B1–C1):** Üst düzey profesyonel tartışmalara odaklanan 15+ haber odaklı ders.
+- **21 Derslik A2 Kursu:** İş İngilizcesi A2 (GSE 30–36), parçalama bölgeleri ve çok modlu pratik bloklarıyla tam etkileşimli yapıda.
+- **B1 + B2 Executive İçerik:** Üst düzey profesyoneller için Executive Track'i genişleten, her seviyede 5 ders.
+- **Skills Lab (B1–C1):** Üst düzey profesyonel tartışmalara odaklanan, seviye başına 5 ders olmak üzere toplam 15 haber odaklı ders.
 - **Gizli Gramer (Stealth Grammar):** Gramer asla izole bir şekilde öğretilmez; profesyonel ifadelerin içine yerleştirilir ve L1 transfer notları (eş kökenli kelime farkındalığı, yaygın girişim kalıpları) ile desteklenir.
 
 ## Neler İnşa Ettim
 
 - **Ders Motoru:** Zod doğrulamalı, 8'den fazla etkileşimli blok tipi için özel render sistemi.
 - **A1 Kursu:** Seviye Kalibratörü (Level Calibrator) ile üretilmiş ve doğrulanmış 31 derslik sekans.
+- **A2 Kursu:** Parçalama stratejisi ve özel A2 eval pipeline'ı ile üretilmiş 21 derslik sekans.
 - **Skills Lab:** Uçtan uca otomatik işleme hattı (Ingestion → Generation → Deployment).
-- **Yönetim Merkezi:** Öğrenci CRM'i, gönderi gelen kutusu ve AI destekli geri bildirim döngüsü.
+- **Yönetim Merkezi:** Öğrenci CRM'i, gönderi gelen kutusu, kredi yönetimi ve AI destekli geri bildirim döngüsü.
+- **AI Geri Bildirim Motoru:** Seviye duyarlı komutlarla çalışan Claude destekli taslak sistemi; her yanıta Türkçe çeviri eklenir.
+- **Öğrenci Deneyimi:** Onboarding akışı, ders tamamlama geri bildirimi (3 yüzlü derecelendirme), yönlendirme teşviki ve uygulama içi bildirim sistemi.
 - **PWA Entegrasyonu:** Manifest ve service worker ile tam mobil öncelikli deneyim.
-- **Değerlendirme Sistemi:** İçerik bütünlüğü için otomatik 4 aşamalı test süiti.
-- **Geri Bildirim Motoru:** Seviye duyarlı komutlarla çalışan Claude destekli taslak sistemi.
+- **Değerlendirme Sistemi:** Seviyeye özgü rubriklerle otomatik 4 aşamalı test süiti (A1 için 7 kategori, A2 için 8 kategori).
 - **i18n:** `next-intl` aracılığıyla tam İngilizce ve Türkçe yerelleştirme.

@@ -1,7 +1,7 @@
 ---
 title: "CareerTalkLab"
 description: "A standalone hybrid LMS for Global professionals learning English — built with Next.js 16.1, Supabase, and a JSON-native lesson engine to scale high-quality ESL instruction."
-date: "2026-04-07"
+date: "2026-04-14"
 tags: ["next.js", "supabase", "ai", "education", "lms", "pwa"]
 status: "published"
 coverImage: "/images/projects/careertalklab.jpg"
@@ -18,11 +18,11 @@ The challenge: build a system that delivers the same quality of instruction to 5
 
 CareerTalkLab is a standalone hybrid LMS at careertalklab.com. It uses a "Flipped Classroom" model: students complete web-based input (grammar, vocabulary, professional tasks) through a custom portal, reserving live Google Meet sessions exclusively for high-value output — speaking practice and real-time role-play.
 
-The system runs three distinct tracks:
+The system runs two live tracks, with a third in planning:
 
 - **Executive Track** — Business professionals (A1–B2) learning through task-based "Survival Sprints" framed around professional functions.
 - **Skills Lab** — B1+ students working with news-based content (via an automated News-to-Lesson pipeline) for 2-hour intensive sessions.
-- **Exam Track** — IELTS/TOEFL candidates working through self-paced modules with AI-assisted feedback.
+- **Exam Track** *(Roadmap)* — IELTS/TOEFL candidates working through self-paced modules with AI-assisted feedback.
 
 ## The Architecture
 
@@ -36,38 +36,45 @@ CareerTalkLab is a Next.js 16.1 project with its own domain, PWA support via Ser
 | Content      | JSON-native Lesson Engine with 8+ interactive block types    |
 | AI Feedback  | Anthropic Claude API — drafts corrections on student writing |
 | Pipeline     | Python-based news ingestion (RSS → Gemini → Deploy)          |
-| Eval Suite   | 4-tier automated testing (Unit, Pipeline, LLM-as-Judge)      |
+| Eval Suite   | 4-tier automated testing (Unit, Pipeline, LLM-as-Judge, Trajectory) |
 
 ### Key Technical Decisions
 
-**JSON-native Lesson Engine.** Lessons have moved from MDX to a robust JSON-native schema. A `LessonRenderer` handles specialized block types including `<VocabularyCard />`, `<GrammarCallout />`, `<TrueFalse />`, `<Matching />`, and `<SubmissionForm />`. This allows for programmatic content generation and rigorous schema validation.
+**JSON-native Lesson Engine.** Lessons are built on a robust JSON-native schema. A `LessonRenderer` handles specialized block types including `<VocabularyCard />`, `<GrammarCallout />`, `<TrueFalse />`, `<Matching />`, and `<SubmissionForm />`. This allows for programmatic content generation and rigorous schema validation.
 
-**4-Tier Evaluation Suite.** To ensure pedagogical quality at scale, the project uses a comprehensive eval harness:
+**Level-Calibrated Eval Suite.** Content quality is enforced by a 4-tier eval harness that adapts per level:
 1. **Unit Tests:** Validates core logic and Zod schemas.
-2. **Pipeline Tests:** Checks for "hallucinated" vocabulary or grammar scope violations.
-3. **LLM-as-Judge:** Uses a 7-category rubric to audit lesson flow, L1 transfer notes, and engagement.
+2. **Pipeline Tests:** Checks for hallucinated vocabulary or grammar scope violations.
+3. **LLM-as-Judge:** A1 uses a 7-category rubric (GSE Assessment Framework + Errorless Teaching). A2 extends this to 8 categories, adding `chunking_quality` to evaluate the Proactive Exposure strategy introduced at that level.
 4. **Trajectory Tests:** Ensures cumulative grammar progression across a course.
 
 **News-to-Lesson Pipeline.** For the Skills Lab track, a Python engine ingests RSS feeds from sources like the BBC and uses Gemini 2.0 Flash to transform articles into full 10-section lessons. The pipeline enforces "Grammar Diversity" to ensure students see a wide range of linguistic structures.
 
 **PWA & Offline Support.** Using Serwist, the LMS is fully installable on mobile devices with offline fallbacks for the dashboard and lesson previews, critical for professionals studying during commutes.
 
+**Credit System.** AI feedback is gated on credits, which the admin can grant directly from a student's profile. This keeps compute costs predictable while allowing the teacher to comp access for students who need it.
+
 ## The Curriculum
 
-Content follows a CEFR-Task Hybrid Model. Beginner levels (A1) employ an **Errorless Teaching** framework (Prompt-Echo-Distractor-Transfer) to build confidence.
+Content follows a CEFR-Task Hybrid Model. Beginner levels (A1) employ an **Errorless Teaching** framework (Prompt-Echo-Distractor-Transfer) to build confidence. A2 adds **Proactive Exposure** — vocabulary and grammar are chunked and surfaced in context before students are expected to produce them.
 
 The curriculum currently features:
+
 - **31-Lesson A1 Foundation:** A complete sequence from Pre-A1 to A1 functional independence.
-- **Skills Lab (B1–C1):** 15+ news-driven lessons focusing on high-level professional discussion.
+- **21-Lesson A2 Course:** Business English A2 (GSE 30–36), fully interactive with chunking-zone structure and multi-mode practice blocks.
+- **B1 + B2 Executive Content:** 5 lessons each, extending the Executive Track for higher-level professionals.
+- **Skills Lab (B1–C1):** 15 news-driven lessons (5 per level) focusing on high-level professional discussion.
 - **Stealth Grammar:** Grammar is never taught in isolation; it's embedded in professional phrases and supported by L1 transfer notes (cognate awareness, common interference patterns).
 
 ## What I Built
 
 - **Lesson Engine:** Custom renderer for 8+ interactive block types with Zod validation.
 - **A1 Course:** 31-lesson sequence generated and verified via the Level Calibrator.
+- **A2 Course:** 21-lesson sequence with chunking strategy, generated via a dedicated A2 eval pipeline.
 - **Skills Lab:** End-to-end automated pipeline (Ingestion → Generation → Deployment).
-- **Admin Command Center:** Student CRM, submission inbox, and AI-assisted feedback loop.
+- **Admin Command Center:** Student CRM, submission inbox, credit management, and AI-assisted feedback loop.
+- **AI Feedback Engine:** Claude-powered drafting system with level-aware prompting and native-language (Turkish) translation appended to every response.
+- **Student Experience:** Onboarding flow, lesson completion feedback (3-face rating), referral nudge, and in-app notification system.
 - **PWA Integration:** Full mobile-first experience with manifest and service worker.
-- **Eval Harness:** Automated 4-tier testing suite for content integrity.
-- **Feedback Engine:** Claude-powered drafting system with level-aware prompting.
+- **Eval Harness:** Automated 4-tier testing suite with level-specific rubrics (7-category for A1, 8-category for A2).
 - **i18n:** Full English and Turkish localization via `next-intl`.

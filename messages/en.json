@@ -125,5 +125,9 @@
   },
   "Common": {
     "toggleMenu": "Toggle menu"
+  },
+  "PrivacyPolicy": {
+    "title": "Privacy Policy",
+    "description": "How johnserra.com collects, uses, and protects your information."
   }
 }

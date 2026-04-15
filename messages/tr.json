@@ -125,5 +125,9 @@
   },
   "Common": {
     "toggleMenu": "Menüyü aç/kapat"
+  },
+  "PrivacyPolicy": {
+    "title": "Gizlilik Politikası",
+    "description": "johnserra.com'un bilgilerinizi nasıl topladığı, kullandığı ve koruduğu hakkında bilgi."
   }
 }

@@ -1,10 +1,9 @@
 import { config, fields, collection, singleton } from "@keystatic/core";
 
 export default config({
-  storage: {
-    kind: "github",
-    repo: "johnserra/johnserra",
-  },
+  storage: process.env.CI
+    ? { kind: "local" }
+    : { kind: "github", repo: "johnserra/johnserra" },
   ui: {
     brand: {
       name: "John Serra",

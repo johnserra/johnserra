@@ -94,10 +94,11 @@ export function getAllContent(
     .map((slug) => getContentBySlug(type, slug, locale))
     .filter((item): item is ContentItem => item !== null);
 
-  // Sort by date descending if date exists, otherwise preserve file order
   return items.sort((a, b) => {
-    if (!a.frontmatter.date || !b.frontmatter.date) return 0;
-    return a.frontmatter.date > b.frontmatter.date ? -1 : 1;
+    if (!a.frontmatter.date && !b.frontmatter.date) return 0;
+    if (!a.frontmatter.date) return 1;
+    if (!b.frontmatter.date) return -1;
+    return new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime();
   });
 }
 

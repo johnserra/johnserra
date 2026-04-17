@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
@@ -103,6 +104,18 @@ export default async function BlogPostPage({ params }: Props) {
                 day: "numeric",
               })}
             </time>
+          )}
+
+          {frontmatter.coverImage && (
+            <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-10">
+              <Image
+                src={frontmatter.coverImage}
+                alt={frontmatter.title}
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
           )}
 
           {/* Recipe metadata */}

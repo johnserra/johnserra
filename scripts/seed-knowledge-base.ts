@@ -85,9 +85,17 @@ async function processDirectory(dir: string, type: string) {
 async function main() {
   console.log("Seeding knowledge base...\n");
 
+  // English content
   await processDirectory(path.join(CONTENT_DIR, "en", "about"), "about");
   await processDirectory(path.join(CONTENT_DIR, "en", "portfolio"), "portfolio");
   await processDirectory(path.join(CONTENT_DIR, "en", "recipes"), "recipes");
+  await processDirectory(path.join(CONTENT_DIR, "en", "blog"), "blog");
+
+  // Turkish content
+  await processDirectory(path.join(CONTENT_DIR, "tr", "about"), "about");
+  await processDirectory(path.join(CONTENT_DIR, "tr", "portfolio"), "portfolio");
+  await processDirectory(path.join(CONTENT_DIR, "tr", "recipes"), "recipes");
+  await processDirectory(path.join(CONTENT_DIR, "tr", "blog"), "blog");
 
   console.log("\nDone!");
 }

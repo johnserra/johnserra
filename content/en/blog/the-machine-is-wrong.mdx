@@ -1,0 +1,69 @@
+---
+title: "The Machine is Wrong: Designing AI Feedback Loops for EFL"
+description: "An A1 learner's 'Yesterday I go to market' gets a flawless rewrite. Pedagogically? A small disaster. Why the model is not the product."
+date: "2026-05-07"
+tags: ["CareerTalkLab", "AI", "EFL", "evals", "agents", "errorless teaching"]
+coverImage: "/images/blog/the-machine-is-wrong.jpg"
+---
+
+I want to start with a moment that should be easy. An A1 learner — call her Ayşe, six weeks into her first Business English course — types this into the practice box:
+
+> _Yesterday I go to market and I buy bread._
+
+The model returns:
+
+> _Yesterday, I went to the market and bought some bread._
+
+Technically? Flawless. Pedagogically? A small disaster.
+
+That single rewrite contains three things Ayşe hasn't been taught yet, corrects two errors when she's only practicing one, and reinforces zero of the target structures from the lesson she just completed. The correction is fluent. It is also useless. Worse than useless: it teaches her that the gap between where she is and where she "should be" is wider than it actually is.
+
+This is what I mean by _the machine is wrong_. Not factually wrong. Pedagogically wrong. And if you're building anything that puts a frontier model in front of a learner, this distinction is the entire game.
+
+## Why it fails
+
+Frontier models — Gemini, Claude, GPT — are optimized to produce native-speaker fluency. That is the wrong objective function for an EFL feedback loop. The failure mode has three layers:
+
+**No level awareness.** The model has no internal representation of CEFR or GSE. It doesn't know that Ayşe is at GSE 14 and that the English article system (a/the/zero) is a B1 problem, not an A1 one. It treats every utterance as a standalone correction task and optimizes for the most fluent rewrite available, which is almost always above the learner's level.
+
+**No L1 interference modeling.** Turkish has no articles, no grammatical gender, and a different aspectual system. Turkish learners over-produce present continuous ("I am wanting a coffee") because the Turkish _-iyor_ suffix maps to it intuitively. A model that flags this as a generic grammar error misses that this is a predictable L1 transfer pattern with a known instructional sequence to address it. The error isn't random. The correction sequence matters.
+
+**No errorless teaching discipline.** Applied Verbal Behavior — the framework underneath CTL's A1 instruction — explicitly _does not_ correct every error in real time. You correct the target. You ignore the rest. You scaffold up. A model that corrects everything at once is doing the opposite of what evidence-based EFL pedagogy says to do. It's louder, faster, more articulate — and pedagogically inverted.
+
+So the model isn't bad. It's just unconstrained. In EFL, unconstrained fluency _is_ the failure mode.
+
+## The loop
+
+The model can't be the teacher. It can be the teaching assistant — but only if there's an orchestration layer above it doing the actual pedagogical work. Here's what we're building into CTL:
+
+**A judge agent that evaluates the tutor's response before the learner sees it.** The tutor agent generates feedback. A separate judge — running a YAML-defined rubric tied to the lesson's GSE level and target structure — scores it on dimensions like _level appropriateness_, _target reinforcement_, _correction scope_, and _tone_. If the response fails, it gets regenerated with the failure mode passed back as context. This is slow and expensive. It's also the only thing that consistently catches level-mismatch corrections.
+
+**Few-shot calibration per level.** The system prompt for an A1 tutor doesn't just say "be friendly." It carries worked examples of correct, calibrated responses — including examples of _what to ignore_. The model needs to see errorless teaching demonstrated, not described. Description doesn't transfer; demonstration does.
+
+**Human-in-the-loop on lesson design itself.** Gülcan reviewed every lesson before soft launch. Not because the model couldn't generate them, but because lesson design is where pedagogical errors compound. One bad scaffold cascades into a hundred bad feedback turns. Fix it upstream.
+
+**The learner as the final judge.** This is the piece I'm still wiring up: a low-friction "the machine is wrong" signal on every feedback turn. Not a satisfaction survey. A specific flag: _this correction was off._ That signal feeds back into the eval set. Every flagged turn becomes a regression test.
+
+The pattern, if you want a name for it: **constrained generation, evaluated generation, observed generation.** Three layers. None optional.
+
+## The broader lesson
+
+The temptation when you're building with frontier models is to assume that capability scales into your domain. It doesn't. Capability scales into native-speaker prose. Your domain has its own objective function, and unless you encode it, the model will optimize for the wrong one — confidently, fluently, and at scale.
+
+For builders in any expert domain — medicine, law, finance, education — the lesson is the same: **the model is not the product**. The orchestration around the model is the product. The model is a powerful component, but a component.
+
+This is also why domain-led agentic collaboration isn't a working style preference. It's a structural requirement. The domain expert encodes the constraints. The model can't infer them.
+
+## What this means for the CTL roadmap
+
+A few concrete shifts heading into beta:
+
+The eval suite is no longer a parallel workstream. It's the critical path. B1+ gated lessons don't ship until the level-mismatch failure rate on the eval set is below threshold. Hard gate.
+
+The proactive feedback form — the one I've been treating as a pre-launch nice-to-have — gets reclassified. It's not a nice-to-have. It's the highest-leverage data source we have. Every "the machine is wrong" press is a labeled training example sitting in the funnel waiting to be collected.
+
+Beta cohort design changes too. I want Turkish A1/A2 learners specifically, not a mixed bag, because that's where the L1 interference signal is strongest and where errorless teaching discipline matters most. Get that loop tight before broadening.
+
+And the IELTS track stays gated until the Executive track's eval pass rate is stable. One track at a time. Empirical testing over theoretical comparisons — same rule as always.
+
+The machine is wrong often enough that we have to assume it's wrong by default, and earn our way to trusting it on each individual surface. That's the design principle for CTL. Everything else follows from it.

@@ -10,6 +10,7 @@ import { ProseLayout } from "@/components/ui/ProseLayout";
 import { ArrowLeft, Github } from "lucide-react";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
+import { getPortfolioSchema } from "@/lib/schema";
 import type { Metadata } from "next";
 import type { Locale } from "@/types";
 
@@ -46,8 +47,14 @@ export default async function PortfolioCaseStudy({ params }: Props) {
   const content = getContentBySlug("portfolio", slug, locale as Locale);
   if (!content) return notFound();
 
+  const jsonLd = getPortfolioSchema(slug, content.frontmatter, locale);
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Header />
       <main className="min-h-screen bg-zinc-50 dark:bg-black py-16">
         <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
@@ -97,10 +104,14 @@ export default async function PortfolioCaseStudy({ params }: Props) {
 
           <hr className="border-zinc-200 dark:border-zinc-800 mb-12" />
 
+import { Callout } from "@/components/ui/Callout";
+
+// ... later
           {/* Content */}
           <ProseLayout>
             <MDXRemote
               source={content.content}
+              components={{ Callout }}
               options={{
                 mdxOptions: {
                   remarkPlugins: [remarkGfm],

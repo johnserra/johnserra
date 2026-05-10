@@ -30,6 +30,9 @@ export default async function AboutPage({ params }: Props) {
   const content = getContentBySlug("about", "index", locale as Locale);
   if (!content) notFound();
 
+import { Callout } from "@/components/ui/Callout";
+
+// ... inside the component
   return (
     <>
       <Header />
@@ -38,6 +41,7 @@ export default async function AboutPage({ params }: Props) {
           <ProseLayout>
             <MDXRemote
               source={content.content}
+              components={{ Callout }}
               options={{
                 mdxOptions: {
                   remarkPlugins: [remarkGfm],

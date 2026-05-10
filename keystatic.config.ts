@@ -31,7 +31,32 @@ export default config({
         cookTime: fields.text({ label: "Cook Time (recipes only)" }),
         totalTime: fields.text({ label: "Total Time (recipes only)" }),
         story: fields.checkbox({ label: "Has Story Section (recipes only)" }),
-        content: fields.mdx({ label: "Content" }),
+        content: fields.mdx({ 
+          label: "Content",
+          components: {
+            Callout: {
+              label: "Callout",
+              schema: {
+                type: fields.select({
+                  label: "Type",
+                  options: [
+                    { label: "Note", value: "info" },
+                    { label: "Success", value: "success" },
+                    { label: "Warning", value: "warning" },
+                    { label: "Idea", value: "tip" },
+                  ],
+                  defaultValue: "info",
+                }),
+                title: fields.text({ label: "Title (Optional)" }),
+                content: fields.child({
+                  kind: "block",
+                  placeholder: "Write your highlight content here...",
+                  formatting: { inlineCode: true, strong: true, emphasis: true, links: true },
+                }),
+              },
+            },
+          },
+        }),
       },
     }),
     blogTr: collection({
@@ -55,7 +80,32 @@ export default config({
         totalTime: fields.text({ label: "Total Time (recipes only)" }),
         story: fields.checkbox({ label: "Has Story Section (recipes only)" }),
         translationOf: fields.text({ label: "Translation Of (EN slug)" }),
-        content: fields.mdx({ label: "Content" }),
+        content: fields.mdx({ 
+          label: "Content",
+          components: {
+            Callout: {
+              label: "Callout",
+              schema: {
+                type: fields.select({
+                  label: "Type",
+                  options: [
+                    { label: "Note", value: "info" },
+                    { label: "Success", value: "success" },
+                    { label: "Warning", value: "warning" },
+                    { label: "Idea", value: "tip" },
+                  ],
+                  defaultValue: "info",
+                }),
+                title: fields.text({ label: "Title (Optional)" }),
+                content: fields.child({
+                  kind: "block",
+                  placeholder: "Write your highlight content here...",
+                  formatting: { inlineCode: true, strong: true, emphasis: true, links: true },
+                }),
+              },
+            },
+          },
+        }),
       },
     }),
     portfolioEn: collection({
@@ -75,7 +125,32 @@ export default config({
         coverImage: fields.text({ label: "Cover Image Path" }),
         githubUrl: fields.text({ label: "GitHub URL" }),
         liveUrl: fields.text({ label: "Live URL" }),
-        content: fields.mdx({ label: "Content" }),
+        content: fields.mdx({ 
+          label: "Content",
+          components: {
+            Callout: {
+              label: "Callout",
+              schema: {
+                type: fields.select({
+                  label: "Type",
+                  options: [
+                    { label: "Note", value: "info" },
+                    { label: "Success", value: "success" },
+                    { label: "Warning", value: "warning" },
+                    { label: "Idea", value: "tip" },
+                  ],
+                  defaultValue: "info",
+                }),
+                title: fields.text({ label: "Title (Optional)" }),
+                content: fields.child({
+                  kind: "block",
+                  placeholder: "Write your highlight content here...",
+                  formatting: { inlineCode: true, strong: true, emphasis: true, links: true },
+                }),
+              },
+            },
+          },
+        }),
       },
     }),
   },
@@ -87,7 +162,32 @@ export default config({
       schema: {
         title: fields.text({ label: "Title" }),
         description: fields.text({ label: "Description", multiline: true }),
-        content: fields.mdx({ label: "Content" }),
+        content: fields.mdx({ 
+          label: "Content",
+          components: {
+            Callout: {
+              label: "Callout",
+              schema: {
+                type: fields.select({
+                  label: "Type",
+                  options: [
+                    { label: "Note", value: "info" },
+                    { label: "Success", value: "success" },
+                    { label: "Warning", value: "warning" },
+                    { label: "Idea", value: "tip" },
+                  ],
+                  defaultValue: "info",
+                }),
+                title: fields.text({ label: "Title (Optional)" }),
+                content: fields.child({
+                  kind: "block",
+                  placeholder: "Write your highlight content here...",
+                  formatting: { inlineCode: true, strong: true, emphasis: true, links: true },
+                }),
+              },
+            },
+          },
+        }),
       },
     }),
     aboutTr: singleton({
@@ -97,7 +197,32 @@ export default config({
       schema: {
         title: fields.text({ label: "Title" }),
         description: fields.text({ label: "Description", multiline: true }),
-        content: fields.mdx({ label: "Content" }),
+        content: fields.mdx({ 
+          label: "Content",
+          components: {
+            Callout: {
+              label: "Callout",
+              schema: {
+                type: fields.select({
+                  label: "Type",
+                  options: [
+                    { label: "Note", value: "info" },
+                    { label: "Success", value: "success" },
+                    { label: "Warning", value: "warning" },
+                    { label: "Idea", value: "tip" },
+                  ],
+                  defaultValue: "info",
+                }),
+                title: fields.text({ label: "Title (Optional)" }),
+                content: fields.child({
+                  kind: "block",
+                  placeholder: "Write your highlight content here...",
+                  formatting: { inlineCode: true, strong: true, emphasis: true, links: true },
+                }),
+              },
+            },
+          },
+        }),
       },
     }),
   },

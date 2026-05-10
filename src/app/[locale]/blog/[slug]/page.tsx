@@ -11,6 +11,7 @@ import { ProseLayout } from "@/components/ui/ProseLayout";
 import { ArrowLeft, Clock, Globe, Users } from "lucide-react";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
+import { getBlogPostSchema } from "@/lib/schema";
 import type { Metadata } from "next";
 import type { Locale } from "@/types";
 
@@ -49,6 +50,8 @@ export default async function BlogPostPage({ params }: Props) {
   if (!content) notFound();
 
   const { frontmatter } = content;
+  const jsonLd = getBlogPostSchema(slug, frontmatter, locale, content.content);
+
   const dateLocale = locale === "tr" ? "tr-TR" : "en-US";
   const hasRecipeMeta =
     frontmatter.cuisine ||
@@ -59,6 +62,10 @@ export default async function BlogPostPage({ params }: Props) {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Header />
       <main className="min-h-screen bg-zinc-50 dark:bg-black py-16">
         <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
@@ -164,10 +171,14 @@ export default async function BlogPostPage({ params }: Props) {
             </div>
           )}
 
+import { Callout } from "@/components/ui/Callout";
+
+// ... inside the component
           {/* Content */}
           <ProseLayout>
             <MDXRemote
               source={content.content}
+              components={{ Callout }}
               options={{
                 mdxOptions: {
                   remarkPlugins: [remarkGfm],

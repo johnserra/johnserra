@@ -1,6 +1,6 @@
 import { Frontmatter } from "./content";
 
-export function getBaseSchema(locale: string) {
+export function getBaseSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -18,13 +18,12 @@ export function getBaseSchema(locale: string) {
 export function getBlogPostSchema(
   slug: string,
   frontmatter: Frontmatter,
-  locale: string,
-  content: string
+  locale: string
 ) {
   const url = `https://johnserra.com${locale === "en" ? "" : `/${locale}`}/blog/${slug}`;
   
   // Base BlogPosting schema
-  const schema: any = {
+  const schema: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     "headline": frontmatter.title,

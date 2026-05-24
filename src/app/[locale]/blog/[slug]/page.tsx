@@ -8,6 +8,7 @@ import { getContentBySlug, getContentSlugs } from "@/lib/content";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ProseLayout } from "@/components/ui/ProseLayout";
+import { Callout } from "@/components/ui/Callout";
 import { ArrowLeft, Clock, Globe, Users } from "lucide-react";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
@@ -50,7 +51,7 @@ export default async function BlogPostPage({ params }: Props) {
   if (!content) notFound();
 
   const { frontmatter } = content;
-  const jsonLd = getBlogPostSchema(slug, frontmatter, locale, content.content);
+  const jsonLd = getBlogPostSchema(slug, frontmatter, locale);
 
   const dateLocale = locale === "tr" ? "tr-TR" : "en-US";
   const hasRecipeMeta =
@@ -170,10 +171,6 @@ export default async function BlogPostPage({ params }: Props) {
               )}
             </div>
           )}
-
-import { Callout } from "@/components/ui/Callout";
-
-// ... inside the component
           {/* Content */}
           <ProseLayout>
             <MDXRemote

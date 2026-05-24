@@ -7,6 +7,7 @@ import { getContentBySlug, getContentSlugs } from "@/lib/content";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ProseLayout } from "@/components/ui/ProseLayout";
+import { Callout } from "@/components/ui/Callout";
 import { ArrowLeft, Github } from "lucide-react";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
@@ -103,10 +104,6 @@ export default async function PortfolioCaseStudy({ params }: Props) {
           )}
 
           <hr className="border-zinc-200 dark:border-zinc-800 mb-12" />
-
-import { Callout } from "@/components/ui/Callout";
-
-// ... later
           {/* Content */}
           <ProseLayout>
             <MDXRemote

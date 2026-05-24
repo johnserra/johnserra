@@ -3,6 +3,7 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  serverExternalPackages: ["resend"],
   async redirects() {
     return [
       {

@@ -7,6 +7,7 @@ import { getContentBySlug } from "@/lib/content";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ProseLayout } from "@/components/ui/ProseLayout";
+import { Callout } from "@/components/ui/Callout";
 import type { Metadata } from "next";
 import type { Locale } from "@/types";
 
@@ -29,10 +30,6 @@ export default async function AboutPage({ params }: Props) {
 
   const content = getContentBySlug("about", "index", locale as Locale);
   if (!content) notFound();
-
-import { Callout } from "@/components/ui/Callout";
-
-// ... inside the component
   return (
     <>
       <Header />

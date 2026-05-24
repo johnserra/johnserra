@@ -5,7 +5,7 @@ import { Locale } from "@/types";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://johnserra.com";
-  const routes = ["", "/about", "/blog", "/portfolio", "/contact", "/cv-optimizer", "/privacy-policy"];
+  const routes = ["", "/about", "/blog", "/portfolio", "/contact", "/privacy-policy"];
   
   const sitemap: MetadataRoute.Sitemap = [];
 

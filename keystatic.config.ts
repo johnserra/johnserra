@@ -1,4 +1,5 @@
 import { config, fields, collection, singleton } from "@keystatic/core";
+import { wrapper } from "@keystatic/core/content-components";
 
 export default config({
   storage: process.env.CI
@@ -34,7 +35,7 @@ export default config({
         content: fields.mdx({ 
           label: "Content",
           components: {
-            Callout: {
+            Callout: wrapper({
               label: "Callout",
               schema: {
                 type: fields.select({
@@ -48,13 +49,8 @@ export default config({
                   defaultValue: "info",
                 }),
                 title: fields.text({ label: "Title (Optional)" }),
-                content: fields.child({
-                  kind: "block",
-                  placeholder: "Write your highlight content here...",
-                  formatting: { inlineCode: true, strong: true, emphasis: true, links: true },
-                }),
               },
-            },
+            }),
           },
         }),
       },
@@ -83,7 +79,7 @@ export default config({
         content: fields.mdx({ 
           label: "Content",
           components: {
-            Callout: {
+            Callout: wrapper({
               label: "Callout",
               schema: {
                 type: fields.select({
@@ -97,13 +93,8 @@ export default config({
                   defaultValue: "info",
                 }),
                 title: fields.text({ label: "Title (Optional)" }),
-                content: fields.child({
-                  kind: "block",
-                  placeholder: "Write your highlight content here...",
-                  formatting: { inlineCode: true, strong: true, emphasis: true, links: true },
-                }),
               },
-            },
+            }),
           },
         }),
       },
@@ -128,7 +119,7 @@ export default config({
         content: fields.mdx({ 
           label: "Content",
           components: {
-            Callout: {
+            Callout: wrapper({
               label: "Callout",
               schema: {
                 type: fields.select({
@@ -142,13 +133,8 @@ export default config({
                   defaultValue: "info",
                 }),
                 title: fields.text({ label: "Title (Optional)" }),
-                content: fields.child({
-                  kind: "block",
-                  placeholder: "Write your highlight content here...",
-                  formatting: { inlineCode: true, strong: true, emphasis: true, links: true },
-                }),
               },
-            },
+            }),
           },
         }),
       },
@@ -165,7 +151,7 @@ export default config({
         content: fields.mdx({ 
           label: "Content",
           components: {
-            Callout: {
+            Callout: wrapper({
               label: "Callout",
               schema: {
                 type: fields.select({
@@ -179,13 +165,8 @@ export default config({
                   defaultValue: "info",
                 }),
                 title: fields.text({ label: "Title (Optional)" }),
-                content: fields.child({
-                  kind: "block",
-                  placeholder: "Write your highlight content here...",
-                  formatting: { inlineCode: true, strong: true, emphasis: true, links: true },
-                }),
               },
-            },
+            }),
           },
         }),
       },
@@ -200,7 +181,7 @@ export default config({
         content: fields.mdx({ 
           label: "Content",
           components: {
-            Callout: {
+            Callout: wrapper({
               label: "Callout",
               schema: {
                 type: fields.select({
@@ -214,13 +195,8 @@ export default config({
                   defaultValue: "info",
                 }),
                 title: fields.text({ label: "Title (Optional)" }),
-                content: fields.child({
-                  kind: "block",
-                  placeholder: "Write your highlight content here...",
-                  formatting: { inlineCode: true, strong: true, emphasis: true, links: true },
-                }),
               },
-            },
+            }),
           },
         }),
       },

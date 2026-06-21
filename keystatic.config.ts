@@ -49,18 +49,6 @@ export default config({
                   defaultValue: "info",
                 }),
                 title: fields.text({ label: "Title (Optional)" }),
-                content: fields.child({
-                  kind: "block",
-                  placeholder: "Write your highlight content here...",
-                  formatting: {
-                    inlineMarks: {
-                      bold: "inherit",
-                      italic: "inherit",
-                      code: "inherit",
-                    },
-                  },
-                  links: "inherit",
-                }),
               },
             }),
           },
@@ -105,18 +93,6 @@ export default config({
                   defaultValue: "info",
                 }),
                 title: fields.text({ label: "Title (Optional)" }),
-                content: fields.child({
-                  kind: "block",
-                  placeholder: "Write your highlight content here...",
-                  formatting: {
-                    inlineMarks: {
-                      bold: "inherit",
-                      italic: "inherit",
-                      code: "inherit",
-                    },
-                  },
-                  links: "inherit",
-                }),
               },
             }),
           },
@@ -157,18 +133,6 @@ export default config({
                   defaultValue: "info",
                 }),
                 title: fields.text({ label: "Title (Optional)" }),
-                content: fields.child({
-                  kind: "block",
-                  placeholder: "Write your highlight content here...",
-                  formatting: {
-                    inlineMarks: {
-                      bold: "inherit",
-                      italic: "inherit",
-                      code: "inherit",
-                    },
-                  },
-                  links: "inherit",
-                }),
               },
             }),
           },
@@ -201,18 +165,6 @@ export default config({
                   defaultValue: "info",
                 }),
                 title: fields.text({ label: "Title (Optional)" }),
-                content: fields.child({
-                  kind: "block",
-                  placeholder: "Write your highlight content here...",
-                  formatting: {
-                    inlineMarks: {
-                      bold: "inherit",
-                      italic: "inherit",
-                      code: "inherit",
-                    },
-                  },
-                  links: "inherit",
-                }),
               },
             }),
           },
@@ -243,18 +195,6 @@ export default config({
                   defaultValue: "info",
                 }),
                 title: fields.text({ label: "Title (Optional)" }),
-                content: fields.child({
-                  kind: "block",
-                  placeholder: "Write your highlight content here...",
-                  formatting: {
-                    inlineMarks: {
-                      bold: "inherit",
-                      italic: "inherit",
-                      code: "inherit",
-                    },
-                  },
-                  links: "inherit",
-                }),
               },
             }),
           },

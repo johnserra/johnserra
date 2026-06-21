@@ -42,7 +42,7 @@ export default async function ContactPage({ params }: Props) {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-zinc-50 dark:bg-black py-16">
+      <main className="min-h-screen bg-background text-foreground py-16">
         <div className="max-w-2xl mx-auto px-4 md:px-6 lg:px-8">
           <div className="mb-12">
             <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-50 mb-4">

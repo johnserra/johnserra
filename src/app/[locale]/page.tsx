@@ -26,7 +26,7 @@ export default async function Home({ params }: Props) {
   return (
     <>
       <Header />
-      <main className="min-h-screen py-8 md:py-12 bg-zinc-50 dark:bg-black">
+      <main className="min-h-screen py-8 md:py-12 bg-background text-foreground">
         <BentoGrid>
           {/* Hero Section - Large focal point */}
           <HeroBox />

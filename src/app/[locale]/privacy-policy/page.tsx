@@ -33,7 +33,7 @@ export default async function PrivacyPolicyPage({ params }: Props) {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-zinc-50 dark:bg-black py-16">
+      <main className="min-h-screen bg-background text-foreground py-16">
         <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
           <ProseLayout>
             <MDXRemote

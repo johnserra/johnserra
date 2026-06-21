@@ -8,7 +8,7 @@ export default function NotFound() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-zinc-50 dark:bg-black">
+      <main className="min-h-screen bg-background text-foreground">
         <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8 pt-24 pb-16">
           <p className="text-sm font-semibold text-blue-600 uppercase tracking-widest mb-4">
             404

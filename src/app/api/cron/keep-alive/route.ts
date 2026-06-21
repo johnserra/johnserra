@@ -1,5 +1,7 @@
-import { getSupabaseClient } from "@/lib/supabase";
+import { createAdminClient } from "@/lib/supabase";
 import { NextResponse } from "next/server";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   const authHeader = request.headers.get("authorization");
@@ -7,7 +9,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const supabase = getSupabaseClient();
+  const supabase = createAdminClient();
   const { count, error } = await supabase
     .from("career_context")
     .select("*", { count: "exact", head: true });

@@ -3,26 +3,35 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #161616;
 
-  /* Bento-specific properties */
+  /* Carbon-inspired technical layout properties */
   --spacing-bento-gap: 1.5rem;
-  --spacing-bento-gap-mobile: 1rem;
-  --radius-bento: 1.5rem;
-  --radius-bento-mobile: 1rem;
+  --spacing-bento-gap-mobile: 1.5rem; /* Maintain spacing on mobile */
+  --radius-bento: 2px;                /* Carbon's default sharp corners */
+  --radius-bento-mobile: 2px;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-ibm-plex-sans), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), monospace;
+  
+  /* Carbon Design System signature colors */
+  --color-carbon-blue: #0f62fe;
+  --color-carbon-blue-hover: #0353e9;
+  
+  --color-carbon-gray-10: #f4f4f4;
+  --color-carbon-gray-20: #e0e0e0;
+  --color-carbon-gray-90: #262626;
+  --color-carbon-gray-100: #161616;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #161616;
+    --foreground: #f4f4f4;
   }
 }
 

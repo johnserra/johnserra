@@ -9,15 +9,15 @@ export function BentoBox({
   variant = "default",
 }: BentoBoxProps) {
   const variantClasses = {
-    default: "bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800",
-    gradient: "bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950",
-    glass: "bg-white/80 dark:bg-black/50 backdrop-blur-xl border border-white/20 dark:border-white/10",
+    default: "bg-carbon-gray-10 dark:bg-carbon-gray-90 border border-carbon-gray-20 dark:border-zinc-800",
+    gradient: "bg-gradient-to-br from-zinc-50 to-blue-50/30 dark:from-zinc-950 dark:to-blue-950/20 border border-zinc-200 dark:border-zinc-800",
+    glass: "bg-white/60 dark:bg-carbon-gray-100/40 backdrop-blur-xl border border-zinc-200/50 dark:border-zinc-800/50",
   };
 
   return (
     <div
       className={cn(
-        "rounded-3xl p-6 transition-all duration-300",
+        "rounded-[var(--radius-bento)] p-6 transition-all duration-200",
         "col-span-1",
         span === 3 && "md:col-span-3 lg:col-span-3",
         span === 4 && "md:col-span-3 lg:col-span-4",
@@ -27,7 +27,7 @@ export function BentoBox({
         span === 12 && "md:col-span-6 lg:col-span-12",
         rowSpan === 2 && "row-span-2",
         variantClasses[variant],
-        "hover:shadow-xl hover:-translate-y-1",
+        "hover:border-carbon-blue dark:hover:border-carbon-blue hover:shadow-sm",
         className
       )}
     >

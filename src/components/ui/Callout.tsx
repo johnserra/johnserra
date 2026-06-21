@@ -46,7 +46,7 @@ export function Callout({ type = "info", title, children }: CalloutProps) {
   return (
     <div
       className={cn(
-        "my-8 flex gap-4 rounded-xl border p-6 shadow-sm",
+        "my-8 flex gap-4 rounded-[var(--radius-bento)] border border-l-[4px] p-5",
         config.bg,
         config.border,
         config.text

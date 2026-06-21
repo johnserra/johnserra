@@ -57,7 +57,7 @@ export default async function PortfolioCaseStudy({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Header />
-      <main className="min-h-screen bg-zinc-50 dark:bg-black py-16">
+      <main className="min-h-screen bg-background text-foreground py-16">
         <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
           {/* Back link */}
           <Link

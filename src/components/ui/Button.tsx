@@ -16,23 +16,23 @@ export function Button({
 }: ButtonProps) {
   const variantClasses = {
     primary:
-      "bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200",
+      "bg-carbon-blue text-white hover:bg-carbon-blue-hover border border-transparent",
     secondary:
-      "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 hover:bg-zinc-200 dark:hover:bg-zinc-700",
+      "bg-zinc-800 text-zinc-100 hover:bg-zinc-700 dark:bg-zinc-700 dark:text-zinc-50 dark:hover:bg-zinc-600 border border-transparent",
     ghost:
-      "bg-transparent text-zinc-900 dark:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-800",
+      "bg-transparent text-zinc-900 dark:text-zinc-50 hover:bg-carbon-gray-10 dark:hover:bg-carbon-gray-90 border border-transparent",
   };
 
   const sizeClasses = {
     sm: "px-4 py-2 text-sm",
-    md: "px-6 py-3 text-base",
-    lg: "px-8 py-4 text-lg",
+    md: "px-5 py-2.5 text-sm", // Carbon button sizing is relatively high-density
+    lg: "px-7 py-3 text-base",
   };
 
   return (
     <button
       className={cn(
-        "rounded-full font-medium transition-all duration-300 hover:scale-105",
+        "rounded-[var(--radius-bento)] font-medium transition-all duration-150 ease-in-out cursor-pointer inline-flex items-center justify-center",
         variantClasses[variant],
         sizeClasses[size],
         className

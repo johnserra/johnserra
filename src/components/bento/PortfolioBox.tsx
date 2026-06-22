@@ -1,6 +1,7 @@
 import { Link } from "@/i18n/navigation";
 import { PortfolioProject } from "@/types";
 import { ArrowUpRight } from "lucide-react";
+import Image from "next/image";
 
 interface PortfolioBoxProps extends PortfolioProject {
   className?: string;
@@ -10,21 +11,23 @@ export function PortfolioBox({
   title,
   description,
   link,
+  image,
   className,
 }: PortfolioBoxProps) {
   return (
     <Link href={link} className={className}>
-      <div className="group relative overflow-hidden rounded-2xl aspect-[4/3] bg-zinc-100 dark:bg-zinc-800">
+      <div className="group relative overflow-hidden rounded-[var(--radius-bento)] aspect-[4/3] bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800">
         {/* Placeholder for image */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-950 dark:to-purple-950" />
+        <div className="absolute inset-0 bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-900 dark:to-zinc-800" />
 
-        {/* Uncomment when you have actual images */}
-        {/* <Image
-          src={image}
-          alt={title}
-          fill
-          className="object-cover transition-transform duration-300 group-hover:scale-105"
-        /> */}
+        {image && (
+          <Image
+            src={image}
+            alt={title}
+            fill
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        )}
 
         {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">

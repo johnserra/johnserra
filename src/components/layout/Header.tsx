@@ -11,7 +11,7 @@ const NAV_LINK_HREFS = [
   { key: "home", href: "/" },
   { key: "about", href: "/about" },
   { key: "blog", href: "/blog" },
-  { key: "portfolio", href: "/portfolio" },
+  { key: "portfolio", href: "/projects" },
   { key: "contact", href: "/contact" },
 ] as const;
 

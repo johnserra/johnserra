@@ -12,7 +12,7 @@ import { ArrowLeft, LogoGithub } from "@carbon/icons-react";
 import { Tag } from "@/components/ui/Tag";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
-import { getPortfolioSchema } from "@/lib/schema";
+import { getProjectSchema } from "@/lib/schema";
 import type { Metadata } from "next";
 import type { Locale } from "@/types";
 
@@ -23,7 +23,7 @@ interface Props {
 export async function generateStaticParams() {
   const params: { locale: string; slug: string }[] = [];
   for (const locale of routing.locales) {
-    const slugs = getContentSlugs("portfolio", locale);
+    const slugs = getContentSlugs("projects", locale);
     for (const slug of slugs) {
       params.push({ locale, slug });
     }
@@ -33,7 +33,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
-  const content = getContentBySlug("portfolio", slug, locale as Locale);
+  const content = getContentBySlug("projects", slug, locale as Locale);
   if (!content) return {};
   return {
     title: `${content.frontmatter.title} — John Serra`,
@@ -41,15 +41,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function PortfolioCaseStudy({ params }: Props) {
+export default async function ProjectCaseStudy({ params }: Props) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
   const t = await getTranslations("Portfolio");
-  const content = getContentBySlug("portfolio", slug, locale as Locale);
+  const content = getContentBySlug("projects", slug, locale as Locale);
   if (!content) return notFound();
 
-  const jsonLd = getPortfolioSchema(slug, content.frontmatter, locale);
+  const jsonLd = getProjectSchema(slug, content.frontmatter, locale);
 
   return (
     <>
@@ -62,7 +62,7 @@ export default async function PortfolioCaseStudy({ params }: Props) {
         <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
           {/* Back link */}
           <Link
-            href="/portfolio"
+            href="/projects"
             className="inline-flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors mb-10"
           >
             <ArrowLeft size={16} />

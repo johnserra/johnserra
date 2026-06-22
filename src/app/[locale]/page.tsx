@@ -6,9 +6,9 @@ import { BentoBox } from "@/components/bento/BentoBox";
 import { HeroBox } from "@/components/bento/HeroBox";
 import { AboutTeaserBox } from "@/components/bento/AboutTeaserBox";
 import { BlogTeaserBox } from "@/components/bento/BlogTeaserBox";
-import { PortfolioBox } from "@/components/bento/PortfolioBox";
+import { ProjectBox } from "@/components/bento/ProjectBox";
 import { AIChatWidget } from "@/components/widgets/AIChatWidget";
-import { PORTFOLIO_LAYOUT } from "@/lib/constants";
+import { PROJECTS_LAYOUT } from "@/lib/constants";
 import type { Locale } from "@/types";
 
 interface Props {
@@ -30,8 +30,8 @@ export default async function Home({ params }: Props) {
           <HeroBox />
 
           {/* Portfolio Projects - Clickable cards with generated images */}
-          {PORTFOLIO_LAYOUT.map((project) => (
-            <PortfolioBox
+          {PROJECTS_LAYOUT.map((project) => (
+            <ProjectBox
               key={project.id}
               id={project.id}
               title={tPortfolio(`${project.key}.title`)}

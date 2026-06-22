@@ -21,12 +21,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function PortfolioPage({ params }: Props) {
+export default async function ProjectsPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
   const t = await getTranslations("Portfolio");
-  const projects = getAllContent("portfolio", locale as Locale);
+  const projects = getAllContent("projects", locale as Locale);
 
   return (
     <>
@@ -46,7 +46,7 @@ export default async function PortfolioPage({ params }: Props) {
             {projects.map((project) => (
               <Link
                 key={project.slug}
-                href={`/portfolio/${project.slug}`}
+                href={`/projects/${project.slug}`}
                 className="group block bg-white dark:bg-zinc-900 rounded-2xl p-8 border border-zinc-200 dark:border-zinc-800 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
               >
                 <div className="flex items-start justify-between mb-4">

@@ -7,7 +7,7 @@
     "home": "Ana Sayfa",
     "about": "Hakkımda",
     "blog": "Blog",
-    "portfolio": "Portföy",
+    "portfolio": "Projeler",
     "contact": "İletişim"
   },
   "Hero": {
@@ -64,8 +64,8 @@
     "backToBlog": "Bloga Dön"
   },
   "Portfolio": {
-    "title": "Portföy",
-    "metaTitle": "Portföy — John Serra",
+    "title": "Projeler",
+    "metaTitle": "Projeler — John Serra",
     "metaDescription": "İş geliştirme, dijital dönüşüm ve veri odaklı problem çözme alanlarında vaka çalışmaları.",
     "subtitle": "İş geliştirme, dijital dönüşüm ve veri odaklı problem çözme alanlarında vaka çalışmaları.",
     "backToPortfolio": "Tüm Projeler",

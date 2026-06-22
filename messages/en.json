@@ -7,7 +7,7 @@
     "home": "Home",
     "about": "About",
     "blog": "Blog",
-    "portfolio": "Portfolio",
+    "portfolio": "Projects",
     "contact": "Contact"
   },
   "Hero": {
@@ -64,8 +64,8 @@
     "backToBlog": "Back to Blog"
   },
   "Portfolio": {
-    "title": "Portfolio",
-    "metaTitle": "Portfolio — John Serra",
+    "title": "Projects",
+    "metaTitle": "Projects — John Serra",
     "metaDescription": "Case studies in business development, digital transformation, and data-driven problem solving.",
     "subtitle": "Case studies in business development, digital transformation, and data-driven problem solving.",
     "backToPortfolio": "All Projects",

@@ -1,21 +1,21 @@
 import { Link } from "@/i18n/navigation";
-import { PortfolioProject } from "@/types";
+import { ProjectItem } from "@/types";
 import { ArrowUpRight } from "@carbon/icons-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
-interface PortfolioBoxProps extends PortfolioProject {
+interface ProjectBoxProps extends ProjectItem {
   className?: string;
 }
 
-export function PortfolioBox({
+export function ProjectBox({
   title,
   description,
   link,
   image,
   span = 4,
   className,
-}: PortfolioBoxProps) {
+}: ProjectBoxProps) {
   return (
     <Link
       href={link}

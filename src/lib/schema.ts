@@ -60,12 +60,12 @@ export function getBlogPostSchema(
   return schema;
 }
 
-export function getPortfolioSchema(
+export function getProjectSchema(
   slug: string,
   frontmatter: Frontmatter,
   locale: string
 ) {
-  const url = `https://johnserra.com${locale === "en" ? "" : `/${locale}`}/portfolio/${slug}`;
+  const url = `https://johnserra.com${locale === "en" ? "" : `/${locale}`}/projects/${slug}`;
   
   return {
     "@context": "https://schema.org",

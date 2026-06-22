@@ -10,7 +10,7 @@ export interface FeatureHighlight {
   span?: number;
 }
 
-export interface PortfolioProject {
+export interface ProjectItem {
   id: string;
   title: string;
   description: string;

@@ -99,10 +99,10 @@ export default config({
         }),
       },
     }),
-    portfolioEn: collection({
-      label: "Portfolio (EN)",
+    projectsEn: collection({
+      label: "Projects (EN)",
       slugField: "title",
-      path: "content/en/portfolio/*",
+      path: "content/en/projects/*",
       format: { contentField: "content" },
       schema: {
         title: fields.slug({ name: { label: "Title" } }),

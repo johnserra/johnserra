@@ -5,7 +5,7 @@ import { Locale } from "@/types";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://johnserra.com";
-  const routes = ["", "/about", "/blog", "/portfolio", "/contact", "/privacy-policy"];
+  const routes = ["", "/about", "/blog", "/projects", "/contact", "/privacy-policy"];
   
   const sitemap: MetadataRoute.Sitemap = [];
 
@@ -33,11 +33,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       });
     }
 
-    // Add dynamic portfolio projects
-    const portfolioSlugs = getContentSlugs("portfolio", locale as Locale);
-    for (const slug of portfolioSlugs) {
+    // Add dynamic projects
+    const projectSlugs = getContentSlugs("projects", locale as Locale);
+    for (const slug of projectSlugs) {
       sitemap.push({
-        url: `${baseUrl}${localePrefix}/portfolio/${slug}`,
+        url: `${baseUrl}${localePrefix}/projects/${slug}`,
         lastModified: new Date(),
         changeFrequency: "monthly",
         priority: 0.6,

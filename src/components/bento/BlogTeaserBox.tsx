@@ -1,6 +1,6 @@
 import { Link } from "@/i18n/navigation";
 import { getAllContent } from "@/lib/content";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight } from "@carbon/icons-react";
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/types";
 

@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { MessageCircle, X, Send } from "lucide-react";
+import { Chat, Close, SendAlt } from "@carbon/icons-react";
 import { useTranslations, useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
+import { IconButton } from "@/components/ui/IconButton";
 
 function renderContent(content: string): React.ReactNode {
   const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
@@ -21,7 +22,7 @@ function renderContent(content: string): React.ReactNode {
       <a
         key={match.index}
         href={url}
-        className="underline text-blue-500 hover:text-blue-700"
+        className="underline text-carbon-blue hover:text-carbon-blue-hover"
         {...(isExternal
           ? { target: "_blank", rel: "noopener noreferrer" }
           : {})}
@@ -85,7 +86,6 @@ export function AIChatWidget() {
     setIsLoading(true);
 
     try {
-      // Build conversation history (exclude the welcome message and the empty placeholder)
       const history = [...messages, userMsg]
         .filter((m) => m.id !== "welcome")
         .map(({ role, content }) => ({ role, content }));
@@ -127,60 +127,62 @@ export function AIChatWidget() {
 
   return (
     <>
-      {/* Floating Button */}
+      {/* Floating Action Button */}
       <button
         onClick={() => setIsOpen(true)}
         className={cn(
-          "fixed bottom-4 right-4 z-50 p-4 rounded-full shadow-lg transition-all duration-300",
-          "bg-blue-600 hover:bg-blue-700 text-white hover:scale-110",
+          "fixed bottom-4 right-4 z-50 p-4 rounded-[var(--radius-bento)] shadow-md transition-all duration-200 cursor-pointer inline-flex items-center justify-center border border-transparent",
+          "bg-carbon-blue hover:bg-carbon-blue-hover text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-carbon-blue focus-visible:border-transparent",
           isOpen && "scale-0 pointer-events-none"
         )}
         aria-label={t("openChat")}
       >
-        <MessageCircle size={24} />
+        <Chat size={24} />
       </button>
 
-      {/* Chat Window */}
+      {/* Chat Window Panel */}
       <div
         className={cn(
-          "fixed bottom-4 right-4 z-50 w-[90vw] md:w-96 h-[600px] rounded-2xl shadow-2xl flex flex-col overflow-hidden",
-          "bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800",
-          "transition-all duration-300",
-          isOpen ? "scale-100 opacity-100" : "scale-0 opacity-0 pointer-events-none"
+          "fixed bottom-4 right-4 z-50 w-[90vw] md:w-96 h-[600px] rounded-[var(--radius-bento)] shadow-lg flex flex-col overflow-hidden",
+          "bg-background text-foreground border border-zinc-200 dark:border-zinc-800",
+          "transition-all duration-200",
+          isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0 pointer-events-none"
         )}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-zinc-200 dark:border-zinc-800 bg-blue-600">
-          <div className="flex items-center gap-2">
-            <MessageCircle size={20} className="text-white" />
-            <div>
-              <h3 className="font-semibold text-white text-sm">{t("title")}</h3>
-              <p className="text-blue-200 text-xs">{t("subtitle")}</p>
+        <div className="flex items-center justify-between p-4 border-b border-zinc-200 dark:border-zinc-800 bg-carbon-blue">
+          <div className="flex items-center gap-2.5">
+            <Chat size={20} className="text-white" />
+            <div className="text-left">
+              <h3 className="font-bold text-white text-sm leading-none mb-1">{t("title")}</h3>
+              <p className="text-blue-100 text-xs leading-none">{t("subtitle")}</p>
             </div>
           </div>
-          <button
+          <IconButton
             onClick={() => setIsOpen(false)}
-            className="text-white hover:bg-blue-700 p-1 rounded transition-colors"
-            aria-label={t("closeChat")}
+            description={t("closeChat")}
+            kind="ghost"
+            size="sm"
+            className="text-white hover:bg-carbon-blue-hover focus-visible:ring-white"
           >
-            <X size={20} />
-          </button>
+            <Close size={18} />
+          </IconButton>
         </div>
 
         {/* Messages */}
-        <div className="flex-1 p-4 overflow-y-auto bg-zinc-50 dark:bg-zinc-950 flex flex-col gap-3">
+        <div className="flex-1 p-4 overflow-y-auto bg-carbon-gray-10/40 dark:bg-carbon-gray-100/30 flex flex-col gap-3">
           {messages.map((m) => (
             <div
               key={m.id}
               className={cn(
-                "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
+                "max-w-[85%] rounded-[var(--radius-bento)] px-3.5 py-2 text-sm leading-relaxed border font-sans text-left",
                 m.role === "user"
-                  ? "self-end bg-blue-600 text-white rounded-br-sm"
-                  : "self-start bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-sm rounded-bl-sm"
+                  ? "self-end bg-carbon-blue text-white border-transparent rounded-br-none"
+                  : "self-start bg-white dark:bg-carbon-gray-90 text-zinc-900 dark:text-zinc-50 border-zinc-200 dark:border-zinc-800 rounded-bl-none shadow-sm"
               )}
             >
               {m.content ? renderContent(m.content) : (
-                <span className="flex gap-1 items-center py-0.5">
+                <span className="flex gap-1 items-center py-1">
                   <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
                   <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
                   <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce" />
@@ -191,10 +193,10 @@ export function AIChatWidget() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input */}
+        {/* Input Form Controls */}
         <form
           onSubmit={handleSubmit}
-          className="p-4 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900"
+          className="p-4 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-carbon-gray-100"
         >
           <div className="flex gap-2">
             <input
@@ -203,24 +205,34 @@ export function AIChatWidget() {
               onChange={(e) => setInput(e.target.value)}
               placeholder={t("placeholder")}
               disabled={isLoading}
-              className="flex-1 px-4 py-2 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 placeholder-zinc-500 dark:placeholder-zinc-400 outline-none focus:ring-2 focus:ring-blue-600 text-sm disabled:opacity-60"
+              className={cn(
+                "flex-1 h-10 px-4 py-2 text-sm text-zinc-900 dark:text-zinc-50 font-sans",
+                "bg-carbon-gray-10 dark:bg-carbon-gray-90/50",
+                "border-b border-b-zinc-300 dark:border-b-zinc-700 border-x-transparent border-t-transparent",
+                "rounded-[var(--radius-bento)] transition-all duration-150 ease-in-out",
+                "placeholder-zinc-400 dark:placeholder-zinc-600",
+                "focus:outline-none focus:ring-2 focus:ring-carbon-blue focus:border-transparent",
+                "disabled:opacity-60"
+              )}
             />
-            <button
+            <IconButton
               type="submit"
               disabled={isLoading || !input.trim()}
-              className="p-2.5 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              aria-label={t("sendMessage")}
+              kind="primary"
+              size="md"
+              description={t("sendMessage")}
+              className="shrink-0"
             >
-              <Send size={16} />
-            </button>
+              <SendAlt size={18} />
+            </IconButton>
           </div>
         </form>
       </div>
 
-      {/* Mobile backdrop */}
+      {/* Mobile backdrop overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden"
+          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 md:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}

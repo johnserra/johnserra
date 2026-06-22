@@ -1,6 +1,6 @@
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight } from "@carbon/icons-react";
 import { getTranslations } from "next-intl/server";
 
 export async function AboutTeaserBox() {

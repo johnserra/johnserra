@@ -8,7 +8,8 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ProseLayout } from "@/components/ui/ProseLayout";
 import { Callout } from "@/components/ui/Callout";
-import { ArrowLeft, Github } from "lucide-react";
+import { ArrowLeft, LogoGithub } from "@carbon/icons-react";
+import { Tag } from "@/components/ui/Tag";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { getPortfolioSchema } from "@/lib/schema";
@@ -72,12 +73,9 @@ export default async function PortfolioCaseStudy({ params }: Props) {
           {content.frontmatter.tags && (
             <div className="flex flex-wrap gap-2 mb-6">
               {content.frontmatter.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="text-xs font-medium px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300"
-                >
+                <Tag key={tag} type="blue">
                   {tag}
-                </span>
+                </Tag>
               ))}
             </div>
           )}
@@ -96,9 +94,9 @@ export default async function PortfolioCaseStudy({ params }: Props) {
               href={content.frontmatter.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-lg bg-zinc-900 dark:bg-zinc-50 text-zinc-50 dark:text-zinc-900 hover:bg-zinc-700 dark:hover:bg-zinc-200 transition-colors mb-12"
+              className="bg-carbon-blue text-white hover:bg-carbon-blue-hover rounded-[var(--radius-bento)] font-medium transition-all duration-150 ease-in-out cursor-pointer inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm mb-12"
             >
-              <Github size={16} />
+              <LogoGithub size={18} />
               {t("viewOnGithub")}
             </a>
           )}

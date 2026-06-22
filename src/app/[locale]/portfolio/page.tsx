@@ -2,7 +2,8 @@ import { Link } from "@/i18n/navigation";
 import { getAllContent } from "@/lib/content";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "@carbon/icons-react";
+import { Tag } from "@/components/ui/Tag";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
 import type { Locale } from "@/types";
@@ -51,12 +52,9 @@ export default async function PortfolioPage({ params }: Props) {
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex flex-wrap gap-2">
                     {project.frontmatter.tags?.slice(0, 2).map((tag) => (
-                      <span
-                        key={tag}
-                        className="text-xs font-medium px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300"
-                      >
+                      <Tag key={tag} type="blue">
                         {tag}
-                      </span>
+                      </Tag>
                     ))}
                   </div>
                   <ArrowUpRight

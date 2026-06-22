@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, Close } from "@carbon/icons-react";
 import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import { IconButton } from "@/components/ui/IconButton";
 
 const NAV_LINK_HREFS = [
   { key: "home", href: "/" },
@@ -65,13 +66,14 @@ export function Header() {
           {/* Mobile Menu Button */}
           <div className="flex items-center gap-2 md:hidden">
             <LanguageSwitcher />
-            <button
+            <IconButton
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
-              aria-label={tCommon("toggleMenu")}
+              description={tCommon("toggleMenu")}
+              kind="ghost"
+              size="md"
             >
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+              {mobileMenuOpen ? <Close size={20} /> : <Menu size={20} />}
+            </IconButton>
           </div>
         </div>
 

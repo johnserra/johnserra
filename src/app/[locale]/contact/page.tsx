@@ -1,7 +1,7 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ContactForm } from "@/components/ui/ContactForm";
-import { Linkedin, Mail } from "lucide-react";
+import { LogoLinkedin, Email } from "@carbon/icons-react";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
 
@@ -28,13 +28,13 @@ export default async function ContactPage({ params }: Props) {
     {
       label: t("linkedin"),
       href: "https://linkedin.com/in/johnserra",
-      icon: Linkedin,
+      icon: LogoLinkedin,
       description: t("connectProfessionally"),
     },
     {
       label: t("email"),
       href: "mailto:john@serra.us",
-      icon: Mail,
+      icon: Email,
       description: "john@serra.us",
     },
   ];

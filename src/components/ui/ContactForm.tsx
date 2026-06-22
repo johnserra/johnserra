@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
-import { cn } from "@/lib/utils";
+import { TextInput } from "@/components/ui/TextInput";
+import { TextArea } from "@/components/ui/TextArea";
+import { InlineNotification } from "@/components/ui/InlineNotification";
 
 type FormState = "idle" | "submitting" | "success" | "error";
 
@@ -37,79 +39,60 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <Field label={t("name")} name="name" type="text" placeholder={t("namePlaceholder")} required />
-        <Field label={t("email")} name="email" type="email" placeholder={t("emailPlaceholder")} required />
-      </div>
-      <Field
-        label={t("message")}
-        name="message"
-        type="textarea"
-        placeholder={t("messagePlaceholder")}
-        required
-      />
+    <div className="flex flex-col gap-4 font-sans">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <TextInput
+            label={t("name")}
+            id="contact-name"
+            name="name"
+            placeholder={t("namePlaceholder")}
+            required
+            disabled={state === "submitting" || state === "success"}
+          />
+          <TextInput
+            label={t("email")}
+            id="contact-email"
+            name="email"
+            type="email"
+            placeholder={t("emailPlaceholder")}
+            required
+            disabled={state === "submitting" || state === "success"}
+          />
+        </div>
+        <TextArea
+          label={t("message")}
+          id="contact-message"
+          name="message"
+          placeholder={t("messagePlaceholder")}
+          required
+          rows={5}
+          disabled={state === "submitting" || state === "success"}
+        />
 
-      <div className="flex items-center gap-4">
         <Button
           type="submit"
           disabled={state === "submitting" || state === "success"}
-          className="self-start"
+          className="self-start min-w-[120px]"
         >
           {state === "submitting" ? t("submitting") : t("submit")}
         </Button>
+      </form>
 
-        {state === "success" && (
-          <p className="text-sm text-green-600 dark:text-green-400">
-            {t("success")}
-          </p>
-        )}
-        {state === "error" && (
-          <p className="text-sm text-red-600 dark:text-red-400">
-            {t("error")}
-          </p>
-        )}
-      </div>
-    </form>
-  );
-}
-
-interface FieldProps {
-  label: string;
-  name: string;
-  type: "text" | "email" | "textarea";
-  placeholder?: string;
-  required?: boolean;
-}
-
-function Field({ label, name, type, placeholder, required }: FieldProps) {
-  const base = cn(
-    "w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800",
-    "border border-zinc-200 dark:border-zinc-700",
-    "text-zinc-900 dark:text-zinc-50 placeholder:text-zinc-400",
-    "outline-none focus:ring-2 focus:ring-blue-600 transition"
-  );
-
-  return (
-    <div className="flex flex-col gap-1.5">
-      <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-        {label}
-      </label>
-      {type === "textarea" ? (
-        <textarea
-          name={name}
-          placeholder={placeholder}
-          required={required}
-          rows={5}
-          className={base}
+      {state === "success" && (
+        <InlineNotification
+          kind="success"
+          title="Success"
+          subtitle={t("success")}
+          onClose={() => setState("idle")}
         />
-      ) : (
-        <input
-          type={type}
-          name={name}
-          placeholder={placeholder}
-          required={required}
-          className={base}
+      )}
+      {state === "error" && (
+        <InlineNotification
+          kind="error"
+          title="Error"
+          subtitle={t("error")}
+          onClose={() => setState("idle")}
         />
       )}
     </div>

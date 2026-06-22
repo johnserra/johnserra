@@ -3,7 +3,8 @@ import { getAllContent } from "@/lib/content";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { TagCloud } from "@/components/blog/TagCloud";
-import { Clock, Users } from "lucide-react";
+import { Time, UserMultiple } from "@carbon/icons-react";
+import { Tag } from "@/components/ui/Tag";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
 import type { Locale } from "@/types";
@@ -68,17 +69,14 @@ export default async function BlogPage({ params, searchParams }: Props) {
               <Link
                 key={post.slug}
                 href={`/blog/${post.slug}`}
-                className="group block p-6 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors"
+                className="group block p-6 bg-carbon-gray-10 dark:bg-carbon-gray-90 rounded-[var(--radius-bento)] border border-carbon-gray-20 dark:border-zinc-800 hover:border-carbon-blue dark:hover:border-carbon-blue transition-colors focus-visible:ring-2 focus-visible:ring-carbon-blue focus-visible:outline-none"
               >
                 {post.frontmatter.tags && post.frontmatter.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-3">
                     {post.frontmatter.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400"
-                      >
+                      <Tag key={tag}>
                         {tag}
-                      </span>
+                      </Tag>
                     ))}
                   </div>
                 )}
@@ -102,13 +100,13 @@ export default async function BlogPage({ params, searchParams }: Props) {
                   )}
                   {isRecipe(post) && post.frontmatter.servings && (
                     <span className="flex items-center gap-1.5 text-sm text-zinc-400 dark:text-zinc-500">
-                      <Users size={14} />
+                      <UserMultiple size={16} />
                       {tRecipes("servings", { count: post.frontmatter.servings })}
                     </span>
                   )}
                   {isRecipe(post) && post.frontmatter.totalTime && (
                     <span className="flex items-center gap-1.5 text-sm text-zinc-400 dark:text-zinc-500">
-                      <Clock size={14} />
+                      <Time size={16} />
                       {post.frontmatter.totalTime}
                     </span>
                   )}

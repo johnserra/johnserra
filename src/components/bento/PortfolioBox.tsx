@@ -1,6 +1,6 @@
 import { Link } from "@/i18n/navigation";
 import { PortfolioProject } from "@/types";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "@carbon/icons-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 

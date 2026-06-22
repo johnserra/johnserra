@@ -31,16 +31,15 @@ export default async function Home({ params }: Props) {
 
           {/* Portfolio Projects - Clickable cards with generated images */}
           {PORTFOLIO_LAYOUT.map((project) => (
-            <BentoBox key={project.id} span={project.span}>
-              <PortfolioBox
-                id={project.id}
-                title={tPortfolio(`${project.key}.title`)}
-                description={tPortfolio(`${project.key}.description`)}
-                image={project.image}
-                link={project.link}
-                span={project.span}
-              />
-            </BentoBox>
+            <PortfolioBox
+              key={project.id}
+              id={project.id}
+              title={tPortfolio(`${project.key}.title`)}
+              description={tPortfolio(`${project.key}.description`)}
+              image={project.image}
+              link={project.link}
+              span={project.span}
+            />
           ))}
 
           {/* About Me Teaser */}

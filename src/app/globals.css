@@ -1,9 +1,12 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #161616;
+  /* Default to dark mode colors */
+  --background: #161616;
+  --foreground: #f4f4f4;
 
   /* Carbon-inspired technical layout properties */
   --spacing-bento-gap: 1.5rem;
@@ -28,11 +31,10 @@
   --color-carbon-gray-100: #161616;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #161616;
-    --foreground: #f4f4f4;
-  }
+/* Light mode overrides when dark class is not present */
+html:not(.dark) {
+  --background: #ffffff;
+  --foreground: #161616;
 }
 
 body {
@@ -55,21 +57,21 @@ html {
   background: transparent;
 }
 
+/* Default scrollbar thumb (dark theme) */
 ::-webkit-scrollbar-thumb {
-  background: #d4d4d8;
+  background: #3f3f46;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a1a1aa;
+  background: #52525b;
 }
 
-@media (prefers-color-scheme: dark) {
-  ::-webkit-scrollbar-thumb {
-    background: #3f3f46;
-  }
+/* Light theme scrollbar thumb */
+html:not(.dark) ::-webkit-scrollbar-thumb {
+  background: #d4d4d8;
+}
 
-  ::-webkit-scrollbar-thumb:hover {
-    background: #52525b;
-  }
+html:not(.dark) ::-webkit-scrollbar-thumb:hover {
+  background: #a1a1aa;
 }

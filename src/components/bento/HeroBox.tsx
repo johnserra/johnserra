@@ -7,7 +7,7 @@ export function HeroBox() {
   const t = useTranslations("Hero");
 
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 to-purple-700 p-8 md:p-12 col-span-1 md:col-span-6 lg:col-span-8 min-h-[400px] flex items-center">
+    <div className="relative overflow-hidden rounded-[var(--radius-bento)] bg-gradient-to-br from-blue-600 to-purple-700 border border-blue-700/50 dark:border-blue-900/30 p-8 md:p-12 col-span-1 md:col-span-6 lg:col-span-8 min-h-[400px] flex items-center shadow-sm">
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
 

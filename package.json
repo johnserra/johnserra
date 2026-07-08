@@ -12,6 +12,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
     "@carbon/icons-react": "^11.82.0",
+    "@google/genai": "^2.10.0",
     "@keystatic/core": "^0.5.48",
     "@keystatic/next": "^5.0.4",
     "@supabase/supabase-js": "^2.97.0",

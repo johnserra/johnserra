@@ -1,10 +1,10 @@
-import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenAI } from "@google/genai";
 import { createAdminClient } from "@/lib/supabase";
 import { getAllContent, getContentBySlug } from "@/lib/content";
 import type { Locale } from "@/types";
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
+const ai = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY,
 });
 
 interface Message {
@@ -69,8 +69,13 @@ function getSiteContent(query: string, locale: Locale = "en"): string {
     sections.push(`## Projects\n${projectSection}`);
   }
 
-  // Recipes — always include an index with URLs; include the story for a matched recipe
-  const recipes = getAllContent("recipes", locale);
+  // Recipes — retrieved by filtering posts that contain recipe metadata or tag
+  const recipes = posts.filter(
+    (p) =>
+      p.frontmatter.cuisine ||
+      p.frontmatter.totalTime ||
+      p.frontmatter.tags?.includes("recipe")
+  );
   if (recipes.length) {
     const prefix = locale !== "en" ? `/${locale}` : "";
     const index = recipes
@@ -78,7 +83,7 @@ function getSiteContent(query: string, locale: Locale = "en"): string {
         const meta = [r.frontmatter.cuisine, r.frontmatter.totalTime]
           .filter(Boolean)
           .join(", ");
-        const url = `${prefix}/recipes/${r.slug}`;
+        const url = `${prefix}/blog/${r.slug}`;
         return `- **${r.frontmatter.title}**${meta ? ` (${meta})` : ""}: ${r.frontmatter.description ?? ""} — page: ${url}`;
       })
       .join("\n");
@@ -96,7 +101,7 @@ function getSiteContent(query: string, locale: Locale = "en"): string {
     });
 
     const recipeStory = match
-      ? `\n\n### About this recipe: ${match.frontmatter.title} (${prefix}/recipes/${match.slug})\n${match.content.trim()}`
+      ? `\n\n### About this recipe: ${match.frontmatter.title} (${prefix}/blog/${match.slug})\n${match.content.trim()}`
       : "";
 
     sections.push(`## Recipes\n${index}${recipeStory}`);
@@ -140,7 +145,7 @@ When answering questions:
 - Be warm, direct, and confident — not corporate or stiff
 - Draw on the context provided below when relevant
 - For recipe questions, share the story behind the recipe if there is one, then invite them to view the full recipe by linking to its page — do not recite the full ingredients list or method in chat
-- When linking, always use descriptive anchor text (e.g. [Lasagna Bolognese](/recipes/lasagna-bolognese)) — never use generic text like "here" or "this link"
+- When linking, always use descriptive anchor text (e.g. [Lasagna Bolognese](/blog/lasagna-bolognese)) — never use generic text like "here" or "this link"
 - If asked about something outside the context, answer based on what you know about John's background, or say you'd love to chat more about it directly
 - Keep answers conversational and concise (2–4 paragraphs max)
 - Never invent specific facts not in the context${languageInstruction}
@@ -152,22 +157,20 @@ ${contextBlock ? `\n<context>\n${contextBlock}\n</context>` : ""}`;
   const stream = new ReadableStream({
     async start(controller) {
       try {
-        const anthropicStream = anthropic.messages.stream({
-          model: "claude-opus-4-6",
-          max_tokens: 1024,
-          system: systemPrompt,
-          messages: messages.map((m) => ({
-            role: m.role,
-            content: m.content,
+        const responseStream = await ai.models.generateContentStream({
+          model: "gemini-2.5-flash",
+          contents: messages.map((m) => ({
+            role: m.role === "user" ? "user" : "model",
+            parts: [{ text: m.content }],
           })),
+          config: {
+            systemInstruction: systemPrompt,
+          },
         });
 
-        for await (const event of anthropicStream) {
-          if (
-            event.type === "content_block_delta" &&
-            event.delta.type === "text_delta"
-          ) {
-            controller.enqueue(encoder.encode(event.delta.text));
+        for await (const chunk of responseStream) {
+          if (chunk.text) {
+            controller.enqueue(encoder.encode(chunk.text));
           }
         }
       } catch (err) {

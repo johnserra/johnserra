@@ -45,8 +45,25 @@ export function transformObsidianLinks(
     (_, link: string, displayText?: string) => {
       const text = displayText ?? link;
       const slug = link.toLowerCase().replace(/\s+/g, "-");
+      
+      let typePath = "";
+      if (slug === "about") {
+        typePath = "/about";
+        const prefix = locale !== defaultLocale ? `/${locale}` : "";
+        return `[${text}](${prefix}${typePath})`;
+      }
+
+      const blogSlugs = getContentSlugs("blog", locale);
+      const projectSlugs = getContentSlugs("projects", locale);
+
+      if (projectSlugs.includes(slug)) {
+        typePath = "/projects";
+      } else if (blogSlugs.includes(slug)) {
+        typePath = "/blog";
+      }
+
       const prefix = locale !== defaultLocale ? `/${locale}` : "";
-      return `[${text}](${prefix}/${slug})`;
+      return `[${text}](${prefix}${typePath}/${slug})`;
     }
   );
 }

@@ -16,11 +16,11 @@ export function Button({
 }: ButtonProps) {
   const variantClasses = {
     primary:
-      "bg-carbon-blue text-white hover:bg-carbon-blue-hover border border-transparent",
+      "bg-accent text-on-accent hover:bg-accent-dim border border-transparent",
     secondary:
-      "bg-zinc-800 text-zinc-100 hover:bg-zinc-700 dark:bg-zinc-700 dark:text-zinc-50 dark:hover:bg-zinc-600 border border-transparent",
+      "bg-transparent border border-line text-ink hover:border-line-strong",
     ghost:
-      "bg-transparent text-zinc-900 dark:text-zinc-50 hover:bg-carbon-gray-10 dark:hover:bg-carbon-gray-90 border border-transparent",
+      "bg-transparent text-muted hover:text-ink border border-transparent",
   };
 
   const sizeClasses = {
@@ -32,7 +32,7 @@ export function Button({
   return (
     <button
       className={cn(
-        "rounded-[var(--radius-bento)] font-medium transition-all duration-150 ease-in-out cursor-pointer inline-flex items-center justify-center",
+        "rounded-pill font-medium transition-colors duration-150 ease-in-out cursor-pointer inline-flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50 disabled:cursor-not-allowed",
         variantClasses[variant],
         sizeClasses[size],
         className

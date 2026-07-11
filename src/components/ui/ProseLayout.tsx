@@ -10,21 +10,15 @@ export function ProseLayout({ children, className }: ProseLayoutProps) {
   return (
     <article
       className={cn(
-        "prose prose-zinc dark:prose-invert max-w-none",
-        // Headings
-        "prose-h1:text-4xl prose-h1:font-bold prose-h1:tracking-tight",
-        "prose-h2:text-2xl prose-h2:font-bold prose-h2:mt-10 prose-h2:mb-4",
-        "prose-h3:text-xl prose-h3:font-semibold",
-        // Body
-        "prose-p:leading-relaxed prose-p:text-zinc-600 dark:prose-p:text-zinc-400",
-        // Links
-        "prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline",
-        // Lists
-        "prose-li:text-zinc-600 dark:prose-li:text-zinc-400",
-        // Strong
-        "prose-strong:text-zinc-900 dark:prose-strong:text-zinc-100 prose-strong:font-semibold",
-        // HR
-        "prose-hr:border-zinc-200 dark:prose-hr:border-zinc-800",
+        "prose prose-invert max-w-[70ch]",
+        "prose-headings:text-ink prose-headings:tracking-tight",
+        "prose-p:text-ink-soft prose-p:leading-relaxed",
+        "prose-a:text-accent prose-a:no-underline hover:prose-a:underline",
+        "prose-strong:text-ink",
+        "prose-code:font-mono prose-code:text-accent",
+        "prose-blockquote:border-l-accent-dim prose-blockquote:text-ink-soft",
+        "prose-hr:border-hair",
+        "prose-li:text-ink-soft",
         className
       )}
     >

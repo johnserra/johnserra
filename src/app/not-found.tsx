@@ -2,17 +2,20 @@ export default function NotFound() {
   return (
     <html lang="en">
       <body>
-        <main className="min-h-screen flex items-center justify-center bg-zinc-50">
+        <main className="flex min-h-screen items-center justify-center bg-ground text-ink">
           <div className="text-center">
-            <p className="text-sm font-semibold text-blue-600 uppercase tracking-widest mb-4">
+            <p className="mb-4 font-display text-7xl text-accent">
               404
             </p>
-            <h1 className="text-4xl font-bold text-zinc-900 mb-4">
+            <h1 className="mb-4 text-4xl font-bold tracking-tight text-ink">
               Page not found
             </h1>
-            <p className="text-lg text-zinc-600">
+            <p className="mb-8 text-lg text-ink-soft">
               The page you&apos;re looking for doesn&apos;t exist or has been moved.
             </p>
+            <a href="/" className="font-mono text-xs uppercase tracking-[0.1em] text-muted transition-colors hover:text-accent">
+              Home
+            </a>
           </div>
         </main>
       </body>

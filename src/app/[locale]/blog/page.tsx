@@ -55,10 +55,10 @@ export default async function BlogPage({ params, searchParams }: Props) {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-background text-foreground py-16">
+      <main className="min-h-screen bg-ground py-16 text-ink">
         <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
-          <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-50 mb-4">{t("title")}</h1>
-          <p className="text-lg text-zinc-600 dark:text-zinc-400 mb-8">
+          <h1 className="mb-4 font-display text-4xl uppercase tracking-tight text-ink">{t("title")}</h1>
+          <p className="mb-8 text-lg text-ink-soft">
             {t("subtitle")}
           </p>
 
@@ -69,7 +69,7 @@ export default async function BlogPage({ params, searchParams }: Props) {
               <Link
                 key={post.slug}
                 href={`/blog/${post.slug}`}
-                className="group block p-6 bg-carbon-gray-10 dark:bg-carbon-gray-90 rounded-[var(--radius-bento)] border border-carbon-gray-20 dark:border-zinc-800 hover:border-carbon-blue dark:hover:border-carbon-blue transition-colors focus-visible:ring-2 focus-visible:ring-carbon-blue focus-visible:outline-none"
+                className="group block rounded-card border border-hair bg-panel p-6 transition-colors hover:border-line-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               >
                 {post.frontmatter.tags && post.frontmatter.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-3">
@@ -80,17 +80,17 @@ export default async function BlogPage({ params, searchParams }: Props) {
                     ))}
                   </div>
                 )}
-                <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-50 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors mb-2">
+                <h2 className="mb-2 text-xl font-bold text-ink transition-colors group-hover:text-accent">
                   {post.frontmatter.title}
                 </h2>
                 {post.frontmatter.description && (
-                  <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed mb-3">
+                  <p className="mb-3 leading-relaxed text-ink-soft">
                     {post.frontmatter.description}
                   </p>
                 )}
                 <div className="flex items-center gap-4">
                   {post.frontmatter.date && (
-                    <time className="text-sm text-zinc-400 dark:text-zinc-500">
+                    <time className="font-mono text-xs uppercase tracking-[0.1em] text-faint">
                       {new Date(post.frontmatter.date).toLocaleDateString(dateLocale, {
                         year: "numeric",
                         month: "long",
@@ -99,13 +99,13 @@ export default async function BlogPage({ params, searchParams }: Props) {
                     </time>
                   )}
                   {isRecipe(post) && post.frontmatter.servings && (
-                    <span className="flex items-center gap-1.5 text-sm text-zinc-400 dark:text-zinc-500">
+                    <span className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.1em] text-faint">
                       <UserMultiple size={16} />
                       {tRecipes("servings", { count: post.frontmatter.servings })}
                     </span>
                   )}
                   {isRecipe(post) && post.frontmatter.totalTime && (
-                    <span className="flex items-center gap-1.5 text-sm text-zinc-400 dark:text-zinc-500">
+                    <span className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.1em] text-faint">
                       <Time size={16} />
                       {post.frontmatter.totalTime}
                     </span>

@@ -69,12 +69,12 @@ export default async function BlogPostPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Header />
-      <main className="min-h-screen bg-background text-foreground py-16">
+      <main className="min-h-screen bg-ground py-16 text-ink">
         <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
           {/* Back link */}
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors mb-10"
+            className="mb-10 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.1em] text-muted transition-colors hover:text-accent"
           >
             <ArrowLeft size={16} />
             {t("backToBlog")}
@@ -92,18 +92,18 @@ export default async function BlogPostPage({ params }: Props) {
           )}
 
           {/* Title */}
-          <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-50 mb-3">
+          <h1 className="mb-3 text-4xl font-bold tracking-tight text-ink">
             {frontmatter.title}
           </h1>
 
           {frontmatter.description && (
-            <p className="text-xl text-zinc-600 dark:text-zinc-400 mb-4 leading-relaxed">
+            <p className="mb-4 text-xl leading-relaxed text-ink-soft">
               {frontmatter.description}
             </p>
           )}
 
           {frontmatter.date && (
-            <time className="block text-sm text-zinc-400 dark:text-zinc-500 mb-10">
+            <time className="mb-10 block font-mono text-xs uppercase tracking-[0.1em] text-muted">
               {new Date(frontmatter.date).toLocaleDateString(dateLocale, {
                 year: "numeric",
                 month: "long",
@@ -113,7 +113,7 @@ export default async function BlogPostPage({ params }: Props) {
           )}
 
           {frontmatter.coverImage && (
-            <div className="relative w-full aspect-[16/9] rounded-[var(--radius-bento)] overflow-hidden mb-10 border border-zinc-200 dark:border-zinc-800">
+            <div className="relative mb-10 aspect-[16/9] w-full overflow-hidden rounded-card border border-hair">
               <Image
                 src={frontmatter.coverImage}
                 alt={frontmatter.title}
@@ -126,44 +126,44 @@ export default async function BlogPostPage({ params }: Props) {
 
           {/* Recipe metadata */}
           {hasRecipeMeta && (
-            <div className="flex flex-wrap gap-6 p-6 bg-carbon-gray-10 dark:bg-carbon-gray-90 rounded-[var(--radius-bento)] border border-carbon-gray-20 dark:border-zinc-800 mb-10">
+            <div className="mb-10 flex flex-wrap gap-6 rounded-card border border-hair bg-panel p-6 font-mono text-xs uppercase tracking-[0.1em] text-muted">
               {frontmatter.cuisine && (
                 <div className="flex items-center gap-2">
-                  <Globe size={16} className="text-zinc-400 dark:text-zinc-500" />
-                  <span className="text-sm text-zinc-600 dark:text-zinc-400">
-                    <strong className="text-zinc-900 dark:text-zinc-50">{frontmatter.cuisine}</strong>
+                  <Globe size={16} className="text-faint" />
+                  <span>
+                    <strong className="text-ink">{frontmatter.cuisine}</strong>
                   </span>
                 </div>
               )}
               {frontmatter.servings && (
                 <div className="flex items-center gap-2">
-                  <UserMultiple size={16} className="text-zinc-400 dark:text-zinc-500" />
-                  <span className="text-sm text-zinc-600 dark:text-zinc-400">
-                    {tRecipes("serves")} <strong className="text-zinc-900 dark:text-zinc-50">{frontmatter.servings}</strong>
+                  <UserMultiple size={16} className="text-faint" />
+                  <span>
+                    {tRecipes("serves")} <strong className="text-ink">{frontmatter.servings}</strong>
                   </span>
                 </div>
               )}
               {frontmatter.prepTime && (
                 <div className="flex items-center gap-2">
-                  <Time size={16} className="text-zinc-400 dark:text-zinc-500" />
-                  <span className="text-sm text-zinc-600 dark:text-zinc-400">
-                    {tRecipes("prep")} <strong className="text-zinc-900 dark:text-zinc-50">{frontmatter.prepTime}</strong>
+                  <Time size={16} className="text-faint" />
+                  <span>
+                    {tRecipes("prep")} <strong className="text-ink">{frontmatter.prepTime}</strong>
                   </span>
                 </div>
               )}
               {frontmatter.cookTime && (
                 <div className="flex items-center gap-2">
-                  <Time size={16} className="text-zinc-400 dark:text-zinc-500" />
-                  <span className="text-sm text-zinc-600 dark:text-zinc-400">
-                    {tRecipes("cook")} <strong className="text-zinc-900 dark:text-zinc-50">{frontmatter.cookTime}</strong>
+                  <Time size={16} className="text-faint" />
+                  <span>
+                    {tRecipes("cook")} <strong className="text-ink">{frontmatter.cookTime}</strong>
                   </span>
                 </div>
               )}
               {frontmatter.totalTime && (
                 <div className="flex items-center gap-2">
-                  <Time size={16} className="text-zinc-400 dark:text-zinc-500" />
-                  <span className="text-sm text-zinc-600 dark:text-zinc-400">
-                    {tRecipes("total")} <strong className="text-zinc-900 dark:text-zinc-50">{frontmatter.totalTime}</strong>
+                  <Time size={16} className="text-faint" />
+                  <span>
+                    {tRecipes("total")} <strong className="text-ink">{frontmatter.totalTime}</strong>
                   </span>
                 </div>
               )}

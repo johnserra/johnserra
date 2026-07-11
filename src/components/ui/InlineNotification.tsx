@@ -19,31 +19,27 @@ interface InlineNotificationProps {
 const kinds = {
   info: {
     icon: Information,
-    bg: "bg-blue-50/50 dark:bg-blue-950/20",
-    border: "border-blue-200/80 dark:border-blue-900/30 border-l-blue-600 dark:border-l-blue-500",
-    text: "text-zinc-900 dark:text-zinc-50",
-    iconColor: "text-blue-600 dark:text-blue-400",
+    bg: "bg-panel",
+    border: "border-hair border-l-accent",
+    titleColor: "text-accent",
   },
   success: {
     icon: CheckmarkFilled,
-    bg: "bg-emerald-50/50 dark:bg-emerald-950/20",
-    border: "border-emerald-200/80 dark:border-emerald-900/30 border-l-emerald-600 dark:border-l-emerald-500",
-    text: "text-zinc-900 dark:text-zinc-50",
-    iconColor: "text-emerald-600 dark:text-emerald-400",
+    bg: "bg-good/10",
+    border: "border-hair border-l-good",
+    titleColor: "text-good",
   },
   warning: {
     icon: WarningAlt,
-    bg: "bg-amber-50/50 dark:bg-amber-950/20",
-    border: "border-amber-200/80 dark:border-amber-900/30 border-l-amber-600 dark:border-l-amber-500",
-    text: "text-zinc-900 dark:text-zinc-50",
-    iconColor: "text-amber-600 dark:text-amber-400",
+    bg: "bg-warn/10",
+    border: "border-hair border-l-warn",
+    titleColor: "text-warn",
   },
   error: {
     icon: ErrorFilled,
-    bg: "bg-red-50/50 dark:bg-red-950/20",
-    border: "border-red-200/80 dark:border-red-900/30 border-l-red-600 dark:border-l-red-500",
-    text: "text-zinc-900 dark:text-zinc-50",
-    iconColor: "text-red-600 dark:text-red-400",
+    bg: "bg-bad/10",
+    border: "border-hair border-l-bad",
+    titleColor: "text-bad",
   },
 };
 
@@ -61,25 +57,24 @@ export function InlineNotification({
     <div
       role="alert"
       className={cn(
-        "my-4 flex items-start gap-3 rounded-[var(--radius-bento)] border border-l-[4px] p-4 text-sm font-sans",
+        "my-4 flex items-start gap-3 rounded-card border border-l-2 p-4 text-sm font-sans",
         config.bg,
         config.border,
-        config.text,
         className
       )}
     >
-      <div className={cn("mt-0.5 shrink-0", config.iconColor)}>
+      <div className={cn("mt-0.5 shrink-0", config.titleColor)}>
         <Icon size={20} />
       </div>
       
       <div className="flex-1 min-w-0">
         {title && (
-          <p className="font-bold leading-tight mb-1 select-none">
+          <p className={cn("font-bold leading-tight mb-1 select-none", config.titleColor)}>
             {title}
           </p>
         )}
         {subtitle && (
-          <div className="text-zinc-600 dark:text-zinc-400 leading-relaxed break-words">
+          <div className="text-ink-soft leading-relaxed break-words">
             {subtitle}
           </div>
         )}
@@ -89,7 +84,7 @@ export function InlineNotification({
         <button
           type="button"
           onClick={onClose}
-          className="shrink-0 text-zinc-400 dark:text-zinc-600 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors p-0.5 rounded focus-visible:ring-1 focus-visible:ring-carbon-blue"
+          className="shrink-0 text-muted hover:text-ink transition-colors p-0.5 rounded-field focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           aria-label="Close notification"
         >
           <Close size={16} />

@@ -1,54 +1,63 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
-
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+  --color-ground: #0c0c0e;
+  --color-ground-2: #161618;
+  --color-ground-3: #1a1a1d;
+  --color-panel: #1c1c1f;
+  --color-panel-2: #222226;
+  --color-ink: #eae6df;
+  --color-ink-soft: #c2bfb8;
+  --color-muted: #88857f;
+  --color-faint: #56554f;
+  --color-accent: #18c1e8;
+  --color-accent-dim: #0f7e98;
+  --color-on-accent: #06232b;
+  --color-good: #3ae88d;
+  --color-warn: #ffdf43;
+  --color-bad: #f2453d;
+  --color-indigo: #443bf4;
+  --color-hair: #242528;
+  --color-line: #2c2d31;
+  --color-line-strong: #3a3b41;
+  --radius-card: 8px;
+  --radius-field: 6px;
+  --radius-pill: 99px;
+  --font-sans: var(--font-geist), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+  --font-display: var(--font-anton), "Arial Narrow", sans-serif;
+}
+
 :root {
-  /* Default to dark mode colors */
-  --background: #161616;
-  --foreground: #f4f4f4;
-
-  /* Carbon-inspired technical layout properties */
+  --background: #0c0c0e;
+  --foreground: #eae6df;
   --spacing-bento-gap: 1.5rem;
-  --spacing-bento-gap-mobile: 1.5rem; /* Maintain spacing on mobile */
-  --radius-bento: 2px;                /* Carbon's default sharp corners */
-  --radius-bento-mobile: 2px;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-ibm-plex-sans), system-ui, -apple-system, sans-serif;
-  --font-mono: var(--font-ibm-plex-mono), monospace;
-  
-  /* Carbon Design System signature colors */
-  --color-carbon-blue: #0f62fe;
-  --color-carbon-blue-hover: #0353e9;
-  
-  --color-carbon-gray-10: #f4f4f4;
-  --color-carbon-gray-20: #e0e0e0;
-  --color-carbon-gray-90: #262626;
-  --color-carbon-gray-100: #161616;
-}
-
-/* Light mode overrides when dark class is not present */
-html:not(.dark) {
-  --background: #ffffff;
-  --foreground: #161616;
+  --spacing-bento-gap-mobile: 1.5rem;
+  --radius-bento: 8px;
+  --radius-bento-mobile: 8px;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-ibm-plex-sans), system-ui, -apple-system, sans-serif;
+  background: var(--color-ground);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
 }
 
-/* Smooth scrolling */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: .05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+}
+
 html {
   scroll-behavior: smooth;
 }
 
-/* Custom scrollbar styling */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -57,21 +66,11 @@ html {
   background: transparent;
 }
 
-/* Default scrollbar thumb (dark theme) */
 ::-webkit-scrollbar-thumb {
-  background: #3f3f46;
+  background: #2c2d31;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #52525b;
-}
-
-/* Light theme scrollbar thumb */
-html:not(.dark) ::-webkit-scrollbar-thumb {
-  background: #d4d4d8;
-}
-
-html:not(.dark) ::-webkit-scrollbar-thumb:hover {
-  background: #a1a1aa;
+  background: #3a3b41;
 }

@@ -20,7 +20,7 @@ export function Callout({ type = "info", title, children }: CalloutProps) {
       kind={kindMap[type] || "info"}
       title={title}
       subtitle={children}
-      className="my-6"
+      className="my-6 w-full"
     />
   );
 }

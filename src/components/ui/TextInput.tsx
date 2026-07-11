@@ -30,8 +30,8 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
           <label
             htmlFor={id}
             className={cn(
-              "text-xs font-semibold text-zinc-700 dark:text-zinc-300 select-none",
-              disabled && "text-zinc-400 dark:text-zinc-600",
+              "text-xs font-mono text-muted uppercase tracking-[0.1em] select-none",
+              disabled && "text-faint",
               labelTextClassName
             )}
           >
@@ -40,7 +40,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
         )}
         
         {helperText && !invalid && (
-          <span className="text-xs text-zinc-500 dark:text-zinc-500 mb-0.5">
+          <span className="text-xs text-faint mb-0.5">
             {helperText}
           </span>
         )}
@@ -51,14 +51,11 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
             id={id}
             disabled={disabled}
             className={cn(
-              "w-full h-10 px-4 py-2 text-sm text-zinc-900 dark:text-zinc-50 font-sans",
-              "bg-carbon-gray-10 dark:bg-carbon-gray-90/50",
-              "border-b border-b-zinc-300 dark:border-b-zinc-700 border-x-transparent border-t-transparent",
-              "rounded-[var(--radius-bento)] transition-all duration-150 ease-in-out",
-              "placeholder-zinc-400 dark:placeholder-zinc-600",
-              "focus:outline-none focus:ring-2 focus:ring-carbon-blue focus:border-transparent",
-              disabled && "bg-zinc-100 dark:bg-zinc-900/30 text-zinc-400 dark:text-zinc-600 border-b-zinc-200 dark:border-b-zinc-800 cursor-not-allowed",
-              invalid && "border-b-red-600 dark:border-b-red-500 focus:ring-red-600 dark:focus:ring-red-500",
+              "w-full h-10 px-4 py-2 text-sm text-ink font-sans",
+              "bg-ground-2 border border-hair rounded-field transition-colors duration-150 ease-in-out",
+              "placeholder:text-faint focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent",
+              disabled && "opacity-50 cursor-not-allowed",
+              invalid && "border-bad text-bad focus:border-bad focus:ring-bad",
               className
             )}
             {...props}
@@ -66,7 +63,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
         </div>
 
         {invalid && invalidText && (
-          <span className="text-xs text-red-600 dark:text-red-400 font-medium">
+          <span className="text-xs text-bad">
             {invalidText}
           </span>
         )}

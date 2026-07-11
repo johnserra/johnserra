@@ -39,7 +39,7 @@ export function ContactForm() {
   }
 
   return (
-    <div className="flex flex-col gap-4 font-sans">
+    <div className="flex flex-col gap-4 font-sans text-ink">
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <TextInput

@@ -9,10 +9,10 @@ export async function AboutTeaserBox() {
   return (
     <div className="col-span-1 md:col-span-6 lg:col-span-8">
       <div className="flex flex-col gap-6">
-        <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-zinc-50">
+        <h2 className="font-mono text-xs uppercase tracking-[0.1em] text-muted">
           {t("heading")}
         </h2>
-        <p className="text-base md:text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
+        <p className="text-base md:text-lg text-ink-soft leading-relaxed">
           {t("content")}
         </p>
         <div>

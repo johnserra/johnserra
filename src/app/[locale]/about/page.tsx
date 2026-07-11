@@ -33,9 +33,9 @@ export default async function AboutPage({ params }: Props) {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-background text-foreground py-16">
+      <main className="min-h-screen bg-ground py-16 text-ink">
         <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
-          <ProseLayout>
+          <ProseLayout className="prose-h1:tracking-tight prose-h1:text-ink prose-h2:font-mono prose-h2:text-xs prose-h2:uppercase prose-h2:tracking-[0.1em] prose-h2:text-muted">
             <MDXRemote
               source={content.content}
               components={{ Callout }}

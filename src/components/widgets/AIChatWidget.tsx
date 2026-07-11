@@ -22,7 +22,7 @@ function renderContent(content: string): React.ReactNode {
       <a
         key={match.index}
         href={url}
-        className="underline text-carbon-blue hover:text-carbon-blue-hover"
+        className="text-accent underline hover:text-accent-dim"
         {...(isExternal
           ? { target: "_blank", rel: "noopener noreferrer" }
           : {})}
@@ -127,12 +127,11 @@ export function AIChatWidget() {
 
   return (
     <>
-      {/* Floating Action Button */}
       <button
         onClick={() => setIsOpen(true)}
         className={cn(
-          "fixed bottom-4 right-4 z-50 p-4 rounded-[var(--radius-bento)] shadow-md transition-all duration-200 cursor-pointer inline-flex items-center justify-center border border-transparent",
-          "bg-carbon-blue hover:bg-carbon-blue-hover text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-carbon-blue focus-visible:border-transparent",
+          "fixed bottom-4 right-4 z-50 p-4 rounded-card transition-all duration-200 cursor-pointer inline-flex items-center justify-center border border-transparent",
+          "bg-accent text-on-accent hover:bg-accent-dim focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-transparent",
           isOpen && "scale-0 pointer-events-none"
         )}
         aria-label={t("openChat")}
@@ -143,19 +142,19 @@ export function AIChatWidget() {
       {/* Chat Window Panel */}
       <div
         className={cn(
-          "fixed bottom-4 right-4 z-50 w-[90vw] md:w-96 h-[600px] rounded-[var(--radius-bento)] shadow-lg flex flex-col overflow-hidden",
-          "bg-background text-foreground border border-zinc-200 dark:border-zinc-800",
+          "fixed bottom-4 right-4 z-50 w-[90vw] md:w-96 h-[600px] rounded-card flex flex-col overflow-hidden",
+          "bg-panel text-ink border border-hair",
           "transition-all duration-200",
           isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0 pointer-events-none"
         )}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-zinc-200 dark:border-zinc-800 bg-carbon-blue">
+        <div className="flex items-center justify-between p-4 border-b border-hair bg-panel">
           <div className="flex items-center gap-2.5">
-            <Chat size={20} className="text-white" />
+            <Chat size={20} className="text-ink" />
             <div className="text-left">
-              <h3 className="font-bold text-white text-sm leading-none mb-1">{t("title")}</h3>
-              <p className="text-blue-100 text-xs leading-none">{t("subtitle")}</p>
+              <h3 className="font-semibold text-ink text-sm leading-none mb-1">{t("title")}</h3>
+              <p className="text-muted text-xs leading-none">{t("subtitle")}</p>
             </div>
           </div>
           <IconButton
@@ -163,30 +162,30 @@ export function AIChatWidget() {
             description={t("closeChat")}
             kind="ghost"
             size="sm"
-            className="text-white hover:bg-carbon-blue-hover focus-visible:ring-white"
+            className="text-muted hover:text-ink focus-visible:ring-ink"
           >
             <Close size={18} />
           </IconButton>
         </div>
 
         {/* Messages */}
-        <div className="flex-1 p-4 overflow-y-auto bg-carbon-gray-10/40 dark:bg-carbon-gray-100/30 flex flex-col gap-3">
+        <div className="flex-1 p-4 overflow-y-auto bg-transparent flex flex-col gap-3">
           {messages.map((m) => (
             <div
               key={m.id}
               className={cn(
-                "max-w-[85%] rounded-[var(--radius-bento)] px-3.5 py-2 text-sm leading-relaxed border font-sans text-left",
+                "max-w-[85%] rounded-card px-3.5 py-2 text-sm leading-relaxed font-sans text-left",
                 m.role === "user"
-                  ? "self-end bg-carbon-blue text-white border-transparent rounded-br-none"
-                  : "self-start bg-white dark:bg-carbon-gray-90 text-zinc-900 dark:text-zinc-50 border-zinc-200 dark:border-zinc-800 rounded-bl-none shadow-sm"
+                  ? "self-end bg-accent/10 text-ink rounded-card-br"
+                  : "self-start bg-ground-3 text-ink-soft rounded-card-bl"
               )}
             >
               {m.content ? renderContent(m.content) : (
-                <span className="flex gap-1 items-center py-1">
-                  <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                  <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                  <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce" />
-                </span>
+          <span className="flex gap-1 items-center py-1">
+            <span className="w-1.5 h-1.5 bg-ink/40 rounded-full animate-bounce [animation-delay:-0.3s]" />
+            <span className="w-1.5 h-1.5 bg-ink/40 rounded-full animate-bounce [animation-delay:-0.15s]" />
+            <span className="w-1.5 h-1.5 bg-ink/40 rounded-full animate-bounce" />
+          </span>
               )}
             </div>
           ))}
@@ -196,7 +195,7 @@ export function AIChatWidget() {
         {/* Input Form Controls */}
         <form
           onSubmit={handleSubmit}
-          className="p-4 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-carbon-gray-100"
+          className="p-4 border-t border-hair bg-ground-2 text-ink"
         >
           <div className="flex gap-2">
             <input
@@ -206,12 +205,11 @@ export function AIChatWidget() {
               placeholder={t("placeholder")}
               disabled={isLoading}
               className={cn(
-                "flex-1 h-10 px-4 py-2 text-sm text-zinc-900 dark:text-zinc-50 font-sans",
-                "bg-carbon-gray-10 dark:bg-carbon-gray-90/50",
-                "border-b border-b-zinc-300 dark:border-b-zinc-700 border-x-transparent border-t-transparent",
-                "rounded-[var(--radius-bento)] transition-all duration-150 ease-in-out",
-                "placeholder-zinc-400 dark:placeholder-zinc-600",
-                "focus:outline-none focus:ring-2 focus:ring-carbon-blue focus:border-transparent",
+                "flex-1 h-10 px-4 py-2 text-sm font-sans",
+                "bg-ground-2 text-ink",
+                "border border-hair rounded-field",
+                "placeholder:text-faint",
+                "focus-within:border-accent",
                 "disabled:opacity-60"
               )}
             />
@@ -221,7 +219,7 @@ export function AIChatWidget() {
               kind="primary"
               size="md"
               description={t("sendMessage")}
-              className="shrink-0"
+              className="shrink-0 bg-accent text-on-accent rounded-pill hover:bg-accent-dim"
             >
               <SendAlt size={18} />
             </IconButton>

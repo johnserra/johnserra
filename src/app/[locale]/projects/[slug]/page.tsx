@@ -58,12 +58,12 @@ export default async function ProjectCaseStudy({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Header />
-      <main className="min-h-screen bg-background text-foreground py-16">
+      <main className="min-h-screen bg-ground py-16 text-ink">
         <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
           {/* Back link */}
           <Link
             href="/projects"
-            className="inline-flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors mb-10"
+            className="mb-10 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.1em] text-muted transition-colors hover:text-accent"
           >
             <ArrowLeft size={16} />
             {t("backToPortfolio")}
@@ -81,11 +81,11 @@ export default async function ProjectCaseStudy({ params }: Props) {
           )}
 
           {/* Title */}
-          <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-50 mb-4">
+          <h1 className="mb-4 text-4xl font-bold tracking-tight text-ink">
             {content.frontmatter.title}
           </h1>
           {content.frontmatter.description && (
-            <p className="text-xl text-zinc-600 dark:text-zinc-400 mb-6 leading-relaxed">
+            <p className="mb-6 text-xl leading-relaxed text-ink-soft">
               {content.frontmatter.description}
             </p>
           )}
@@ -94,14 +94,14 @@ export default async function ProjectCaseStudy({ params }: Props) {
               href={content.frontmatter.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-carbon-blue text-white hover:bg-carbon-blue-hover rounded-[var(--radius-bento)] font-medium transition-all duration-150 ease-in-out cursor-pointer inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm mb-12"
+              className="mb-12 inline-flex cursor-pointer items-center justify-center gap-2 rounded-card border border-accent-dim bg-accent/10 px-5 py-2.5 font-mono text-xs uppercase tracking-[0.1em] text-accent transition-colors hover:border-accent"
             >
               <LogoGithub size={18} />
               {t("viewOnGithub")}
             </a>
           )}
 
-          <hr className="border-zinc-200 dark:border-zinc-800 mb-12" />
+          <hr className="mb-12 border-hair" />
           {/* Content */}
           <ProseLayout>
             <MDXRemote

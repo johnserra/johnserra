@@ -25,7 +25,7 @@ function LanguageSwitcher() {
   return (
     <button
       onClick={() => router.replace(pathname, { locale: otherLocale })}
-      className="text-sm font-medium px-2 py-1 rounded-md text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+      className="rounded-field px-2 py-1 font-mono text-xs uppercase tracking-[0.1em] text-muted transition-colors hover:bg-panel-2 hover:text-ink"
     >
       {otherLocale.toUpperCase()}
     </button>
@@ -34,17 +34,18 @@ function LanguageSwitcher() {
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
   const t = useTranslations("Nav");
   const tCommon = useTranslations("Common");
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-black/50 backdrop-blur-xl border-b border-zinc-200 dark:border-zinc-800">
+    <header className="sticky top-0 z-50 w-full border-b border-hair bg-ground/85 backdrop-blur">
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link
             href="/"
-            className="text-xl font-bold text-zinc-900 dark:text-zinc-50 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
+            className="text-xl font-medium text-ink transition-colors hover:text-ink-soft"
           >
             John Serra
           </Link>
@@ -55,7 +56,10 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+                className={cn(
+                  "font-mono text-xs uppercase tracking-[0.1em] text-muted transition-colors hover:text-ink",
+                  pathname === link.href && "text-accent"
+                )}
               >
                 {t(link.key)}
               </Link>
@@ -80,7 +84,7 @@ export function Header() {
         {/* Mobile Navigation */}
         <div
           className={cn(
-            "md:hidden overflow-hidden transition-all duration-300 ease-in-out",
+            "overflow-hidden bg-ground-2 transition-all duration-300 ease-in-out md:hidden",
             mobileMenuOpen ? "max-h-64 pb-4" : "max-h-0"
           )}
         >
@@ -90,7 +94,10 @@ export function Header() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+                className={cn(
+                  "font-mono text-xs uppercase tracking-[0.1em] text-muted transition-colors hover:text-ink",
+                  pathname === link.href && "text-accent"
+                )}
               >
                 {t(link.key)}
               </Link>

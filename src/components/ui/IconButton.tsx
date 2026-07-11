@@ -11,9 +11,9 @@ export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
   ({ children, kind = "ghost", size = "md", description, className, ...props }, ref) => {
     const variantClasses = {
-      primary: "bg-carbon-blue text-white hover:bg-carbon-blue-hover",
-      secondary: "bg-zinc-800 text-zinc-100 hover:bg-zinc-700 dark:bg-zinc-700 dark:text-zinc-50 dark:hover:bg-zinc-600",
-      ghost: "bg-transparent text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-carbon-gray-10 dark:hover:bg-carbon-gray-90",
+      primary: "bg-transparent border-hair text-muted hover:text-accent hover:border-line-strong",
+      secondary: "bg-transparent border-hair text-muted hover:text-accent hover:border-line-strong",
+      ghost: "bg-transparent border-hair text-muted hover:text-accent hover:border-line-strong",
     };
 
     const sizeClasses = {
@@ -27,8 +27,8 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         ref={ref}
         type="button"
         className={cn(
-          "inline-flex items-center justify-center rounded-[var(--radius-bento)] transition-colors duration-150 cursor-pointer border border-transparent",
-          "focus:outline-none focus-visible:ring-2 focus-visible:ring-carbon-blue focus-visible:border-transparent",
+          "inline-flex items-center justify-center rounded-field transition-colors duration-150 cursor-pointer border",
+          "focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-transparent",
           "disabled:opacity-50 disabled:cursor-not-allowed",
           variantClasses[kind],
           sizeClasses[size],

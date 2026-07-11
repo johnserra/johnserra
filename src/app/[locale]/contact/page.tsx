@@ -42,13 +42,13 @@ export default async function ContactPage({ params }: Props) {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-background text-foreground py-16">
+      <main className="min-h-screen bg-ground py-16 text-ink">
         <div className="max-w-2xl mx-auto px-4 md:px-6 lg:px-8">
           <div className="mb-12">
-            <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-50 mb-4">
+            <h1 className="mb-4 font-display text-4xl uppercase tracking-tight text-ink">
               {t("title")}
             </h1>
-            <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            <p className="text-lg leading-relaxed text-ink-soft">
               {t("subtitle")}
             </p>
           </div>
@@ -61,22 +61,22 @@ export default async function ContactPage({ params }: Props) {
                 href={href}
                 target={href.startsWith("http") ? "_blank" : undefined}
                 rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
-                className="flex items-center gap-4 flex-1 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group"
+                className="group flex flex-1 items-center gap-4 rounded-card border border-hair bg-panel p-6 transition-colors hover:border-line-strong"
               >
-                <div className="p-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 group-hover:bg-blue-50 dark:group-hover:bg-blue-950 transition-colors">
-                  <Icon size={20} className="text-zinc-600 dark:text-zinc-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
+                <div className="rounded-card bg-ground-3 p-3 transition-colors group-hover:bg-accent/10">
+                  <Icon size={20} className="text-muted transition-colors group-hover:text-accent" />
                 </div>
                 <div>
-                  <p className="font-semibold text-zinc-900 dark:text-zinc-50">{label}</p>
-                  <p className="text-sm text-zinc-500 dark:text-zinc-400">{description}</p>
+                  <p className="font-mono text-xs uppercase tracking-[0.1em] text-ink">{label}</p>
+                  <p className="text-sm text-ink-soft">{description}</p>
                 </div>
               </a>
             ))}
           </div>
 
           {/* Contact form */}
-          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8">
-            <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-50 mb-6">
+          <div className="rounded-card border border-hair bg-panel p-8">
+            <h2 className="mb-6 font-mono text-xs uppercase tracking-[0.1em] text-muted">
               {t("sendMessage")}
             </h2>
             <ContactForm />

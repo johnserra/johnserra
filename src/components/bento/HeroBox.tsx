@@ -7,22 +7,23 @@ export function HeroBox() {
   const t = useTranslations("Hero");
 
   return (
-    <div className="relative overflow-hidden rounded-[var(--radius-bento)] bg-gradient-to-br from-blue-600 to-purple-700 border border-blue-700/50 dark:border-blue-900/30 p-8 md:p-12 col-span-1 md:col-span-6 lg:col-span-8 min-h-[400px] flex items-center shadow-sm">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
-
-      {/* Content */}
-      <div className="relative z-10 max-w-2xl">
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
-          {t("headline")}
+    <div className="relative overflow-hidden rounded-card bg-transparent p-8 md:p-12 col-span-1 md:col-span-6 lg:col-span-8 min-h-[400px] flex items-center">
+      <div className="w-full">
+        <h1
+          className="font-display uppercase leading-[0.86] tracking-tight text-ink origin-left [transform:scaleX(1.06)] whitespace-nowrap"
+          style={{ fontSize: "clamp(3rem, 11vw, 8.5rem)" }}
+        >
+          JOHN <span className="text-accent">SERRA</span>
         </h1>
-        <p className="text-lg md:text-xl text-blue-50 mb-8 leading-relaxed">
+        <p className="mt-6 font-mono text-xs md:text-sm uppercase tracking-[0.12em] text-muted">
+          {t("headline")}
+        </p>
+        <p className="mt-5 max-w-2xl text-lg text-ink-soft mb-8 leading-relaxed">
           {t("introduction")}
         </p>
         <Button
           variant="primary"
           size="lg"
-          className="bg-white text-blue-700 hover:bg-blue-50"
           onClick={() => window.dispatchEvent(new CustomEvent("openChat"))}
         >
           {t("ctaText")}

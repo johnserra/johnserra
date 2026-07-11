@@ -31,13 +31,13 @@ export default async function ProjectsPage({ params }: Props) {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-background text-foreground py-16">
+      <main className="min-h-screen bg-ground py-16 text-ink">
         <div className="max-w-5xl mx-auto px-4 md:px-6 lg:px-8">
           <div className="mb-12">
-            <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-50 mb-4">
+            <h1 className="mb-4 font-display text-4xl uppercase tracking-tight text-ink">
               {t("title")}
             </h1>
-            <p className="text-lg text-zinc-600 dark:text-zinc-400">
+            <p className="text-lg text-ink-soft">
               {t("subtitle")}
             </p>
           </div>
@@ -47,7 +47,7 @@ export default async function ProjectsPage({ params }: Props) {
               <Link
                 key={project.slug}
                 href={`/projects/${project.slug}`}
-                className="group block bg-white dark:bg-zinc-900 rounded-2xl p-8 border border-zinc-200 dark:border-zinc-800 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                className="group block rounded-card border border-hair bg-panel p-8 transition-colors hover:border-line-strong"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex flex-wrap gap-2">
@@ -59,13 +59,13 @@ export default async function ProjectsPage({ params }: Props) {
                   </div>
                   <ArrowUpRight
                     size={20}
-                    className="text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-zinc-50 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all shrink-0"
+                    className="shrink-0 text-faint transition-colors group-hover:text-accent"
                   />
                 </div>
-                <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-50 mb-3">
+                <h2 className="mb-3 text-xl font-bold text-ink">
                   {project.frontmatter.title}
                 </h2>
-                <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                <p className="leading-relaxed text-ink-soft">
                   {project.frontmatter.description}
                 </p>
               </Link>

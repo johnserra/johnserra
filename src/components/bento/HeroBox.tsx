@@ -10,14 +10,12 @@ export function HeroBox() {
     <div className="relative overflow-hidden rounded-card bg-transparent p-8 md:p-12 col-span-1 md:col-span-6 lg:col-span-8 min-h-[400px] flex items-center">
       <div className="w-full">
         <h1
-          className="font-display uppercase leading-[0.86] tracking-tight text-ink origin-left [transform:scaleX(1.06)] whitespace-nowrap"
-          style={{ fontSize: "clamp(2.75rem, 8.5vw, 7rem)" }}
+          className="font-display uppercase leading-[0.95] tracking-tight origin-left [transform:scaleX(1.04)]"
+          style={{ fontSize: "clamp(1.9rem, 4.6vw, 4rem)" }}
         >
-          JOHN <span className="text-accent">SERRA</span>
+          <span className="block text-ink">{t("headlineLine1")}</span>
+          <span className="block text-accent">{t("headlineLine2")}</span>
         </h1>
-        <p className="mt-6 font-mono text-xs md:text-sm uppercase tracking-[0.12em] text-muted">
-          {t("headline")}
-        </p>
         <p className="mt-5 max-w-2xl text-lg text-ink-soft mb-8 leading-relaxed">
           {t("introduction")}
         </p>

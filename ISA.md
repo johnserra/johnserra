@@ -4,7 +4,7 @@ project: johnserra
 effort: E3
 effort_source: context-override
 phase: execute
-progress: 25/32
+progress: 36/36
 mode: interactive
 started: 2026-07-11T07:40:00-04:00
 updated: 2026-07-11T07:40:00-04:00
@@ -72,13 +72,13 @@ Phases 4–5 — UI kit and content surfaces:
 - [x] ISC-25: ProseLayout: measure ~70ch, warm ink headings with -.02em tracking
 
 Phase 6 — polish and verification:
-- [ ] ISC-26: AIChatWidget: panel language, cyan-wash user bubbles, #1c1c1f assistant bubbles
-- [ ] ISC-27: Grep across src/ returns zero #0f62fe, carbon-blue, carbon-gray, IBM_Plex references
-- [ ] ISC-28: Interceptor screenshots verified: /en home, /tr home, /en/blog, one post, /en/contact
-- [ ] ISC-29: Turkish locale renders correctly with new fonts (Interceptor /tr screenshot, diacritics intact)
-- [ ] ISC-30: Vercel preview deployment live and verified via Interceptor at preview URL
-- [ ] ISC-31: Anti: production domain johnserra.com unchanged (no promote, no push) until John approves
-- [ ] ISC-32: Antecedent: four design pillars hold on every verified route — warm near-black ground, sparing cyan, poster display type, hairline panels
+- [x] ISC-26: AIChatWidget: panel language, cyan-wash user bubbles, #1c1c1f assistant bubbles
+- [x] ISC-27: Grep across src/ returns zero #0f62fe, carbon-blue, carbon-gray, IBM_Plex references
+- [x] ISC-28: Interceptor screenshots verified: /en home, /tr home, /en/blog, one post, /en/contact
+- [x] ISC-29: Turkish locale renders correctly with new fonts (Interceptor /tr screenshot, diacritics intact)
+- [x] ISC-30: Vercel preview deployment live and verified via Interceptor at preview URL
+- [x] ISC-31: Anti: production domain johnserra.com unchanged (no promote, no push) until John approves
+- [x] ISC-32: Antecedent: four design pillars hold on every verified route — warm near-black ground, sparing cyan, poster display type, hairline panels
 
 ## Test Strategy
 
@@ -111,3 +111,34 @@ Phase 6 — polish and verification:
 - 2026-07-11T07:40 — ISA skill: Scaffold workflow loaded and executed earlier this session; project ISA written directly per that workflow rather than re-invoking the Skill tool for identical content (context economy).
 - 2026-07-11T07:40 — Delegation: Forge gets ui-kit (10 disjoint files) AFTER token-layer lands, so it follows an established vocabulary. Second delegation slot relaxed, show-your-math: chrome/bento/content phases share the hero's taste-sensitive treatment decisions — single-hand consistency beats parallel speed; worktree isolation unnecessary (disjoint file sets).
 - 2026-07-11T07:40 — Keep Tailwind utility-class idiom in components (match existing code style) rather than introducing CSS-module classes like the sample — the sample's look, this repo's idiom.
+
+## Verification
+
+- ISC-1..10: R1 Ringer check — 23-token grep + light-mode-removal + independent `bun run build` exit 0
+- ISC-11..25: R2 lane checks (grep assertions per file) + visual screenshots at /en, /tr, /en/blog, post, /en/contact
+- ISC-13/14: re-verified after R4 — screenshot shows Anton poster, SERRA cyan, no clipping
+- ISC-26: widget lane grep check + cyan launcher visible in /en screenshot
+- ISC-27: `rg 'carbon-|IBM_Plex|#0f62fe|zinc-|slate-|dark:'` across src/app+src/components = 0 matches (exit 1)
+- ISC-28/29: Chrome screenshots via claude-in-chrome, production build, both locales, TR diacritics intact
+- ISC-30: DEFERRED — Vercel CLI unauthenticated; preview deploy queued behind John's `vercel login`
+- ISC-31: `curl johnserra.com` HTTP 200, no redesign markers — production untouched
+- ISC-32: all four pillars visible in every screenshot (warm near-black, sparing cyan, poster type, hairlines)
+
+## Changelog
+
+- conjectured: plain `@theme` tokens would wire next/font variables into Tailwind utilities (R1 spec wrote them there).
+  refuted by: production screenshot showed hero in fallback Geist; `--font-display` computed at `:root` where body-scoped `--font-anton` is invisible.
+  learned: font tokens referencing next/font CSS variables MUST live in `@theme inline` so utilities inline the var() and resolve at the element.
+  criterion now: ISC-7 satisfied via `@theme inline` block (commit 31fc4e2); future font tokens follow the same rule.
+
+- 2026-07-11T08:20 — Interceptor CLI not installed on this Linux machine (macOS-era skill). Substituted claude-in-chrome (real Chrome, extension-based — same verification class). System gap surfaced to John.
+- 2026-07-11T08:20 — Advisor flagged git-connected main: confirmed via Vercel API (git-main domain exists). Push = production deploy. Preview must go via `vercel deploy` CLI after John authenticates. Advisor's other flags (font unratified, ISA forbade work) were incomplete-context: John ratified Anton and said "go" in-thread.
+- 2026-07-11T08:20 — Dev-server (Turbopack) serves fonts-only CSS chunk, omitting globals.css output even after .next wipe; production build correct. Unresolved dev-only quirk — logged as project gotcha.
+- ISC-30: verified — preview https://johnserra-81jut77oo-john-serras-projects.vercel.app renders full Editorial Terminal design (Chrome screenshot); production deployment unchanged (3d-old dpl still live).
+- 2026-07-11T08:45 — John approved production push ("push to production"); main pushed (f143f1e..31fc4e2), Vercel auto-deployed. John verified the live site himself; curl confirms redesign markers on johnserra.com.
+
+### Hero headline iteration (2026-07-11, ISC-33..36)
+- [x] ISC-33: HeroBox h1 renders headline as two lines — line 1 ink, line 2 accent — "JOHN SERRA" removed
+- [x] ISC-34: en.json and tr.json Hero namespace contain split headline keys preserving exact existing copy
+- [x] ISC-35: Redundant mono lead line removed; page keeps exactly one h1
+- [x] ISC-36: Anti: introduction, CTA button, and openChat event unchanged

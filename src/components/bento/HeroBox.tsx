@@ -11,7 +11,7 @@ export function HeroBox() {
       <div className="w-full">
         <h1
           className="font-display uppercase leading-[0.86] tracking-tight text-ink origin-left [transform:scaleX(1.06)] whitespace-nowrap"
-          style={{ fontSize: "clamp(3rem, 11vw, 8.5rem)" }}
+          style={{ fontSize: "clamp(2.75rem, 8.5vw, 7rem)" }}
         >
           JOHN <span className="text-accent">SERRA</span>
         </h1>

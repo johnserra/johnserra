@@ -25,6 +25,9 @@
   --radius-card: 8px;
   --radius-field: 6px;
   --radius-pill: 99px;
+}
+
+@theme inline {
   --font-sans: var(--font-geist), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), monospace;
   --font-display: var(--font-anton), "Arial Narrow", sans-serif;

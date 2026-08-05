@@ -17,6 +17,7 @@ final class Translations {
 	private const META_LOCALE    = 'locale';
 	private const META_GROUP_ID  = 'translation_group_id';
 	private const META_PEER      = 'translation_peer';
+	private const META_LEGACY_KEY = 'legacy_source_key';
 	private const LOCALES        = array( 'en', 'tr' );
 
 	private static bool $syncing = false;
@@ -25,6 +26,67 @@ final class Translations {
 		add_action( 'acf/save_post', array( self::class, 'assign_translation_group' ), 20 );
 		add_action( 'rest_api_init', array( self::class, 'register_rest_route' ) );
 		add_filter( 'acf/validate_value/key=' . ACF::FIELD_TRANSLATION_PEER, array( self::class, 'validate_peer' ), 10, 4 );
+
+		foreach ( Content_Model::SUPPORTED_POST_TYPES as $post_type ) {
+			add_filter( "rest_{$post_type}_collection_params", array( self::class, 'add_locale_collection_param' ) );
+			add_filter( "rest_{$post_type}_query", array( self::class, 'filter_collection_by_locale' ), 10, 2 );
+		}
+	}
+
+	/**
+	 * @param array<string, mixed> $params
+	 * @return array<string, mixed>
+	 */
+	public static function add_locale_collection_param( array $params ): array {
+		$params['js_locale'] = array(
+			'description'       => __( 'Filter content by the John Serra locale field.', 'johnserra-core' ),
+			'type'              => 'string',
+			'enum'              => self::LOCALES,
+			'sanitize_callback' => 'sanitize_key',
+			'validate_callback' => static fn( $value ): bool => in_array( $value, self::LOCALES, true ),
+		);
+		$params['js_legacy_source_key'] = array(
+			'description'       => __( 'Find content by its exact migration source key.', 'johnserra-core' ),
+			'type'              => 'string',
+			'sanitize_callback' => 'sanitize_text_field',
+			'validate_callback' => static fn( $value ): bool => is_string( $value ) && strlen( $value ) <= 255,
+		);
+
+		return $params;
+	}
+
+	/**
+	 * @param array<string, mixed> $args
+	 * @return array<string, mixed>
+	 */
+	public static function filter_collection_by_locale( array $args, WP_REST_Request $request ): array {
+		$locale = (string) $request->get_param( 'js_locale' );
+		$meta_query   = isset( $args['meta_query'] ) && is_array( $args['meta_query'] ) ? $args['meta_query'] : array();
+
+		if ( in_array( $locale, self::LOCALES, true ) ) {
+			$meta_query[] = array(
+				'key'     => self::META_LOCALE,
+				'value'   => $locale,
+				'compare' => '=',
+			);
+		}
+
+		$legacy_source_key = (string) $request->get_param( 'js_legacy_source_key' );
+		if ( '' !== $legacy_source_key ) {
+			$meta_query[] = array(
+				'key'     => self::META_LEGACY_KEY,
+				'value'   => $legacy_source_key,
+				'compare' => '=',
+			);
+		}
+
+		if ( empty( $meta_query ) ) {
+			return $args;
+		}
+
+		$args['meta_query'] = $meta_query;
+
+		return $args;
 	}
 
 	public static function register_rest_route(): void {

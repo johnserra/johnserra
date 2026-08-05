@@ -17,6 +17,16 @@ Site-specific WordPress content model and REST extensions for the headless `john
 4. Open **Custom Fields → Tools** and confirm the four JSON-backed field groups are available. If ACF reports them as available for sync, sync them once.
 5. In **Settings → Permalinks**, save once after initial installation if another plugin or host requires a rewrite refresh.
 
+Configure the signed frontend webhook in `wp-config.php`:
+
+```php
+define( 'JOHNSERRA_FRONTEND_WEBHOOK_URL', 'https://johnserra.com/api/revalidate/wordpress' );
+define( 'JOHNSERRA_FRONTEND_URL', 'https://johnserra.com' );
+define( 'JOHNSERRA_WEBHOOK_SECRET', 'replace-with-a-long-random-secret' );
+```
+
+Use the same secret as `WORDPRESS_WEBHOOK_SECRET` in the frontend environment. Published updates enqueue an upsert; unpublishing and deletion enqueue removal. WordPress preview links use the same secret to create signed, short-path preview requests; the frontend then authenticates to WordPress with a restricted Application Password. Failed webhook deliveries are written to the WordPress PHP error log and should be monitored.
+
 Do not edit production field groups without committing the resulting `acf-json` changes back to this repository.
 
 Repository-level contract checks can be run with:
@@ -71,7 +81,6 @@ ACF field groups used by the frontend have `show_in_rest` enabled. The editor-on
 
 ## Deliberate omissions from phase one
 
-- WordPress-to-Next.js signed webhook and preview integration.
 - Content importer.
 - Supabase queue, pgvector migration, and embedding worker.
 - Next.js WordPress client.

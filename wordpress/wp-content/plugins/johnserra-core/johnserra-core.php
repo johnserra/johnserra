@@ -21,6 +21,7 @@ define( 'JOHNSERRA_CORE_DIR', plugin_dir_path( __FILE__ ) );
 require_once JOHNSERRA_CORE_DIR . 'includes/class-content-model.php';
 require_once JOHNSERRA_CORE_DIR . 'includes/class-acf.php';
 require_once JOHNSERRA_CORE_DIR . 'includes/class-translations.php';
+require_once JOHNSERRA_CORE_DIR . 'includes/class-webhook.php';
 
 add_action(
 	'plugins_loaded',
@@ -28,6 +29,7 @@ add_action(
 		JohnSerra\Core\Content_Model::register();
 		JohnSerra\Core\ACF::register();
 		JohnSerra\Core\Translations::register();
+		JohnSerra\Core\Webhook::register();
 	}
 );
 

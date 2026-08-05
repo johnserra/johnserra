@@ -40,36 +40,10 @@ create index if not exists career_context_content_fts
 alter table public.career_context enable row level security;
 
 
--- ============================================================
--- OPTIONAL: pgvector for semantic similarity search
--- Enable this once you're ready to add embedding-based search.
--- ============================================================
---
--- 1. Enable the extension (Settings → Extensions → vector):
---    create extension if not exists vector;
---
--- 2. Add an embedding column:
---    alter table public.career_context
---      add column if not exists embedding vector(1536);
---
--- 3. Create an HNSW index for fast ANN search:
---    create index if not exists career_context_embedding_idx
---      on public.career_context
---      using hnsw (embedding vector_cosine_ops);
---
--- 4. Add the match function used by the chat route:
---    create or replace function match_career_context (
---      query_embedding  vector(1536),
---      match_threshold  float   default 0.7,
---      match_count      int     default 4
---    )
---    returns table (source text, content text, similarity float)
---    language sql stable
---    as $$
---      select source, content,
---             1 - (embedding <=> query_embedding) as similarity
---      from   public.career_context
---      where  1 - (embedding <=> query_embedding) > match_threshold
---      order  by similarity desc
---      limit  match_count;
---    $$;
+-- 3. WordPress vector search and indexing queue ----------------
+-- Apply supabase/migrations/00001_wordpress_vector_queue.sql after this
+-- base schema. It adds:
+--   - pgvector with 768-dimensional Gemini embeddings
+--   - locale/status-aware match_career_context RPC
+--   - durable pgmq content_indexing queue and service-role RPCs
+--   - WordPress identity and embedding-version metadata

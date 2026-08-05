@@ -3,11 +3,12 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { getContentBySlug } from "@/lib/content";
+import { getSiteContentBySlug } from "@/lib/site-content";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ProseLayout } from "@/components/ui/ProseLayout";
 import { Callout } from "@/components/ui/Callout";
+import { WordPressContent } from "@/components/ui/WordPressContent";
 import type { Metadata } from "next";
 import type { Locale } from "@/types";
 
@@ -28,7 +29,7 @@ export default async function AboutPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const content = getContentBySlug("about", "index", locale as Locale);
+  const content = await getSiteContentBySlug("about", "index", locale as Locale);
   if (!content) notFound();
   return (
     <>
@@ -36,16 +37,20 @@ export default async function AboutPage({ params }: Props) {
       <main className="min-h-screen bg-ground py-16 text-ink">
         <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
           <ProseLayout className="prose-h1:tracking-tight prose-h1:text-ink prose-h2:font-mono prose-h2:text-xs prose-h2:uppercase prose-h2:tracking-[0.1em] prose-h2:text-muted">
-            <MDXRemote
-              source={content.content}
-              components={{ Callout }}
-              options={{
-                mdxOptions: {
-                  remarkPlugins: [remarkGfm],
-                  rehypePlugins: [rehypeSlug],
-                },
-              }}
-            />
+            {content.format === "html" ? (
+              <WordPressContent html={content.content} />
+            ) : (
+              <MDXRemote
+                source={content.content}
+                components={{ Callout }}
+                options={{
+                  mdxOptions: {
+                    remarkPlugins: [remarkGfm],
+                    rehypePlugins: [rehypeSlug],
+                  },
+                }}
+              />
+            )}
           </ProseLayout>
         </div>
       </main>

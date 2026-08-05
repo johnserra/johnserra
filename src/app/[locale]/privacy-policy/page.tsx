@@ -3,10 +3,11 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { getContentBySlug } from "@/lib/content";
+import { getSiteContentBySlug } from "@/lib/site-content";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ProseLayout } from "@/components/ui/ProseLayout";
+import { WordPressContent } from "@/components/ui/WordPressContent";
 import type { Metadata } from "next";
 import type { Locale } from "@/types";
 
@@ -27,7 +28,7 @@ export default async function PrivacyPolicyPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const content = getContentBySlug("privacy-policy", "index", locale as Locale);
+  const content = await getSiteContentBySlug("privacy-policy", "index", locale as Locale);
   if (!content) notFound();
 
   return (
@@ -36,15 +37,19 @@ export default async function PrivacyPolicyPage({ params }: Props) {
       <main className="min-h-screen bg-background text-foreground py-16">
         <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
           <ProseLayout>
-            <MDXRemote
-              source={content.content}
-              options={{
-                mdxOptions: {
-                  remarkPlugins: [remarkGfm],
-                  rehypePlugins: [rehypeSlug],
-                },
-              }}
-            />
+            {content.format === "html" ? (
+              <WordPressContent html={content.content} />
+            ) : (
+              <MDXRemote
+                source={content.content}
+                options={{
+                  mdxOptions: {
+                    remarkPlugins: [remarkGfm],
+                    rehypePlugins: [rehypeSlug],
+                  },
+                }}
+              />
+            )}
           </ProseLayout>
         </div>
       </main>

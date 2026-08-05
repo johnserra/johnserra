@@ -1,14 +1,16 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
-import { getContentBySlug, getContentSlugs } from "@/lib/content";
+import { getSiteContentBySlug, getSiteContentSlugs, getSiteTranslationSlug } from "@/lib/site-content";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ProseLayout } from "@/components/ui/ProseLayout";
 import { Callout } from "@/components/ui/Callout";
-import { ArrowLeft, LogoGithub } from "@carbon/icons-react";
+import { WordPressContent } from "@/components/ui/WordPressContent";
+import { ArrowLeft, ArrowUpRight, LogoGithub } from "@carbon/icons-react";
 import { Tag } from "@/components/ui/Tag";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
@@ -23,7 +25,7 @@ interface Props {
 export async function generateStaticParams() {
   const params: { locale: string; slug: string }[] = [];
   for (const locale of routing.locales) {
-    const slugs = getContentSlugs("projects", locale);
+    const slugs = await getSiteContentSlugs("projects", locale);
     for (const slug of slugs) {
       params.push({ locale, slug });
     }
@@ -33,7 +35,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
-  const content = getContentBySlug("projects", slug, locale as Locale);
+  const content = await getSiteContentBySlug("projects", slug, locale as Locale);
   if (!content) return {};
   return {
     title: `${content.frontmatter.title} — John Serra`,
@@ -46,10 +48,18 @@ export default async function ProjectCaseStudy({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations("Portfolio");
-  const content = getContentBySlug("projects", slug, locale as Locale);
+  const content = await getSiteContentBySlug("projects", slug, locale as Locale);
   if (!content) return notFound();
 
   const jsonLd = getProjectSchema(slug, content.frontmatter, locale);
+  const targetLocale = (locale === "en" ? "tr" : "en") as Locale;
+  const translatedSlug = await getSiteTranslationSlug(
+    "projects",
+    content,
+    locale as Locale,
+    targetLocale,
+  );
+  const alternatePath = translatedSlug ? `/projects/${translatedSlug}` : "/projects";
 
   return (
     <>
@@ -57,7 +67,7 @@ export default async function ProjectCaseStudy({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Header />
+      <Header alternateLocalePath={alternatePath} />
       <main className="min-h-screen bg-ground py-16 text-ink">
         <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
           {/* Back link */}
@@ -89,6 +99,16 @@ export default async function ProjectCaseStudy({ params }: Props) {
               {content.frontmatter.description}
             </p>
           )}
+          {content.frontmatter.coverImage && (
+            <div className="relative mb-10 aspect-[16/9] w-full overflow-hidden rounded-card border border-hair">
+              <Image
+                src={content.frontmatter.coverImage}
+                alt={content.frontmatter.coverImageAlt ?? content.frontmatter.title}
+                fill
+                className="object-cover"
+              />
+            </div>
+          )}
           {content.frontmatter.githubUrl && (
             <a
               href={content.frontmatter.githubUrl}
@@ -100,20 +120,35 @@ export default async function ProjectCaseStudy({ params }: Props) {
               {t("viewOnGithub")}
             </a>
           )}
+          {content.frontmatter.liveUrl && (
+            <a
+              href={content.frontmatter.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mb-12 ml-3 inline-flex cursor-pointer items-center justify-center gap-2 rounded-card border border-accent-dim bg-accent/10 px-5 py-2.5 font-mono text-xs uppercase tracking-[0.1em] text-accent transition-colors hover:border-accent"
+            >
+              <ArrowUpRight size={18} />
+              Live project
+            </a>
+          )}
 
           <hr className="mb-12 border-hair" />
           {/* Content */}
           <ProseLayout>
-            <MDXRemote
-              source={content.content}
-              components={{ Callout }}
-              options={{
-                mdxOptions: {
-                  remarkPlugins: [remarkGfm],
-                  rehypePlugins: [rehypeSlug],
-                },
-              }}
-            />
+            {content.format === "html" ? (
+              <WordPressContent html={content.content} />
+            ) : (
+              <MDXRemote
+                source={content.content}
+                components={{ Callout }}
+                options={{
+                  mdxOptions: {
+                    remarkPlugins: [remarkGfm],
+                    rehypePlugins: [rehypeSlug],
+                  },
+                }}
+              />
+            )}
           </ProseLayout>
         </div>
       </main>

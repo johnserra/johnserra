@@ -1,9 +1,9 @@
 import { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
-import { getContentSlugs } from "@/lib/content";
+import { getSiteContentSlugs } from "@/lib/site-content";
 import { Locale } from "@/types";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://johnserra.com";
   const routes = ["", "/about", "/blog", "/projects", "/contact", "/privacy-policy"];
   
@@ -23,7 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }
 
     // Add dynamic blog posts
-    const blogSlugs = getContentSlugs("blog", locale as Locale);
+    const blogSlugs = await getSiteContentSlugs("blog", locale as Locale);
     for (const slug of blogSlugs) {
       sitemap.push({
         url: `${baseUrl}${localePrefix}/blog/${slug}`,
@@ -34,7 +34,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }
 
     // Add dynamic projects
-    const projectSlugs = getContentSlugs("projects", locale as Locale);
+    const projectSlugs = await getSiteContentSlugs("projects", locale as Locale);
     for (const slug of projectSlugs) {
       sitemap.push({
         url: `${baseUrl}${localePrefix}/projects/${slug}`,

@@ -15,7 +15,7 @@ const NAV_LINK_HREFS = [
   { key: "contact", href: "/contact" },
 ] as const;
 
-function LanguageSwitcher() {
+function LanguageSwitcher({ alternateLocalePath }: { alternateLocalePath?: string }) {
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
@@ -24,7 +24,7 @@ function LanguageSwitcher() {
 
   return (
     <button
-      onClick={() => router.replace(pathname, { locale: otherLocale })}
+      onClick={() => router.replace(alternateLocalePath ?? pathname, { locale: otherLocale })}
       className="rounded-field px-2 py-1 font-mono text-xs uppercase tracking-[0.1em] text-muted transition-colors hover:bg-panel-2 hover:text-ink"
     >
       {otherLocale.toUpperCase()}
@@ -32,7 +32,7 @@ function LanguageSwitcher() {
   );
 }
 
-export function Header() {
+export function Header({ alternateLocalePath }: { alternateLocalePath?: string } = {}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const t = useTranslations("Nav");
@@ -64,12 +64,12 @@ export function Header() {
                 {t(link.key)}
               </Link>
             ))}
-            <LanguageSwitcher />
+            <LanguageSwitcher alternateLocalePath={alternateLocalePath} />
           </nav>
 
           {/* Mobile Menu Button */}
           <div className="flex items-center gap-2 md:hidden">
-            <LanguageSwitcher />
+            <LanguageSwitcher alternateLocalePath={alternateLocalePath} />
             <IconButton
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               description={tCommon("toggleMenu")}

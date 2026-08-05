@@ -14,6 +14,9 @@ export interface Frontmatter {
   status?: string;
   coverImage?: string;
   githubUrl?: string;
+  liveUrl?: string;
+  coverImageAlt?: string;
+  translationGroupId?: string;
   // Recipe-specific
   cuisine?: string;
   servings?: number;

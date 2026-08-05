@@ -1,5 +1,5 @@
 import { Link } from "@/i18n/navigation";
-import { getAllContent } from "@/lib/content";
+import { getAllSiteContent } from "@/lib/site-content";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { TagCloud } from "@/components/blog/TagCloud";
@@ -30,7 +30,7 @@ export default async function BlogPage({ params, searchParams }: Props) {
 
   const t = await getTranslations("Blog");
   const tRecipes = await getTranslations("Recipes");
-  const allPosts = getAllContent("blog", locale as Locale);
+  const allPosts = await getAllSiteContent("blog", locale as Locale);
   const dateLocale = locale === "tr" ? "tr-TR" : "en-US";
 
   // Build tag counts

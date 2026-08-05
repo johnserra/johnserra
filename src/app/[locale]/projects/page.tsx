@@ -1,5 +1,5 @@
 import { Link } from "@/i18n/navigation";
-import { getAllContent } from "@/lib/content";
+import { getAllSiteContent } from "@/lib/site-content";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ArrowUpRight } from "@carbon/icons-react";
@@ -26,7 +26,7 @@ export default async function ProjectsPage({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations("Portfolio");
-  const projects = getAllContent("projects", locale as Locale);
+  const projects = await getAllSiteContent("projects", locale as Locale);
 
   return (
     <>

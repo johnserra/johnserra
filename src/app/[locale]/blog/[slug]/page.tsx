@@ -4,11 +4,12 @@ import { Link } from "@/i18n/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
-import { getContentBySlug, getContentSlugs } from "@/lib/content";
+import { getSiteContentBySlug, getSiteContentSlugs, getSiteTranslationSlug } from "@/lib/site-content";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ProseLayout } from "@/components/ui/ProseLayout";
 import { Callout } from "@/components/ui/Callout";
+import { WordPressContent } from "@/components/ui/WordPressContent";
 import { ArrowLeft, Time, Globe, UserMultiple } from "@carbon/icons-react";
 import { Tag } from "@/components/ui/Tag";
 import { setRequestLocale, getTranslations } from "next-intl/server";
@@ -24,7 +25,7 @@ interface Props {
 export async function generateStaticParams() {
   const params: { locale: string; slug: string }[] = [];
   for (const locale of routing.locales) {
-    const slugs = getContentSlugs("blog", locale);
+    const slugs = await getSiteContentSlugs("blog", locale);
     for (const slug of slugs) {
       params.push({ locale, slug });
     }
@@ -34,7 +35,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
-  const content = getContentBySlug("blog", slug, locale as Locale);
+  const content = await getSiteContentBySlug("blog", slug, locale as Locale);
   if (!content) return {};
   return {
     title: `${content.frontmatter.title} — John Serra`,
@@ -48,11 +49,19 @@ export default async function BlogPostPage({ params }: Props) {
 
   const t = await getTranslations("Blog");
   const tRecipes = await getTranslations("Recipes");
-  const content = getContentBySlug("blog", slug, locale as Locale);
+  const content = await getSiteContentBySlug("blog", slug, locale as Locale);
   if (!content) notFound();
 
   const { frontmatter } = content;
   const jsonLd = getBlogPostSchema(slug, frontmatter, locale);
+  const targetLocale = (locale === "en" ? "tr" : "en") as Locale;
+  const translatedSlug = await getSiteTranslationSlug(
+    "blog",
+    content,
+    locale as Locale,
+    targetLocale,
+  );
+  const alternatePath = translatedSlug ? `/blog/${translatedSlug}` : "/blog";
 
   const dateLocale = locale === "tr" ? "tr-TR" : "en-US";
   const hasRecipeMeta =
@@ -68,7 +77,7 @@ export default async function BlogPostPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Header />
+      <Header alternateLocalePath={alternatePath} />
       <main className="min-h-screen bg-ground py-16 text-ink">
         <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
           {/* Back link */}
@@ -116,7 +125,7 @@ export default async function BlogPostPage({ params }: Props) {
             <div className="relative mb-10 aspect-[16/9] w-full overflow-hidden rounded-card border border-hair">
               <Image
                 src={frontmatter.coverImage}
-                alt={frontmatter.title}
+                alt={frontmatter.coverImageAlt ?? frontmatter.title}
                 fill
                 className="object-cover"
                 priority
@@ -171,16 +180,20 @@ export default async function BlogPostPage({ params }: Props) {
           )}
           {/* Content */}
           <ProseLayout>
-            <MDXRemote
-              source={content.content}
-              components={{ Callout }}
-              options={{
-                mdxOptions: {
-                  remarkPlugins: [remarkGfm],
-                  rehypePlugins: [rehypeSlug],
-                },
-              }}
-            />
+            {content.format === "html" ? (
+              <WordPressContent html={content.content} />
+            ) : (
+              <MDXRemote
+                source={content.content}
+                components={{ Callout }}
+                options={{
+                  mdxOptions: {
+                    remarkPlugins: [remarkGfm],
+                    rehypePlugins: [rehypeSlug],
+                  },
+                }}
+              />
+            )}
           </ProseLayout>
         </div>
       </main>

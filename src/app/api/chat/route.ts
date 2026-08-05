@@ -1,6 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import { createAdminClient } from "@/lib/supabase";
-import { getAllContent, getContentBySlug } from "@/lib/content";
+import { embedQuery } from "@/lib/knowledge/embeddings";
 import type { Locale } from "@/types";
 
 const ai = new GoogleGenAI({
@@ -12,102 +12,28 @@ interface Message {
   content: string;
 }
 
-async function getCareerContext(query: string): Promise<string> {
-  const supabase = createAdminClient();
+interface CareerContextMatch {
+  source: string;
+  content: string;
+  metadata: Record<string, unknown>;
+  similarity: number;
+}
 
-  // Full-text keyword search — upgrade to vector similarity search
-  // once embeddings are seeded via `npm run seed` and the
-  // match_career_context RPC function is added to Supabase.
-  const { data, error } = await supabase
-    .from("career_context")
-    .select("content, source")
-    .textSearch("content", query.split(" ").slice(0, 8).join(" | "), {
-      type: "plain",
-      config: "english",
-    })
-    .limit(4);
+async function getCareerContext(query: string, locale: Locale): Promise<string> {
+  const supabase = createAdminClient();
+  const queryEmbedding = await embedQuery(query);
+  const { data, error } = await supabase.rpc("match_career_context", {
+    query_embedding: queryEmbedding,
+    query_locale: locale,
+    match_threshold: 0.65,
+    match_count: 6,
+  });
 
   if (error || !data?.length) return "";
 
-  return data
-    .map((row) => `[Source: ${row.source}]\n${row.content}`)
+  return (data as CareerContextMatch[])
+    .map((row) => `[Source: ${row.source}; similarity: ${row.similarity.toFixed(3)}]\n${row.content}`)
     .join("\n\n---\n\n");
-}
-
-function getSiteContent(query: string, locale: Locale = "en"): string {
-  const sections: string[] = [];
-
-  // About page — always include
-  const about = getContentBySlug("about", "index", locale);
-  if (about) {
-    sections.push(`## About John\n${about.content.trim()}`);
-  }
-
-  // Blog posts — always include (posts are short)
-  const posts = getAllContent("blog", locale);
-  if (posts.length) {
-    const blogSection = posts
-      .map((p) => {
-        const meta = `### ${p.frontmatter.title}${p.frontmatter.date ? ` (${p.frontmatter.date})` : ""}`;
-        return `${meta}\n${p.content.trim()}`;
-      })
-      .join("\n\n---\n\n");
-    sections.push(`## Blog Posts\n${blogSection}`);
-  }
-
-  // Projects — always include
-  const projects = getAllContent("projects", locale);
-  if (projects.length) {
-    const prefix = locale !== "en" ? `/${locale}` : "";
-    const projectSection = projects
-      .map((p) => {
-        const meta = `### ${p.frontmatter.title}${p.frontmatter.date ? ` (${p.frontmatter.date})` : ""}`;
-        const url = `${prefix}/projects/${p.slug}`;
-        return `${meta}\nURL: ${url}\n${p.content.trim()}`;
-      })
-      .join("\n\n---\n\n");
-    sections.push(`## Projects\n${projectSection}`);
-  }
-
-  // Recipes — retrieved by filtering posts that contain recipe metadata or tag
-  const recipes = posts.filter(
-    (p) =>
-      p.frontmatter.cuisine ||
-      p.frontmatter.totalTime ||
-      p.frontmatter.tags?.includes("recipe")
-  );
-  if (recipes.length) {
-    const prefix = locale !== "en" ? `/${locale}` : "";
-    const index = recipes
-      .map((r) => {
-        const meta = [r.frontmatter.cuisine, r.frontmatter.totalTime]
-          .filter(Boolean)
-          .join(", ");
-        const url = `${prefix}/blog/${r.slug}`;
-        return `- **${r.frontmatter.title}**${meta ? ` (${meta})` : ""}: ${r.frontmatter.description ?? ""} — page: ${url}`;
-      })
-      .join("\n");
-
-    const queryLower = query.toLowerCase();
-    const match = recipes.find((r) => {
-      const title = r.frontmatter.title.toLowerCase();
-      const slugWords = r.slug.replace(/-/g, " ");
-      // Match on full title, slug words, or any meaningful word in the title
-      return (
-        queryLower.includes(title) ||
-        queryLower.includes(slugWords) ||
-        title.split(" ").some((w) => w.length > 4 && queryLower.includes(w))
-      );
-    });
-
-    const recipeStory = match
-      ? `\n\n### About this recipe: ${match.frontmatter.title} (${prefix}/blog/${match.slug})\n${match.content.trim()}`
-      : "";
-
-    sections.push(`## Recipes\n${index}${recipeStory}`);
-  }
-
-  return sections.join("\n\n===\n\n");
 }
 
 export async function POST(req: Request) {
@@ -120,17 +46,7 @@ export async function POST(req: Request) {
   const latestUserMessage = messages.at(-1)?.content ?? "";
   const contentLocale = (locale === "tr" ? "tr" : "en") as Locale;
 
-  const [careerContext, siteContent] = await Promise.all([
-    getCareerContext(latestUserMessage),
-    Promise.resolve(getSiteContent(latestUserMessage, contentLocale)),
-  ]);
-
-  const contextBlock = [
-    careerContext,
-    siteContent,
-  ]
-    .filter(Boolean)
-    .join("\n\n===\n\n");
+  const contextBlock = await getCareerContext(latestUserMessage, contentLocale);
 
   const languageInstruction = locale === "tr"
     ? "\n\nIMPORTANT: The user is browsing the Turkish version of the site. Respond in Turkish. Use a warm, conversational Turkish tone."

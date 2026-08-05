@@ -1,5 +1,5 @@
 import { Link } from "@/i18n/navigation";
-import { getAllContent } from "@/lib/content";
+import { getAllSiteContent } from "@/lib/site-content";
 import { ArrowRight } from "@carbon/icons-react";
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/types";
@@ -10,7 +10,7 @@ interface BlogTeaserBoxProps {
 
 export async function BlogTeaserBox({ locale }: BlogTeaserBoxProps) {
   const t = await getTranslations("BlogTeaser");
-  const posts = getAllContent("blog", locale).slice(0, 3);
+  const posts = (await getAllSiteContent("blog", locale)).slice(0, 3);
   const dateLocale = locale === "tr" ? "tr-TR" : "en-US";
 
   return (

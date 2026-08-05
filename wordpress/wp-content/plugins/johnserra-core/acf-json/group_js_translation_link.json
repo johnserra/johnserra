@@ -1,0 +1,36 @@
+{
+    "key": "group_js_translation_link",
+    "title": "Translation Link",
+    "fields": [
+        {
+            "key": "field_js_translation_peer",
+            "label": "Translation Peer",
+            "name": "translation_peer",
+            "type": "post_object",
+            "instructions": "Choose the equivalent content in the other locale. The shared group ID is synchronized automatically.",
+            "required": 0,
+            "post_type": ["post", "page", "js_project"],
+            "post_status": ["publish", "draft", "pending", "future", "private"],
+            "taxonomy": "",
+            "allow_null": 1,
+            "multiple": 0,
+            "return_format": "id",
+            "ui": 1
+        }
+    ],
+    "location": [
+        [{ "param": "post_type", "operator": "==", "value": "post" }],
+        [{ "param": "post_type", "operator": "==", "value": "page" }],
+        [{ "param": "post_type", "operator": "==", "value": "js_project" }]
+    ],
+    "menu_order": 1,
+    "position": "side",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": [],
+    "active": true,
+    "description": "Editor-only helper for pairing translated content.",
+    "show_in_rest": 0,
+    "modified": 1785895200
+}

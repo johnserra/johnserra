@@ -1,0 +1,70 @@
+{
+    "key": "group_js_content_identity",
+    "title": "Content Identity",
+    "fields": [
+        {
+            "key": "field_js_locale",
+            "label": "Locale",
+            "name": "locale",
+            "type": "select",
+            "required": 1,
+            "choices": {
+                "en": "English",
+                "tr": "Turkish"
+            },
+            "default_value": "en",
+            "return_format": "value",
+            "allow_null": 0,
+            "multiple": 0,
+            "ui": 1
+        },
+        {
+            "key": "field_js_translation_group_id",
+            "label": "Translation Group ID",
+            "name": "translation_group_id",
+            "type": "text",
+            "instructions": "Assigned automatically. Translated content shares this UUID.",
+            "required": 0,
+            "readonly": 1,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_js_summary",
+            "label": "Summary",
+            "name": "summary",
+            "type": "textarea",
+            "instructions": "Stable SEO and listing description. Do not rely on an automatically generated excerpt.",
+            "required": 0,
+            "rows": 3,
+            "new_lines": ""
+        },
+        {
+            "key": "field_js_legacy_source_key",
+            "label": "Legacy Source Key",
+            "name": "legacy_source_key",
+            "type": "text",
+            "instructions": "Set by the importer and used for idempotent updates.",
+            "required": 0,
+            "readonly": 1
+        }
+    ],
+    "location": [
+        [{ "param": "post_type", "operator": "==", "value": "post" }],
+        [{ "param": "post_type", "operator": "==", "value": "page" }],
+        [{ "param": "post_type", "operator": "==", "value": "js_project" }]
+    ],
+    "menu_order": 0,
+    "position": "side",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": [],
+    "active": true,
+    "description": "Locale and stable content identity fields used by the headless frontend.",
+    "show_in_rest": 1,
+    "modified": 1785895200
+}

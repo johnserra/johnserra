@@ -14,6 +14,7 @@ jq -e '.fields[] | select(.name == "locale") | .choices == {"en":"English","tr":
 jq -e '.fields[] | select(.name == "translation_group_id") | .readonly == 1' "$plugin_dir/acf-json/group_js_content_identity.json" >/dev/null
 
 rg -q "rest_base.*projects" "$plugin_dir/includes/class-content-model.php"
+rg -q "pre_wp_unique_post_slug.*allow_cross_locale_slug" "$plugin_dir/includes/class-content-model.php"
 rg -q "REST_NAMESPACE = 'js/v1'" "$plugin_dir/includes/class-translations.php"
 rg -q "post_status.*=> 'publish'" "$plugin_dir/includes/class-translations.php"
 rg -q "js_translation_ambiguous" "$plugin_dir/includes/class-translations.php"

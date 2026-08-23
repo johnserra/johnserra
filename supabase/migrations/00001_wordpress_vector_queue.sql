@@ -112,7 +112,7 @@ as $$
       context.source,
       context.content,
       context.metadata,
-      1 - (context.embedding <=> query_embedding) as similarity
+      1 - (context.embedding operator(extensions.<=>) query_embedding) as similarity
     from public.career_context as context
     where context.embedding is not null
       and context.publication_status = 'publish'

@@ -337,7 +337,9 @@ async function importRecord(record: SourceRecord, manifest: ImportManifest): Pro
 
   const payload = {
     title: record.frontmatter.title,
-    slug: record.slug,
+    // WordPress owns slugs after initial creation so editors can localize URLs
+    // without a later idempotent import reverting them to filesystem names.
+    ...(existing ? {} : { slug: record.slug }),
     status: "publish",
     content: html,
     excerpt: record.frontmatter.description ?? "",

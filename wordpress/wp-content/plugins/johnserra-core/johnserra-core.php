@@ -2,7 +2,7 @@
 /**
  * Plugin Name: John Serra Site Core
  * Description: Content model and headless REST extensions for johnserra.com.
- * Version: 0.1.0
+ * Version: 0.1.3
  * Requires at least: 6.5
  * Requires PHP: 8.1
  * Author: John Serra
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'JOHNSERRA_CORE_VERSION', '0.1.0' );
+define( 'JOHNSERRA_CORE_VERSION', '0.1.3' );
 define( 'JOHNSERRA_CORE_FILE', __FILE__ );
 define( 'JOHNSERRA_CORE_DIR', plugin_dir_path( __FILE__ ) );
 

@@ -13,6 +13,7 @@ final class Content_Model {
 
 	public static function register(): void {
 		add_action( 'init', array( self::class, 'register_content_types' ) );
+		add_filter( 'pre_wp_unique_post_slug', array( self::class, 'allow_cross_locale_slug' ), 10, 6 );
 	}
 
 	public static function register_content_types(): void {
@@ -57,6 +58,53 @@ final class Content_Model {
 		);
 
 		register_taxonomy_for_object_type( 'post_tag', self::PROJECT_POST_TYPE );
+	}
+
+	/**
+	 * Permit the same slug when every conflicting record belongs to another locale.
+	 *
+	 * @param string|null $override_slug Pre-filtered slug override.
+	 * @param mixed       $post_id WordPress post ID.
+	 */
+	public static function allow_cross_locale_slug(
+		$override_slug,
+		$slug,
+		$post_id,
+		$post_status,
+		$post_type,
+		$post_parent
+	) {
+		unset( $post_status, $post_parent );
+		$post_id   = absint( $post_id );
+		$slug      = (string) $slug;
+		$post_type = (string) $post_type;
+
+		if ( null !== $override_slug || ! self::is_supported_post_type( $post_type ) ) {
+			return $override_slug;
+		}
+
+		$locale = (string) get_post_meta( $post_id, 'locale', true );
+		if ( ! in_array( $locale, array( 'en', 'tr' ), true ) ) {
+			return null;
+		}
+
+		$conflicts = get_posts(
+			array(
+				'name'           => $slug,
+				'post_type'      => $post_type,
+				'post_status'    => array( 'publish', 'future', 'draft', 'pending', 'private' ),
+				'post__not_in'   => array( $post_id ),
+				'posts_per_page' => -1,
+			)
+		);
+
+		foreach ( $conflicts as $conflict ) {
+			if ( $locale === (string) get_post_meta( $conflict->ID, 'locale', true ) ) {
+				return null;
+			}
+		}
+
+		return $slug;
 	}
 
 	public static function is_supported_post_type( string $post_type ): bool {

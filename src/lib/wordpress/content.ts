@@ -104,6 +104,31 @@ export async function getWordPressItemBySlug(
   return item ? normalizeWordPressItem(item, locale, preview) : null;
 }
 
+export async function getWordPressItemByLegacyKey(
+  type: WordPressCollectionType,
+  legacySourceKey: string,
+  locale: Locale,
+  preview = false,
+): Promise<WordPressContentItem | null> {
+  const response = await wordpressFetchPage<WordPressApiItem>(ENDPOINTS[type], {
+    query: {
+      js_legacy_source_key: legacySourceKey,
+      status: preview ? "any" : "publish",
+      context: preview ? "edit" : "view",
+      js_locale: locale,
+      per_page: 1,
+      _embed: "wp:featuredmedia,wp:term",
+      _fields: ITEM_FIELDS,
+    },
+    tags: contentCacheTags(type, locale),
+    revalidate: preview ? 0 : undefined,
+    auth: preview ? previewAuth() : undefined,
+  });
+
+  const item = response.items[0];
+  return item ? normalizeWordPressItem(item, locale, preview) : null;
+}
+
 export async function getWordPressPreviewById(
   type: WordPressCollectionType,
   contentId: number,

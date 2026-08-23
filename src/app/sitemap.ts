@@ -1,17 +1,25 @@
 import { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
 import { getSiteContentSlugs } from "@/lib/site-content";
+import { aboutPath, privacyPolicyPath, projectsPath } from "@/lib/routes";
 import { Locale } from "@/types";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://johnserra.com";
-  const routes = ["", "/about", "/blog", "/projects", "/contact", "/privacy-policy"];
   
   const sitemap: MetadataRoute.Sitemap = [];
 
   // Add static routes for each locale
   for (const locale of routing.locales) {
     const localePrefix = locale === routing.defaultLocale ? "" : `/${locale}`;
+    const routes = [
+      "",
+      aboutPath(locale),
+      "/blog",
+      projectsPath(locale),
+      "/contact",
+      privacyPolicyPath(locale),
+    ];
     
     for (const route of routes) {
       sitemap.push({
@@ -37,7 +45,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const projectSlugs = await getSiteContentSlugs("projects", locale as Locale);
     for (const slug of projectSlugs) {
       sitemap.push({
-        url: `${baseUrl}${localePrefix}/projects/${slug}`,
+        url: `${baseUrl}${localePrefix}${projectsPath(locale, slug)}`,
         lastModified: new Date(),
         changeFrequency: "monthly",
         priority: 0.6,

@@ -4,6 +4,7 @@ import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getSiteContentBySlug } from "@/lib/site-content";
+import { privacyPolicyPath } from "@/lib/routes";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ProseLayout } from "@/components/ui/ProseLayout";
@@ -33,7 +34,7 @@ export default async function PrivacyPolicyPage({ params }: Props) {
 
   return (
     <>
-      <Header />
+      <Header alternateLocalePath={privacyPolicyPath(locale === "en" ? "tr" : "en")} />
       <main className="min-h-screen bg-background text-foreground py-16">
         <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
           <ProseLayout>

@@ -1,4 +1,5 @@
 import { Frontmatter } from "./content";
+import { projectsPath } from "./routes";
 
 export function getBaseSchema() {
   return {
@@ -65,7 +66,7 @@ export function getProjectSchema(
   frontmatter: Frontmatter,
   locale: string
 ) {
-  const url = `https://johnserra.com${locale === "en" ? "" : `/${locale}`}/projects/${slug}`;
+  const url = `https://johnserra.com${locale === "en" ? "" : `/${locale}`}${projectsPath(locale, slug)}`;
   
   return {
     "@context": "https://schema.org",

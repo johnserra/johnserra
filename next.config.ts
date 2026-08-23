@@ -19,8 +19,36 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: wordpressRemotePatterns(),
   },
+  async rewrites() {
+    return [
+      { source: "/tr/hakkimda", destination: "/tr/about" },
+      { source: "/tr/gizlilik-politikasi", destination: "/tr/privacy-policy" },
+      { source: "/tr/projeler", destination: "/tr/projects" },
+      { source: "/tr/projeler/:path*", destination: "/tr/projects/:path*" },
+    ];
+  },
   async redirects() {
     return [
+      {
+        source: "/tr/about",
+        destination: "/tr/hakkimda",
+        permanent: true,
+      },
+      {
+        source: "/tr/privacy-policy",
+        destination: "/tr/gizlilik-politikasi",
+        permanent: true,
+      },
+      {
+        source: "/tr/projects",
+        destination: "/tr/projeler",
+        permanent: true,
+      },
+      {
+        source: "/tr/projects/:path*",
+        destination: "/tr/projeler/:path*",
+        permanent: true,
+      },
       {
         source: "/recipes",
         destination: "/blog?tag=recipe",

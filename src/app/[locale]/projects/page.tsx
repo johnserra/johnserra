@@ -1,5 +1,6 @@
 import { Link } from "@/i18n/navigation";
 import { getAllSiteContent } from "@/lib/site-content";
+import { projectsPath } from "@/lib/routes";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ArrowUpRight } from "@carbon/icons-react";
@@ -46,7 +47,7 @@ export default async function ProjectsPage({ params }: Props) {
             {projects.map((project) => (
               <Link
                 key={project.slug}
-                href={`/projects/${project.slug}`}
+                href={projectsPath(locale, project.slug)}
                 className="group block rounded-card border border-hair bg-panel p-8 transition-colors hover:border-line-strong"
               >
                 <div className="flex items-start justify-between mb-4">

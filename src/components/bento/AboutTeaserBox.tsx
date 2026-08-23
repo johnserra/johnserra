@@ -1,9 +1,11 @@
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
 import { ArrowRight } from "@carbon/icons-react";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
+import { aboutPath } from "@/lib/routes";
 
 export async function AboutTeaserBox() {
+  const locale = await getLocale();
   const t = await getTranslations("AboutTeaser");
 
   return (
@@ -16,7 +18,7 @@ export async function AboutTeaserBox() {
           {t("content")}
         </p>
         <div>
-          <Link href="/about">
+          <Link href={aboutPath(locale)}>
             <Button variant="secondary" className="inline-flex items-center gap-2">
               {t("ctaText")}
               <ArrowRight size={18} />

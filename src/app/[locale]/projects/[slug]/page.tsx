@@ -5,6 +5,7 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import { getSiteContentBySlug, getSiteContentSlugs, getSiteTranslationSlug } from "@/lib/site-content";
+import { projectsPath } from "@/lib/routes";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ProseLayout } from "@/components/ui/ProseLayout";
@@ -59,7 +60,7 @@ export default async function ProjectCaseStudy({ params }: Props) {
     locale as Locale,
     targetLocale,
   );
-  const alternatePath = translatedSlug ? `/projects/${translatedSlug}` : "/projects";
+  const alternatePath = projectsPath(targetLocale, translatedSlug ?? undefined);
 
   return (
     <>
@@ -72,7 +73,7 @@ export default async function ProjectCaseStudy({ params }: Props) {
         <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
           {/* Back link */}
           <Link
-            href="/projects"
+            href={projectsPath(locale)}
             className="mb-10 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.1em] text-muted transition-colors hover:text-accent"
           >
             <ArrowLeft size={16} />

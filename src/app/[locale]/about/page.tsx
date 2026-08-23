@@ -4,6 +4,7 @@ import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getSiteContentBySlug } from "@/lib/site-content";
+import { aboutPath } from "@/lib/routes";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ProseLayout } from "@/components/ui/ProseLayout";
@@ -33,7 +34,7 @@ export default async function AboutPage({ params }: Props) {
   if (!content) notFound();
   return (
     <>
-      <Header />
+      <Header alternateLocalePath={aboutPath(locale === "en" ? "tr" : "en")} />
       <main className="min-h-screen bg-ground py-16 text-ink">
         <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
           <ProseLayout className="prose-h1:tracking-tight prose-h1:text-ink prose-h2:font-mono prose-h2:text-xs prose-h2:uppercase prose-h2:tracking-[0.1em] prose-h2:text-muted">

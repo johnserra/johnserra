@@ -9,6 +9,7 @@ import { BlogTeaserBox } from "@/components/bento/BlogTeaserBox";
 import { ProjectBox } from "@/components/bento/ProjectBox";
 import { AIChatWidget } from "@/components/widgets/AIChatWidget";
 import { PROJECTS_LAYOUT } from "@/lib/constants";
+import { projectsPath } from "@/lib/routes";
 import type { Locale } from "@/types";
 
 interface Props {
@@ -37,7 +38,7 @@ export default async function Home({ params }: Props) {
               title={tPortfolio(`${project.key}.title`)}
               description={tPortfolio(`${project.key}.description`)}
               image={project.image}
-              link={project.link}
+              link={projectsPath(locale, project.id)}
               span={project.span}
             />
           ))}

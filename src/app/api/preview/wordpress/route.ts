@@ -1,6 +1,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { draftMode } from "next/headers";
 import { getWordPressPreviewById } from "@/lib/wordpress/content";
+import { aboutPath, privacyPolicyPath, projectsPath } from "@/lib/routes";
 import type { WordPressCollectionType, WordPressContentType } from "@/lib/wordpress/types";
 import type { Locale } from "@/types";
 
@@ -19,10 +20,16 @@ function validToken(contentId: number, locale: Locale, token: string | null): bo
   const expected = createHmac("sha256", secret).update(`${contentId}:${locale}`).digest("hex");
   return timingSafeEqual(Buffer.from(token, "hex"), Buffer.from(expected, "hex"));
 }
-function previewPath(type: WordPressContentType, slug: string, locale: Locale): string {
+function previewPath(type: WordPressContentType, slug: string, locale: Locale, legacySourceKey?: string): string {
   const prefix = locale === "en" ? "" : `/${locale}`;
   if (type === "post") return `${prefix}/blog/${slug}`;
-  if (type === "js_project") return `${prefix}/projects/${slug}`;
+  if (type === "js_project") return `${prefix}${projectsPath(locale, slug)}`;
+  if (legacySourceKey === `${locale}/about/index`) {
+    return `${prefix}${aboutPath(locale)}`;
+  }
+  if (legacySourceKey === `${locale}/privacy-policy/index`) {
+    return `${prefix}${privacyPolicyPath(locale)}`;
+  }
   return `${prefix}/${slug}`;
 }
 
@@ -42,7 +49,7 @@ export async function GET(request: Request) {
       if (item.type !== type || item.acf?.locale !== locale) continue;
       const mode = await draftMode();
       mode.enable();
-      return Response.redirect(new URL(previewPath(type, item.slug, locale), request.url), 307);
+      return Response.redirect(new URL(previewPath(type, item.slug, locale, item.acf?.legacy_source_key), request.url), 307);
     } catch {
       // The ID belongs to another post type, or is unavailable to the preview user.
     }

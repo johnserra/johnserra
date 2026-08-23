@@ -11,6 +11,7 @@ import {
 } from "@/lib/content";
 import {
   getAllWordPressContent,
+  getWordPressItemByLegacyKey,
   getWordPressItemBySlug,
   resolveWordPressTranslation,
 } from "@/lib/wordpress/content";
@@ -35,10 +36,6 @@ function collectionFor(type: SiteContentType): WordPressCollectionType {
   if (type === "blog") return "posts";
   if (type === "projects") return "projects";
   return "pages";
-}
-
-function wordpressSlug(type: SiteContentType, slug: string): string {
-  return type === "about" || type === "privacy-policy" ? type : slug;
 }
 
 function fromWordPress(item: WordPressContentItem): SiteContentItem {
@@ -90,12 +87,15 @@ export async function getSiteContentBySlug(
   }
 
   const preview = (await draftMode()).isEnabled;
-  const item = await getWordPressItemBySlug(
-    collectionFor(type),
-    wordpressSlug(type, slug),
-    locale,
-    preview,
-  );
+  const singleton = type === "about" || type === "privacy-policy";
+  const item = singleton
+    ? await getWordPressItemByLegacyKey("pages", `${locale}/${type}/index`, locale, preview)
+    : await getWordPressItemBySlug(
+        collectionFor(type),
+        slug,
+        locale,
+        preview,
+      );
   return item ? fromWordPress(item) : null;
 }
 

@@ -5,7 +5,7 @@ import { Menu, Close } from "@carbon/icons-react";
 import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
-import { aboutPath, projectsPath } from "@/lib/routes";
+import { aboutPath, projectsPath, servicesPath } from "@/lib/routes";
 import { IconButton } from "@/components/ui/IconButton";
 
 const NAV_LINK_HREFS = [
@@ -13,6 +13,7 @@ const NAV_LINK_HREFS = [
   { key: "about", href: "/about" },
   { key: "blog", href: "/blog" },
   { key: "portfolio", href: "/projects" },
+  { key: "services", href: "/services" },
   { key: "contact", href: "/contact" },
 ] as const;
 
@@ -59,7 +60,9 @@ export function Header({ alternateLocalePath }: { alternateLocalePath?: string }
                 key={link.href}
                 href={link.key === "portfolio"
                   ? projectsPath(locale)
-                  : link.key === "about" ? aboutPath(locale) : link.href}
+                  : link.key === "about"
+                    ? aboutPath(locale)
+                    : link.key === "services" ? servicesPath(locale) : link.href}
                 className={cn(
                   "font-mono text-xs uppercase tracking-[0.1em] text-muted transition-colors hover:text-ink",
                   pathname === link.href && "text-accent"
@@ -98,7 +101,9 @@ export function Header({ alternateLocalePath }: { alternateLocalePath?: string }
                 key={link.href}
                 href={link.key === "portfolio"
                   ? projectsPath(locale)
-                  : link.key === "about" ? aboutPath(locale) : link.href}
+                  : link.key === "about"
+                    ? aboutPath(locale)
+                    : link.key === "services" ? servicesPath(locale) : link.href}
                 onClick={() => setMobileMenuOpen(false)}
                 className={cn(
                   "font-mono text-xs uppercase tracking-[0.1em] text-muted transition-colors hover:text-ink",

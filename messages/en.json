@@ -8,6 +8,7 @@
     "about": "About",
     "blog": "Blog",
     "portfolio": "Projects",
+    "services": "Services",
     "contact": "Contact"
   },
   "Hero": {
@@ -106,6 +107,55 @@
       "submitting": "Sending…",
       "success": "Message sent! I'll be in touch soon.",
       "error": "Something went wrong. Try emailing directly."
+    }
+  },
+  "Services": {
+    "metaTitle": "Data Analytics Services — John Serra",
+    "metaDescription": "Freelance data analysis, dashboards, reporting automation, and data cleanup for small businesses and growing teams.",
+    "eyebrow": "Freelance data analyst",
+    "title": "Turn scattered data into clear decisions.",
+    "intro": "I help small businesses and growing teams understand what is happening, why it matters, and what to do next—through practical analysis, useful dashboards, and reliable reporting systems.",
+    "cta": "Discuss your project",
+    "fitLabel": "A good fit for",
+    "fit": "Teams with valuable data in spreadsheets, business tools, or databases—and not enough time to make sense of it.",
+    "servicesEyebrow": "How I can help",
+    "servicesTitle": "Practical analytics, built around your business.",
+    "dashboards": {
+      "title": "Dashboards & KPI Reporting",
+      "description": "A focused view of the numbers that matter, designed for the people who need to act on them.",
+      "deliverable": "Power BI · Looker Studio · Excel"
+    },
+    "analysis": {
+      "title": "Business & Operational Analysis",
+      "description": "Answer a specific business question with a clear analysis, concise findings, and practical recommendations.",
+      "deliverable": "Trends · Segmentation · Performance"
+    },
+    "automation": {
+      "title": "Reporting Automation",
+      "description": "Replace repetitive copy-and-paste reporting with a dependable workflow that saves time and reduces errors.",
+      "deliverable": "Python · SQL · APIs"
+    },
+    "foundation": {
+      "title": "Data Cleanup & Foundations",
+      "description": "Organize inconsistent files and definitions into a trustworthy dataset your team can actually use.",
+      "deliverable": "Data quality · Modeling · Documentation"
+    },
+    "processEyebrow": "A straightforward process",
+    "process": {
+      "discover": { "title": "Define the question", "description": "We clarify the decision, audience, available data, and what success looks like." },
+      "build": { "title": "Analyze and iterate", "description": "I clean, explore, and shape the data, sharing progress early so there are no surprises." },
+      "deliver": { "title": "Hand over with clarity", "description": "You receive the finished work, documentation, and a plain-language walkthrough." }
+    },
+    "inquiryEyebrow": "Start a conversation",
+    "inquiryTitle": "Tell me what you are trying to solve.",
+    "inquiryIntro": "You do not need a perfect brief. Share the business question, the data you have, and where the current process gets stuck.",
+    "responseTime": "Typical reply: within 2 business days",
+    "form": {
+      "name": "Name", "email": "Work email", "company": "Company", "service": "Primary need",
+      "chooseService": "Choose a service", "dashboard": "Dashboard or KPI reporting", "analysis": "Business analysis", "automation": "Reporting automation", "dataFoundation": "Data cleanup or foundations", "other": "Not sure / other",
+      "budget": "Approximate budget", "notSure": "Not sure yet", "under1k": "Under $1,000", "timeline": "Ideal timeline", "timelinePlaceholder": "For example, within 4–6 weeks",
+      "message": "What would you like to improve?", "messagePlaceholder": "Tell me about the decision, report, or process you need help with.",
+      "submit": "Send project inquiry", "submitting": "Sending…", "successTitle": "Inquiry received", "success": "Thanks—I’ll review the details and get back to you soon.", "errorTitle": "Could not send", "error": "Please try again or email john@serra.us directly."
     }
   },
   "Chat": {

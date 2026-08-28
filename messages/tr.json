@@ -8,6 +8,7 @@
     "about": "Hakkımda",
     "blog": "Blog",
     "portfolio": "Projeler",
+    "services": "Hizmetler",
     "contact": "İletişim"
   },
   "Hero": {
@@ -106,6 +107,39 @@
       "submitting": "Gönderiliyor…",
       "success": "Mesaj gönderildi! En kısa sürede size dönüş yapacağım.",
       "error": "Bir şeyler yanlış gitti. Doğrudan e-posta göndermeyi deneyin."
+    }
+  },
+  "Services": {
+    "metaTitle": "Veri Analizi Hizmetleri — John Serra",
+    "metaDescription": "Küçük işletmeler ve büyüyen ekipler için bağımsız veri analizi, panolar, raporlama otomasyonu ve veri temizleme.",
+    "eyebrow": "Bağımsız veri analisti",
+    "title": "Dağınık verileri net kararlara dönüştürün.",
+    "intro": "Küçük işletmelerin ve büyüyen ekiplerin pratik analizler, kullanışlı panolar ve güvenilir raporlama sistemleriyle ne olduğunu, neden önemli olduğunu ve sonraki adımı anlamalarına yardımcı oluyorum.",
+    "cta": "Projenizi konuşalım",
+    "fitLabel": "Kimler için uygun",
+    "fit": "Elektronik tablolarda, iş araçlarında veya veritabanlarında değerli verileri olan ancak bunları anlamlandıracak zamanı olmayan ekipler.",
+    "servicesEyebrow": "Nasıl yardımcı olabilirim",
+    "servicesTitle": "İşletmenize göre tasarlanmış pratik analitik.",
+    "dashboards": { "title": "Panolar ve KPI Raporlama", "description": "Harekete geçmesi gereken kişiler için önemli rakamların odaklanmış bir görünümü.", "deliverable": "Power BI · Looker Studio · Excel" },
+    "analysis": { "title": "İş ve Operasyon Analizi", "description": "Belirli bir iş sorusunu net analiz, kısa bulgular ve uygulanabilir önerilerle yanıtlayın.", "deliverable": "Trendler · Segmentasyon · Performans" },
+    "automation": { "title": "Raporlama Otomasyonu", "description": "Tekrarlanan kopyala-yapıştır raporlamayı zaman kazandıran, hataları azaltan güvenilir bir iş akışıyla değiştirin.", "deliverable": "Python · SQL · API'ler" },
+    "foundation": { "title": "Veri Temizleme ve Temeller", "description": "Tutarsız dosya ve tanımları ekibinizin gerçekten kullanabileceği güvenilir bir veri setine dönüştürün.", "deliverable": "Veri kalitesi · Modelleme · Dokümantasyon" },
+    "processEyebrow": "Basit bir süreç",
+    "process": {
+      "discover": { "title": "Soruyu tanımlayın", "description": "Kararı, hedef kitleyi, mevcut verileri ve başarının nasıl göründüğünü netleştiririz." },
+      "build": { "title": "Analiz edin ve geliştirin", "description": "Verileri temizler, inceler ve şekillendiririm; sürpriz olmaması için ilerlemeyi erken paylaşırım." },
+      "deliver": { "title": "Net bir teslim", "description": "Tamamlanan çalışma, dokümantasyon ve sade bir anlatımla size teslim edilir." }
+    },
+    "inquiryEyebrow": "Bir görüşme başlatın",
+    "inquiryTitle": "Neyi çözmeye çalıştığınızı anlatın.",
+    "inquiryIntro": "Kusursuz bir proje tanımına ihtiyacınız yok. İş sorununu, sahip olduğunuz verileri ve mevcut sürecin nerede tıkandığını paylaşın.",
+    "responseTime": "Genellikle 2 iş günü içinde yanıt",
+    "form": {
+      "name": "İsim", "email": "İş e-postası", "company": "Şirket", "service": "Ana ihtiyaç",
+      "chooseService": "Bir hizmet seçin", "dashboard": "Pano veya KPI raporlama", "analysis": "İş analizi", "automation": "Raporlama otomasyonu", "dataFoundation": "Veri temizleme veya temeller", "other": "Emin değilim / diğer",
+      "budget": "Yaklaşık bütçe", "notSure": "Henüz emin değilim", "under1k": "$1.000 altı", "timeline": "İdeal zamanlama", "timelinePlaceholder": "Örneğin 4–6 hafta içinde",
+      "message": "Neyi geliştirmek istersiniz?", "messagePlaceholder": "Yardıma ihtiyaç duyduğunuz karar, rapor veya süreci anlatın.",
+      "submit": "Proje talebini gönder", "submitting": "Gönderiliyor…", "successTitle": "Talebiniz alındı", "success": "Teşekkürler—ayrıntıları inceleyip en kısa sürede döneceğim.", "errorTitle": "Gönderilemedi", "error": "Lütfen tekrar deneyin veya doğrudan john@serra.us adresine e-posta gönderin."
     }
   },
   "Chat": {

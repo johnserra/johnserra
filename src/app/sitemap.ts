@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
 import { getSiteContentSlugs } from "@/lib/site-content";
-import { aboutPath, privacyPolicyPath, projectsPath } from "@/lib/routes";
+import { aboutPath, privacyPolicyPath, projectsPath, servicesPath } from "@/lib/routes";
 import { Locale } from "@/types";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -17,6 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       aboutPath(locale),
       "/blog",
       projectsPath(locale),
+      servicesPath(locale),
       "/contact",
       privacyPolicyPath(locale),
     ];

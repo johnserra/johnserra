@@ -13,3 +13,7 @@ export function projectsPath(locale: Locale | string, slug?: string): string {
 
   return slug ? `${base}/${slug}` : base;
 }
+
+export function servicesPath(locale: Locale | string): string {
+  return locale === "tr" ? "/hizmetler" : "/services";
+}

@@ -30,7 +30,7 @@
 @theme inline {
   --font-sans: var(--font-geist), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), monospace;
-  --font-display: var(--font-anton), "Arial Narrow", sans-serif;
+  --font-display: var(--font-barlow-condensed), "Arial Narrow", sans-serif;
 }
 
 :root {

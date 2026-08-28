@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Anton } from "next/font/google";
+import { Geist, Geist_Mono, Barlow_Condensed } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -17,9 +17,9 @@ const geistMono = Geist_Mono({
   subsets: ["latin", "latin-ext"],
 });
 
-const anton = Anton({
-  variable: "--font-anton",
-  weight: "400",
+const barlowCondensed = Barlow_Condensed({
+  variable: "--font-barlow-condensed",
+  weight: "600",
   subsets: ["latin", "latin-ext"],
 });
 
@@ -66,7 +66,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     <html lang={locale} className="dark">
       <body
-        className={`${geist.variable} ${geistMono.variable} ${anton.variable} antialiased`}
+        className={`${geist.variable} ${geistMono.variable} ${barlowCondensed.variable} antialiased`}
       >
         <div className="grain" aria-hidden="true" />
         <GoogleAnalytics />

@@ -1,0 +1,330 @@
+{
+  "version": 1,
+  "generatedAt": "2026-08-23T20:47:28.476Z",
+  "records": {
+    "en/about/index": {
+      "wordpressId": 27,
+      "collection": "pages",
+      "slug": "about",
+      "locale": "en",
+      "translationGroupId": "a790dcd7-0c40-4f7c-ad98-a43fd29fb61d",
+      "modifiedAt": "2026-08-23T20:46:19"
+    },
+    "en/blog/aegean-moussaka": {
+      "wordpressId": 28,
+      "collection": "posts",
+      "slug": "aegean-moussaka",
+      "locale": "en",
+      "translationGroupId": "d7af2451-fab7-476b-9893-06c44c9e2546",
+      "modifiedAt": "2026-03-08T00:00:00"
+    },
+    "en/blog/building-this-site": {
+      "wordpressId": 29,
+      "collection": "posts",
+      "slug": "building-this-site",
+      "locale": "en",
+      "translationGroupId": "1d57ff57-158c-4bd7-9b46-0f60279d6e3a",
+      "modifiedAt": "2026-02-20T00:00:00"
+    },
+    "en/blog/carbonara": {
+      "wordpressId": 30,
+      "collection": "posts",
+      "slug": "carbonara",
+      "locale": "en",
+      "translationGroupId": "7c95a107-a68c-44a5-96d3-368856f9f712",
+      "modifiedAt": "2026-03-08T00:00:00"
+    },
+    "en/blog/cicoria-ripassata-roman-sauteed-greens": {
+      "wordpressId": 31,
+      "collection": "posts",
+      "slug": "cicoria-ripassata-roman-sauteed-greens",
+      "locale": "en",
+      "translationGroupId": "a9de8d08-d2bc-4816-8abe-9db42435fa51",
+      "modifiedAt": "2026-03-15T00:00:00"
+    },
+    "en/blog/errorless-teaching-explained": {
+      "wordpressId": 32,
+      "collection": "posts",
+      "slug": "errorless-teaching-explained",
+      "locale": "en",
+      "translationGroupId": "6d60cce9-34a7-4145-ac30-fa475a9d09dd",
+      "modifiedAt": "2026-04-14T00:00:00"
+    },
+    "en/blog/farmers-market-risotto": {
+      "wordpressId": 33,
+      "collection": "posts",
+      "slug": "farmers-market-risotto",
+      "locale": "en",
+      "translationGroupId": "6d10c681-56cd-437a-a0c0-8efeaf91ea32",
+      "modifiedAt": "2026-03-08T00:00:00"
+    },
+    "en/blog/hello-world": {
+      "wordpressId": 34,
+      "collection": "posts",
+      "slug": "hello-world-2",
+      "locale": "en",
+      "translationGroupId": "263803bd-494c-489b-9cb6-0e14d3318955",
+      "modifiedAt": "2026-02-23T00:00:00"
+    },
+    "en/blog/lasagna-bolognese": {
+      "wordpressId": 35,
+      "collection": "posts",
+      "slug": "lasagna-bolognese",
+      "locale": "en",
+      "translationGroupId": "919d355c-f6a0-4ca5-b773-9b3facfa75b3",
+      "modifiedAt": "2026-03-08T00:00:00"
+    },
+    "en/blog/orchestrating-agency-multi-track-world": {
+      "wordpressId": 37,
+      "collection": "posts",
+      "slug": "orchestrating-agency-multi-track-world",
+      "locale": "en",
+      "translationGroupId": "64af7963-0b0d-4af0-9877-e17e9d362242",
+      "modifiedAt": "2026-04-17T00:00:00"
+    },
+    "en/blog/osso-buco-alla-romana": {
+      "wordpressId": 38,
+      "collection": "posts",
+      "slug": "osso-buco-alla-romana",
+      "locale": "en",
+      "translationGroupId": "e281317c-9808-4727-a0f8-1a6018a8c9fa",
+      "modifiedAt": "2026-03-15T00:00:00"
+    },
+    "en/blog/rustic-garlic-and-olive-oil-mash": {
+      "wordpressId": 39,
+      "collection": "posts",
+      "slug": "rustic-garlic-and-olive-oil-mash",
+      "locale": "en",
+      "translationGroupId": "69643818-0927-4b0b-8ed2-c50a6e4364b9",
+      "modifiedAt": "2026-03-15T00:00:00"
+    },
+    "en/blog/spaghetti-alle-vongole": {
+      "wordpressId": 40,
+      "collection": "posts",
+      "slug": "spaghetti-alle-vongole",
+      "locale": "en",
+      "translationGroupId": "ff645221-e828-4c31-ad6f-02bf719e0905",
+      "modifiedAt": "2026-03-08T00:00:00"
+    },
+    "en/blog/the-machine-is-wrong": {
+      "wordpressId": 42,
+      "collection": "posts",
+      "slug": "the-machine-is-wrong",
+      "locale": "en",
+      "translationGroupId": "3d7f0247-4124-4f9d-b383-995514bca0d9",
+      "modifiedAt": "2026-05-07T00:00:00"
+    },
+    "en/blog/warm-potato-soup": {
+      "wordpressId": 43,
+      "collection": "posts",
+      "slug": "warm-potato-soup",
+      "locale": "en",
+      "translationGroupId": "9c3271e4-faa9-48f5-b123-bb665e228854",
+      "modifiedAt": "2026-03-08T00:00:00"
+    },
+    "en/blog/why-engineers-cant-explain-their-work": {
+      "wordpressId": 44,
+      "collection": "posts",
+      "slug": "why-engineers-cant-explain-their-work",
+      "locale": "en",
+      "translationGroupId": "13ebb8e8-bfe8-4ae0-ba06-d2af6cec9429",
+      "modifiedAt": "2026-04-14T00:00:00"
+    },
+    "en/blog/why-generic-ai-is-failing": {
+      "wordpressId": 45,
+      "collection": "posts",
+      "slug": "why-generic-ai-is-failing",
+      "locale": "en",
+      "translationGroupId": "092825c5-1f31-4bf8-8fe4-82ab8589121b",
+      "modifiedAt": "2026-04-14T00:00:00"
+    },
+    "en/blog/your-ai-tutor-is-making-you-worse": {
+      "wordpressId": 46,
+      "collection": "posts",
+      "slug": "your-ai-tutor-is-making-you-worse",
+      "locale": "en",
+      "translationGroupId": "a0815432-0338-4a7b-b195-a01d18a240f8",
+      "modifiedAt": "2026-04-14T00:00:00"
+    },
+    "en/privacy-policy/index": {
+      "wordpressId": 47,
+      "collection": "pages",
+      "slug": "privacy-policy-2",
+      "locale": "en",
+      "translationGroupId": "de286c8b-d28e-49e8-9f7b-69cd4e4aad00",
+      "modifiedAt": "2026-08-23T20:47:01"
+    },
+    "en/projects/bd-automation-suite": {
+      "wordpressId": 49,
+      "collection": "projects",
+      "slug": "bd-automation-suite",
+      "locale": "en",
+      "translationGroupId": "e1004f4d-e14b-4fd4-a209-0d664751d43c",
+      "modifiedAt": "2025-01-01T00:00:00"
+    },
+    "en/projects/careertalklab": {
+      "wordpressId": 51,
+      "collection": "projects",
+      "slug": "careertalklab",
+      "locale": "en",
+      "translationGroupId": "970a404e-50b3-410a-989f-c6c7e63d8691",
+      "modifiedAt": "2026-04-14T00:00:00"
+    },
+    "en/projects/digital-transformation": {
+      "wordpressId": 53,
+      "collection": "projects",
+      "slug": "digital-transformation",
+      "locale": "en",
+      "translationGroupId": "22050d18-359b-4d7e-a37d-4073a28355eb",
+      "modifiedAt": "2020-04-01T00:00:00"
+    },
+    "tr/about/index": {
+      "wordpressId": 54,
+      "collection": "pages",
+      "slug": "about-2",
+      "locale": "tr",
+      "translationGroupId": "6da6f993-6238-49cc-a994-ac6ca96afde6",
+      "modifiedAt": "2026-08-23T20:47:10"
+    },
+    "tr/blog/aegean-moussaka": {
+      "wordpressId": 55,
+      "collection": "posts",
+      "slug": "aegean-moussaka-2",
+      "locale": "tr",
+      "translationGroupId": "d7af2451-fab7-476b-9893-06c44c9e2546",
+      "modifiedAt": "2026-03-08T00:00:00"
+    },
+    "tr/blog/carbonara": {
+      "wordpressId": 56,
+      "collection": "posts",
+      "slug": "carbonara-2",
+      "locale": "tr",
+      "translationGroupId": "7c95a107-a68c-44a5-96d3-368856f9f712",
+      "modifiedAt": "2026-03-08T00:00:00"
+    },
+    "tr/blog/farmers-market-risotto": {
+      "wordpressId": 57,
+      "collection": "posts",
+      "slug": "farmers-market-risotto-2",
+      "locale": "tr",
+      "translationGroupId": "6d10c681-56cd-437a-a0c0-8efeaf91ea32",
+      "modifiedAt": "2026-03-08T00:00:00"
+    },
+    "tr/blog/lasagna-bolognese": {
+      "wordpressId": 58,
+      "collection": "posts",
+      "slug": "lasagna-bolognese-2",
+      "locale": "tr",
+      "translationGroupId": "919d355c-f6a0-4ca5-b773-9b3facfa75b3",
+      "modifiedAt": "2026-03-08T00:00:00"
+    },
+    "tr/blog/mimarin-atilimi-cok-kanalli-bir-dunyada-eylem-gucunu-yonetmek": {
+      "wordpressId": 59,
+      "collection": "posts",
+      "slug": "mimarin-atilimi-cok-kanalli-bir-dunyada-eylem-gucunu-yonetmek",
+      "locale": "tr",
+      "translationGroupId": "0671bc08-3894-409c-8902-fa2748f2670a",
+      "modifiedAt": "2026-04-17T00:00:00"
+    },
+    "tr/blog/spaghetti-alle-vongole": {
+      "wordpressId": 60,
+      "collection": "posts",
+      "slug": "spaghetti-alle-vongole-2",
+      "locale": "tr",
+      "translationGroupId": "ff645221-e828-4c31-ad6f-02bf719e0905",
+      "modifiedAt": "2026-03-08T00:00:00"
+    },
+    "tr/blog/warm-potato-soup": {
+      "wordpressId": 61,
+      "collection": "posts",
+      "slug": "warm-potato-soup-2",
+      "locale": "tr",
+      "translationGroupId": "9c3271e4-faa9-48f5-b123-bb665e228854",
+      "modifiedAt": "2026-03-08T00:00:00"
+    },
+    "tr/privacy-policy/index": {
+      "wordpressId": 62,
+      "collection": "pages",
+      "slug": "privacy-policy-3",
+      "locale": "tr",
+      "translationGroupId": "de286c8b-d28e-49e8-9f7b-69cd4e4aad00",
+      "modifiedAt": "2026-08-23T20:47:23"
+    },
+    "tr/projects/bd-automation-suite": {
+      "wordpressId": 63,
+      "collection": "projects",
+      "slug": "bd-automation-suite-2",
+      "locale": "tr",
+      "translationGroupId": "e1004f4d-e14b-4fd4-a209-0d664751d43c",
+      "modifiedAt": "2025-01-01T00:00:00"
+    },
+    "tr/projects/careertalklab": {
+      "wordpressId": 64,
+      "collection": "projects",
+      "slug": "careertalklab-2",
+      "locale": "tr",
+      "translationGroupId": "970a404e-50b3-410a-989f-c6c7e63d8691",
+      "modifiedAt": "2026-04-14T00:00:00"
+    },
+    "tr/projects/digital-transformation": {
+      "wordpressId": 65,
+      "collection": "projects",
+      "slug": "digital-transformation-2",
+      "locale": "tr",
+      "translationGroupId": "22050d18-359b-4d7e-a37d-4073a28355eb",
+      "modifiedAt": "2020-04-01T00:00:00"
+    }
+  },
+  "translationGroups": {
+    "about/about": "a790dcd7-0c40-4f7c-ad98-a43fd29fb61d",
+    "blog/aegean-moussaka": "d7af2451-fab7-476b-9893-06c44c9e2546",
+    "blog/building-this-site": "1d57ff57-158c-4bd7-9b46-0f60279d6e3a",
+    "blog/carbonara": "7c95a107-a68c-44a5-96d3-368856f9f712",
+    "blog/cicoria-ripassata-roman-sauteed-greens": "a9de8d08-d2bc-4816-8abe-9db42435fa51",
+    "blog/errorless-teaching-explained": "6d60cce9-34a7-4145-ac30-fa475a9d09dd",
+    "blog/farmers-market-risotto": "6d10c681-56cd-437a-a0c0-8efeaf91ea32",
+    "blog/hello-world": "263803bd-494c-489b-9cb6-0e14d3318955",
+    "blog/lasagna-bolognese": "919d355c-f6a0-4ca5-b773-9b3facfa75b3",
+    "blog/orchestrating-agency-multi-track-world": "64af7963-0b0d-4af0-9877-e17e9d362242",
+    "blog/osso-buco-alla-romana": "e281317c-9808-4727-a0f8-1a6018a8c9fa",
+    "blog/rustic-garlic-and-olive-oil-mash": "69643818-0927-4b0b-8ed2-c50a6e4364b9",
+    "blog/spaghetti-alle-vongole": "ff645221-e828-4c31-ad6f-02bf719e0905",
+    "blog/the-machine-is-wrong": "3d7f0247-4124-4f9d-b383-995514bca0d9",
+    "blog/warm-potato-soup": "9c3271e4-faa9-48f5-b123-bb665e228854",
+    "blog/why-engineers-cant-explain-their-work": "13ebb8e8-bfe8-4ae0-ba06-d2af6cec9429",
+    "blog/why-generic-ai-is-failing": "092825c5-1f31-4bf8-8fe4-82ab8589121b",
+    "blog/your-ai-tutor-is-making-you-worse": "a0815432-0338-4a7b-b195-a01d18a240f8",
+    "privacy-policy/privacy-policy": "de286c8b-d28e-49e8-9f7b-69cd4e4aad00",
+    "projects/bd-automation-suite": "e1004f4d-e14b-4fd4-a209-0d664751d43c",
+    "projects/careertalklab": "970a404e-50b3-410a-989f-c6c7e63d8691",
+    "projects/digital-transformation": "22050d18-359b-4d7e-a37d-4073a28355eb",
+    "about/index": "6da6f993-6238-49cc-a994-ac6ca96afde6",
+    "blog/mimarin-atilimi-cok-kanalli-bir-dunyada-eylem-gucunu-yonetmek:tr-unpaired": "0671bc08-3894-409c-8902-fa2748f2670a"
+  },
+  "media": {
+    "public/images/blog/Orchestrating-Agency.png": 36,
+    "public/images/blog/the-machine-is-wrong.jpg": 41,
+    "public/images/projects/bd-automation-suite.jpg": 48,
+    "public/images/projects/careertalklab.jpg": 50,
+    "public/images/projects/digital-transformation.jpg": 52
+  },
+  "warnings": [
+    "en/blog/aegean-moussaka: missing cover image /images/recipes/moussaka.jpg",
+    "en/blog/carbonara: missing cover image /images/recipes/carbonara.jpg",
+    "en/blog/errorless-teaching-explained: missing cover image /images/blog/errorless-teaching.jpg",
+    "en/blog/farmers-market-risotto: missing cover image /images/recipes/risotto.jpg",
+    "en/blog/lasagna-bolognese: missing cover image /images/recipes/lasagna.jpg",
+    "en/blog/spaghetti-alle-vongole: missing cover image /images/recipes/vongole.jpg",
+    "en/blog/warm-potato-soup: missing cover image /images/recipes/potato-soup.jpg",
+    "en/blog/why-engineers-cant-explain-their-work: missing cover image /images/blog/engineers-explain-work.jpg",
+    "en/blog/why-generic-ai-is-failing: missing cover image /images/blog/generic-ai-failing.jpg",
+    "en/blog/your-ai-tutor-is-making-you-worse: missing cover image /images/blog/ai-tutor-crutch.jpg",
+    "tr/blog/aegean-moussaka: missing cover image /images/recipes/moussaka.jpg",
+    "tr/blog/carbonara: missing cover image /images/recipes/carbonara.jpg",
+    "tr/blog/farmers-market-risotto: missing cover image /images/recipes/risotto.jpg",
+    "tr/blog/lasagna-bolognese: missing cover image /images/recipes/lasagna.jpg",
+    "tr/blog/spaghetti-alle-vongole: missing cover image /images/recipes/vongole.jpg",
+    "tr/blog/warm-potato-soup: missing cover image /images/recipes/potato-soup.jpg",
+    "tr/blog/mimarin-atilimi-cok-kanalli-bir-dunyada-eylem-gucunu-yonetmek: no English translation relationship inferred"
+  ]
+}

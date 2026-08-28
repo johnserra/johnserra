@@ -44,3 +44,10 @@ Homepage (`src/app/page.tsx`) uses a bento-style grid assembled from components 
 - Use TypeScript interfaces for all data structures — see `src/types/index.ts` for existing types
 - React Compiler is enabled (`next.config.ts`) — no need to manually memoize
 - `transformObsidianLinks` must be applied whenever content is processed
+
+## Gotchas (Editorial Terminal redesign, 2026-07-11)
+
+- **Font tokens referencing next/font variables MUST be in `@theme inline`** in globals.css. Plain `@theme` computes `var(--font-*)` at `:root`, where next/font's body-scoped variables are invisible — fonts silently fall back.
+- **Vercel project is git-connected to `main`** (git-main domain exists). `git push origin main` = automatic PRODUCTION deploy. Preview = `vercel deploy` (CLI, no git) only.
+- **Turbopack dev server serves fonts-only CSS, dropping globals.css output** (even after `.next` wipe) on this machine. Production build is correct. If the site looks unstyled in `next dev`, verify with `bun run build && bun run start` before debugging CSS.
+- Design tokens: `bg-ground/-2/-3`, `bg-panel/-2`, `text-ink/-soft`, `text-muted/faint`, `accent` system, `border-hair/line/line-strong`, `rounded-card/field/pill`, `font-display` (Anton). Dark-only — never reintroduce `dark:` variants.

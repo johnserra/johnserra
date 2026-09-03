@@ -1,6 +1,11 @@
 import { Frontmatter } from "./content";
 import { projectsPath } from "./routes";
 
+function resolveImageUrl(image: string | undefined): string | undefined {
+  if (!image) return undefined;
+  return new URL(image, "https://johnserra.com").toString();
+}
+
 export function getBaseSchema() {
   return {
     "@context": "https://schema.org",
@@ -23,13 +28,12 @@ export function getBlogPostSchema(
 ) {
   const url = `https://johnserra.com${locale === "en" ? "" : `/${locale}`}/blog/${slug}`;
   
-  // Base BlogPosting schema
-  const schema: Record<string, unknown> = {
+  return {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     "headline": frontmatter.title,
     "description": frontmatter.description,
-    "image": frontmatter.coverImage ? `https://johnserra.com${frontmatter.coverImage}` : undefined,
+    "image": resolveImageUrl(frontmatter.coverImage),
     "datePublished": frontmatter.date,
     "author": {
       "@type": "Person",
@@ -47,18 +51,6 @@ export function getBlogPostSchema(
     },
     "keywords": frontmatter.tags?.join(", ")
   };
-
-  // If it has recipe fields, add Recipe schema as well or instead
-  if (frontmatter.cuisine || frontmatter.totalTime) {
-    schema["@type"] = ["BlogPosting", "Recipe"];
-    schema["recipeCuisine"] = frontmatter.cuisine;
-    schema["prepTime"] = frontmatter.prepTime; // Should ideally be ISO 8601, but strings are often accepted by AI
-    schema["cookTime"] = frontmatter.cookTime;
-    schema["totalTime"] = frontmatter.totalTime;
-    schema["recipeYield"] = frontmatter.servings?.toString();
-  }
-
-  return schema;
 }
 
 export function getProjectSchema(
@@ -73,7 +65,7 @@ export function getProjectSchema(
     "@type": "CreativeWork",
     "name": frontmatter.title,
     "description": frontmatter.description,
-    "image": frontmatter.coverImage ? `https://johnserra.com${frontmatter.coverImage}` : undefined,
+    "image": resolveImageUrl(frontmatter.coverImage),
     "datePublished": frontmatter.date,
     "author": {
       "@type": "Person",

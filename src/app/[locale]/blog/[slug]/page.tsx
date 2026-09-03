@@ -10,7 +10,7 @@ import { Footer } from "@/components/layout/Footer";
 import { ProseLayout } from "@/components/ui/ProseLayout";
 import { Callout } from "@/components/ui/Callout";
 import { WordPressContent } from "@/components/ui/WordPressContent";
-import { ArrowLeft, Time, Globe, UserMultiple } from "@carbon/icons-react";
+import { ArrowLeft } from "@carbon/icons-react";
 import { Tag } from "@/components/ui/Tag";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
@@ -48,7 +48,6 @@ export default async function BlogPostPage({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations("Blog");
-  const tRecipes = await getTranslations("Recipes");
   const content = await getSiteContentBySlug("blog", slug, locale as Locale);
   if (!content) notFound();
 
@@ -64,13 +63,6 @@ export default async function BlogPostPage({ params }: Props) {
   const alternatePath = translatedSlug ? `/blog/${translatedSlug}` : "/blog";
 
   const dateLocale = locale === "tr" ? "tr-TR" : "en-US";
-  const hasRecipeMeta =
-    frontmatter.cuisine ||
-    frontmatter.servings ||
-    frontmatter.prepTime ||
-    frontmatter.cookTime ||
-    frontmatter.totalTime;
-
   return (
     <>
       <script
@@ -133,51 +125,6 @@ export default async function BlogPostPage({ params }: Props) {
             </div>
           )}
 
-          {/* Recipe metadata */}
-          {hasRecipeMeta && (
-            <div className="mb-10 flex flex-wrap gap-6 rounded-card border border-hair bg-panel p-6 font-mono text-xs uppercase tracking-[0.1em] text-muted">
-              {frontmatter.cuisine && (
-                <div className="flex items-center gap-2">
-                  <Globe size={16} className="text-faint" />
-                  <span>
-                    <strong className="text-ink">{frontmatter.cuisine}</strong>
-                  </span>
-                </div>
-              )}
-              {frontmatter.servings && (
-                <div className="flex items-center gap-2">
-                  <UserMultiple size={16} className="text-faint" />
-                  <span>
-                    {tRecipes("serves")} <strong className="text-ink">{frontmatter.servings}</strong>
-                  </span>
-                </div>
-              )}
-              {frontmatter.prepTime && (
-                <div className="flex items-center gap-2">
-                  <Time size={16} className="text-faint" />
-                  <span>
-                    {tRecipes("prep")} <strong className="text-ink">{frontmatter.prepTime}</strong>
-                  </span>
-                </div>
-              )}
-              {frontmatter.cookTime && (
-                <div className="flex items-center gap-2">
-                  <Time size={16} className="text-faint" />
-                  <span>
-                    {tRecipes("cook")} <strong className="text-ink">{frontmatter.cookTime}</strong>
-                  </span>
-                </div>
-              )}
-              {frontmatter.totalTime && (
-                <div className="flex items-center gap-2">
-                  <Time size={16} className="text-faint" />
-                  <span>
-                    {tRecipes("total")} <strong className="text-ink">{frontmatter.totalTime}</strong>
-                  </span>
-                </div>
-              )}
-            </div>
-          )}
           {/* Content */}
           <ProseLayout>
             {content.format === "html" ? (

@@ -23,6 +23,7 @@ const ITEM_FIELDS = [
   "excerpt",
   "featured_media",
   "acf",
+  "_links",
   "_embedded",
 ].join(",");
 

@@ -3,7 +3,6 @@ import { getAllSiteContent } from "@/lib/site-content";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { TagCloud } from "@/components/blog/TagCloud";
-import { Time, UserMultiple } from "@carbon/icons-react";
 import { Tag } from "@/components/ui/Tag";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
@@ -29,7 +28,6 @@ export default async function BlogPage({ params, searchParams }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations("Blog");
-  const tRecipes = await getTranslations("Recipes");
   const allPosts = await getAllSiteContent("blog", locale as Locale);
   const dateLocale = locale === "tr" ? "tr-TR" : "en-US";
 
@@ -48,9 +46,6 @@ export default async function BlogPage({ params, searchParams }: Props) {
   const posts = tag
     ? allPosts.filter((p) => p.frontmatter.tags?.includes(tag))
     : allPosts;
-
-  const isRecipe = (post: (typeof posts)[0]) =>
-    post.frontmatter.tags?.includes("recipe");
 
   return (
     <>
@@ -97,18 +92,6 @@ export default async function BlogPage({ params, searchParams }: Props) {
                         day: "numeric",
                       })}
                     </time>
-                  )}
-                  {isRecipe(post) && post.frontmatter.servings && (
-                    <span className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.1em] text-faint">
-                      <UserMultiple size={16} />
-                      {tRecipes("servings", { count: post.frontmatter.servings })}
-                    </span>
-                  )}
-                  {isRecipe(post) && post.frontmatter.totalTime && (
-                    <span className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.1em] text-faint">
-                      <Time size={16} />
-                      {post.frontmatter.totalTime}
-                    </span>
                   )}
                 </div>
               </Link>

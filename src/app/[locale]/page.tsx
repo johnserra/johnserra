@@ -31,7 +31,7 @@ export default async function Home({ params }: Props) {
           <HeroBox />
 
           {/* Portfolio Projects - Clickable cards with generated images */}
-          {PROJECTS_LAYOUT.map((project) => (
+          {PROJECTS_LAYOUT.map((project, index) => (
             <ProjectBox
               key={project.id}
               id={project.id}
@@ -40,6 +40,7 @@ export default async function Home({ params }: Props) {
               image={project.image}
               link={projectsPath(locale, project.id)}
               span={project.span}
+              priority={index === 0}
             />
           ))}
 

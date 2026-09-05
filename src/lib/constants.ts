@@ -13,7 +13,7 @@ export const FEATURE_LAYOUT = [
 ] as const;
 
 export const PROJECTS_LAYOUT = [
-  { id: "careertalklab", key: "careerTalkLab", image: "/images/projects/careertalklab.jpg", link: "/projects/careertalklab", span: 4 },
-  { id: "digital-transformation", key: "digitalTransformation", image: "/images/projects/digital-transformation.jpg", link: "/projects/digital-transformation", span: 5 },
-  { id: "bd-automation-suite", key: "bdAutomation", image: "/images/projects/bd-automation-suite.jpg", link: "/projects/bd-automation-suite", span: 3 },
+  { id: "careertalklab", key: "careerTalkLab", image: "/images/projects/careertalklab.avif", link: "/projects/careertalklab", span: 4 },
+  { id: "digital-transformation", key: "digitalTransformation", image: "/images/projects/digital-transformation.avif", link: "/projects/digital-transformation", span: 5 },
+  { id: "bd-automation-suite", key: "bdAutomation", image: "/images/projects/bd-automation-suite.avif", link: "/projects/bd-automation-suite", span: 3 },
 ] as const;

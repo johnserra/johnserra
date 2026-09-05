@@ -6,7 +6,17 @@ import { cn } from "@/lib/utils";
 
 interface ProjectBoxProps extends ProjectItem {
   className?: string;
+  priority?: boolean;
 }
+
+const PROJECT_IMAGE_SIZES: Record<number, string> = {
+  3: "(min-width: 1280px) 284px, (min-width: 1024px) calc(25vw - 36px), (min-width: 768px) calc(50vw - 34px), calc(100vw - 34px)",
+  4: "(min-width: 1280px) 387px, (min-width: 1024px) calc(33.333vw - 39.333px), (min-width: 768px) calc(50vw - 34px), calc(100vw - 34px)",
+  5: "(min-width: 1280px) 491px, (min-width: 1024px) calc(41.667vw - 42.667px), (min-width: 768px) calc(50vw - 34px), calc(100vw - 34px)",
+  6: "(min-width: 1280px) 594px, (min-width: 1024px) calc(50vw - 46px), (min-width: 768px) calc(100vw - 50px), calc(100vw - 34px)",
+  8: "(min-width: 1280px) 801px, (min-width: 1024px) calc(66.667vw - 52.667px), (min-width: 768px) calc(100vw - 50px), calc(100vw - 34px)",
+  12: "(min-width: 1280px) 1214px, (min-width: 1024px) calc(100vw - 66px), (min-width: 768px) calc(100vw - 50px), calc(100vw - 34px)",
+};
 
 export function ProjectBox({
   title,
@@ -15,6 +25,7 @@ export function ProjectBox({
   image,
   span = 4,
   className,
+  priority = false,
 }: ProjectBoxProps) {
   return (
     <Link
@@ -43,6 +54,9 @@ export function ProjectBox({
           src={image}
           alt={title}
           fill
+          sizes={PROJECT_IMAGE_SIZES[span] ?? PROJECT_IMAGE_SIZES[4]}
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : undefined}
           className="object-cover transition-transform duration-300 group-hover:scale-105"
         />
       )}
@@ -50,17 +64,19 @@ export function ProjectBox({
       {/* Overlay */}
       <div className="absolute inset-0 bg-ground/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
         <div>
-          <h3 className="text-xl font-medium tracking-tight text-ink mb-2 flex items-center gap-2">
+          <h2 className="text-xl font-medium tracking-tight text-ink mb-2 flex items-center gap-2">
             {title}
             <ArrowUpRight size={20} className="text-muted transition-colors group-hover:text-accent" />
-          </h3>
+          </h2>
           <p className="text-sm text-ink-soft">{description}</p>
         </div>
       </div>
 
       {/* Title visible by default (on bottom) */}
       <div className="absolute bottom-0 left-0 right-0 p-6 bg-ground/80 group-hover:opacity-0 transition-opacity">
-        <h3 className="text-lg font-medium tracking-tight text-ink">{title}</h3>
+        <span aria-hidden="true" className="text-lg font-medium tracking-tight text-ink">
+          {title}
+        </span>
       </div>
     </Link>
   );

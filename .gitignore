@@ -26,6 +26,7 @@
 /tmp/
 /workspace/*.zip
 /workspace/notes.md
+/bridge/
 
 # debug
 npm-debug.log*

@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test:data-audit": "node --import tsx --test src/lib/data-audit.test.ts",
     "seed": "NODE_OPTIONS=--conditions=react-server tsx scripts/seed-knowledge-base.ts",
     "wordpress:import:dry": "tsx scripts/import-content-to-wordpress.ts",
     "wordpress:import": "tsx scripts/import-content-to-wordpress.ts --apply"

@@ -17,3 +17,7 @@ export function projectsPath(locale: Locale | string, slug?: string): string {
 export function servicesPath(locale: Locale | string): string {
   return locale === "tr" ? "/hizmetler" : "/services";
 }
+
+export function dataAuditPath(locale: Locale | string): string {
+  return locale === "tr" ? "/veri-denetimi" : "/data-audit";
+}

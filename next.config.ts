@@ -25,6 +25,7 @@ const nextConfig: NextConfig = {
       { source: "/tr/gizlilik-politikasi", destination: "/tr/privacy-policy" },
       { source: "/tr/projeler", destination: "/tr/projects" },
       { source: "/tr/projeler/:path*", destination: "/tr/projects/:path*" },
+      { source: "/tr/veri-denetimi", destination: "/tr/data-audit" },
     ];
   },
   async redirects() {
@@ -47,6 +48,11 @@ const nextConfig: NextConfig = {
       {
         source: "/tr/projects/:path*",
         destination: "/tr/projeler/:path*",
+        permanent: true,
+      },
+      {
+        source: "/tr/data-audit",
+        destination: "/tr/veri-denetimi",
         permanent: true,
       },
       {

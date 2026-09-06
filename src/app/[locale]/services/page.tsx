@@ -5,7 +5,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ServicesInquiryForm } from "@/components/services/ServicesInquiryForm";
 import { Link } from "@/i18n/navigation";
-import { servicesPath } from "@/lib/routes";
+import { dataAuditPath, servicesPath } from "@/lib/routes";
 
 interface Props { params: Promise<{ locale: string }> }
 
@@ -44,6 +44,19 @@ export default async function ServicesPage({ params }: Props) {
               <p className="font-mono text-xs uppercase tracking-[0.1em] text-muted">{t("fitLabel")}</p>
               <p className="mt-3 text-xl leading-snug">{t("fit")}</p>
             </div>
+          </div>
+        </section>
+
+        <section className="border-b border-hair bg-ground-2">
+          <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 py-12 md:px-6 lg:grid-cols-[1fr_auto] lg:px-8">
+            <div>
+              <p className="font-mono text-xs uppercase tracking-[0.16em] text-accent">{t("assessmentEyebrow")}</p>
+              <h2 className="mt-3 font-display text-3xl uppercase tracking-tight sm:text-4xl">{t("assessmentTitle")}</h2>
+              <p className="mt-3 max-w-3xl leading-relaxed text-ink-soft">{t("assessmentDescription")}</p>
+            </div>
+            <Link href={dataAuditPath(locale)} className="inline-flex items-center justify-center gap-2 rounded-pill border border-accent px-6 py-3 font-medium text-accent transition-colors hover:bg-accent hover:text-on-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+              {t("assessmentButton")} <ArrowRight size={18} />
+            </Link>
           </div>
         </section>
 

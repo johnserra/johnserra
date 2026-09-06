@@ -120,6 +120,10 @@
     "fit": "Teams with valuable data in spreadsheets, business tools, or databases—and not enough time to make sense of it.",
     "servicesEyebrow": "How I can help",
     "servicesTitle": "Practical analytics, built around your business.",
+    "assessmentEyebrow": "Not sure where to start?",
+    "assessmentTitle": "Check your analytics health in five minutes.",
+    "assessmentDescription": "Get an immediate score, find the weakest link in your analytics, and see the first practical step to take—before sharing any contact details.",
+    "assessmentButton": "Take the free assessment",
     "dashboards": {
       "title": "Dashboards & KPI Reporting",
       "description": "A focused view of the numbers that matter, designed for the people who need to act on them.",
@@ -156,6 +160,145 @@
       "budget": "Approximate budget", "notSure": "Not sure yet", "under1k": "Under $1,000", "timeline": "Ideal timeline", "timelinePlaceholder": "For example, within 4–6 weeks",
       "message": "What would you like to improve?", "messagePlaceholder": "Tell me about the decision, report, or process you need help with.",
       "submit": "Send project inquiry", "submitting": "Sending…", "successTitle": "Inquiry received", "success": "Thanks—I’ll review the details and get back to you soon.", "errorTitle": "Could not send", "error": "Please try again or email john@serra.us directly."
+    }
+  },
+  "DataAudit": {
+    "metaTitle": "SMB Analytics Health Assessment — John Serra",
+    "metaDescription": "A free five-minute assessment for small businesses to score analytics maturity, identify the biggest barrier, and get a practical action plan.",
+    "landing": {
+      "eyebrow": "SMB Analytics Health Assessment",
+      "headline": "Can you trust the numbers running your business?",
+      "intro": "Find out whether your metrics, data, reporting, and ownership practices are strong enough to support confident decisions.",
+      "duration": "About five minutes",
+      "ungated": "Top-line result before contact details",
+      "start": "Start the assessment",
+      "privacyLabel": "What you will not be asked for",
+      "privacy": "Do not share source exports, credentials, customer data, or other sensitive information. This assessment only asks about your business context and working practices."
+    },
+    "progress": {
+      "label": "Assessment step {current} of {total}",
+      "step": "Step {current}",
+      "total": "{total} total"
+    },
+    "context": {
+      "title": "First, tell us about the business.",
+      "intro": "These four answers add context to the result. They do not change your score.",
+      "choose": "Choose one",
+      "role": { "label": "Your role", "options": { "owner": "Owner or founder", "executive": "Executive or general manager", "operations": "Operations", "finance": "Finance", "marketing": "Sales or marketing", "other": "Other" } },
+      "employeeBand": { "label": "Number of employees", "options": { "1-9": "1–9", "10-24": "10–24", "25-49": "25–49", "50-99": "50–99", "100-plus": "100+" } },
+      "revenueBand": { "label": "Annual revenue", "options": { "pre-revenue": "Pre-revenue", "under-1m": "Under $1 million", "1m-5m": "$1–5 million", "5m-20m": "$5–20 million", "20m-plus": "$20 million+", "prefer-not": "Prefer not to say" } },
+      "primaryOutcome": { "label": "Primary outcome", "options": { "growth": "Grow revenue", "profitability": "Improve profitability", "cash-flow": "Improve cash flow", "operations": "Run operations better", "customer": "Understand customers", "reporting": "Make reporting reliable" } }
+    },
+    "pillars": {
+      "metrics": { "title": "Metrics", "intro": "Consider whether the business has a shared, decision-ready definition of success." },
+      "data": { "title": "Data", "intro": "Consider the completeness, accessibility, freshness, and consistency of the underlying records." },
+      "reporting": { "title": "Reporting", "intro": "Consider whether reports are dependable and connected to a recurring decision process." },
+      "ownership": { "title": "Ownership", "intro": "Consider whether people, access, documentation, and tools can survive normal business change." }
+    },
+    "questions": {
+      "M1": "We have an agreed list of five to seven numbers that represent the health of the business.",
+      "M2": "Each headline metric has a written definition, including what is included, excluded, and which time period it uses.",
+      "M3": "We know which system is the source of truth for each headline metric.",
+      "M4": "Each headline metric has a target or threshold connected to a specific action.",
+      "M5": "We can name a business decision from the last 90 days that changed because of what the data showed.",
+      "D1": "The transactions, leads, customers, and operational activity needed for our headline metrics are consistently captured.",
+      "D2": "We can export the detailed records behind our important numbers—not just view summaries or screenshots.",
+      "D3": "Our data covers the required period, is current enough for our decisions, and has no unexplained gaps.",
+      "D4": "Customer, transaction, product, and campaign records use reliable identifiers and consistent naming.",
+      "D5": "When an important number appears in two systems, we can explain and reconcile the difference.",
+      "R1": "We have one primary report or dashboard for the business rather than several competing versions.",
+      "R2": "The primary report is updated on schedule, displays its freshness, and requires little manual work.",
+      "R3": "Important numbers are shown against a target, prior period, or other meaningful comparison.",
+      "R4": "The team reviews the numbers at a recurring time—weekly or monthly.",
+      "R5": "Reviews produce documented actions with owners, and we later check whether those actions worked.",
+      "O1": "Every headline metric and important data source has a named owner.",
+      "O2": "The company controls access to its data and can retain it when an employee, agency, or vendor leaves.",
+      "O3": "Important reports and data workflows are documented well enough for another person to maintain.",
+      "O4": "At least one person in the company can troubleshoot or modify the primary report.",
+      "O5": "Our analytics tools are proportionate to the business, avoid unnecessary duplication, and support actual decisions."
+    },
+    "responses": { "yes": "Yes", "partial": "Partly", "no": "No", "unsure": "Not sure" },
+    "flags": {
+      "title": "Check for urgent warning signs.",
+      "intro": "Answer based on what is true today. A “not sure” response is treated as a warning that needs verification.",
+      "questions": {
+        "F1": "Our revenue or customer total changes depending on which person or system is asked.",
+        "F2": "An agency, former employee, or vendor controls an account or dataset the business depends on.",
+        "F3": "Business-critical reporting depends on one undocumented spreadsheet or one person.",
+        "F4": "We are spending more on a marketing channel without independently connecting it to leads or sales.",
+        "F5": "We knowingly use a stale or broken report for important decisions."
+      }
+    },
+    "buttons": { "back": "Back", "next": "Continue", "results": "See my result", "return": "Return to the assessment", "backToResults": "Back to result" },
+    "errors": { "title": "One more thing", "context": "Choose an answer for all four business-context fields.", "questions": "Answer all five statements before continuing.", "flags": "Answer all five warning-sign statements before viewing your result.", "incomplete": "Your score is not available until all 20 scored statements are answered." },
+    "maturity": { "Ready to Scale": "Ready to Scale", "Functional but Fragile": "Functional but Fragile", "Developing": "Developing", "Flying Blind": "Flying Blind" },
+    "barriers": { "metrics": "Metrics Without Direction", "data": "Data-Rich but Untrusted", "reporting": "Reporting Without Action", "ownership": "Ownerless Analytics" },
+    "barrierDescriptions": {
+      "metrics": "The business is collecting numbers without a sufficiently shared definition of which decisions those numbers should drive.",
+      "data": "A Data-Rich but Untrusted business has useful records, but gaps, access limits, or conflicting definitions weaken confidence in them.",
+      "reporting": "Reporting exists, but it is not consistently turning comparisons and reviews into owned, measurable action.",
+      "ownership": "Analytics depends too heavily on informal knowledge, fragile access, or tools without clear internal ownership."
+    },
+    "profiles": {
+      "verification": "Several “not sure” answers mean verification should come before new analytics work.",
+      "optimization": "The foundation is strong enough to focus on sharper decisions, faster feedback, and scale.",
+      "foundation": "The priority is a dependable foundation: agreed metrics, trustworthy records, and a repeatable operating rhythm."
+    },
+    "results": {
+      "eyebrow": "Your ungated result",
+      "title": "Analytics health snapshot",
+      "scoreLabel": "Overall score",
+      "barrierLabel": "Primary barrier",
+      "growthOpportunityLabel": "Growth opportunity",
+      "warningTitle": "A warning sign needs attention",
+      "warningBody": "At least one red flag was confirmed or uncertain. If your raw score reached Ready to Scale, the displayed maturity has been capped at Functional but Fragile until the warning is resolved.",
+      "pillarsTitle": "Pillar scores",
+      "firstRecommendation": "Start here",
+      "disclaimer": "This is a directional self-assessment based on your answers, not an independent audit, assurance engagement, security review, or guarantee of business performance.",
+      "unlockTitle": "Want the complete three-step action plan?",
+      "unlockBody": "Share basic work contact details to reveal three prioritized actions and receive a practical copy by email. Your result above remains available if you continue without it.",
+      "unlockButton": "Reveal my action plan"
+    },
+    "lead": {
+      "title": "Send me the detailed plan.",
+      "intro": "Only basic work contact details are needed. Do not include customer data, system credentials, exports, or other sensitive information.",
+      "firstName": "First name", "email": "Work email", "company": "Company name", "website": "Website (optional)", "websitePlaceholder": "https://example.com",
+      "consent": "I agree that John Serra may use these details to send my assessment results and follow up about relevant analytics services.",
+      "submit": "Show my detailed plan", "submitting": "Saving…", "error": "We could not save your details. Please check the fields and try again.", "continueWithoutPlan": "Continue without the detailed plan"
+    },
+    "plan": {
+      "eyebrow": "Your detailed action plan",
+      "title": "Three moves, in priority order.",
+      "intro": "Complete these actions in sequence. The third may support a different pillar, but it was selected to strengthen the weakest part of your analytics system.",
+      "why": "Why it matters", "do": "What to do", "verify": "How to verify", "ctaTitle": "Recommended route", "secondaryCta": "Email John", "backToResults": "Back to result",
+      "cta": {
+        "self_service": { "title": "Build the core foundation first.", "description": "Use the plan as a focused internal checklist, then bring in help where ownership or data access remains blocked.", "button": "Explore practical support" },
+        "guided_diagnostic": { "title": "Validate the weak link with a guided diagnostic.", "description": "A short working session can test the assumptions behind the score and turn the plan into a scoped sequence of work.", "button": "Discuss a diagnostic" },
+        "implementation": { "title": "Turn the plan into a reliable operating system.", "description": "Get hands-on help defining metrics, repairing the data path, and building reporting that produces action.", "button": "Discuss implementation" },
+        "optimization": { "title": "Optimize for faster, better decisions.", "description": "With the foundation in place, focus on sharper targets, less manual work, and a tighter feedback loop.", "button": "Discuss optimization" }
+      }
+    },
+    "actions": {
+      "action_M1": { "title": "Agree on the business health numbers", "why": "A short shared list prevents teams from optimizing different versions of success.", "whatToDo": "Choose five to seven headline numbers and record the decision each one supports.", "verify": "Ask two leaders to name the list independently; their answers should match." },
+      "action_M2": { "title": "Write a definition for every headline metric", "why": "Written inclusion, exclusion, and time rules stop quiet interpretation drift.", "whatToDo": "Create a one-page metric dictionary with formula, scope, time period, and owner.", "verify": "Have two people calculate one metric from the definition and confirm the totals match." },
+      "action_M3": { "title": "Assign a source of truth", "why": "A named source prevents convenient system-switching when totals disagree.", "whatToDo": "Map each headline metric to one authoritative system and the detailed table or export behind it.", "verify": "Trace every dashboard total back to the recorded source without using screenshots." },
+      "action_M4": { "title": "Connect every metric to a trigger", "why": "A metric without a target or response cannot reliably change a decision.", "whatToDo": "Set a target or threshold and document the action taken when it is missed or exceeded.", "verify": "In the next review, record whether the trigger fired and what action followed." },
+      "action_M5": { "title": "Prove that data changes decisions", "why": "Analytics creates value only when evidence changes priorities, resources, or actions.", "whatToDo": "Add a decision log to the recurring review and capture the evidence behind each material change.", "verify": "Within 90 days, point to one logged decision and its measured outcome." },
+      "action_D1": { "title": "Close critical capture gaps", "why": "Missing transactions, leads, or activity make every downstream metric incomplete.", "whatToDo": "List the records needed for headline metrics, then fix the highest-impact missing capture point.", "verify": "Compare expected and captured record counts for a full operating cycle." },
+      "action_D2": { "title": "Secure record-level exports", "why": "Detailed records are necessary to test totals, investigate exceptions, and change tools safely.", "whatToDo": "Confirm an authorized employee can export detailed data from each critical system in a usable format.", "verify": "Produce and open a current export containing stable identifiers and dates." },
+      "action_D3": { "title": "Test freshness, coverage, and gaps", "why": "Decisions fail when data is late, covers the wrong period, or silently omits activity.", "whatToDo": "Define freshness expectations and run checks for date coverage, missing periods, and unusual volume changes.", "verify": "A scheduled check identifies a deliberately introduced late or missing batch." },
+      "action_D4": { "title": "Standardize identifiers and names", "why": "Reliable joins depend on stable IDs and consistent labels across systems.", "whatToDo": "Choose canonical customer, transaction, product, and campaign identifiers and document naming rules.", "verify": "Measure unmatched and duplicate records; both rates should fall after the change." },
+      "action_D5": { "title": "Create a reconciliation rule", "why": "Conflicting totals destroy trust unless timing and definition differences are explainable.", "whatToDo": "After metric definitions are written, document how the two most important cross-system totals reconcile.", "verify": "Reconcile a recent period to an agreed tolerance and explain every material difference." },
+      "action_R1": { "title": "Choose one primary report", "why": "A primary report creates a shared starting point without requiring new tracking software.", "whatToDo": "Designate one existing report as primary and retire or clearly label competing versions.", "verify": "Ask the review team which report governs; everyone should point to the same one." },
+      "action_R2": { "title": "Make report freshness visible", "why": "People cannot judge a report if its update time and manual dependencies are hidden.", "whatToDo": "Display the last refresh time, document the update schedule, and remove one fragile manual step.", "verify": "Observe two scheduled refreshes and confirm they complete on time with the date visible." },
+      "action_R3": { "title": "Add decision-ready comparisons", "why": "A number without a target or baseline gives no signal about whether action is needed.", "whatToDo": "Add the most meaningful target, prior-period, or benchmark comparison to each headline view.", "verify": "A reviewer can describe performance direction and gap without doing separate calculations." },
+      "action_R4": { "title": "Set a recurring review rhythm", "why": "Even a good report has little value if no one reviews it at a dependable time.", "whatToDo": "Schedule a weekly or monthly review with a stable agenda, required attendees, and the primary report.", "verify": "Complete three consecutive reviews on schedule and record attendance." },
+      "action_R5": { "title": "Close the action loop", "why": "Review meetings become reporting theater when actions have no owner or follow-up.", "whatToDo": "Record each action, owner, due date, expected effect, and later outcome in a decision log.", "verify": "At the next review, every prior action is closed, updated, or explicitly reassigned." },
+      "action_O1": { "title": "Name metric and data owners", "why": "Ownership makes definitions, quality issues, and access decisions someone’s explicit responsibility.", "whatToDo": "Assign one accountable owner to every headline metric and critical data source.", "verify": "Each owner confirms the role and can state the current issue or maintenance task." },
+      "action_O2": { "title": "Put critical access under company control", "why": "Vendor- or employee-owned accounts can interrupt operations and strand business data.", "whatToDo": "Move billing, admin access, recovery methods, and exports for critical systems to company-controlled accounts.", "verify": "An authorized second person can access, recover, and export from every critical system." },
+      "action_O3": { "title": "Document the critical workflow", "why": "Undocumented reports and pipelines create a single-person dependency.", "whatToDo": "Document inputs, transformation steps, schedule, outputs, owners, and common failure recovery.", "verify": "A second person follows the document to complete or troubleshoot one cycle." },
+      "action_O4": { "title": "Build internal troubleshooting capacity", "why": "The business needs a first responder when its primary report breaks or changes.", "whatToDo": "Train one internal person to refresh, inspect, and make a small safe change to the primary report.", "verify": "That person resolves a controlled test issue without relying on the original builder." },
+      "action_O5": { "title": "Simplify the analytics toolset", "why": "Duplicate or oversized tools add cost and inconsistent logic without improving decisions.", "whatToDo": "Inventory analytics tools, the decision each supports, its owner, and overlapping capabilities; remove one unjustified duplicate.", "verify": "Every retained tool has an active owner, a used output, and a documented business purpose." }
     }
   },
   "Chat": {

@@ -120,6 +120,10 @@
     "fit": "Elektronik tablolarda, iş araçlarında veya veritabanlarında değerli verileri olan ancak bunları anlamlandıracak zamanı olmayan ekipler.",
     "servicesEyebrow": "Nasıl yardımcı olabilirim",
     "servicesTitle": "İşletmenize göre tasarlanmış pratik analitik.",
+    "assessmentEyebrow": "Nereden başlayacağınızdan emin değil misiniz?",
+    "assessmentTitle": "Analitik sağlığınızı beş dakikada ölçün.",
+    "assessmentDescription": "İletişim bilgisi vermeden önce anında puanınızı görün, analitik sisteminizdeki en zayıf halkayı bulun ve ilk pratik adımı öğrenin.",
+    "assessmentButton": "Ücretsiz değerlendirmeyi başlat",
     "dashboards": { "title": "Panolar ve KPI Raporlama", "description": "Harekete geçmesi gereken kişiler için önemli rakamların odaklanmış bir görünümü.", "deliverable": "Power BI · Looker Studio · Excel" },
     "analysis": { "title": "İş ve Operasyon Analizi", "description": "Belirli bir iş sorusunu net analiz, kısa bulgular ve uygulanabilir önerilerle yanıtlayın.", "deliverable": "Trendler · Segmentasyon · Performans" },
     "automation": { "title": "Raporlama Otomasyonu", "description": "Tekrarlanan kopyala-yapıştır raporlamayı zaman kazandıran, hataları azaltan güvenilir bir iş akışıyla değiştirin.", "deliverable": "Python · SQL · API'ler" },
@@ -140,6 +144,145 @@
       "budget": "Yaklaşık bütçe", "notSure": "Henüz emin değilim", "under1k": "$1.000 altı", "timeline": "İdeal zamanlama", "timelinePlaceholder": "Örneğin 4–6 hafta içinde",
       "message": "Neyi geliştirmek istersiniz?", "messagePlaceholder": "Yardıma ihtiyaç duyduğunuz karar, rapor veya süreci anlatın.",
       "submit": "Proje talebini gönder", "submitting": "Gönderiliyor…", "successTitle": "Talebiniz alındı", "success": "Teşekkürler—ayrıntıları inceleyip en kısa sürede döneceğim.", "errorTitle": "Gönderilemedi", "error": "Lütfen tekrar deneyin veya doğrudan john@serra.us adresine e-posta gönderin."
+    }
+  },
+  "DataAudit": {
+    "metaTitle": "KOBİ Analitik Sağlık Değerlendirmesi — John Serra",
+    "metaDescription": "Küçük işletmeler için analitik olgunluğu puanlayan, en büyük engeli belirleyen ve pratik eylem planı sunan ücretsiz beş dakikalık değerlendirme.",
+    "landing": {
+      "eyebrow": "KOBİ Analitik Sağlık Değerlendirmesi",
+      "headline": "İşletmenizi yöneten rakamlara güvenebilir misiniz?",
+      "intro": "Metrik, veri, raporlama ve sahiplik uygulamalarınızın güvenli kararları destekleyecek kadar güçlü olup olmadığını öğrenin.",
+      "duration": "Yaklaşık beş dakika",
+      "ungated": "İletişim bilgisinden önce özet sonuç",
+      "start": "Değerlendirmeyi başlat",
+      "privacyLabel": "Sizden istenmeyecekler",
+      "privacy": "Kaynak sistem dışa aktarımlarını, giriş bilgilerini, müşteri verilerini veya başka hassas bilgileri paylaşmayın. Bu değerlendirme yalnızca işletme bağlamınızı ve çalışma biçimlerinizi sorar."
+    },
+    "progress": {
+      "label": "Değerlendirmenin {total} adımından {current}. adım",
+      "step": "Adım {current}",
+      "total": "Toplam {total}"
+    },
+    "context": {
+      "title": "Önce işletmenizi tanıyalım.",
+      "intro": "Bu dört yanıt sonuca bağlam kazandırır; puanınızı değiştirmez.",
+      "choose": "Bir seçenek belirleyin",
+      "role": { "label": "Göreviniz", "options": { "owner": "İşletme sahibi veya kurucu", "executive": "Yönetici veya genel müdür", "operations": "Operasyon", "finance": "Finans", "marketing": "Satış veya pazarlama", "other": "Diğer" } },
+      "employeeBand": { "label": "Çalışan sayısı", "options": { "1-9": "1–9", "10-24": "10–24", "25-49": "25–49", "50-99": "50–99", "100-plus": "100+" } },
+      "revenueBand": { "label": "Yıllık ciro", "options": { "pre-revenue": "Henüz gelir yok", "under-1m": "1 milyon $ altı", "1m-5m": "1–5 milyon $", "5m-20m": "5–20 milyon $", "20m-plus": "20 milyon $+", "prefer-not": "Belirtmek istemiyorum" } },
+      "primaryOutcome": { "label": "Öncelikli hedef", "options": { "growth": "Geliri büyütmek", "profitability": "Kârlılığı artırmak", "cash-flow": "Nakit akışını iyileştirmek", "operations": "Operasyonları geliştirmek", "customer": "Müşterileri anlamak", "reporting": "Raporlamayı güvenilir kılmak" } }
+    },
+    "pillars": {
+      "metrics": { "title": "Metrikler", "intro": "İşletmede başarı için ortak ve karar almaya hazır bir tanım olup olmadığını düşünün." },
+      "data": { "title": "Veri", "intro": "Temel kayıtların eksiksizliğini, erişilebilirliğini, güncelliğini ve tutarlılığını değerlendirin." },
+      "reporting": { "title": "Raporlama", "intro": "Raporların güvenilir ve düzenli bir karar sürecine bağlı olup olmadığını değerlendirin." },
+      "ownership": { "title": "Sahiplik", "intro": "İnsan, erişim, dokümantasyon ve araçların normal işletme değişikliklerine dayanıp dayanamayacağını değerlendirin." }
+    },
+    "questions": {
+      "M1": "İşletmenin sağlığını temsil eden, üzerinde uzlaşılmış beş ila yedi rakamdan oluşan bir listemiz var.",
+      "M2": "Her ana metriğin; nelerin dahil ve hariç olduğunu ve hangi dönemi kullandığını açıklayan yazılı bir tanımı var.",
+      "M3": "Her ana metrik için hangi sistemin tek ve güvenilir kaynak olduğunu biliyoruz.",
+      "M4": "Her ana metriğin belirli bir eyleme bağlı hedefi veya eşiği var.",
+      "M5": "Son 90 günde, verinin gösterdiği sonuç nedeniyle değişen bir iş kararını söyleyebiliyoruz.",
+      "D1": "Ana metriklerimiz için gereken işlemler, potansiyel müşteriler, müşteriler ve operasyonel faaliyetler düzenli olarak kaydediliyor.",
+      "D2": "Önemli rakamların arkasındaki ayrıntılı kayıtları dışa aktarabiliyoruz; yalnızca özet veya ekran görüntüsüyle sınırlı değiliz.",
+      "D3": "Verimiz gerekli dönemi kapsıyor, kararlarımız için yeterince güncel ve açıklanamayan boşluklar içermiyor.",
+      "D4": "Müşteri, işlem, ürün ve kampanya kayıtlarında güvenilir kimlikler ve tutarlı adlandırma kullanılıyor.",
+      "D5": "Önemli bir rakam iki sistemde yer aldığında farkı açıklayabiliyor ve mutabakat sağlayabiliyoruz.",
+      "R1": "Birbiriyle yarışan farklı sürümler yerine işletmenin kullandığı tek bir ana rapor veya pano var.",
+      "R2": "Ana rapor planlandığı zamanda güncelleniyor, güncellik bilgisini gösteriyor ve çok az elle işlem gerektiriyor.",
+      "R3": "Önemli rakamlar hedef, önceki dönem veya anlamlı başka bir karşılaştırmayla birlikte gösteriliyor.",
+      "R4": "Ekip rakamları haftalık veya aylık olarak düzenli bir zamanda inceliyor.",
+      "R5": "İncelemeler sahibi belli, belgelenmiş eylemler üretiyor ve daha sonra bu eylemlerin işe yarayıp yaramadığını kontrol ediyoruz.",
+      "O1": "Her ana metriğin ve önemli veri kaynağının adı belirlenmiş bir sahibi var.",
+      "O2": "Şirket verilerine erişimi kontrol ediyor ve bir çalışan, ajans veya tedarikçi ayrıldığında veriyi elinde tutabiliyor.",
+      "O3": "Önemli raporlar ve veri iş akışları, başka birinin bakım yapabileceği kadar iyi belgelenmiş durumda.",
+      "O4": "Şirkette en az bir kişi ana rapordaki sorunu giderebiliyor veya raporu değiştirebiliyor.",
+      "O5": "Analitik araçlarımız işletmenin ölçeğine uygun, gereksiz tekrardan uzak ve gerçek kararları destekliyor."
+    },
+    "responses": { "yes": "Evet", "partial": "Kısmen", "no": "Hayır", "unsure": "Emin değilim" },
+    "flags": {
+      "title": "Acil uyarı işaretlerini kontrol edin.",
+      "intro": "Bugünkü duruma göre yanıtlayın. “Emin değilim” yanıtı, doğrulanması gereken bir uyarı olarak kabul edilir.",
+      "questions": {
+        "F1": "Gelir veya müşteri toplamımız, sorulan kişiye ya da sisteme göre değişiyor.",
+        "F2": "İşletmenin bağlı olduğu bir hesabı veya veri setini bir ajans, eski çalışan ya da tedarikçi kontrol ediyor.",
+        "F3": "İş açısından kritik raporlama, belgelenmemiş tek bir elektronik tabloya veya tek bir kişiye bağlı.",
+        "F4": "Potansiyel müşteri veya satışlarla bağımsız bir bağlantı kurmadan bir pazarlama kanalına daha fazla harcama yapıyoruz.",
+        "F5": "Önemli kararlarda güncel olmadığını veya bozuk olduğunu bildiğimiz bir raporu kullanıyoruz."
+      }
+    },
+    "buttons": { "back": "Geri", "next": "Devam et", "results": "Sonucumu gör", "return": "Değerlendirmeye dön", "backToResults": "Sonuca dön" },
+    "errors": { "title": "Bir nokta daha", "context": "İşletme bağlamındaki dört alanın tamamını yanıtlayın.", "questions": "Devam etmeden önce beş ifadenin tamamını yanıtlayın.", "flags": "Sonucunuzu görmeden önce beş uyarı ifadesinin tamamını yanıtlayın.", "incomplete": "Puanınız, puanlanan 20 ifadenin tamamı yanıtlanmadan gösterilemez." },
+    "maturity": { "Ready to Scale": "Ölçeklenmeye Hazır", "Functional but Fragile": "İşliyor ama Kırılgan", "Developing": "Gelişmekte", "Flying Blind": "Veri Olmadan İlerliyor" },
+    "barriers": { "metrics": "Yönsüz Metrikler", "data": "Veri Zengini ama Güvensiz", "reporting": "Eylemsiz Raporlama", "ownership": "Sahipsiz Analitik" },
+    "barrierDescriptions": {
+      "metrics": "İşletme rakam topluyor ancak bu rakamların hangi kararları yönlendirmesi gerektiği konusunda yeterince ortak bir tanım yok.",
+      "data": "Yararlı kayıtlar mevcut olsa da boşluklar, erişim sınırlamaları veya çelişen tanımlar bu kayıtlara duyulan güveni azaltıyor.",
+      "reporting": "Raporlama mevcut ancak karşılaştırmaları ve incelemeleri düzenli olarak sahibi belli, ölçülebilir eylemlere dönüştürmüyor.",
+      "ownership": "Analitik; resmî olmayan bilgiye, kırılgan erişime veya açık iç sahipliği bulunmayan araçlara fazla bağımlı."
+    },
+    "profiles": {
+      "verification": "Birden fazla “emin değilim” yanıtı, yeni analitik çalışmalarından önce doğrulama yapılması gerektiğini gösteriyor.",
+      "optimization": "Temel yapı; daha keskin kararlar, daha hızlı geri bildirim ve ölçeklenmeye odaklanacak kadar güçlü.",
+      "foundation": "Öncelik güvenilir bir temel kurmak: üzerinde uzlaşılmış metrikler, güvenilir kayıtlar ve tekrarlanabilir bir çalışma ritmi."
+    },
+    "results": {
+      "eyebrow": "Ücretsiz özet sonucunuz",
+      "title": "Analitik sağlık görünümü",
+      "scoreLabel": "Genel puan",
+      "barrierLabel": "Ana engel",
+      "growthOpportunityLabel": "Büyüme fırsatı",
+      "warningTitle": "Bir uyarı işareti ele alınmalı",
+      "warningBody": "En az bir risk doğrulandı veya belirsiz kaldı. Ham puanınız Ölçeklenmeye Hazır düzeyine ulaşmış olsa bile uyarı çözülene kadar gösterilen düzey İşliyor ama Kırılgan olarak sınırlandı.",
+      "pillarsTitle": "Alan puanları",
+      "firstRecommendation": "Buradan başlayın",
+      "disclaimer": "Bu sonuç yanıtlarınıza dayanan yönlendirici bir öz değerlendirmedir; bağımsız denetim, güvence çalışması, güvenlik incelemesi veya iş performansı garantisi değildir.",
+      "unlockTitle": "Üç adımlı eylem planının tamamını ister misiniz?",
+      "unlockBody": "Önceliklendirilmiş üç eylemi görmek ve pratik bir kopyasını e-postayla almak için temel iş iletişim bilgilerinizi paylaşın. Devam etmezseniz yukarıdaki sonuç görünür kalır.",
+      "unlockButton": "Eylem planımı göster"
+    },
+    "lead": {
+      "title": "Ayrıntılı planı bana gönderin.",
+      "intro": "Yalnızca temel iş iletişim bilgileri gerekir. Müşteri verisi, sistem giriş bilgisi, dışa aktarım veya başka hassas bilgi eklemeyin.",
+      "firstName": "Ad", "email": "İş e-postası", "company": "Şirket adı", "website": "Web sitesi (isteğe bağlı)", "websitePlaceholder": "https://ornek.com",
+      "consent": "John Serra'nın bu bilgileri değerlendirme sonucumu göndermek ve ilgili analitik hizmetleri hakkında benimle iletişim kurmak için kullanmasını kabul ediyorum.",
+      "submit": "Ayrıntılı planımı göster", "submitting": "Kaydediliyor…", "error": "Bilgilerinizi kaydedemedik. Alanları kontrol edip tekrar deneyin.", "continueWithoutPlan": "Ayrıntılı plan olmadan devam et"
+    },
+    "plan": {
+      "eyebrow": "Ayrıntılı eylem planınız",
+      "title": "Öncelik sırasıyla üç adım.",
+      "intro": "Bu eylemleri sırayla tamamlayın. Üçüncü adım farklı bir alanı destekleyebilir ancak analitik sisteminizin en zayıf bölümünü güçlendirmek için seçilmiştir.",
+      "why": "Neden önemli", "do": "Ne yapmalı", "verify": "Nasıl doğrulanır", "ctaTitle": "Önerilen yol", "secondaryCta": "John'a e-posta gönder", "backToResults": "Sonuca dön",
+      "cta": {
+        "self_service": { "title": "Önce temel yapıyı kurun.", "description": "Planı odaklı bir iç kontrol listesi olarak kullanın; sahiplik veya veri erişimi engel olmaya devam ederse destek alın.", "button": "Pratik desteği incele" },
+        "guided_diagnostic": { "title": "Zayıf halkayı yönlendirmeli bir incelemeyle doğrulayın.", "description": "Kısa bir çalışma oturumu, puanın arkasındaki varsayımları sınayıp planı kapsamı belli bir iş sırasına dönüştürebilir.", "button": "İncelemeyi görüşelim" },
+        "implementation": { "title": "Planı güvenilir bir çalışma sistemine dönüştürün.", "description": "Metrikleri tanımlamak, veri akışını onarmak ve eylem üreten raporlama kurmak için uygulamalı destek alın.", "button": "Uygulamayı görüşelim" },
+        "optimization": { "title": "Daha hızlı ve daha iyi kararlar için optimize edin.", "description": "Temel hazır olduğuna göre daha keskin hedeflere, daha az elle işleme ve daha sıkı bir geri bildirim döngüsüne odaklanın.", "button": "Optimizasyonu görüşelim" }
+      }
+    },
+    "actions": {
+      "action_M1": { "title": "İşletme sağlığı göstergelerinde uzlaşın", "why": "Kısa ve ortak bir liste, ekiplerin farklı başarı tanımlarına göre çalışmasını önler.", "whatToDo": "Beş ila yedi ana rakam seçin ve her birinin desteklediği kararı kaydedin.", "verify": "İki yöneticiden listeyi ayrı ayrı söylemesini isteyin; yanıtları eşleşmeli." },
+      "action_M2": { "title": "Her ana metrik için yazılı tanım oluşturun", "why": "Dahil etme, hariç tutma ve dönem kuralları yorumların zamanla ayrışmasını önler.", "whatToDo": "Formül, kapsam, dönem ve sahibi içeren tek sayfalık bir metrik sözlüğü oluşturun.", "verify": "İki kişiye aynı metriği tanımdan hesaplattırın ve sonuçların eşleştiğini doğrulayın." },
+      "action_M3": { "title": "Tek ve güvenilir kaynağı belirleyin", "why": "Adı konmuş bir kaynak, toplamlar uyuşmadığında sistemler arasında keyfî geçişi önler.", "whatToDo": "Her ana metriği bir yetkili sisteme ve arkasındaki ayrıntılı tabloya veya dışa aktarıma bağlayın.", "verify": "Her pano toplamını ekran görüntüsü kullanmadan kayıtlı kaynağa kadar izleyin." },
+      "action_M4": { "title": "Her metriği bir tetikleyiciye bağlayın", "why": "Hedefi veya karşılığı olmayan metrik, kararı güvenilir biçimde değiştiremez.", "whatToDo": "Bir hedef ya da eşik belirleyin; aşılırsa veya kaçırılırsa yapılacak eylemi belgeleyin.", "verify": "Sonraki incelemede tetikleyicinin çalışıp çalışmadığını ve ardından gelen eylemi kaydedin." },
+      "action_M5": { "title": "Verinin kararları değiştirdiğini kanıtlayın", "why": "Analitik ancak kanıtlar öncelikleri, kaynakları veya eylemleri değiştirdiğinde değer üretir.", "whatToDo": "Düzenli incelemeye bir karar günlüğü ekleyin ve önemli değişikliklerin dayanağını kaydedin.", "verify": "90 gün içinde kaydedilmiş bir kararı ve ölçülen sonucunu gösterin." },
+      "action_D1": { "title": "Kritik kayıt boşluklarını kapatın", "why": "Eksik işlemler, potansiyel müşteriler veya faaliyetler sonraki tüm metrikleri eksik kılar.", "whatToDo": "Ana metrikler için gereken kayıtları listeleyin ve etkisi en yüksek eksik kayıt noktasını düzeltin.", "verify": "Tam bir faaliyet dönemi için beklenen ve yakalanan kayıt sayılarını karşılaştırın." },
+      "action_D2": { "title": "Kayıt düzeyinde dışa aktarımı güvenceye alın", "why": "Toplamları sınamak, istisnaları araştırmak ve araçları güvenle değiştirmek için ayrıntılı kayıt gerekir.", "whatToDo": "Yetkili bir çalışanın her kritik sistemden kullanılabilir biçimde ayrıntılı veri çıkarabildiğini doğrulayın.", "verify": "Sabit kimlikler ve tarihler içeren güncel bir dışa aktarım üretip açın." },
+      "action_D3": { "title": "Güncellik, kapsam ve boşlukları test edin", "why": "Veri geciktiğinde, yanlış dönemi kapsadığında veya faaliyeti sessizce atladığında kararlar bozulur.", "whatToDo": "Güncellik beklentilerini tanımlayın; tarih kapsamı, eksik dönem ve sıra dışı hacim kontrolleri kurun.", "verify": "Planlı kontrol, bilinçli olarak geciktirilen veya eksiltilen bir veri grubunu yakalamalı." },
+      "action_D4": { "title": "Kimlikleri ve adları standartlaştırın", "why": "Güvenilir veri birleştirme, sistemler arasında sabit kimliklere ve tutarlı etiketlere bağlıdır.", "whatToDo": "Müşteri, işlem, ürün ve kampanya için standart kimlikleri seçip adlandırma kurallarını belgeleyin.", "verify": "Eşleşmeyen ve yinelenen kayıt oranlarını ölçün; değişiklikten sonra ikisi de düşmeli." },
+      "action_D5": { "title": "Bir mutabakat kuralı oluşturun", "why": "Zamanlama ve tanım farkları açıklanamıyorsa çelişen toplamlar güveni yok eder.", "whatToDo": "Metrik tanımları yazıldıktan sonra sistemler arası en önemli iki toplamın nasıl uzlaştırılacağını belgeleyin.", "verify": "Yakın bir dönemi kabul edilen toleransta uzlaştırın ve önemli tüm farkları açıklayın." },
+      "action_R1": { "title": "Tek bir ana rapor seçin", "why": "Ana rapor, yeni takip yazılımı gerektirmeden ortak bir başlangıç noktası oluşturur.", "whatToDo": "Mevcut raporlardan birini ana rapor ilan edin; rakip sürümleri kaldırın veya açıkça etiketleyin.", "verify": "İnceleme ekibine hangi raporun esas olduğunu sorun; herkes aynı raporu göstermeli." },
+      "action_R2": { "title": "Rapor güncelliğini görünür kılın", "why": "Güncelleme zamanı ve elle yapılan bağımlılıklar gizliyse raporun güvenilirliği değerlendirilemez.", "whatToDo": "Son yenileme zamanını gösterin, programı belgeleyin ve kırılgan bir elle işlem adımını kaldırın.", "verify": "İki planlı yenilemeyi izleyip zamanında tamamlandığını ve tarihin göründüğünü doğrulayın." },
+      "action_R3": { "title": "Karara hazır karşılaştırmalar ekleyin", "why": "Hedefi veya tabanı olmayan bir rakam, eylem gerekip gerekmediğini göstermez.", "whatToDo": "Her ana görünüme en anlamlı hedef, önceki dönem veya kıyas karşılaştırmasını ekleyin.", "verify": "Bir kullanıcı ayrı hesap yapmadan performans yönünü ve farkı açıklayabilmeli." },
+      "action_R4": { "title": "Düzenli inceleme ritmi oluşturun", "why": "İyi bir rapor bile güvenilir bir zamanda incelenmiyorsa az değer üretir.", "whatToDo": "Sabit gündem, gerekli katılımcılar ve ana raporla haftalık veya aylık toplantı planlayın.", "verify": "Art arda üç incelemeyi zamanında tamamlayıp katılımı kaydedin." },
+      "action_R5": { "title": "Eylem döngüsünü kapatın", "why": "Eylemlerin sahibi ve takibi yoksa inceleme toplantıları yalnızca rapor sunumuna dönüşür.", "whatToDo": "Her eylemi, sahibini, tarihini, beklenen etkisini ve sonraki sonucunu karar günlüğüne yazın.", "verify": "Sonraki incelemede önceki her eylem kapanmış, güncellenmiş veya açıkça devredilmiş olmalı." },
+      "action_O1": { "title": "Metrik ve veri sahiplerini belirleyin", "why": "Sahiplik; tanımları, kalite sorunlarını ve erişim kararlarını birinin açık sorumluluğu yapar.", "whatToDo": "Her ana metriğe ve kritik veri kaynağına sorumlu tek bir sahip atayın.", "verify": "Her sahip rolünü onaylamalı ve mevcut sorunu ya da bakım görevini söyleyebilmeli." },
+      "action_O2": { "title": "Kritik erişimi şirket kontrolüne alın", "why": "Tedarikçi veya çalışan sahipli hesaplar operasyonu kesintiye uğratıp veriyi erişilemez bırakabilir.", "whatToDo": "Kritik sistemlerin faturalama, yönetici erişimi, kurtarma yöntemi ve dışa aktarımını şirket hesaplarına taşıyın.", "verify": "Yetkili ikinci bir kişi her kritik sisteme erişebilmeli, hesabı kurtarabilmeli ve veri çıkarabilmeli." },
+      "action_O3": { "title": "Kritik iş akışını belgeleyin", "why": "Belgelenmemiş rapor ve veri akışları tek kişiye bağımlılık yaratır.", "whatToDo": "Girdileri, dönüşüm adımlarını, programı, çıktıları, sahipleri ve sık hata çözümlerini belgeleyin.", "verify": "İkinci bir kişi belgeyi kullanarak bir döngüyü tamamlasın veya bir sorunu çözsün." },
+      "action_O4": { "title": "İç sorun giderme kapasitesi oluşturun", "why": "Ana rapor bozulduğunda veya değiştiğinde işletmenin ilk müdahaleyi yapabilecek birine ihtiyacı vardır.", "whatToDo": "İçeriden bir kişiyi ana raporu yenilemek, incelemek ve küçük güvenli değişiklik yapmak üzere eğitin.", "verify": "Bu kişi kontrollü bir test sorununu ilk geliştiriciye ihtiyaç duymadan çözmeli." },
+      "action_O5": { "title": "Analitik araç setini sadeleştirin", "why": "Yinelenen veya gereğinden büyük araçlar kararları geliştirmeden maliyet ve tutarsız mantık ekler.", "whatToDo": "Araçları, destekledikleri kararı, sahiplerini ve örtüşmeleri listeleyin; gerekçesiz bir tekrarı kaldırın.", "verify": "Kalan her aracın aktif sahibi, kullanılan bir çıktısı ve belgelenmiş iş amacı olmalı." }
     }
   },
   "Chat": {

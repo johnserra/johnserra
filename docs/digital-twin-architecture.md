@@ -2,6 +2,8 @@
 
 Source baseline: **2026-09-09**, repository commit **4147fda**, prepared for [#17](https://github.com/johnserra/johnserra/issues/17). This is a review of the checked-in implementation, not a production test or a measured quality report. [#10](https://github.com/johnserra/johnserra/issues/10) will establish the repeatable evaluation harness and dated results before retrieval changes.
 
+Subsequent note, **2026-09-10 UTC**: the [#10 assistant evaluation harness](../evals/assistant/README.md) now provides a professional-only case corpus, public evidence manifest, shared chat runner, offline tests, and a [dated live report](../evals/assistant/reports/baseline-2026-09-10T02-27-41-980Z.md). All 34 cases were attempted; 33 completed and one query-embedding quota error leaves the report marked incomplete. Recipe posts were removed on 2026-08-23; John reaffirmed the broader exclusion of cooking on 2026-09-09. The production prompt and a Turkish About record still refer to cooking because stale persona/About text was not all removed in August. Captured baseline answers confirm this known scope mismatch.
+
 The Digital Twin is John Serra's personal-site assistant. It combines a first-person persona prompt, browser-managed conversation history, semantic retrieval from published WordPress content, and streamed Gemini generation. It currently uses a fixed retrieval-then-generation pipeline.
 
 ## Request and deployment architecture
@@ -96,7 +98,7 @@ WordPress logs failed webhook deliveries but does not durably retry them. Reseed
 
 | Area | Current boundary | Roadmap work |
 | --- | --- | --- |
-| Evaluation | No assistant case corpus, baseline quality report, retrieval recall measurement, or citation evaluation. Existing data-audit tests and static WordPress/SQL contract checks cover other concerns. | [#10](https://github.com/johnserra/johnserra/issues/10) |
+| Evaluation | The 2026-09-09 source baseline originally had no assistant harness. The [professional-only harness and live observations](../evals/assistant/README.md) now measure final-turn retrieval, automated fact-pattern proxies, uncertainty, citations, failures, and injection fixtures. The first report records 33 completed cases and one quota failure; infrastructure-failed cases are excluded from quality denominators and semantic support remains unreviewed. | [#10](https://github.com/johnserra/johnserra/issues/10) |
 | Professional authority | Published WordPress content and a hard-coded biography supply context; no first-class sanitized CV source or conflict-resolution policy. | [#21](https://github.com/johnserra/johnserra/issues/21), [#8](https://github.com/johnserra/johnserra/issues/8) |
 | Retrieval | Latest-message-only embedding, exact locale filter, fixed threshold and count; no hybrid search, query rewriting, reranking, or cross-locale fallback. | [#15](https://github.com/johnserra/johnserra/issues/15) |
 | Citations | Internal source IDs/scores enter the prompt; public URLs and claim-to-source support are not enforced or verified. Rendered links can be generated incorrectly. | [#12](https://github.com/johnserra/johnserra/issues/12) |
@@ -107,7 +109,7 @@ WordPress logs failed webhook deliveries but does not durably retry them. Reseed
 | Verification agent | One generation stream with no evidence-sufficiency loop, verification pass, revision, or recorded agent stop reason. | [#19](https://github.com/johnserra/johnserra/issues/19) |
 | Production evidence | Deployment configuration is documented, but end-to-end production scenarios, rollback demonstration, and public case-study evidence remain to be collected. | [#11](https://github.com/johnserra/johnserra/issues/11) |
 
-No retrieval accuracy, latency, cost, security pass rate, or production availability result is claimed by this baseline. Keep model and retrieval settings recorded with future evaluation runs so comparisons have a clear reference point.
+The original architecture snapshot made no retrieval accuracy, latency, cost, security pass rate, or production availability claim. The subsequent evaluation report records observed retrieval, timings, automated quality proxies, and failures under its stated limitations; it does not establish security or availability guarantees. Keep model and retrieval settings recorded with future evaluation runs so comparisons have a clear reference point.
 
 ## Six-week AI Engineering challenge mapping
 
@@ -129,7 +131,8 @@ Execution order: **#17 → #10 → #21 → #8 → #15 → #12 → #14 → #20 �
 | Concern | Implementation |
 | --- | --- |
 | Homepage and chat UI | [page.tsx](../src/app/[locale]/page.tsx), [AIChatWidget.tsx](../src/components/widgets/AIChatWidget.tsx), [AIChatPanel.tsx](../src/components/widgets/AIChatPanel.tsx) |
-| Retrieval and generation | [chat route](../src/app/api/chat/route.ts), [embedding helpers](../src/lib/knowledge/embeddings.ts) |
+| Retrieval and generation | [chat route](../src/app/api/chat/route.ts), [shared chat core](../src/lib/chat/core.ts), [server dependencies](../src/lib/chat/server.ts), [embedding helpers](../src/lib/knowledge/embeddings.ts) |
+| Assistant evaluation | [harness guide](../evals/assistant/README.md), [cases](../evals/assistant/cases.json), [professional sources](../evals/assistant/sources.json) |
 | Database clients and base tables | [supabase.ts](../src/lib/supabase.ts), [base schema](../supabase-schema.sql) |
 | Vectors, retrieval RPC, queue, grants | [vector/queue migration](../supabase/migrations/00001_wordpress_vector_queue.sql) |
 | Indexing and initial population | [WordPress indexer](../src/lib/knowledge/wordpress-indexer.ts), [seed script](../scripts/seed-knowledge-base.ts) |

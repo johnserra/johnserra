@@ -2,14 +2,14 @@
 
 Have a project you'd like to discuss? [Let's talk.](https://johnserra.com/contact)
 
-English/Turkish portfolio, writing, recipes, and a personal AI assistant built with Next.js 16 App Router, React 19, TypeScript, Tailwind CSS v4, and next-intl. The assistant retrieves published knowledge from Supabase pgvector and streams Gemini answers in John's voice.
+English/Turkish portfolio, professional writing, and a personal AI assistant built with Next.js 16 App Router, React 19, TypeScript, Tailwind CSS v4, and next-intl. The assistant retrieves published knowledge from Supabase pgvector and streams Gemini answers in John's voice.
 
-The [Digital Twin architecture and baseline](docs/digital-twin-architecture.md) documents the current request flow, indexing pipeline, limitations, and six-week AI Engineering challenge mapping. Work follows [roadmap #22](https://github.com/johnserra/johnserra/issues/22); this documentation establishes [#17](https://github.com/johnserra/johnserra/issues/17), with measured evaluation results to follow in [#10](https://github.com/johnserra/johnserra/issues/10).
+The [Digital Twin architecture and baseline](docs/digital-twin-architecture.md) documents the current request flow, indexing pipeline, limitations, and six-week AI Engineering challenge mapping. The [assistant evaluation harness](evals/assistant/README.md) provides the reproducible corpus and runner for [#10](https://github.com/johnserra/johnserra/issues/10). The [first live report](evals/assistant/reports/baseline-2026-09-10T02-27-41-980Z.md) records 34 attempted cases: 33 completed and one embedding quota failure. It remains marked incomplete; automated quality scores are proxies, with semantic support awaiting human review.
 
 ## Current implementation
 
 - **Chat:** the homepage loads a floating chat panel on demand. It sends browser-held conversation history to `POST /api/chat`, embeds the latest message with `gemini-embedding-2` (768 dimensions), retrieves up to six matching chunks for the selected locale, then streams `gemini-2.5-flash` text back to the panel.
-- **Knowledge:** published WordPress posts (including recipes), pages, and projects are indexed through a durable Supabase `pgmq` queue. Signed publishing webhooks invalidate page caches and enqueue updates; an immediate worker attempt and a scheduled worker process jobs.
+- **Knowledge:** published WordPress posts, pages, and projects are indexed through a durable Supabase `pgmq` queue. Signed publishing webhooks invalidate page caches and enqueue updates; an immediate worker attempt and a scheduled worker process jobs. Recipe posts were removed on 2026-08-23, and John reaffirmed the broader exclusion of cooking on 2026-09-09. Stale persona/About references were not all removed in August and remain a documented evaluation mismatch.
 - **Page content:** `CONTENT_SOURCE=wordpress` selects the WordPress REST adapter. Any other value, including an unset variable, selects the retained filesystem Markdown/MDX adapter. This setting does **not** change chat retrieval or the WordPress knowledge seeder.
 - **Other services:** contact submissions use Supabase and Resend; contact and data-audit routes can sync leads to Jetpack CRM. These integrations are separate from the assistant and are not model-callable tools.
 
@@ -84,6 +84,8 @@ Run the existing local checks from the repository root:
 
 ```bash
 npm run lint
+npm run eval:assistant:validate
+npm run test:assistant
 npm run test:data-audit
 bash wordpress/wp-content/plugins/johnserra-core/tests/verify-contract.sh
 bash src/lib/wordpress/tests/verify-contract.sh
@@ -91,7 +93,7 @@ bash supabase/tests/verify-wordpress-vector-migration.sh
 npm run build
 ```
 
-The data-audit tests cover the assessment feature. The shell checks inspect source contracts; they do not execute a database migration or prove a working CMS/model integration. There is no assistant evaluation harness yet; #10 will add representative cases and dated quality results. GitHub Actions currently runs install, lint, and build only.
+The data-audit tests cover the assessment feature. Assistant tests and validation are offline; they do not call providers. The shell checks inspect source contracts; they do not execute a database migration or prove a working CMS/model integration. See the [evaluation guide](evals/assistant/README.md) for the bounded live command and dated reports. GitHub Actions currently runs install, lint, and build only.
 
 Use `npm run start` after a successful build to inspect the production build locally. WordPress-backed builds need access to the configured CMS for content reads. The repository records a local development CSS issue in [CLAUDE.md](CLAUDE.md); if it recurs, compare the production build before changing styles.
 
@@ -115,6 +117,7 @@ For page-content rollback, set `CONTENT_SOURCE=filesystem` (or unset it) and red
 ## Documentation map
 
 - [Digital Twin architecture and baseline](docs/digital-twin-architecture.md): current behavior, diagrams, source map, limitations, and challenge mapping.
+- [Assistant evaluation harness](evals/assistant/README.md): case/source schemas, offline checks, bounded live runner, metrics, and human-review rubric.
 - [WordPress implementation guide](HEADLESS_WORDPRESS_IMPLEMENTATION.md): migration setup and acceptance checklist.
 - [WordPress migration review](HEADLESS_WORDPRESS_MIGRATION_REVIEW.md): historical design proposal; its descriptions of the pre-migration implementation are not the current baseline.
 - [Roadmap #22](https://github.com/johnserra/johnserra/issues/22): implementation order and completion criteria.

@@ -10,19 +10,21 @@ npm run build    # Production build
 npm run lint     # Run ESLint
 npm run seed     # Enqueue and index published WordPress content into pgvector
 npm run test:data-audit # Existing assessment tests (not assistant evaluations)
+npm run eval:assistant:validate # Offline assistant corpus/source validation
+npm run test:assistant # Offline shared-chat and evaluation tests
 ```
 
-See [README.md](README.md) for environment variables, database setup, contract checks, and deployment workflows. Assistant evaluations are planned in #10.
+See [README.md](README.md) for environment variables, database setup, contract checks, and deployment workflows. The [assistant evaluation harness](evals/assistant/README.md) implements the #10 corpus and runner; a real dated baseline report is still required before #10 is complete.
 
 ## Architecture
 
 This is John Serra's personal portfolio site built with **Next.js 16 App Router**, TypeScript (strict mode), Tailwind CSS v4, Supabase, and Google Gemini. The canonical current architecture is [docs/digital-twin-architecture.md](docs/digital-twin-architecture.md).
 
 ### Content Layer
-`src/lib/site-content.ts` selects WordPress when `CONTENT_SOURCE=wordpress`; otherwise it uses the retained locale-organized Markdown/MDX content through `src/lib/content.ts`. Preserve `transformObsidianLinks()` in filesystem content processing. WordPress has a separate REST/HTML adapter in `src/lib/wordpress/`. Recipes are blog posts, and project routes use `projects`.
+`src/lib/site-content.ts` selects WordPress when `CONTENT_SOURCE=wordpress`; otherwise it uses the retained locale-organized Markdown/MDX content through `src/lib/content.ts`. Preserve `transformObsidianLinks()` in filesystem content processing. WordPress has a separate REST/HTML adapter in `src/lib/wordpress/`. Project routes use `projects`. Recipe posts were removed on 2026-08-23, and John reaffirmed the broader exclusion of cooking on 2026-09-09. Stale About/persona references were not all removed in August; they are a known baseline mismatch and must not be treated as intended content.
 
 ### AI Chat Widget
-`AIChatWidget.tsx` lazy-loads `AIChatPanel.tsx` on the homepage. `src/app/api/chat/route.ts` embeds the latest message using Gemini, retrieves locale-filtered pgvector matches via `match_career_context`, and streams Gemini text with a first-person persona prompt. History lives in panel state. Chat does not read live MDX or use the legacy full-text index. Persona/grounding improvements are tracked in #20.
+`AIChatWidget.tsx` lazy-loads `AIChatPanel.tsx` on the homepage. `src/app/api/chat/route.ts` and the CLI share the narrow server implementation in `src/lib/chat/`: it embeds the latest message using Gemini, retrieves locale-filtered pgvector matches via `match_career_context`, and streams Gemini text with the unchanged first-person persona prompt. History lives in panel state. Chat does not read live MDX or use the legacy full-text index. Persona/grounding improvements are tracked in #20.
 
 ### Supabase
 Apply `supabase-schema.sql`, then `supabase/migrations/00001_wordpress_vector_queue.sql`:

@@ -1,0 +1,364 @@
+{
+  "schema_version": "1.0.0",
+  "document_id": "john-serra",
+  "title": "John Serra — Professional CV",
+  "locale": "en",
+  "visibility": "public",
+  "document_type": "cv",
+  "authority": "reviewed_public_cv",
+  "canonical_url": "https://johnserra.com/cv/john-serra.en.md",
+  "sections": [
+    {
+      "id": "summary",
+      "category": "summary",
+      "title": "Professional summary",
+      "organization": null,
+      "role": null,
+      "dates": { "kind": "undated", "start": null, "end": null, "ongoing": false, "start_unknown": true, "end_unknown": true },
+      "locale": "en",
+      "visibility": "public",
+      "document_type": "cv",
+      "authority": "reviewed_public_cv",
+      "canonical_url": "https://johnserra.com/cv/john-serra.en.md",
+      "paragraphs": [
+        "Business development and operations professional with experience across manufacturing, international sales, language education, and urban mobility. Combines client relationship management, team leadership, and process improvement with hands-on development of software and automation tools."
+      ],
+      "bullets": [],
+      "references": []
+    },
+    {
+      "id": "experience-premium-parking-account-manager",
+      "category": "experience",
+      "title": "Account Manager — Premium Parking",
+      "organization": "Premium Parking",
+      "role": "Account Manager",
+      "dates": { "kind": "interval", "start": { "value": "2022-11", "precision": "month" }, "end": null, "ongoing": true, "start_unknown": false, "end_unknown": false },
+      "locale": "en",
+      "visibility": "public",
+      "document_type": "cv",
+      "authority": "reviewed_public_cv",
+      "canonical_url": "https://johnserra.com/cv/john-serra.en.md",
+      "paragraphs": ["Location: Rochester, New York, United States."],
+      "bullets": [
+        "Pursue regional market opportunities and develop strategic partnerships within the local business community.",
+        "Lead recruitment, hiring, and training to support service quality and operational performance.",
+        "Maintain regular client communication to align operations with service expectations.",
+        "Monitor local events and site conditions to support operational readiness and identify business opportunities."
+      ],
+      "references": []
+    },
+    {
+      "id": "experience-amerikan-kultur-education-coordinator",
+      "category": "experience",
+      "title": "Education Coordinator — Amerikan Kültür Dil Okulları",
+      "organization": "Amerikan Kültür Dil Okulları",
+      "role": "Education Coordinator",
+      "dates": { "kind": "interval", "start": { "value": "2017-05", "precision": "month" }, "end": { "value": "2022-10", "precision": "month" }, "ongoing": false, "start_unknown": false, "end_unknown": false },
+      "locale": "en",
+      "visibility": "public",
+      "document_type": "cv",
+      "authority": "reviewed_public_cv",
+      "canonical_url": "https://johnserra.com/cv/john-serra.en.md",
+      "paragraphs": ["Location: Istanbul, Türkiye."],
+      "bullets": [
+        "Developed a student feedback system and used the results to improve the learning experience.",
+        "Led the transition from in-person instruction to online education using a learning management system and virtual classrooms.",
+        "Developed curriculum, maintained performance metrics, and supported academic planning.",
+        "Built and trained a team of English teachers and supported their professional development."
+      ],
+      "references": []
+    },
+    {
+      "id": "experience-self-employed-consultant",
+      "category": "experience",
+      "title": "Consultant — Self-employed",
+      "organization": "Self-employed",
+      "role": "Consultant",
+      "dates": { "kind": "interval", "start": { "value": "2008-05", "precision": "month" }, "end": { "value": "2022-10", "precision": "month" }, "ongoing": false, "start_unknown": false, "end_unknown": false },
+      "locale": "en",
+      "visibility": "public",
+      "document_type": "cv",
+      "authority": "reviewed_public_cv",
+      "canonical_url": "https://johnserra.com/cv/john-serra.en.md",
+      "paragraphs": ["Location: Remote, Türkiye."],
+      "bullets": [
+        "Advised small and medium-sized businesses requiring technical sales support for export markets.",
+        "Liaised between prospective buyers and client companies to support technical sales discussions and export opportunities.",
+        "Developed and implemented online marketing and export lead-generation plans, and trained client teams to manage their own marketing activities.",
+        "Managed client relationships and identified opportunities to improve business processes."
+      ],
+      "references": []
+    },
+    {
+      "id": "experience-sunwell-global-sales-manager",
+      "category": "experience",
+      "title": "Sales Manager — Sunwell Global Ltd.",
+      "organization": "Sunwell Global Ltd.",
+      "role": "Sales Manager",
+      "dates": { "kind": "interval", "start": { "value": "2014-06", "precision": "month" }, "end": { "value": "2015-07", "precision": "month" }, "ongoing": false, "start_unknown": false, "end_unknown": false },
+      "locale": "en",
+      "visibility": "public",
+      "document_type": "cv",
+      "authority": "reviewed_public_cv",
+      "canonical_url": "https://johnserra.com/cv/john-serra.en.md",
+      "paragraphs": [
+        "Location: Seattle, Washington, United States.",
+        "Engagement: Independent contractor."
+      ],
+      "bullets": [
+        "Represented Sunwell Global in introducing INPAK's TS-800 form, trim, and stack thermoforming machine to the United States and the wider Americas.",
+        "Developed prospects, nurtured leads, and created sales opportunities.",
+        "Facilitated communication between customers and the manufacturer, including after-sales support."
+      ],
+      "references": []
+    },
+    {
+      "id": "experience-pakis-general-manager-operations",
+      "category": "experience",
+      "title": "General Manager, Operations — Pakiş Ambalaj A.Ş.",
+      "organization": "Pakiş Ambalaj A.Ş.",
+      "role": "General Manager, Operations",
+      "dates": { "kind": "interval", "start": { "value": "1998-10", "precision": "month" }, "end": { "value": "2014-04", "precision": "month" }, "ongoing": false, "start_unknown": false, "end_unknown": false },
+      "locale": "en",
+      "visibility": "public",
+      "document_type": "cv",
+      "authority": "reviewed_public_cv",
+      "canonical_url": "https://johnserra.com/cv/john-serra.en.md",
+      "paragraphs": [
+        "Location: Izmir, Türkiye.",
+        "Descriptive title reflecting responsibilities in a family-owned business that did not use formal titles. Worked with senior family stakeholders and directed operations."
+      ],
+      "bullets": [
+        "Led day-to-day operations and coordinated business development, customer relationships, and product development.",
+        "Developed export markets and maintained relationships with key customers.",
+        "Created and maintained operating procedures, company policies, and staff training materials.",
+        "Oversaw company quality and management-system certification work.",
+        "Coordinated customer requirements with manufacturing, including product design, materials, and mold development."
+      ],
+      "references": []
+    },
+    {
+      "id": "experience-pagysa-operations-manager",
+      "category": "experience",
+      "title": "Operations Manager — Pagysa A.Ş.",
+      "organization": "Pagysa A.Ş.",
+      "role": "Operations Manager",
+      "dates": { "kind": "interval", "start": { "value": "1995-06", "precision": "month" }, "end": { "value": "1998-10", "precision": "month" }, "ongoing": false, "start_unknown": false, "end_unknown": false },
+      "locale": "en",
+      "visibility": "public",
+      "document_type": "cv",
+      "authority": "reviewed_public_cv",
+      "canonical_url": "https://johnserra.com/cv/john-serra.en.md",
+      "paragraphs": [
+        "Location: Türkiye.",
+        "Descriptive title reflecting oversight of purchasing, production, and satellite production facilities in a company that did not use formal titles."
+      ],
+      "bullets": [
+        "Oversaw the buying process and production activities across the company's satellite facilities.",
+        "Oversaw implementation work for ISO 9001 quality management and HACCP food safety controls as part of the company's operational transition.",
+        "Developed and implemented lot-level fruit traceability from farms in the Aegean region through processing and delivery to major food manufacturers across Europe, responding to customer requirements.",
+        "Helped turn a previously unresolved traceability challenge into a proven operational capability and a competitive advantage for the company.",
+        "Started and managed a sun-dried tomato project covering sourcing, processing, packaging, and sales to European markets."
+      ],
+      "references": []
+    },
+    {
+      "id": "project-careertalklab",
+      "category": "project",
+      "title": "CareerTalkLab",
+      "organization": "CareerTalkLab",
+      "role": null,
+      "dates": { "kind": "interval", "start": { "value": "2026-03", "precision": "month" }, "end": null, "ongoing": true, "start_unknown": false, "end_unknown": false },
+      "locale": "en",
+      "visibility": "public",
+      "document_type": "cv",
+      "authority": "reviewed_public_cv",
+      "canonical_url": "https://johnserra.com/cv/john-serra.en.md",
+      "paragraphs": [
+        "Status: Work in progress.",
+        "Building a learning platform that began as a project for personal learning and is evolving into a long-term personal effort to share knowledge and help others learn. Business English is one part of the platform, with a data analytics curriculum planned as an additional offering. CareerTalkLab remains a work in progress, with a growing emphasis on paying it forward."
+      ],
+      "bullets": [],
+      "references": [
+        { "label": "CareerTalkLab project", "url": "https://johnserra.com/projects/careertalklab" }
+      ]
+    },
+    {
+      "id": "project-business-development-automation",
+      "category": "project",
+      "title": "Business development automation",
+      "organization": null,
+      "role": null,
+      "dates": { "kind": "interval", "start": { "value": "2026-01", "precision": "documented_from" }, "end": null, "ongoing": false, "start_unknown": false, "end_unknown": true },
+      "locale": "en",
+      "visibility": "public",
+      "document_type": "cv",
+      "authority": "reviewed_public_cv",
+      "canonical_url": "https://johnserra.com/cv/john-serra.en.md",
+      "paragraphs": [
+        "Modular suite documented from February 2026.",
+        "Developed tools for prospect research, lead qualification, follow-up scheduling, and outreach drafting with human review."
+      ],
+      "bullets": [],
+      "references": [
+        { "label": "BD Automation Suite project", "url": "https://johnserra.com/projects/bd-automation-suite" }
+      ]
+    },
+    {
+      "id": "education-bogazici-university",
+      "category": "education",
+      "title": "Boğaziçi University",
+      "organization": "Boğaziçi University",
+      "role": null,
+      "dates": { "kind": "undated", "start": null, "end": null, "ongoing": false, "start_unknown": true, "end_unknown": true },
+      "locale": "en",
+      "visibility": "public",
+      "document_type": "cv",
+      "authority": "reviewed_public_cv",
+      "canonical_url": "https://johnserra.com/cv/john-serra.en.md",
+      "paragraphs": [
+        "Business Administration; additional studies in Psychology.",
+        "Degree designation and attendance or completion dates are omitted pending confirmation. Psychology is retained as a subject of study without asserting a separate degree, major, or minor."
+      ],
+      "bullets": [],
+      "references": []
+    },
+    {
+      "id": "education-seattle-central-college",
+      "category": "education",
+      "title": "Seattle Central College",
+      "organization": "Seattle Central College",
+      "role": null,
+      "dates": { "kind": "undated", "start": null, "end": null, "ongoing": false, "start_unknown": true, "end_unknown": true },
+      "locale": "en",
+      "visibility": "public",
+      "document_type": "cv",
+      "authority": "reviewed_public_cv",
+      "canonical_url": "https://johnserra.com/cv/john-serra.en.md",
+      "paragraphs": [
+        "Business Administration.",
+        "Degree designation and attendance or completion dates are omitted pending confirmation."
+      ],
+      "bullets": [],
+      "references": []
+    },
+    {
+      "id": "credential-teaching-practice-certificate",
+      "category": "credential",
+      "title": "Teaching Practice Certificate",
+      "organization": "American Culture U.K.",
+      "role": null,
+      "dates": { "kind": "issued", "start": { "value": "2018-09", "precision": "month" }, "end": null, "ongoing": false, "start_unknown": false, "end_unknown": false },
+      "locale": "en",
+      "visibility": "public",
+      "document_type": "cv",
+      "authority": "reviewed_public_cv",
+      "canonical_url": "https://johnserra.com/cv/john-serra.en.md",
+      "paragraphs": ["Listed issuer: American Culture U.K. Issued September 2018. Listed on LinkedIn; not independently verified."],
+      "bullets": [],
+      "references": []
+    },
+    {
+      "id": "credential-tesol",
+      "category": "credential",
+      "title": "Teaching of English to Students of Other Languages",
+      "organization": "American Culture U.K.",
+      "role": null,
+      "dates": { "kind": "issued", "start": { "value": "2018-09", "precision": "month" }, "end": null, "ongoing": false, "start_unknown": false, "end_unknown": false },
+      "locale": "en",
+      "visibility": "public",
+      "document_type": "cv",
+      "authority": "reviewed_public_cv",
+      "canonical_url": "https://johnserra.com/cv/john-serra.en.md",
+      "paragraphs": ["Listed issuer: American Culture U.K. Issued September 2018. Listed on LinkedIn; not independently verified."],
+      "bullets": [],
+      "references": []
+    },
+    {
+      "id": "credential-foundations-data",
+      "category": "credential",
+      "title": "Foundations: Data, Data, Everywhere",
+      "organization": "Coursera",
+      "role": null,
+      "dates": { "kind": "issued", "start": { "value": "2021-08", "precision": "month" }, "end": null, "ongoing": false, "start_unknown": false, "end_unknown": false },
+      "locale": "en",
+      "visibility": "public",
+      "document_type": "cv",
+      "authority": "reviewed_public_cv",
+      "canonical_url": "https://johnserra.com/cv/john-serra.en.md",
+      "paragraphs": ["Listed issuer: Coursera. Issued August 2021. Listed on LinkedIn; not independently verified."],
+      "bullets": [],
+      "references": []
+    },
+    {
+      "id": "credential-ask-questions-data",
+      "category": "credential",
+      "title": "Ask Questions to Make Data-Driven Decisions",
+      "organization": "Coursera",
+      "role": null,
+      "dates": { "kind": "issued", "start": { "value": "2021-09", "precision": "month" }, "end": null, "ongoing": false, "start_unknown": false, "end_unknown": false },
+      "locale": "en",
+      "visibility": "public",
+      "document_type": "cv",
+      "authority": "reviewed_public_cv",
+      "canonical_url": "https://johnserra.com/cv/john-serra.en.md",
+      "paragraphs": ["Listed issuer: Coursera. Issued September 2021. Listed on LinkedIn; not independently verified."],
+      "bullets": [],
+      "references": []
+    },
+    {
+      "id": "credential-prepare-data-exploration",
+      "category": "credential",
+      "title": "Prepare Data for Exploration",
+      "organization": "Coursera",
+      "role": null,
+      "dates": { "kind": "issued", "start": { "value": "2021-10", "precision": "month" }, "end": null, "ongoing": false, "start_unknown": false, "end_unknown": false },
+      "locale": "en",
+      "visibility": "public",
+      "document_type": "cv",
+      "authority": "reviewed_public_cv",
+      "canonical_url": "https://johnserra.com/cv/john-serra.en.md",
+      "paragraphs": ["Listed issuer: Coursera. Issued October 2021. Listed on LinkedIn; not independently verified."],
+      "bullets": [],
+      "references": []
+    },
+    {
+      "id": "languages",
+      "category": "languages",
+      "title": "Languages",
+      "organization": null,
+      "role": null,
+      "dates": { "kind": "undated", "start": null, "end": null, "ongoing": false, "start_unknown": true, "end_unknown": true },
+      "locale": "en",
+      "visibility": "public",
+      "document_type": "cv",
+      "authority": "reviewed_public_cv",
+      "canonical_url": "https://johnserra.com/cv/john-serra.en.md",
+      "paragraphs": ["English, Turkish, Italian, and Spanish.", "Proficiency levels remain to be confirmed before inclusion."],
+      "bullets": [],
+      "references": []
+    },
+    {
+      "id": "skills",
+      "category": "skills",
+      "title": "Skills",
+      "organization": null,
+      "role": null,
+      "dates": { "kind": "undated", "start": null, "end": null, "ongoing": false, "start_unknown": true, "end_unknown": true },
+      "locale": "en",
+      "visibility": "public",
+      "document_type": "cv",
+      "authority": "reviewed_public_cv",
+      "canonical_url": "https://johnserra.com/cv/john-serra.en.md",
+      "paragraphs": [],
+      "bullets": [
+        "Business development, market research, export market development, and lead generation.",
+        "Account management, client communication, and strategic partnerships.",
+        "Operations management, process improvement, staff recruitment, and training.",
+        "Curriculum development, English instruction, and digital learning delivery.",
+        "Software development, workflow automation, and AI-assisted applications."
+      ],
+      "references": []
+    }
+  ]
+}

@@ -17,6 +17,7 @@ import {
   processContentIndexingBatch,
   type ContentIndexingJob,
 } from "@/lib/knowledge/wordpress-indexer";
+import { pruneGenuineLegacyRows, type LegacyPruneClient } from "@/lib/knowledge/legacy-prune";
 import { getAllWordPressContent } from "@/lib/wordpress/content";
 import type { WordPressCollectionType, WordPressContentType } from "@/lib/wordpress/types";
 import type { Locale } from "@/types";
@@ -74,8 +75,7 @@ async function drainQueue(): Promise<{ completed: number; failed: number }> {
 
 async function pruneLegacyRows(): Promise<void> {
   if (!process.argv.includes("--prune-legacy")) return;
-  const { error } = await createAdminClient().from("career_context").delete().is("wordpress_id", null);
-  if (error) throw new Error(`Failed to prune legacy career context rows: ${error.message}`);
+  await pruneGenuineLegacyRows(createAdminClient() as unknown as LegacyPruneClient);
   console.log("Pruned legacy filesystem-sourced career context rows.");
 }
 

@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0.0",
+  "cases": [
+    {
+      "id": "premium-parking-dates-en",
+      "locale": "en",
+      "query": "When did you start at Premium Parking, and are you still there?",
+      "expected_section_id": "experience-premium-parking-account-manager",
+      "expected_source_id": "cv/john-serra/en/experience-premium-parking-account-manager"
+    },
+    {
+      "id": "consulting-technical-sales-liaison-en",
+      "locale": "en",
+      "query": "Describe your export technical-sales consulting and liaison work.",
+      "expected_section_id": "experience-self-employed-consultant",
+      "expected_source_id": "cv/john-serra/en/experience-self-employed-consultant"
+    },
+    {
+      "id": "sunwell-contractor-inpak-en",
+      "locale": "en",
+      "query": "Were you a Sunwell employee, and what was the INPAK TS-800 work?",
+      "expected_section_id": "experience-sunwell-global-sales-manager",
+      "expected_source_id": "cv/john-serra/en/experience-sunwell-global-sales-manager"
+    },
+    {
+      "id": "pakis-descriptive-title-en",
+      "locale": "en",
+      "query": "Was General Manager, Operations your formal title at Pakiş?",
+      "expected_section_id": "experience-pakis-general-manager-operations",
+      "expected_source_id": "cv/john-serra/en/experience-pakis-general-manager-operations"
+    },
+    {
+      "id": "pagysa-traceability-haccp-en",
+      "locale": "en",
+      "query": "What traceability, ISO 9001, and HACCP work did you do at Pagysa?",
+      "expected_section_id": "experience-pagysa-operations-manager",
+      "expected_source_id": "cv/john-serra/en/experience-pagysa-operations-manager"
+    },
+    {
+      "id": "education-unknown-degree-en",
+      "locale": "en",
+      "query": "Which degree did you complete at Boğaziçi University and when?",
+      "expected_section_id": "education-bogazici-university",
+      "expected_source_id": "cv/john-serra/en/education-bogazici-university"
+    },
+    {
+      "id": "languages-no-levels-en",
+      "locale": "en",
+      "query": "Which languages do you speak, and at what proficiency levels?",
+      "expected_section_id": "languages",
+      "expected_source_id": "cv/john-serra/en/languages"
+    },
+    {
+      "id": "careertalklab-planned-analytics-en",
+      "locale": "en",
+      "query": "Is CareerTalkLab complete, and is its data analytics curriculum available?",
+      "expected_section_id": "project-careertalklab",
+      "expected_source_id": "cv/john-serra/en/project-careertalklab"
+    },
+    {
+      "id": "bd-automation-dates-en",
+      "locale": "en",
+      "query": "What dates are actually documented for the business development automation project?",
+      "expected_section_id": "project-business-development-automation",
+      "expected_source_id": "cv/john-serra/en/project-business-development-automation"
+    },
+    {
+      "id": "sunwell-contractor-inpak-tr",
+      "locale": "tr",
+      "query": "Sunwell'deki çalışma biçiminiz neydi ve INPAK TS-800 ile ne yaptınız?",
+      "expected_section_id": "experience-sunwell-global-sales-manager",
+      "expected_source_id": "cv/john-serra/en/experience-sunwell-global-sales-manager"
+    },
+    {
+      "id": "pagysa-traceability-haccp-tr",
+      "locale": "tr",
+      "query": "Pagysa'da izlenebilirlik, ISO 9001 ve HACCP konusunda ne yaptınız?",
+      "expected_section_id": "experience-pagysa-operations-manager",
+      "expected_source_id": "cv/john-serra/en/experience-pagysa-operations-manager"
+    },
+    {
+      "id": "education-unknown-degree-tr",
+      "locale": "tr",
+      "query": "Boğaziçi Üniversitesi'nde hangi dereceyi ne zaman tamamladınız?",
+      "expected_section_id": "education-bogazici-university",
+      "expected_source_id": "cv/john-serra/en/education-bogazici-university"
+    }
+  ]
+}

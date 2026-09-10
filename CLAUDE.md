@@ -8,34 +8,40 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run dev      # Start development server (http://localhost:3000)
 npm run build    # Production build
 npm run lint     # Run ESLint
-npm run seed     # Populate Supabase career_context table for RAG system
+npm run seed     # Enqueue and index published WordPress content into pgvector
+npm run test:data-audit # Existing assessment tests (not assistant evaluations)
 ```
 
-No test suite is configured.
+See [README.md](README.md) for environment variables, database setup, contract checks, and deployment workflows. Assistant evaluations are planned in #10.
 
 ## Architecture
 
-This is John Serra's personal portfolio site built with **Next.js 16 App Router**, TypeScript (strict mode), Tailwind CSS v4, Supabase, and Anthropic Claude SDK.
+This is John Serra's personal portfolio site built with **Next.js 16 App Router**, TypeScript (strict mode), Tailwind CSS v4, Supabase, and Google Gemini. The canonical current architecture is [docs/digital-twin-architecture.md](docs/digital-twin-architecture.md).
 
-### Content Layer (`content/`)
-Markdown files organized into `blog/`, `portfolio/`, `about/`, and `recipes/`. Loaded and rendered via `next-mdx-remote` with `gray-matter` frontmatter parsing. All content goes through `src/lib/content.ts` which also handles transformation of Obsidian-style `[[wiki links]]` via `transformObsidianLinks()` — always preserve this transform when modifying content processing.
+### Content Layer
+`src/lib/site-content.ts` selects WordPress when `CONTENT_SOURCE=wordpress`; otherwise it uses the retained locale-organized Markdown/MDX content through `src/lib/content.ts`. Preserve `transformObsidianLinks()` in filesystem content processing. WordPress has a separate REST/HTML adapter in `src/lib/wordpress/`. Recipes are blog posts, and project routes use `projects`.
 
 ### AI Chat Widget
-`src/components/widgets/AIChatWidget.tsx` renders a floating chat UI that streams responses from `src/app/api/chat/route.ts`. The route performs RAG by querying the `career_context` Supabase table (full-text search) plus pulling live MDX content, then calls Claude with a system prompt written in John's voice. When updating the chat route, keep the system prompt aligned with John's persona.
+`AIChatWidget.tsx` lazy-loads `AIChatPanel.tsx` on the homepage. `src/app/api/chat/route.ts` embeds the latest message using Gemini, retrieves locale-filtered pgvector matches via `match_career_context`, and streams Gemini text with a first-person persona prompt. History lives in panel state. Chat does not read live MDX or use the legacy full-text index. Persona/grounding improvements are tracked in #20.
 
 ### Supabase
-Two tables defined in `supabase-schema.sql`:
-- `career_context` — RAG knowledge base, populated by `npm run seed`; uses full-text search
+Apply `supabase-schema.sql`, then `supabase/migrations/00001_wordpress_vector_queue.sql`:
+- `career_context` — RAG chunks, 768-dimensional Gemini vectors, and WordPress metadata; populated by the indexing queue and `npm run seed`
 - `contact_messages` — stores contact form submissions; RLS enabled, accessible only via service role key
+- `content_indexing_failures` and the `pgmq` queue — failed jobs and durable indexing work
 
 Client setup is in `src/lib/supabase.ts` with separate anon/service-role clients.
 
 ### API Routes
-- `POST /api/chat` — returns a streaming `text/plain` response (Server-Sent Events) for the chat widget
-- `POST /api/contact` — validates form input, stores to Supabase, sends email via Resend from the `contactform.serra.us` sender domain
+- `POST /api/chat` — raw streaming `text/plain` response, not Server-Sent Events
+- `POST /api/contact` — validates form input, stores to Supabase, sends email via Resend, optionally syncs Jetpack CRM
+- `POST /api/data-audit` — assessment submission and optional email/CRM integration
+- `POST /api/revalidate/wordpress` — signed cache invalidation and indexing enqueue
+- `GET /api/cron/process-content-indexing` and `GET /api/cron/keep-alive` — bearer-protected scheduled work
+- `GET` / `DELETE /api/preview/wordpress` — signed draft-preview entry / exit
 
 ### Bento Grid
-Homepage (`src/app/page.tsx`) uses a bento-style grid assembled from components in `src/components/bento/`. Static content for navigation, features, and portfolio entries lives in `src/lib/constants.ts`.
+Homepage (`src/app/[locale]/page.tsx`) uses a bento-style grid assembled from components in `src/components/bento/`. Static site constants live in `src/lib/constants.ts`; CMS-backed content uses the site-content adapter.
 
 ### Path Alias
 `@/*` maps to `./src/*` (configured in `tsconfig.json`).

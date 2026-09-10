@@ -1,5 +1,7 @@
 # John Serra — personal site and Digital Twin
 
+Have a project you'd like to discuss? [Let's talk.](https://johnserra.com/contact)
+
 English/Turkish portfolio, writing, recipes, and a personal AI assistant built with Next.js 16 App Router, React 19, TypeScript, Tailwind CSS v4, and next-intl. The assistant retrieves published knowledge from Supabase pgvector and streams Gemini answers in John's voice.
 
 The [Digital Twin architecture and baseline](docs/digital-twin-architecture.md) documents the current request flow, indexing pipeline, limitations, and six-week AI Engineering challenge mapping. Work follows [roadmap #22](https://github.com/johnserra/johnserra/issues/22); this documentation establishes [#17](https://github.com/johnserra/johnserra/issues/17), with measured evaluation results to follow in [#10](https://github.com/johnserra/johnserra/issues/10).

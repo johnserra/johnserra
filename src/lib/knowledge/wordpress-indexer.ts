@@ -11,6 +11,12 @@ import {
   EMBEDDING_MODEL,
   embedDocument,
 } from "./embeddings";
+import {
+  parseCvIndexingJob,
+  processCvIndexingJob,
+  registeredCvIndexingDependencies,
+  type CvIndexingJob,
+} from "./cv-indexer";
 
 const CHUNK_SIZE = 2_400;
 const CHUNK_OVERLAP = 300;
@@ -23,6 +29,7 @@ export interface ContentIndexingJob {
   operation: "upsert" | "delete";
   modified_gmt?: string;
 }
+export type AnyContentIndexingJob = ContentIndexingJob | CvIndexingJob;
 interface QueueJob {
   msg_id: number;
   read_ct: number;
@@ -35,7 +42,7 @@ const ENDPOINTS: Record<WordPressContentType, string> = {
   js_project: "wp/v2/projects",
 };
 
-function isJob(value: unknown): value is ContentIndexingJob {
+function isWordPressJob(value: unknown): value is ContentIndexingJob {
   if (!value || typeof value !== "object") return false;
   const job = value as Partial<ContentIndexingJob>;
   return (
@@ -46,6 +53,14 @@ function isJob(value: unknown): value is ContentIndexingJob {
     (job.locale === "en" || job.locale === "tr") &&
     (job.operation === "upsert" || job.operation === "delete")
   );
+}
+
+export function parseContentIndexingJob(value: unknown): AnyContentIndexingJob {
+  if (value && typeof value === "object" && !Array.isArray(value) && (value as { document_type?: unknown }).document_type === "cv") {
+    return parseCvIndexingJob(value);
+  }
+  if (!isWordPressJob(value)) throw new Error("Invalid content indexing job payload.");
+  return value;
 }
 
 export function htmlToPlainText(html: string): string {
@@ -145,8 +160,26 @@ async function upsertContent(job: ContentIndexingJob): Promise<void> {
   if (staleError) throw new Error(`Failed to remove stale chunks: ${staleError.message}`);
 }
 
-export async function processContentIndexingJob(job: ContentIndexingJob): Promise<void> {
-  if (job.operation === "delete") await removeContent(job);
+async function replaceCvContext(input: Parameters<ReturnType<typeof registeredCvIndexingDependencies>["replaceCvContext"]>[0]): Promise<void> {
+  const chunks = input.rows.map((row) => ({
+    ...row,
+    metadata: { ...row.metadata, embedding_config: EMBEDDING_CONFIG_VERSION },
+    embedding_model: EMBEDDING_MODEL,
+    embedding_dimensions: EMBEDDING_DIMENSIONS,
+  }));
+  const { error } = await createAdminClient().rpc("replace_cv_context", {
+    cv_document_id: input.documentId,
+    cv_locale: input.locale,
+    cv_content_sha256: input.approvalDigest,
+    cv_chunks: chunks,
+  });
+  if (error) throw new Error(`Failed to atomically replace CV context: ${error.message}`);
+}
+
+export async function processContentIndexingJob(job: AnyContentIndexingJob): Promise<void> {
+  if ("cv_id" in job) {
+    await processCvIndexingJob(job, registeredCvIndexingDependencies(embedDocument, replaceCvContext));
+  } else if (job.operation === "delete") await removeContent(job);
   else await upsertContent(job);
 }
 
@@ -168,8 +201,8 @@ export async function processContentIndexingBatch(batchSize = 3): Promise<{
 
   for (const queued of jobs) {
     try {
-      if (!isJob(queued.message)) throw new Error("Invalid content indexing job payload.");
-      await processContentIndexingJob(queued.message);
+      const job = parseContentIndexingJob(queued.message);
+      await processContentIndexingJob(job);
       const { error: archiveError } = await supabase.rpc("archive_content_indexing_job", {
         message_id: queued.msg_id,
       });
@@ -183,7 +216,7 @@ export async function processContentIndexingBatch(batchSize = 3): Promise<{
       if (queued.read_ct >= 5) {
         const { error: failureError } = await supabase.rpc("fail_content_indexing_job", {
           message_id: queued.msg_id,
-          job: queued.message,
+          job: sanitizeFailedJob(queued.message),
           error_message: message,
         });
         if (failureError) console.error("Failed to dead-letter content indexing job", failureError);
@@ -192,4 +225,18 @@ export async function processContentIndexingBatch(batchSize = 3): Promise<{
   }
 
   return { read: jobs.length, completed, failed };
+}
+
+function sanitizeFailedJob(value: unknown): unknown {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return { invalid_payload: true };
+  const job = value as Record<string, unknown>;
+  if (job.document_type !== "cv") return value;
+  return {
+    document_type: "cv",
+    event_id: typeof job.event_id === "string" ? job.event_id : null,
+    cv_id: typeof job.cv_id === "string" ? job.cv_id : null,
+    locale: typeof job.locale === "string" ? job.locale : null,
+    operation: typeof job.operation === "string" ? job.operation : null,
+    content_sha256: typeof job.content_sha256 === "string" ? job.content_sha256 : null,
+  };
 }

@@ -12,7 +12,10 @@
     "eval:assistant": "NODE_OPTIONS=--conditions=react-server node --import tsx scripts/evaluation/cli.ts",
     "eval:assistant:validate": "node --import tsx scripts/evaluation/cli.ts --validate",
     "test:assistant": "node --import tsx --test scripts/evaluation/*.test.ts src/lib/chat/*.test.ts",
+    "test:cv": "node --import tsx --test src/lib/knowledge/*.test.ts scripts/evaluation/cv.test.ts",
+    "eval:cv": "NODE_OPTIONS=--conditions=react-server node --import tsx scripts/evaluation/cv-cli.ts",
     "seed": "NODE_OPTIONS=--conditions=react-server tsx scripts/seed-knowledge-base.ts",
+    "seed:cv": "NODE_OPTIONS=--conditions=react-server node --import tsx scripts/seed-cv.ts",
     "wordpress:import:dry": "tsx scripts/import-content-to-wordpress.ts",
     "wordpress:import": "tsx scripts/import-content-to-wordpress.ts --apply"
   },

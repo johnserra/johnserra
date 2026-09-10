@@ -8,8 +8,8 @@ The [Digital Twin architecture and baseline](docs/digital-twin-architecture.md) 
 
 ## Current implementation
 
-- **Chat:** the homepage loads a floating chat panel on demand. It sends browser-held conversation history to `POST /api/chat`, embeds the latest message with `gemini-embedding-2` (768 dimensions), retrieves up to six matching chunks for the selected locale, then streams `gemini-2.5-flash` text back to the panel.
-- **Knowledge:** published WordPress posts, pages, and projects are indexed through a durable Supabase `pgmq` queue. Signed publishing webhooks invalidate page caches and enqueue updates; an immediate worker attempt and a scheduled worker process jobs. Recipe posts were removed on 2026-08-23, and John reaffirmed the broader exclusion of cooking on 2026-09-09. Stale persona/About references were not all removed in August and remain a documented evaluation mismatch.
+- **Chat:** the homepage loads a floating chat panel on demand. It sends browser-held conversation history to `POST /api/chat`, embeds the latest message with `gemini-embedding-2` (768 dimensions), retrieves up to six matching public/published chunks for the selected locale (plus only the reviewed English CV for Turkish queries), then streams `gemini-2.5-flash` text back to the panel.
+- **Knowledge:** published WordPress posts, pages, and projects are indexed through a durable Supabase `pgmq` queue. A reviewed, structured English CV is now a registered source in the codebase and uses the same queue with approval-bound jobs and atomic replacement. Its production database migration, CV indexing, and live retrieval evaluation remain pending. Signed publishing webhooks invalidate page caches and enqueue WordPress updates; an immediate worker attempt and a scheduled worker process jobs. Recipe posts were removed on 2026-08-23, and John reaffirmed the broader exclusion of cooking on 2026-09-09.
 - **Page content:** `CONTENT_SOURCE=wordpress` selects the WordPress REST adapter. Any other value, including an unset variable, selects the retained filesystem Markdown/MDX adapter. This setting does **not** change chat retrieval or the WordPress knowledge seeder.
 - **Other services:** contact submissions use Supabase and Resend; contact and data-audit routes can sync leads to Jetpack CRM. These integrations are separate from the assistant and are not model-callable tools.
 
@@ -63,7 +63,7 @@ See the [WordPress plugin installation instructions](wordpress/wp-content/plugin
 ## Database and knowledge indexing
 
 1. Install WordPress, Advanced Custom Fields, and the repository's [John Serra Site Core plugin](wordpress/wp-content/plugins/johnserra-core/README.md). Configure published EN/TR records and the signed webhook. The [adapter contract](src/lib/wordpress/README.md) specifies the REST fields and locale filters.
-2. In the target Supabase SQL editor, apply [supabase-schema.sql](supabase-schema.sql), then [00001_wordpress_vector_queue.sql](supabase/migrations/00001_wordpress_vector_queue.sql). The base schema alone is insufficient: the migration adds 768-dimensional vectors, an HNSW index, locale-aware retrieval, the queue, and service-role RPCs. The base schema's full-text index is legacy and is not queried by the current chat route.
+2. In the target Supabase SQL editor, apply [supabase-schema.sql](supabase-schema.sql), then [00001_wordpress_vector_queue.sql](supabase/migrations/00001_wordpress_vector_queue.sql). The base schema alone is insufficient: the migration adds 768-dimensional vectors, an HNSW index, locale-aware retrieval, the queue, and service-role RPCs. Deploy and manually verify compatible CV-aware worker code before applying [00002_cv_knowledge.sql](supabase/migrations/00002_cv_knowledge.sql), and do not enqueue CV work until both worker compatibility and the live SQL contract are verified. The SQL version RPC proves database-contract availability, not deployed worker code. The additive migration preserves the original four-argument retrieval RPC and adds strict CV queue validation, atomic CV replacement, and a separately named filtered retrieval RPC. These repository SQL files have only static checks here; they have not been applied to a live database.
 3. Set the Gemini, Supabase, and WordPress API variables in `.env.local`. To index all published posts, pages, and projects in both locales:
 
    ```bash
@@ -72,7 +72,24 @@ See the [WordPress plugin installation instructions](wordpress/wp-content/plugin
 
    This enqueues WordPress records and processes batches of five until no jobs are currently visible. It makes embedding API calls and upserts database rows. Failed jobs can remain invisible for their retry interval; an empty batch does not prove that the queue has no pending work. The script exits nonzero when it observes failures.
 4. Inspect worker output and `public.content_indexing_failures` for failures. Successful jobs are archived. Retries become visible after 180 seconds; a failure on the fifth or later read is recorded and archived. The daily cron processes at most five jobs per invocation, so a large backlog needs additional worker invocations.
-5. After confirming WordPress coverage, `npm run seed -- --prune-legacy` can remove **all rows with no `wordpress_id`**. It is optional and destructive. The flag is not gated on every indexing job succeeding; omit it during initial setup or recovery.
+5. After confirming WordPress coverage, `npm run seed -- --prune-legacy` can remove genuine legacy rows where both `wordpress_id` and `document_type` are null. CV rows are protected. It is optional and destructive. The flag is not gated on every indexing job succeeding; omit it during initial setup or recovery.
+
+The reviewed CV workflow is deliberately separate:
+
+```bash
+# Offline: validate the strict JSON source, render/check Markdown, and print the
+# canonical approval digest over both validated data and the readable artifact.
+npm run seed:cv
+
+# Live write, only after reviewing that exact artifact and deploying code + 00002.
+npm run seed:cv -- --apply --approved-sha256 <exact-printed-digest>
+
+# Offline corpus validation; live retrieval remains an explicit read-only action.
+npm run eval:cv -- --validate
+npm run eval:cv -- --live --limit 3
+```
+
+The apply command enqueues one approval-bound CV upsert and never drains unrelated WordPress jobs. Its SQL version check does not verify deployed worker code; verify the compatible worker manually before enqueueing. The shared scheduled worker validates its statically imported registered source and verifies the same canonical approval digest before any embedding call. Unfiltered retrieval reserves up to two qualifying CV slots within the total, caps CV rows at three, and fills remaining slots by similarity; explicit CV-only retrieval honors the clamped count up to 20. See [CV knowledge operations](docs/cv-knowledge.md) for authority, filtering, EN/TR behavior, ranking, rollout, and rollback details.
 
 Normal publication uses the webhook rather than a full reseed. Upserts replace matching `(source, chunk_index)` rows and remove excess old chunks for that source; delete jobs remove the matching WordPress ID/locale. A full seed only visits currently published records, so it is not a complete reconciliation of missed deletion events.
 
@@ -86,14 +103,16 @@ Run the existing local checks from the repository root:
 npm run lint
 npm run eval:assistant:validate
 npm run test:assistant
+npm run test:cv
+npm run eval:cv -- --validate
 npm run test:data-audit
 bash wordpress/wp-content/plugins/johnserra-core/tests/verify-contract.sh
 bash src/lib/wordpress/tests/verify-contract.sh
 bash supabase/tests/verify-wordpress-vector-migration.sh
-npm run build
+bash supabase/tests/verify-cv-migration.sh
 ```
 
-The data-audit tests cover the assessment feature. Assistant tests and validation are offline; they do not call providers. The shell checks inspect source contracts; they do not execute a database migration or prove a working CMS/model integration. See the [evaluation guide](evals/assistant/README.md) for the bounded live command and dated reports. GitHub Actions currently runs install, lint, and build only.
+The data-audit tests cover the assessment feature. Assistant tests and validation are offline; they do not call providers. The shell checks inspect source contracts; they do not execute a database migration or prove a working CMS/model integration. Production build is a separate environment-dependent check because it loads local secrets and external fonts; it was not run for the CV correction. See the [evaluation guide](evals/assistant/README.md) for the bounded live command and dated reports. GitHub Actions currently runs install, lint, and build only.
 
 Use `npm run start` after a successful build to inspect the production build locally. WordPress-backed builds need access to the configured CMS for content reads. The repository records a local development CSS issue in [CLAUDE.md](CLAUDE.md); if it recurs, compare the production build before changing styles.
 
@@ -118,6 +137,7 @@ For page-content rollback, set `CONTENT_SOURCE=filesystem` (or unset it) and red
 
 - [Digital Twin architecture and baseline](docs/digital-twin-architecture.md): current behavior, diagrams, source map, limitations, and challenge mapping.
 - [Assistant evaluation harness](evals/assistant/README.md): case/source schemas, offline checks, bounded live runner, metrics, and human-review rubric.
+- [CV knowledge operations](docs/cv-knowledge.md): public artifact review, approval-bound indexing, authority, filtering, locale behavior, evaluation, and rollback.
 - [WordPress implementation guide](HEADLESS_WORDPRESS_IMPLEMENTATION.md): migration setup and acceptance checklist.
 - [WordPress migration review](HEADLESS_WORDPRESS_MIGRATION_REVIEW.md): historical design proposal; its descriptions of the pre-migration implementation are not the current baseline.
 - [Roadmap #22](https://github.com/johnserra/johnserra/issues/22): implementation order and completion criteria.

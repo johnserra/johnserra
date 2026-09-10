@@ -43,3 +43,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Private/editorial CV inputs are never runtime or publication sources.
+/archive/John_Serra_Resume-20221015.md
+/docs/cv-review.md

@@ -47,3 +47,8 @@ alter table public.career_context enable row level security;
 --   - locale/status-aware match_career_context RPC
 --   - durable pgmq content_indexing queue and service-role RPCs
 --   - WordPress identity and embedding-version metadata
+-- Apply supabase/migrations/00002_cv_knowledge.sql only after deploying the
+-- code-first, CV-aware worker that tolerates the migration being absent. It adds
+-- the reviewed CV schema, atomic replacement, and separately named filtered
+-- retrieval without changing the four-argument RPC. Its contract-version RPC
+-- proves SQL availability only; it does not identify the deployed app version.

@@ -9,6 +9,9 @@
     "start": "next start",
     "lint": "eslint",
     "test:data-audit": "node --import tsx --test src/lib/data-audit.test.ts",
+    "eval:assistant": "NODE_OPTIONS=--conditions=react-server node --import tsx scripts/evaluation/cli.ts",
+    "eval:assistant:validate": "node --import tsx scripts/evaluation/cli.ts --validate",
+    "test:assistant": "node --import tsx --test scripts/evaluation/*.test.ts src/lib/chat/*.test.ts",
     "seed": "NODE_OPTIONS=--conditions=react-server tsx scripts/seed-knowledge-base.ts",
     "wordpress:import:dry": "tsx scripts/import-content-to-wordpress.ts",
     "wordpress:import": "tsx scripts/import-content-to-wordpress.ts --apply"

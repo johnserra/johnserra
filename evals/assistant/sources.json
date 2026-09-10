@@ -1,0 +1,382 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-09-10T01:05:43.750Z",
+  "normalization": "Indexer-compatible HTML normalization: remove script/style blocks and tags, collapse whitespace, trim, then decode supported named and numeric HTML entities.",
+  "scope": "Published professional biography, projects, and viewpoints only. Cooking and recipe evidence is intentionally excluded.",
+  "sources": [
+    {
+      "sourceId": "wordpress/post/42/en",
+      "wordpressId": 42,
+      "type": "post",
+      "slug": "the-machine-is-wrong",
+      "title": "The Machine is Wrong: Designing AI Feedback Loops for EFL",
+      "locale": "en",
+      "canonicalUrl": "https://johnserra.com/blog/the-machine-is-wrong",
+      "wordpressModifiedAt": "2026-05-07T00:00:00Z",
+      "fetchedAt": "2026-09-10T01:05:43.750Z",
+      "contentHash": "sha256:6de216e925fa33e3b27d1dab7fb4e1275c07007bb5c67f0ed290f31c5d760806",
+      "excerpts": [
+        {
+          "id": "pedagogically-wrong",
+          "text": "Not factually wrong. Pedagogically wrong."
+        },
+        {
+          "id": "three-layer-pattern",
+          "text": "constrained generation, evaluated generation, observed generation"
+        }
+      ]
+    },
+    {
+      "sourceId": "wordpress/post/59/tr",
+      "wordpressId": 59,
+      "type": "post",
+      "slug": "mimarin-atilimi-cok-kanalli-bir-dunyada-eylem-gucunu-yonetmek",
+      "title": "Mimarın Atılımı: Çok Kanallı Bir Dünyada Eylem Gücünü Yönetmek",
+      "locale": "tr",
+      "canonicalUrl": "https://johnserra.com/tr/blog/mimarin-atilimi-cok-kanalli-bir-dunyada-eylem-gucunu-yonetmek",
+      "wordpressModifiedAt": "2026-04-17T00:00:00Z",
+      "fetchedAt": "2026-09-10T01:05:43.750Z",
+      "contentHash": "sha256:bcf4c3d977b9417cff6ec9ad25372643aae5d8efc0a051dcaee5063d82c80789",
+      "excerpts": [
+        {
+          "id": "current-roles-tr",
+          "text": "Sabahları bir kentsel mobilite şirketinde operasyon birimindeyim"
+        },
+        {
+          "id": "factory-1998-tr",
+          "text": "1998 yılında, gıda ambalajı sektöründe sıfırdan bir üretim tesisi kurdum."
+        },
+        {
+          "id": "iso-systems-tr",
+          "text": "üç klasör (ISO 9001, ISO 22000 ve ISO 14001)"
+        }
+      ]
+    },
+    {
+      "sourceId": "wordpress/post/37/en",
+      "wordpressId": 37,
+      "type": "post",
+      "slug": "orchestrating-agency-multi-track-world",
+      "title": "The Architect’s Leap: Orchestrating Agency in a Multi-Track World",
+      "locale": "en",
+      "canonicalUrl": "https://johnserra.com/blog/orchestrating-agency-multi-track-world",
+      "wordpressModifiedAt": "2026-04-17T00:00:00Z",
+      "fetchedAt": "2026-09-10T01:05:43.750Z",
+      "contentHash": "sha256:c146e1a577bbb38de3e63df099f56825df1a1607261b3f327040ab7480c9dda7",
+      "excerpts": [
+        {
+          "id": "current-roles",
+          "text": "mornings in Operations at an urban mobility company"
+        },
+        {
+          "id": "factory-1998",
+          "text": "In 1998, I built a production facility from a green site in the food packaging sector"
+        },
+        {
+          "id": "iso-systems",
+          "text": "three binders — ISO 9001, ISO 22000, and ISO 14001"
+        }
+      ]
+    },
+    {
+      "sourceId": "wordpress/post/46/en",
+      "wordpressId": 46,
+      "type": "post",
+      "slug": "your-ai-tutor-is-making-you-worse",
+      "title": "Your AI Tutor is Making You Worse at English",
+      "locale": "en",
+      "canonicalUrl": "https://johnserra.com/blog/your-ai-tutor-is-making-you-worse",
+      "wordpressModifiedAt": "2026-04-14T00:00:00Z",
+      "fetchedAt": "2026-09-10T01:05:43.750Z",
+      "contentHash": "sha256:dfad7cb1a26a7a834f479bb774e56cecb1bf0f048b72c1a5b9ba238cb793c8a7",
+      "excerpts": [
+        {
+          "id": "correction-production",
+          "text": "seeing a correction is not the same as producing it"
+        },
+        {
+          "id": "errorless-engine",
+          "text": "Our engine is built on a behavioral science principle called Errorless Teaching."
+        }
+      ]
+    },
+    {
+      "sourceId": "wordpress/post/45/en",
+      "wordpressId": 45,
+      "type": "post",
+      "slug": "why-generic-ai-is-failing",
+      "title": "Why Generic AI is Failing Professional English Learners",
+      "locale": "en",
+      "canonicalUrl": "https://johnserra.com/blog/why-generic-ai-is-failing",
+      "wordpressModifiedAt": "2026-04-14T00:00:00Z",
+      "fetchedAt": "2026-09-10T01:05:43.750Z",
+      "contentHash": "sha256:ca27e720fd0d75f79cefec1aea111090d2916cfda30961b80f613da743c0fa27",
+      "excerpts": [
+        {
+          "id": "data-narration",
+          "text": "The core skill they were missing wasn't grammar — it was data narration."
+        },
+        {
+          "id": "high-fidelity-sandbox",
+          "text": "We don't need more \"chatbots.\" We need a High-Fidelity Sandbox."
+        }
+      ]
+    },
+    {
+      "sourceId": "wordpress/post/44/en",
+      "wordpressId": 44,
+      "type": "post",
+      "slug": "why-engineers-cant-explain-their-work",
+      "title": "Why Your Best Engineers Can’t Explain Their Own Work",
+      "locale": "en",
+      "canonicalUrl": "https://johnserra.com/blog/why-engineers-cant-explain-their-work",
+      "wordpressModifiedAt": "2026-04-14T00:00:00Z",
+      "fetchedAt": "2026-09-10T01:05:43.750Z",
+      "contentHash": "sha256:4b08bf093b1076b5b4318e0be0a7481573bad7b44b33ca7b7261912b3a5dd8a8",
+      "excerpts": [
+        {
+          "id": "register-gap",
+          "text": "The problem isn't vocabulary. It's register."
+        },
+        {
+          "id": "professional-impact",
+          "text": "the narrative — the part that gets you promoted, that gets your project funded, that gets leadership to understand why your team matters"
+        }
+      ]
+    },
+    {
+      "sourceId": "wordpress/post/32/en",
+      "wordpressId": 32,
+      "type": "post",
+      "slug": "errorless-teaching-explained",
+      "title": "What is Errorless Teaching — and Why Does It Work for Adult Professionals?",
+      "locale": "en",
+      "canonicalUrl": "https://johnserra.com/blog/errorless-teaching-explained",
+      "wordpressModifiedAt": "2026-04-14T00:00:00Z",
+      "fetchedAt": "2026-09-10T01:05:43.750Z",
+      "contentHash": "sha256:a6e3b072a942f3158464b0919fd160715c00f949ec329f136a6217128f9e20ec",
+      "excerpts": [
+        {
+          "id": "four-phases",
+          "text": "At CareerTalkLab, we've systematized it into four phases"
+        },
+        {
+          "id": "phase-receptive",
+          "text": "Phase 1 — Receptive Orientation"
+        },
+        {
+          "id": "phase-recognition",
+          "text": "Phase 2 — Guided Recognition"
+        },
+        {
+          "id": "phase-production",
+          "text": "Phase 3 — Guided Production"
+        },
+        {
+          "id": "phase-independent",
+          "text": "Phase 4 — Independent Performance"
+        },
+        {
+          "id": "guided-production-target",
+          "text": "Our target: 80%+ success rate."
+        }
+      ]
+    },
+    {
+      "sourceId": "wordpress/page/27/en",
+      "wordpressId": 27,
+      "type": "page",
+      "slug": "about",
+      "title": "About John Serra",
+      "locale": "en",
+      "canonicalUrl": "https://johnserra.com/about",
+      "wordpressModifiedAt": "2026-08-23T20:46:19Z",
+      "fetchedAt": "2026-09-10T01:05:43.750Z",
+      "contentHash": "sha256:2bf7a649399f773aa32a8f005e87246ce46bc1f721f3e8ddd555820428cbd199",
+      "excerpts": [
+        {
+          "id": "cross-industry-story",
+          "text": "I don't have a linear career path; I have a toolkit built across industries."
+        },
+        {
+          "id": "three-domains",
+          "text": "I've led the re-engineering of a patented manufacturing process for a national food packaging company."
+        },
+        {
+          "id": "current-mobility",
+          "text": "Today, I develop new markets and strategic partnerships in the urban mobility space."
+        }
+      ]
+    },
+    {
+      "sourceId": "wordpress/page/54/tr",
+      "wordpressId": 54,
+      "type": "page",
+      "slug": "hakkimda",
+      "title": "John Serra Hakkında",
+      "locale": "tr",
+      "canonicalUrl": "https://johnserra.com/tr/hakkimda",
+      "wordpressModifiedAt": "2026-08-23T21:30:32Z",
+      "fetchedAt": "2026-09-10T01:05:43.750Z",
+      "contentHash": "sha256:fb685437e33ec78c1340a6471454826c9aff629c306d78246c403801ba215d60",
+      "excerpts": [
+        {
+          "id": "cross-industry-story-tr",
+          "text": "Doğrusal bir kariyer yolum yok; sektörler arası oluşturulmuş bir araç setim var."
+        },
+        {
+          "id": "current-mobility-tr",
+          "text": "Bugün, kentsel mobilite alanında yeni pazarlar ve stratejik ortaklıklar geliştiriyorum."
+        }
+      ]
+    },
+    {
+      "sourceId": "wordpress/js_project/51/en",
+      "wordpressId": 51,
+      "type": "js_project",
+      "slug": "careertalklab",
+      "title": "CareerTalkLab",
+      "locale": "en",
+      "canonicalUrl": "https://johnserra.com/projects/careertalklab",
+      "wordpressModifiedAt": "2026-04-14T00:00:00Z",
+      "fetchedAt": "2026-09-10T01:05:43.750Z",
+      "contentHash": "sha256:e2210d4fb8b80d31bc791a20ba06ad20d40622c5b9389793da9eb3cd744c8c61",
+      "excerpts": [
+        {
+          "id": "ctl-solution",
+          "text": "CareerTalkLab is a standalone hybrid LMS at careertalklab.com."
+        },
+        {
+          "id": "ctl-stack",
+          "text": "CareerTalkLab is a Next.js 16.1 project with its own domain, PWA support via Serwist, and a dedicated Supabase backend."
+        },
+        {
+          "id": "ctl-curriculum-counts",
+          "text": "31-Lesson A1 Foundation: A complete sequence from Pre-A1 to A1 functional independence. 21-Lesson A2 Course"
+        },
+        {
+          "id": "ctl-exam-roadmap",
+          "text": "Exam Track (Roadmap) — IELTS/TOEFL candidates"
+        }
+      ]
+    },
+    {
+      "sourceId": "wordpress/js_project/64/tr",
+      "wordpressId": 64,
+      "type": "js_project",
+      "slug": "careertalklab",
+      "title": "CareerTalkLab",
+      "locale": "tr",
+      "canonicalUrl": "https://johnserra.com/tr/projeler/careertalklab",
+      "wordpressModifiedAt": "2026-08-23T21:48:53Z",
+      "fetchedAt": "2026-09-10T01:05:43.750Z",
+      "contentHash": "sha256:c1bbb70d6ed5ab24d706519f27fc75c35ba10db7d84c276fb77fcdb6a80e040d",
+      "excerpts": [
+        {
+          "id": "ctl-solution-tr",
+          "text": "CareerTalkLab, careertalklab.com adresinde yer alan bağımsız bir hibrit LMS'dir."
+        },
+        {
+          "id": "ctl-stack-tr",
+          "text": "CareerTalkLab, kendi alan adına, Serwist aracılığıyla PWA desteğine ve özel bir Supabase backend'ine sahip bir Next.js 16.1 projesidir."
+        }
+      ]
+    },
+    {
+      "sourceId": "wordpress/js_project/49/en",
+      "wordpressId": 49,
+      "type": "js_project",
+      "slug": "bd-automation-suite",
+      "title": "BD Automation Suite",
+      "locale": "en",
+      "canonicalUrl": "https://johnserra.com/projects/bd-automation-suite",
+      "wordpressModifiedAt": "2025-01-01T00:00:00Z",
+      "fetchedAt": "2026-09-10T01:05:43.750Z",
+      "contentHash": "sha256:90e122d1cae15914a8fe96470d7598c80ab795e26371bd46950ee814d91e99eb",
+      "excerpts": [
+        {
+          "id": "seven-modules",
+          "text": "The suite runs as seven discrete modules"
+        },
+        {
+          "id": "odoo-dry-run",
+          "text": "All modules write to Odoo CRM as the central data hub. All modules support --dry-run ."
+        },
+        {
+          "id": "human-loop",
+          "text": "Nothing is ever sent automatically. The automation handles the research and drafting; a person handles the relationship."
+        }
+      ]
+    },
+    {
+      "sourceId": "wordpress/js_project/63/tr",
+      "wordpressId": 63,
+      "type": "js_project",
+      "slug": "bd-otomasyon-paketi",
+      "title": "BD Otomasyon Paketi",
+      "locale": "tr",
+      "canonicalUrl": "https://johnserra.com/tr/projeler/bd-otomasyon-paketi",
+      "wordpressModifiedAt": "2026-08-23T21:30:34Z",
+      "fetchedAt": "2026-09-10T01:05:43.750Z",
+      "contentHash": "sha256:d12bf8e4bb22566dcf6bc2f05e7a01dde9781f76fbbb9da431cae9c5cf1de479",
+      "excerpts": [
+        {
+          "id": "seven-modules-tr",
+          "text": "Paket, her biri işleme hattının (pipeline) bir aşamasından sorumlu olan yedi bağımsız modül olarak çalışır"
+        },
+        {
+          "id": "odoo-dry-run-tr",
+          "text": "Tüm modüller, merkezi veri merkezi olarak Odoo CRM'e yazar. Tüm modüller --dry-run"
+        },
+        {
+          "id": "human-loop-tr",
+          "text": "Hiçbir şey asla otomatik olarak gönderilmez. Otomasyon araştırma ve taslak hazırlama işini halleder; insan ise ilişkiyi yönetir."
+        }
+      ]
+    },
+    {
+      "sourceId": "wordpress/js_project/53/en",
+      "wordpressId": 53,
+      "type": "js_project",
+      "slug": "digital-transformation",
+      "title": "Digital Transformation in Crisis",
+      "locale": "en",
+      "canonicalUrl": "https://johnserra.com/projects/digital-transformation",
+      "wordpressModifiedAt": "2020-04-01T00:00:00Z",
+      "fetchedAt": "2026-09-10T01:05:43.750Z",
+      "contentHash": "sha256:c7dfe117b7a1a50d57075d175f3043e762a43a8ee4cf3516b7d84fc872194ee9",
+      "excerpts": [
+        {
+          "id": "march-2020",
+          "text": "In March 2020, the language school where I served as Education Coordinator shut its doors overnight."
+        },
+        {
+          "id": "led-transition",
+          "text": "I led the complete transition of the school's operations from paper-based to a live online learning environment."
+        }
+      ]
+    },
+    {
+      "sourceId": "wordpress/js_project/65/tr",
+      "wordpressId": 65,
+      "type": "js_project",
+      "slug": "dijital-donusum",
+      "title": "Kriz Döneminde Dijital Dönüşüm",
+      "locale": "tr",
+      "canonicalUrl": "https://johnserra.com/tr/projeler/dijital-donusum",
+      "wordpressModifiedAt": "2026-08-23T21:30:35Z",
+      "fetchedAt": "2026-09-10T01:05:43.750Z",
+      "contentHash": "sha256:b3c74fcde8af5acd40560e6234a376d7082f7fd34c459342890e8e9760134300",
+      "excerpts": [
+        {
+          "id": "march-2020-tr",
+          "text": "Mart 2020'de, Eğitim Koordinatörü olarak görev yaptığım dil okulu kapılarını bir gecede kapattı."
+        },
+        {
+          "id": "led-transition-tr",
+          "text": "Okul operasyonlarının kağıt tabanlı sistemden canlı çevrimiçi öğrenme ortamına tam geçişine liderlik ettim."
+        }
+      ]
+    }
+  ]
+}

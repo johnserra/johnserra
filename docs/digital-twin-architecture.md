@@ -2,6 +2,8 @@
 
 Source baseline: **2026-09-09**, repository commit **4147fda**, prepared for [#17](https://github.com/johnserra/johnserra/issues/17). This is a review of the checked-in implementation, not a production test or a measured quality report. [#10](https://github.com/johnserra/johnserra/issues/10) will establish the repeatable evaluation harness and dated results before retrieval changes.
 
+Subsequent note, **2026-09-09**: the [#10 assistant evaluation harness](../evals/assistant/README.md) now defines the professional-only case corpus, public evidence manifest, shared chat runner, offline tests, and dated report format. No live quality result is claimed until `evals/assistant/reports/` contains a real completed run. Recipe posts were removed on 2026-08-23; John reaffirmed the broader exclusion of cooking on 2026-09-09. The production prompt and a Turkish About record still refer to cooking because stale persona/About text was not all removed in August. This is a known mismatch to measure, not intended scope.
+
 The Digital Twin is John Serra's personal-site assistant. It combines a first-person persona prompt, browser-managed conversation history, semantic retrieval from published WordPress content, and streamed Gemini generation. It currently uses a fixed retrieval-then-generation pipeline.
 
 ## Request and deployment architecture
@@ -96,7 +98,7 @@ WordPress logs failed webhook deliveries but does not durably retry them. Reseed
 
 | Area | Current boundary | Roadmap work |
 | --- | --- | --- |
-| Evaluation | No assistant case corpus, baseline quality report, retrieval recall measurement, or citation evaluation. Existing data-audit tests and static WordPress/SQL contract checks cover other concerns. | [#10](https://github.com/johnserra/johnserra/issues/10) |
+| Evaluation | The 2026-09-09 source baseline originally had no assistant harness. A subsequent [professional-only harness](../evals/assistant/README.md) now measures final-turn retrieval, automated fact-pattern proxies, uncertainty, citations, failures, and injection fixtures. Infrastructure-failed cases are excluded from aggregate quality denominators, semantic support remains unreviewed, and the first real dated live report remains pending. | [#10](https://github.com/johnserra/johnserra/issues/10) |
 | Professional authority | Published WordPress content and a hard-coded biography supply context; no first-class sanitized CV source or conflict-resolution policy. | [#21](https://github.com/johnserra/johnserra/issues/21), [#8](https://github.com/johnserra/johnserra/issues/8) |
 | Retrieval | Latest-message-only embedding, exact locale filter, fixed threshold and count; no hybrid search, query rewriting, reranking, or cross-locale fallback. | [#15](https://github.com/johnserra/johnserra/issues/15) |
 | Citations | Internal source IDs/scores enter the prompt; public URLs and claim-to-source support are not enforced or verified. Rendered links can be generated incorrectly. | [#12](https://github.com/johnserra/johnserra/issues/12) |
@@ -129,7 +131,8 @@ Execution order: **#17 → #10 → #21 → #8 → #15 → #12 → #14 → #20 �
 | Concern | Implementation |
 | --- | --- |
 | Homepage and chat UI | [page.tsx](../src/app/[locale]/page.tsx), [AIChatWidget.tsx](../src/components/widgets/AIChatWidget.tsx), [AIChatPanel.tsx](../src/components/widgets/AIChatPanel.tsx) |
-| Retrieval and generation | [chat route](../src/app/api/chat/route.ts), [embedding helpers](../src/lib/knowledge/embeddings.ts) |
+| Retrieval and generation | [chat route](../src/app/api/chat/route.ts), [shared chat core](../src/lib/chat/core.ts), [server dependencies](../src/lib/chat/server.ts), [embedding helpers](../src/lib/knowledge/embeddings.ts) |
+| Assistant evaluation | [harness guide](../evals/assistant/README.md), [cases](../evals/assistant/cases.json), [professional sources](../evals/assistant/sources.json) |
 | Database clients and base tables | [supabase.ts](../src/lib/supabase.ts), [base schema](../supabase-schema.sql) |
 | Vectors, retrieval RPC, queue, grants | [vector/queue migration](../supabase/migrations/00001_wordpress_vector_queue.sql) |
 | Indexing and initial population | [WordPress indexer](../src/lib/knowledge/wordpress-indexer.ts), [seed script](../scripts/seed-knowledge-base.ts) |

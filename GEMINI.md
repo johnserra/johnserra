@@ -1,6 +1,6 @@
 # Gemini Context: John Serra's Personal Site
 
-This project is the personal website and portfolio for John Serra, built with Next.js, TypeScript, and Tailwind CSS. It serves as a digital hub for his career, writing, and cooking.
+This project is the personal website and portfolio for John Serra, built with Next.js, TypeScript, and Tailwind CSS. It serves as a digital hub for his career and professional writing. Recipe posts were removed on 2026-08-23, and John reaffirmed the broader exclusion of cooking on 2026-09-09. Stale About/persona references were not all removed in August and remain a documented baseline mismatch.
 
 ## Tech Stack
 - **Framework:** Next.js 16 (App Router)
@@ -16,7 +16,7 @@ Use [README.md](README.md) for setup and operations and [docs/digital-twin-archi
 ## Project Structure
 - `src/app/`: Next.js App Router pages and API routes.
 - `src/components/`: Reusable React components (UI, layout, bento-style widgets).
-- `src/lib/`: Core logic, including the content-source switch (`site-content.ts`), WordPress adapter, knowledge indexing/embeddings, and Supabase clients (`supabase.ts`).
+- `src/lib/`: Core logic, including the shared chat path (`chat/`), content-source switch (`site-content.ts`), WordPress adapter, knowledge indexing/embeddings, and Supabase clients (`supabase.ts`).
 - `content/`: Retained locale-organized Markdown/MDX content for filesystem rendering and import.
 - `scripts/`: Utility scripts, such as `seed-knowledge-base.ts` for populating the RAG system.
 - `supabase-schema.sql`: Database schema for contact messages and career context.
@@ -24,7 +24,7 @@ Use [README.md](README.md) for setup and operations and [docs/digital-twin-archi
 
 ## Key Features & Conventions
 ### 1. Content Management
-`src/lib/site-content.ts` selects WordPress or filesystem page reads. Recipes are blog posts; projects use the `projects` routes. WordPress publishing sends signed cache-invalidation/indexing events. Preserve Obsidian-style `[[wiki links]]` transformation in the filesystem adapter. Recipe metadata comes from ACF or MDX frontmatter depending on the selected adapter.
+`src/lib/site-content.ts` selects WordPress or filesystem page reads. Projects use the `projects` routes. Do not restore or create cooking/recipe content for this site. WordPress publishing sends signed cache-invalidation/indexing events. Preserve Obsidian-style `[[wiki links]]` transformation in the filesystem adapter.
 
 ### 2. AI Chat Assistant
 A RAG (Retrieval-Augmented Generation) powered chat widget (`AIChatWidget.tsx`) allows users to "talk to John."
@@ -41,7 +41,9 @@ The homepage uses a bento-style layout (`src/components/bento/`) to showcase dif
 - `npm run build`: Build the production application.
 - `npm run lint`: Run ESLint.
 - `npm run seed`: Index published WordPress knowledge into Supabase (writes data and calls Gemini embeddings).
-- `npm run test:data-audit`: Run existing assessment tests. Assistant evaluations are planned in #10; see the README for static WordPress/SQL contract checks.
+- `npm run test:data-audit`: Run existing assessment tests.
+- `npm run eval:assistant:validate`: Validate assistant cases and public evidence offline.
+- `npm run test:assistant`: Run offline shared-chat and evaluation harness tests. See [evals/assistant/README.md](evals/assistant/README.md); a live dated baseline report is still pending.
 
 ## Coding Standards
 - **Strict Typing:** Always use TypeScript interfaces for data structures (see `src/types/index.ts`).

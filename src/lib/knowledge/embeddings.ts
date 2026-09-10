@@ -1,10 +1,9 @@
 import "server-only";
 
 import { GoogleGenAI } from "@google/genai";
+import { EMBEDDING_DIMENSIONS, EMBEDDING_MODEL } from "@/lib/chat/config";
 
-export const EMBEDDING_MODEL = "gemini-embedding-2";
-export const EMBEDDING_DIMENSIONS = 768;
-export const EMBEDDING_CONFIG_VERSION = `${EMBEDDING_MODEL}:${EMBEDDING_DIMENSIONS}:v1`;
+export { EMBEDDING_CONFIG_VERSION, EMBEDDING_DIMENSIONS, EMBEDDING_MODEL } from "@/lib/chat/config";
 
 let client: GoogleGenAI | undefined;
 
@@ -18,6 +17,7 @@ async function embed(
   text: string,
   taskType: "RETRIEVAL_DOCUMENT" | "RETRIEVAL_QUERY",
   title?: string,
+  signal?: AbortSignal,
 ): Promise<number[]> {
   const response = await gemini().models.embedContent({
     model: EMBEDDING_MODEL,
@@ -26,6 +26,7 @@ async function embed(
       taskType,
       outputDimensionality: EMBEDDING_DIMENSIONS,
       ...(taskType === "RETRIEVAL_DOCUMENT" && title ? { title } : {}),
+      ...(signal ? { abortSignal: signal } : {}),
     },
   });
   const values = response.embeddings?.[0]?.values;
@@ -37,10 +38,10 @@ async function embed(
   return values;
 }
 
-export function embedDocument(text: string, title: string): Promise<number[]> {
-  return embed(text, "RETRIEVAL_DOCUMENT", title);
+export function embedDocument(text: string, title: string, signal?: AbortSignal): Promise<number[]> {
+  return embed(text, "RETRIEVAL_DOCUMENT", title, signal);
 }
 
-export function embedQuery(text: string): Promise<number[]> {
-  return embed(text, "RETRIEVAL_QUERY");
+export function embedQuery(text: string, signal?: AbortSignal): Promise<number[]> {
+  return embed(text, "RETRIEVAL_QUERY", undefined, signal);
 }

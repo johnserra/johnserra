@@ -43,7 +43,7 @@ The homepage uses a bento-style layout (`src/components/bento/`) to showcase dif
 - `npm run seed`: Index published WordPress knowledge into Supabase (writes data and calls Gemini embeddings).
 - `npm run test:data-audit`: Run existing assessment tests.
 - `npm run eval:assistant:validate`: Validate assistant cases and public evidence offline.
-- `npm run test:assistant`: Run offline shared-chat and evaluation harness tests. See [evals/assistant/README.md](evals/assistant/README.md); a live dated baseline report is still pending.
+- `npm run test:assistant`: Run offline shared-chat and evaluation harness tests. See [evals/assistant/README.md](evals/assistant/README.md) for the first dated live report: 34 attempted cases, 33 completed, one embedding quota failure, and semantic support still awaiting human review.
 
 ## Coding Standards
 - **Strict Typing:** Always use TypeScript interfaces for data structures (see `src/types/index.ts`).

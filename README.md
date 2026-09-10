@@ -4,7 +4,7 @@ Have a project you'd like to discuss? [Let's talk.](https://johnserra.com/contac
 
 English/Turkish portfolio, professional writing, and a personal AI assistant built with Next.js 16 App Router, React 19, TypeScript, Tailwind CSS v4, and next-intl. The assistant retrieves published knowledge from Supabase pgvector and streams Gemini answers in John's voice.
 
-The [Digital Twin architecture and baseline](docs/digital-twin-architecture.md) documents the current request flow, indexing pipeline, limitations, and six-week AI Engineering challenge mapping. The [assistant evaluation harness](evals/assistant/README.md) now provides the reproducible corpus and runner for [#10](https://github.com/johnserra/johnserra/issues/10); no live dated baseline is claimed until a report is generated and reviewed.
+The [Digital Twin architecture and baseline](docs/digital-twin-architecture.md) documents the current request flow, indexing pipeline, limitations, and six-week AI Engineering challenge mapping. The [assistant evaluation harness](evals/assistant/README.md) provides the reproducible corpus and runner for [#10](https://github.com/johnserra/johnserra/issues/10). The [first live report](evals/assistant/reports/baseline-2026-09-10T02-27-41-980Z.md) records 34 attempted cases: 33 completed and one embedding quota failure. It remains marked incomplete; automated quality scores are proxies, with semantic support awaiting human review.
 
 ## Current implementation
 

@@ -1,6 +1,6 @@
 # Reviewed public CV knowledge
 
-This feature adds a sanitized English CV as a registered, first-class retrieval source. The public CV and application integration are ready for review. Production database migration, CV indexing, and live retrieval evaluation remain pending.
+This feature adds a sanitized English CV as a registered, first-class retrieval source. Production rollout completed on September 10, 2026: migration `00002` was applied, all 18 reviewed sections were indexed with canonical approval digest `a8c652af5a1dd8ee2fb513c81548a9e4342fe8240f43b352832bc41b8fc2f013`, and the bounded live retrieval evaluation passed all 12 English and Turkish cases. The evaluation verifies retrieval and current-source identity; it does not evaluate generated answer quality.
 
 ## Source and artifact
 
@@ -55,7 +55,9 @@ npm run eval:cv -- --live
 npm run eval:cv -- --live --case sunwell-contractor-inpak-tr
 ```
 
-Live mode loads credentials only after validation. It uses the same shared filtered-retrieval adapter and settings as production chat, but disables legacy fallback because acceptance requires proof of the current indexed CV. A hit requires both the exact section source ID and the current canonical approval digest; a stale row with the same section ID is not a hit. It makes no generation calls and no database writes, performs no retries, reports a timestamp, current digest, exact embedding/RPC counters, hits, and returned source/digest identities, and stops remaining work after an authentication or quota failure. Retrieval-only evidence is explicitly separate from answer quality. Offline dependency-injected mocks cover failure counters, stop behavior, deadlines, and stale digests; they and static SQL checks are not presented as live retrieval evidence. Live mode was not executed during this implementation.
+Live mode loads credentials only after validation. It uses the same shared filtered-retrieval adapter and settings as production chat, but disables legacy fallback because acceptance requires proof of the current indexed CV. A hit requires both the exact section source ID and the current canonical approval digest; a stale row with the same section ID is not a hit. It makes no generation calls and no database writes, performs no retries, reports a timestamp, current digest, exact embedding/RPC counters, hits, and returned source/digest identities, and stops remaining work after an authentication or quota failure. Retrieval-only evidence is explicitly separate from answer quality. Offline dependency-injected mocks cover failure counters, stop behavior, deadlines, and stale digests; they and static SQL checks are not presented as live retrieval evidence.
+
+The production acceptance run on September 10, 2026 completed 12 of 12 cases with 12 expected section hits, 12 embedding calls, 12 retrieval RPC calls, and no skipped cases. All hits required the current canonical approval digest.
 
 ## Rollback and removal
 

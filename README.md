@@ -63,7 +63,7 @@ See the [WordPress plugin installation instructions](wordpress/wp-content/plugin
 ## Database and knowledge indexing
 
 1. Install WordPress, Advanced Custom Fields, and the repository's [John Serra Site Core plugin](wordpress/wp-content/plugins/johnserra-core/README.md). Configure published EN/TR records and the signed webhook. The [adapter contract](src/lib/wordpress/README.md) specifies the REST fields and locale filters.
-2. In the target Supabase SQL editor, apply [supabase-schema.sql](supabase-schema.sql), then [00001_wordpress_vector_queue.sql](supabase/migrations/00001_wordpress_vector_queue.sql). The base schema alone is insufficient: the migration adds 768-dimensional vectors, an HNSW index, locale-aware retrieval, the queue, and service-role RPCs. Deploy and manually verify compatible CV-aware worker code before applying [00002_cv_knowledge.sql](supabase/migrations/00002_cv_knowledge.sql), and do not enqueue CV work until both worker compatibility and the live SQL contract are verified. The SQL version RPC proves database-contract availability, not deployed worker code. The additive migration preserves the original four-argument retrieval RPC and adds strict CV queue validation, atomic CV replacement, and a separately named filtered retrieval RPC. These repository SQL files have only static checks here; they have not been applied to a live database.
+2. Apply [supabase-schema.sql](supabase-schema.sql), then [00001_wordpress_vector_queue.sql](supabase/migrations/00001_wordpress_vector_queue.sql). For a fresh CV installation, follow the original code-first 00002 rollout: verify a CV-aware worker before applying [00002_cv_knowledge.sql](supabase/migrations/00002_cv_knowledge.sql), and do not enqueue CV work until both are verified. For structure-aware indexing, apply additive [00003_wordpress_structure_aware.sql](supabase/migrations/00003_wordpress_structure_aware.sql) **before switching to this worker version**. Pause/drain old WordPress workers during cutover because their direct writes bypass the new version state. The new migration preserves retrieval signatures and accepts old CV payloads. Its SQL behavior is tested locally with embedded PostgreSQL; it has not been applied to production. See [indexing operations](docs/wordpress-knowledge.md) and the [paired retrieval comparison](evals/chunking/comparison-2026-09-11.md).
 3. Set the Gemini, Supabase, and WordPress API variables in `.env.local`. To index all published posts, pages, and projects in both locales:
 
    ```bash
@@ -89,9 +89,9 @@ npm run eval:cv -- --validate
 npm run eval:cv -- --live --limit 3
 ```
 
-The apply command enqueues one approval-bound CV upsert and never drains unrelated WordPress jobs. Its SQL version check does not verify deployed worker code; verify the compatible worker manually before enqueueing. The shared scheduled worker validates its statically imported registered source and verifies the same canonical approval digest before any embedding call. Unfiltered retrieval reserves up to two qualifying CV slots within the total, caps CV rows at three, and fills remaining slots by similarity; explicit CV-only retrieval honors the clamped count up to 20. See [CV knowledge operations](docs/cv-knowledge.md) for authority, filtering, EN/TR behavior, ranking, rollout, and rollback details.
+The apply command enqueues one approval-bound CV upsert and never drains unrelated WordPress jobs. Its SQL version check does not verify deployed worker code; apply the additive migrations first, then switch workers and verify the deployed code before enqueueing. During cutover, pause or drain old WordPress workers because they do not emit the 00003 metadata contract; old CV workers remain accepted by the compatibility extension. The shared scheduled worker validates its statically imported registered source and verifies the same canonical approval digest before any embedding call. Unfiltered retrieval reserves up to two qualifying CV slots within the total, caps CV rows at three, and fills remaining slots by similarity; explicit CV-only retrieval honors the clamped count up to 20. See [CV knowledge operations](docs/cv-knowledge.md) for authority, filtering, EN/TR behavior, ranking, rollout, and rollback details.
 
-Normal publication uses the webhook rather than a full reseed. Upserts replace matching `(source, chunk_index)` rows and remove excess old chunks for that source; delete jobs remove the matching WordPress ID/locale. A full seed only visits currently published records, so it is not a complete reconciliation of missed deletion events.
+Normal publication uses the webhook rather than a full reseed. Upserts replace matching `(source, chunk_index)` rows and remove excess old chunks for that source; delete jobs remove the matching WordPress ID/locale. The durable per-source version/tombstone state survives empty replacements and deletions, so stale in-flight events cannot resurrect content; equal-timestamp deletes win ties. To reindex after applying 00003, run `npm run seed` for the published WordPress snapshot. A full seed only visits currently published records, so it is not a complete reconciliation of missed deletion events.
 
 For a one-time MDX-to-WordPress import, see [HEADLESS_WORDPRESS_IMPLEMENTATION.md](HEADLESS_WORDPRESS_IMPLEMENTATION.md). `npm run wordpress:import:dry` previews the import; `npm run wordpress:import` applies it. Import and knowledge indexing are separate steps.
 
@@ -104,6 +104,7 @@ npm run lint
 npm run eval:assistant:validate
 npm run test:assistant
 npm run test:cv
+npm run test:knowledge:sql
 npm run eval:cv -- --validate
 npm run test:data-audit
 bash wordpress/wp-content/plugins/johnserra-core/tests/verify-contract.sh
@@ -112,7 +113,7 @@ bash supabase/tests/verify-wordpress-vector-migration.sh
 bash supabase/tests/verify-cv-migration.sh
 ```
 
-The data-audit tests cover the assessment feature. Assistant tests and validation are offline; they do not call providers. The shell checks inspect source contracts; they do not execute a database migration or prove a working CMS/model integration. Production build is a separate environment-dependent check because it loads local secrets and external fonts; it was not run for the CV correction. See the [evaluation guide](evals/assistant/README.md) for the bounded live command and dated reports. GitHub Actions currently runs install, lint, and build only.
+The data-audit tests cover the assessment feature. Assistant tests and validation are offline; they do not call providers. The shell checks inspect source contracts; they do not execute a database migration or prove a working CMS/model integration. Production build is a separate environment-dependent check because it loads local secrets and external fonts; it was not run for the CV correction. See the [evaluation guide](evals/assistant/README.md) for the bounded live command and dated reports. GitHub Actions runs install, lint, knowledge tests, the embedded SQL regression, and build.
 
 Use `npm run start` after a successful build to inspect the production build locally. WordPress-backed builds need access to the configured CMS for content reads. The repository records a local development CSS issue in [CLAUDE.md](CLAUDE.md); if it recurs, compare the production build before changing styles.
 
@@ -138,6 +139,7 @@ For page-content rollback, set `CONTENT_SOURCE=filesystem` (or unset it) and red
 - [Digital Twin architecture and baseline](docs/digital-twin-architecture.md): current behavior, diagrams, source map, limitations, and challenge mapping.
 - [Assistant evaluation harness](evals/assistant/README.md): case/source schemas, offline checks, bounded live runner, metrics, and human-review rubric.
 - [CV knowledge operations](docs/cv-knowledge.md): public artifact review, approval-bound indexing, authority, filtering, locale behavior, evaluation, and rollback.
+- [WordPress knowledge indexing](docs/wordpress-knowledge.md): structure-aware chunking, public canonical URLs, claim-domain authority, atomic replacement, version ordering, and the isolated retrieval comparison plan.
 - [WordPress implementation guide](HEADLESS_WORDPRESS_IMPLEMENTATION.md): migration setup and acceptance checklist.
 - [WordPress migration review](HEADLESS_WORDPRESS_MIGRATION_REVIEW.md): historical design proposal; its descriptions of the pre-migration implementation are not the current baseline.
 - [Roadmap #22](https://github.com/johnserra/johnserra/issues/22): implementation order and completion criteria.

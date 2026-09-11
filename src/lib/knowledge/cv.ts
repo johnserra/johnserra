@@ -12,6 +12,8 @@ export const CV_SOURCE_ID_PREFIX = "cv/john-serra/en";
 export const CV_SOURCE_RELATIVE_PATH = "content/knowledge/cv.en.json";
 export const CV_PUBLIC_RELATIVE_PATH = "public/cv/john-serra.en.md";
 export const MAX_CV_SECTION_CHARACTERS = 4_000;
+export const CV_INDEXING_CONFIG_VERSION = "cv-indexing-v1";
+export const CV_CHUNKING_CONFIG_VERSION = "cv-section-v1";
 
 const DOCUMENT_KEYS = new Set([
   "schema_version", "document_id", "title", "locale", "visibility",
@@ -102,6 +104,9 @@ export interface CvChunk {
     document_type: "cv";
     authority: "reviewed_public_cv";
     canonical_url: typeof CV_CANONICAL_URL;
+    section_path: string[];
+    indexing_config: typeof CV_INDEXING_CONFIG_VERSION;
+    chunking_config: typeof CV_CHUNKING_CONFIG_VERSION;
     content_sha256: string;
   };
 }
@@ -350,6 +355,8 @@ export function cvChunks(document: CvDocument): CvChunk[] {
   const validated = validateCvDocument(document);
   const approvalDigest = cvApprovalDigest(validated);
   return validated.sections.map((section) => {
+    const group = GROUPS.find((candidate) => candidate.category === section.category);
+    const sectionPath = ["CV", group?.heading ?? section.category, section.title];
     const datesText = formatCvDates(section.dates) ?? "unknown or not applicable";
     const content = [
       `Section: ${section.title}`,
@@ -380,6 +387,9 @@ export function cvChunks(document: CvDocument): CvChunk[] {
         document_type: "cv",
         authority: "reviewed_public_cv",
         canonical_url: CV_CANONICAL_URL,
+        section_path: sectionPath,
+        indexing_config: CV_INDEXING_CONFIG_VERSION,
+        chunking_config: CV_CHUNKING_CONFIG_VERSION,
         content_sha256: approvalDigest,
       },
     };

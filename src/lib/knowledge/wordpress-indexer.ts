@@ -2,9 +2,7 @@ import "server-only";
 
 import { createAdminClient } from "@/lib/supabase";
 import { wordpressFetch } from "@/lib/wordpress/client";
-import { decodeHtmlEntities } from "@/lib/wordpress/normalize";
 import type { WordPressApiItem, WordPressContentType } from "@/lib/wordpress/types";
-import type { Locale } from "@/types";
 import {
   EMBEDDING_CONFIG_VERSION,
   EMBEDDING_DIMENSIONS,
@@ -17,18 +15,16 @@ import {
   registeredCvIndexingDependencies,
   type CvIndexingJob,
 } from "./cv-indexer";
-
-const CHUNK_SIZE = 2_400;
-const CHUNK_OVERLAP = 300;
-
-export interface ContentIndexingJob {
-  event_id: string;
-  wordpress_id: number;
-  content_type: WordPressContentType;
-  locale: Locale;
-  operation: "upsert" | "delete";
-  modified_gmt?: string;
-}
+import { htmlToStructuredPlainText, chunkUnstructuredText } from "./wordpress-chunking";
+import {
+  processWordPressIndexingJob,
+  wordPressModifiedAt,
+  type ContentIndexingJob,
+  type WordPressIndexingDependencies,
+} from "./wordpress-indexing";
+export type { ContentIndexingJob } from "./wordpress-indexing";
+export { buildWordPressReplacementRows, processWordPressIndexingJob } from "./wordpress-indexing";
+export type { WordPressIndexingDependencies, WordPressReplacementRow } from "./wordpress-indexing";
 export type AnyContentIndexingJob = ContentIndexingJob | CvIndexingJob;
 interface QueueJob {
   msg_id: number;
@@ -64,43 +60,11 @@ export function parseContentIndexingJob(value: unknown): AnyContentIndexingJob {
 }
 
 export function htmlToPlainText(html: string): string {
-  return decodeHtmlEntities(
-    html
-      .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
-      .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
-      .replace(/<[^>]+>/g, " ")
-      .replace(/\s+/g, " ")
-      .trim(),
-  );
+  return htmlToStructuredPlainText(html);
 }
 
 export function chunkText(text: string): string[] {
-  const chunks: string[] = [];
-  let start = 0;
-
-  while (start < text.length) {
-    let end = Math.min(start + CHUNK_SIZE, text.length);
-    if (end < text.length) {
-      const boundary = text.lastIndexOf(" ", end);
-      if (boundary > start + CHUNK_SIZE / 2) end = boundary;
-    }
-    const chunk = text.slice(start, end).trim();
-    if (chunk.length > 50) chunks.push(chunk);
-    if (end >= text.length) break;
-    start = Math.max(start + 1, end - CHUNK_OVERLAP);
-  }
-
-  return chunks;
-}
-
-async function removeContent(job: ContentIndexingJob): Promise<void> {
-  const supabase = createAdminClient();
-  const { error } = await supabase
-    .from("career_context")
-    .delete()
-    .eq("wordpress_id", job.wordpress_id)
-    .eq("locale", job.locale);
-  if (error) throw new Error(`Failed to delete indexed content: ${error.message}`);
+  return chunkUnstructuredText("", text).map((chunk) => chunk.content);
 }
 
 async function fetchContent(job: ContentIndexingJob): Promise<WordPressApiItem> {
@@ -110,54 +74,31 @@ async function fetchContent(job: ContentIndexingJob): Promise<WordPressApiItem> 
   });
 }
 
-async function upsertContent(job: ContentIndexingJob): Promise<void> {
-  const item = await fetchContent(job);
-  if (item.status !== "publish" || item.acf?.locale !== job.locale) {
-    await removeContent(job);
-    return;
-  }
-
-  const title = decodeHtmlEntities(item.title.rendered);
-  const plainText = htmlToPlainText(item.content.rendered);
-  const chunks = chunkText(`# ${title}\n\n${plainText}`);
-  const source = `wordpress/${job.content_type}/${job.wordpress_id}/${job.locale}`;
-  const embeddings = await Promise.all(chunks.map((chunk) => embedDocument(chunk, title)));
-  const supabase = createAdminClient();
-  const rows = chunks.map((content, chunkIndex) => ({
-    source,
-    chunk_index: chunkIndex,
-    content,
-    metadata: {
-      event_id: job.event_id,
-      title,
-      type: job.content_type,
-      slug: item.slug,
-      locale: job.locale,
-      wordpress_id: job.wordpress_id,
-      embedding_config: EMBEDDING_CONFIG_VERSION,
+function registeredWordPressIndexingDependencies(): WordPressIndexingDependencies {
+  return {
+    fetchContent,
+    embedDocument,
+    async removeWordPressContext({ job, modifiedAt }) {
+      const { error } = await createAdminClient().rpc("remove_wordpress_context", {
+        wordpress_id: job.wordpress_id,
+        wordpress_locale: job.locale,
+        wordpress_content_type: job.content_type,
+        wordpress_modified_at: modifiedAt,
+      });
+      if (error) throw new Error(`Failed to remove indexed content: ${error.message}`);
     },
-    wordpress_id: job.wordpress_id,
-    locale: job.locale,
-    content_type: job.content_type,
-    slug: item.slug,
-    title,
-    publication_status: "publish",
-    wordpress_modified_at: item.modified_gmt ?? job.modified_gmt ?? null,
-    embedding: embeddings[chunkIndex],
-    embedding_model: EMBEDDING_MODEL,
-    embedding_dimensions: EMBEDDING_DIMENSIONS,
-  }));
-
-  if (rows.length) {
-    const { error } = await supabase.from("career_context").upsert(rows, { onConflict: "source,chunk_index" });
-    if (error) throw new Error(`Failed to upsert indexed content: ${error.message}`);
-  }
-
-  const stale = supabase.from("career_context").delete().eq("source", source);
-  const { error: staleError } = rows.length
-    ? await stale.gte("chunk_index", rows.length)
-    : await stale;
-  if (staleError) throw new Error(`Failed to remove stale chunks: ${staleError.message}`);
+    async replaceWordPressContext({ job, item, rows }) {
+      const { error } = await createAdminClient().rpc("replace_wordpress_context", {
+        wordpress_id: job.wordpress_id,
+        wordpress_locale: job.locale,
+        wordpress_content_type: job.content_type,
+        wordpress_source: `wordpress/${job.content_type}/${job.wordpress_id}/${job.locale}`,
+        wordpress_modified_at: wordPressModifiedAt(item.modified_gmt ?? job.modified_gmt),
+        wordpress_chunks: rows,
+      });
+      if (error) throw new Error(`Failed to atomically replace indexed content: ${error.message}`);
+    },
+  };
 }
 
 async function replaceCvContext(input: Parameters<ReturnType<typeof registeredCvIndexingDependencies>["replaceCvContext"]>[0]): Promise<void> {
@@ -179,8 +120,9 @@ async function replaceCvContext(input: Parameters<ReturnType<typeof registeredCv
 export async function processContentIndexingJob(job: AnyContentIndexingJob): Promise<void> {
   if ("cv_id" in job) {
     await processCvIndexingJob(job, registeredCvIndexingDependencies(embedDocument, replaceCvContext));
-  } else if (job.operation === "delete") await removeContent(job);
-  else await upsertContent(job);
+  } else {
+    await processWordPressIndexingJob(job, registeredWordPressIndexingDependencies());
+  }
 }
 
 export async function processContentIndexingBatch(batchSize = 3): Promise<{

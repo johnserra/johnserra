@@ -80,6 +80,13 @@ test("every short and long semantic section becomes one complete stable chunk", 
   assert.match(long?.content ?? "", /lot-level fruit traceability/);
   assert.match(long?.content ?? "", /sun-dried tomato project/);
   assert.ok(chunks.every((chunk) => chunk.content.includes(`Section: ${chunk.metadata.title}`)));
+  assert.ok(chunks.every((chunk) => {
+    assert.deepEqual(chunk.metadata.section_path.slice(0, 1), ["CV"]);
+    assert.equal(chunk.metadata.section_path.at(-1), chunk.metadata.title);
+    assert.equal(chunk.metadata.indexing_config, "cv-indexing-v1");
+    assert.equal(chunk.metadata.chunking_config, "cv-section-v1");
+    return chunk.metadata.section_path.length === 3;
+  }));
 });
 
 test("reviewed factual boundaries remain explicit in the canonical source", async () => {
@@ -210,37 +217,35 @@ test("invalid and stale CV jobs are rejected before embedding or database calls"
   assert.equal(replacements, 0);
 });
 
-test("duplicate jobs are idempotent and replacement removes stale chunks", async () => {
+test("duplicate jobs produce identical replacement payloads", async () => {
   const document = await loadRegisteredCv();
   const digest = cvApprovalDigest(document);
-  const store = new Map<string, string>([["cv/john-serra/en/removed-stale-section", "stale"]]);
-  const snapshots: string[][] = [];
+  const payloads: string[] = [];
   const dependencies: CvIndexingDependencies = {
     async loadDocument() { return document; },
     async embedDocument(content) { return [content.length]; },
     async replaceCvContext(input) {
-      const next = new Map(input.rows.map((row) => [row.source, row.content]));
-      store.clear();
-      next.forEach((content, source) => store.set(source, content));
-      snapshots.push([...store.keys()]);
+      payloads.push(JSON.stringify(input));
     },
   };
   const job = { event_id: EVENT_ID, document_type: "cv", cv_id: "john-serra", locale: "en", operation: "upsert", content_sha256: digest } as const;
   await processCvIndexingJob(job, dependencies);
   await processCvIndexingJob(job, dependencies);
-  assert.equal(store.has("cv/john-serra/en/removed-stale-section"), false);
-  assert.deepEqual(snapshots[0], snapshots[1]);
-  assert.equal(store.size, document.sections.length);
+  assert.equal(payloads.length, 2);
+  assert.equal(payloads[0], payloads[1]);
 });
 
-test("a failed atomic replacement leaves the previous document untouched", async () => {
+test("replacement failures are surfaced after embedding orchestration", async () => {
   const document = await loadRegisteredCv();
   const digest = cvApprovalDigest(document);
-  const store = new Map([["cv/john-serra/en/old", "previous complete document"]]);
+  let replacements = 0;
   const dependencies: CvIndexingDependencies = {
     async loadDocument() { return document; },
     async embedDocument() { return [1]; },
-    async replaceCvContext() { throw new Error("transaction rolled back"); },
+    async replaceCvContext() {
+      replacements += 1;
+      throw new Error("database replacement failed");
+    },
   };
   await assert.rejects(() => processCvIndexingJob({
     event_id: EVENT_ID,
@@ -249,8 +254,8 @@ test("a failed atomic replacement leaves the previous document untouched", async
     locale: "en",
     operation: "upsert",
     content_sha256: digest,
-  }, dependencies), /rolled back/);
-  assert.deepEqual([...store.entries()], [["cv/john-serra/en/old", "previous complete document"]]);
+  }, dependencies), /database replacement failed/);
+  assert.equal(replacements, 1);
 });
 
 test("legacy pruning narrows deletion so CV rows are not selected", async () => {

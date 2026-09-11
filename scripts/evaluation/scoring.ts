@@ -75,6 +75,12 @@ export function scoreCase(observation: CaseObservation) {
     const path = comparablePath(url);
     return Boolean(path && expectedPaths.includes(path));
   });
+  const unexpectedJohnSerraPaths = [...new Set(citedPaths.filter((path) => !expectedPaths.includes(path)))];
+  const missingExpectedPaths = [...new Set(expectedPaths.filter((path) => !citedPaths.includes(path)))];
+  const hasAllExpected = expectedPaths.length > 0 && missingExpectedPaths.length === 0;
+  const hasNoUnexpected = unexpectedJohnSerraPaths.length === 0;
+  const citationMatching = hasAllExpected && hasNoUnexpected;
+
   return {
     retrieval: {
       ...retrievalResult(finalTurnRetrieved),
@@ -99,10 +105,11 @@ export function scoreCase(observation: CaseObservation) {
     citations: {
       required: definition.citations.required,
       present: citationUrls.length > 0,
-      matching: matchingCitationUrls.length > 0,
+      matching: citationMatching,
       urls: citationUrls,
       matchingUrls: matchingCitationUrls,
-      unexpectedJohnSerraPaths: citedPaths.filter((path) => !expectedPaths.includes(path)),
+      unexpectedJohnSerraPaths,
+      missingExpectedPaths,
       linkResolution: "not_checked" as const,
       semanticSupport: "unreviewed" as const,
     },

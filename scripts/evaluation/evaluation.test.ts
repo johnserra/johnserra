@@ -201,6 +201,90 @@ test("citation matching accepts correct EN/TR routes and rejects wrong routes", 
   assert.equal(scoreCase({ caseDefinition: turkish, turns: [{ response: "[wrong](/projects/digital-transformation)", retrieval: [] }] }).citations.matching, false);
 });
 
+test("deterministic citation evaluation requires all expected paths, rejects unexpected johnserra.com paths, and handles edge cases", async () => {
+  const corpus = await corpusPromise;
+  const english = corpus.caseFile.cases.find((item) => item.id === "careertalklab-overview-en")!;
+  const turkish = corpus.caseFile.cases.find((item) => item.id === "digital-transformation-tr")!;
+  const multiSource = corpus.caseFile.cases.find((item) => item.id === "current-urban-mobility-role-en")!;
+
+  // 1. Absolute and relative EN canonical URLs
+  assert.equal(scoreCase({ caseDefinition: english, turns: [{ response: "[CTL](/projects/careertalklab)", retrieval: [] }] }).citations.matching, true);
+  assert.equal(scoreCase({ caseDefinition: english, turns: [{ response: "[CTL](https://johnserra.com/projects/careertalklab)", retrieval: [] }] }).citations.matching, true);
+  assert.equal(scoreCase({ caseDefinition: english, turns: [{ response: "[CTL](https://johnserra.com/projects/careertalklab/)", retrieval: [] }] }).citations.matching, true);
+  assert.equal(scoreCase({ caseDefinition: english, turns: [{ response: "[CTL](https://www.johnserra.com/projects/careertalklab)", retrieval: [] }] }).citations.matching, true);
+
+  // 2. Absolute and relative TR canonical URLs
+  assert.equal(scoreCase({ caseDefinition: turkish, turns: [{ response: "[proje](/tr/projeler/dijital-donusum)", retrieval: [] }] }).citations.matching, true);
+  assert.equal(scoreCase({ caseDefinition: turkish, turns: [{ response: "[proje](https://johnserra.com/tr/projeler/dijital-donusum/)", retrieval: [] }] }).citations.matching, true);
+
+  // 3. Multiple required citations: all required must be cited, partial or unexpected fails
+  const allCited = scoreCase({
+    caseDefinition: multiSource,
+    turns: [{ response: "Details in [post](/blog/orchestrating-agency-multi-track-world) and [about](https://johnserra.com/about).", retrieval: [] }],
+  });
+  assert.equal(allCited.citations.matching, true);
+  assert.deepEqual(allCited.citations.missingExpectedPaths, []);
+  assert.deepEqual(allCited.citations.unexpectedJohnSerraPaths, []);
+
+  const partialCited = scoreCase({
+    caseDefinition: multiSource,
+    turns: [{ response: "Only mentioned in [post](/blog/orchestrating-agency-multi-track-world).", retrieval: [] }],
+  });
+  assert.equal(partialCited.citations.matching, false);
+  assert.deepEqual(partialCited.citations.missingExpectedPaths, ["/about"]);
+
+  const unexpectedCited = scoreCase({
+    caseDefinition: multiSource,
+    turns: [{ response: "[post](/blog/orchestrating-agency-multi-track-world), [about](/about), and [extra](/projects/careertalklab).", retrieval: [] }],
+  });
+  assert.equal(unexpectedCited.citations.matching, false);
+  assert.deepEqual(unexpectedCited.citations.unexpectedJohnSerraPaths, ["/projects/careertalklab"]);
+  assert.deepEqual(unexpectedCited.citations.missingExpectedPaths, []);
+
+  // 4. Wrong locale routes fail
+  const wrongLocaleEn = scoreCase({
+    caseDefinition: english,
+    turns: [{ response: "[project](/tr/projeler/careertalklab)", retrieval: [] }],
+  });
+  assert.equal(wrongLocaleEn.citations.matching, false);
+  assert.deepEqual(wrongLocaleEn.citations.unexpectedJohnSerraPaths, ["/tr/projeler/careertalklab"]);
+  assert.deepEqual(wrongLocaleEn.citations.missingExpectedPaths, ["/projects/careertalklab"]);
+
+  // 5. Duplicate URLs succeed without penalization
+  const duplicateCited = scoreCase({
+    caseDefinition: english,
+    turns: [{ response: "See [CTL](/projects/careertalklab) and [again](https://johnserra.com/projects/careertalklab).", retrieval: [] }],
+  });
+  assert.equal(duplicateCited.citations.matching, true);
+  assert.deepEqual(duplicateCited.citations.missingExpectedPaths, []);
+  assert.deepEqual(duplicateCited.citations.unexpectedJohnSerraPaths, []);
+
+  // 6. Malformed and foreign URLs fail when expected citation is missing
+  const foreignCited = scoreCase({
+    caseDefinition: english,
+    turns: [{ response: "See [example](https://example.com/some-page).", retrieval: [] }],
+  });
+  assert.equal(foreignCited.citations.matching, false);
+  assert.deepEqual(foreignCited.citations.missingExpectedPaths, ["/projects/careertalklab"]);
+
+  const malformedCited = scoreCase({
+    caseDefinition: english,
+    turns: [{ response: "Check [broken](not-a-valid-url) or [bad](http://).", retrieval: [] }],
+  });
+  assert.equal(malformedCited.citations.matching, false);
+  assert.deepEqual(malformedCited.citations.missingExpectedPaths, ["/projects/careertalklab"]);
+
+  // 7. No citation when required fails
+  const noCitation = scoreCase({
+    caseDefinition: english,
+    turns: [{ response: "CareerTalkLab was built as an English learning platform.", retrieval: [] }],
+  });
+  assert.equal(noCitation.citations.present, false);
+  assert.equal(noCitation.citations.matching, false);
+  assert.deepEqual(noCitation.citations.urls, []);
+  assert.deepEqual(noCitation.citations.missingExpectedPaths, ["/projects/careertalklab"]);
+});
+
 test("unknown cases require uncertainty and negated prohibited words become review flags", async () => {
   const corpus = await corpusPromise;
   const unknown = corpus.caseFile.cases.find((item) => item.id === "unknown-degree-en")!;

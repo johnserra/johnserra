@@ -18,7 +18,20 @@ interface AIChatPanelProps {
   onReady: () => void;
 }
 
-function renderContent(content: string): React.ReactNode {
+export function isSafeUrl(url: string): boolean {
+  const trimmed = url.trim();
+  if (trimmed.startsWith("/") && !trimmed.startsWith("//")) {
+    return true;
+  }
+  try {
+    const parsed = new URL(trimmed);
+    return parsed.protocol === "http:" || parsed.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+export function renderContent(content: string): React.ReactNode {
   const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
@@ -29,19 +42,26 @@ function renderContent(content: string): React.ReactNode {
       parts.push(content.slice(lastIndex, match.index));
     }
     const [, text, url] = match;
-    const isExternal = url.startsWith("http");
-    parts.push(
-      <a
-        key={match.index}
-        href={url}
-        className="text-accent underline hover:text-accent-dim"
-        {...(isExternal
-          ? { target: "_blank", rel: "noopener noreferrer" }
-          : {})}
-      >
-        {text}
-      </a>
-    );
+    const trimmedUrl = url.trim();
+
+    if (!isSafeUrl(trimmedUrl)) {
+      parts.push(text);
+    } else {
+      const isExternal = trimmedUrl.startsWith("http://") || trimmedUrl.startsWith("https://");
+      parts.push(
+        <a
+          key={match.index}
+          href={trimmedUrl}
+          className="text-accent underline hover:text-accent-dim focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-xs"
+          {...(isExternal
+            ? { target: "_blank", rel: "noopener noreferrer" }
+            : {})}
+        >
+          {text}
+          {isExternal && <span className="sr-only"> (opens in a new tab)</span>}
+        </a>
+      );
+    }
     lastIndex = match.index + match[0].length;
   }
 
@@ -166,7 +186,7 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
             <div
               key={message.id}
               className={cn(
-                "max-w-[85%] rounded-card px-3.5 py-2 text-sm leading-relaxed font-sans text-left",
+                "max-w-[85%] rounded-card px-3.5 py-2 text-sm leading-relaxed font-sans text-left whitespace-pre-wrap break-words",
                 message.role === "user"
                   ? "self-end bg-accent/10 text-ink rounded-card-br"
                   : "self-start bg-ground-3 text-ink-soft rounded-card-bl"

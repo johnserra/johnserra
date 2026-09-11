@@ -1,0 +1,187 @@
+{
+  "schemaVersion": "1.0.0",
+  "corpusVersion": "retrieval-v1",
+  "generatedAt": "2026-09-11T00:00:00.000Z",
+  "cases": [
+    {
+      "id": "followup-careertalklab-technology-en",
+      "locale": "en",
+      "categories": ["followup", "technology"],
+      "conversation": [
+        { "role": "user", "content": "Tell me about CareerTalkLab." },
+        { "role": "assistant", "content": "[FIXED_PRIOR_ASSISTANT_TURN] CareerTalkLab is a platform for career conversation practice that John built." },
+        { "role": "user", "content": "What technology did he use for it?" }
+      ],
+      "expectedSourceIds": ["wordpress/js_project/51/en"],
+      "queryTerms": ["CareerTalkLab", "technology"],
+      "conversationNote": "Fixed prior assistant turns are labeled, not generated. The follow-up is context-dependent and requires rewrite to be standalone."
+    },
+    {
+      "id": "followup-company-role-en",
+      "locale": "en",
+      "categories": ["followup", "role"],
+      "conversation": [
+        { "role": "user", "content": "What did John do at Sunwell?" },
+        { "role": "assistant", "content": "[FIXED_PRIOR_ASSISTANT_TURN] John worked at Sunwell Global as a sales manager." },
+        { "role": "user", "content": "What was his role there exactly?" }
+      ],
+      "expectedSourceIds": ["cv/john-serra/en/experience-sunwell-global-sales-manager"],
+      "queryTerms": ["Sunwell", "role", "sales manager"],
+      "conversationNote": "Fixed prior assistant turns are labeled, not generated."
+    },
+    {
+      "id": "followup-ambiguous-context-en",
+      "locale": "en",
+      "categories": ["followup", "ambiguous"],
+      "conversation": [
+        { "role": "user", "content": "Tell me about the BD Automation project." },
+        { "role": "assistant", "content": "[FIXED_PRIOR_ASSISTANT_TURN] John worked on a business development automation suite." },
+        { "role": "user", "content": "What did he do there?" }
+      ],
+      "expectedSourceIds": ["cv/john-serra/en/project-business-development-automation", "wordpress/js_project/49/en"],
+      "queryTerms": ["BD automation", "business development"],
+      "conversationNote": "Fixed prior assistant turns are labeled, not generated. Multi-source: CV and WordPress project page."
+    },
+    {
+      "id": "exact-name-errorless-teaching-en",
+      "locale": "en",
+      "categories": ["exact", "name"],
+      "conversation": [
+        { "role": "user", "content": "What is the Errorless Teaching method?" }
+      ],
+      "expectedSourceIds": ["wordpress/post/32/en"],
+      "queryTerms": ["errorless teaching", "method"]
+    },
+    {
+      "id": "exact-title-architect-leap-en",
+      "locale": "en",
+      "categories": ["exact", "title"],
+      "conversation": [
+        { "role": "user", "content": "What is The Architect's Leap about?" }
+      ],
+      "expectedSourceIds": ["wordpress/post/37/en"],
+      "queryTerms": ["architect", "leap", "orchestrating"]
+    },
+    {
+      "id": "exact-technology-careertalklab-en",
+      "locale": "en",
+      "categories": ["exact", "technology"],
+      "conversation": [
+        { "role": "user", "content": "What technology is CareerTalkLab built with?" }
+      ],
+      "expectedSourceIds": ["wordpress/js_project/51/en"],
+      "queryTerms": ["CareerTalkLab", "technology", "built"]
+    },
+    {
+      "id": "multi-source-premium-parking-en",
+      "locale": "en",
+      "categories": ["multi-source", "name"],
+      "conversation": [
+        { "role": "user", "content": "Tell me about John's work at Premium Parking." }
+      ],
+      "expectedSourceIds": ["cv/john-serra/en/experience-premium-parking-account-manager"],
+      "queryTerms": ["Premium Parking", "account manager", "export"]
+    },
+    {
+      "id": "scope-trap-cv-only-en",
+      "locale": "en",
+      "categories": ["scope", "cv-only"],
+      "conversation": [
+        { "role": "user", "content": "What degree did John complete at Bogazici University?" }
+      ],
+      "expectedSourceIds": ["cv/john-serra/en/education-bogazici-university"],
+      "queryTerms": ["Boğaziçi", "university", "degree"]
+    },
+    {
+      "id": "locale-trap-en-no-turkish-en",
+      "locale": "en",
+      "categories": ["locale", "scope"],
+      "conversation": [
+        { "role": "user", "content": "Tell me about John's digital transformation work." }
+      ],
+      "expectedSourceIds": ["wordpress/js_project/53/en"],
+      "queryTerms": ["digital transformation", "crisis"],
+      "localeNote": "EN must not retrieve Turkish WordPress post /tr/blog/mimarin-atilimi even though it mentions transformation."
+    },
+    {
+      "id": "exact-date-digital-transformation-march-2020-en",
+      "locale": "en",
+      "categories": ["exact", "date", "project"],
+      "conversation": [
+        { "role": "user", "content": "What happened at the language school in March 2020?" }
+      ],
+      "expectedSourceIds": ["wordpress/js_project/53/en"],
+      "queryTerms": ["March 2020", "language school"],
+      "localeNote": "The date is the public March 2020 evidence in the project content, not an unstated project start date."
+    },
+    {
+      "id": "unknown-query-en",
+      "locale": "en",
+      "categories": ["unknown"],
+      "conversation": [
+        { "role": "user", "content": "What is John's favorite color?" }
+      ],
+      "expectedSourceIds": [],
+      "queryTerms": [],
+      "unknownNote": "No expected sources; retrieval may return empty or irrelevant results."
+    },
+    {
+      "id": "followup-careertalklab-tr",
+      "locale": "tr",
+      "categories": ["followup", "technology"],
+      "conversation": [
+        { "role": "user", "content": "CareerTalkLab hakkında bilgi verir misin?" },
+        { "role": "assistant", "content": "[FIXED_PRIOR_ASSISTANT_TURN] CareerTalkLab, kariyer sohbet pratiği için bir platformdur." },
+        { "role": "user", "content": "Onu hangi teknoloji ile yaptı?" }
+      ],
+      "expectedSourceIds": ["wordpress/js_project/64/tr"],
+      "queryTerms": ["CareerTalkLab", "teknoloji"],
+      "conversationNote": "Fixed prior assistant turns are labeled, not generated. Turkish follow-up equivalent of the issue example."
+    },
+    {
+      "id": "locale-trap-tr-gets-cv-tr",
+      "locale": "tr",
+      "categories": ["locale", "cv"],
+      "conversation": [
+        { "role": "user", "content": "Sunwell'deki çalışma biçiminiz neydi ve INPAK TS-800 nedir?" }
+      ],
+      "expectedSourceIds": ["cv/john-serra/en/experience-sunwell-global-sales-manager"],
+      "queryTerms": ["Sunwell", "INPAK"],
+      "localeNote": "TR can retrieve reviewed English CV; source_locale remains en."
+    },
+    {
+      "id": "exact-name-turkish-post-tr",
+      "locale": "tr",
+      "categories": ["exact", "name"],
+      "conversation": [
+        { "role": "user", "content": "Mimarın Atılımı yazısı neden bahsediyor?" }
+      ],
+      "expectedSourceIds": ["wordpress/post/59/tr"],
+      "queryTerms": ["mimar", "atılım"]
+    },
+    {
+      "id": "followup-digital-transformation-tr",
+      "locale": "tr",
+      "categories": ["followup"],
+      "conversation": [
+        { "role": "user", "content": "Dijital donusum projelerinden bahset." },
+        { "role": "assistant", "content": "[FIXED_PRIOR_ASSISTANT_TURN] John, kriz döneminde dijital donusum projelerinde çalıştı." },
+        { "role": "user", "content": "Bunun hakkında daha fazla detay verir misin?" }
+      ],
+      "expectedSourceIds": ["wordpress/js_project/64/tr"],
+      "queryTerms": ["dijital donusum", "kriz"],
+      "conversationNote": "Fixed prior assistant turns are labeled, not generated."
+    },
+    {
+      "id": "scope-trap-cv-only-analytics-tr",
+      "locale": "tr",
+      "categories": ["scope", "cv"],
+      "conversation": [
+        { "role": "user", "content": "CareerTalkLab'in veri analitiği tamamlandı mı?" }
+      ],
+      "expectedSourceIds": ["cv/john-serra/en/project-careertalklab"],
+      "queryTerms": ["CareerTalkLab", "analitik"],
+      "localeNote": "TR can retrieve EN CV for CareerTalkLab project status."
+    }
+  ]
+}

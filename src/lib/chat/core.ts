@@ -1,5 +1,8 @@
 import type { Locale } from "@/types";
 import { CHAT_MODEL, RETRIEVAL_COUNT, RETRIEVAL_THRESHOLD } from "./config";
+import type { HybridRetrievalDiagnostics, HybridRpcRequest, HybridRpcResult } from "./retrieval";
+import { performHybridRetrieval } from "./retrieval";
+import type { RewriteAdapter } from "./rewrite";
 
 export { CHAT_MODEL, RETRIEVAL_COUNT, RETRIEVAL_THRESHOLD } from "./config";
 
@@ -63,6 +66,9 @@ export interface GenerationRequest {
 export interface ChatDependencies {
   embedQuery(query: string, signal?: AbortSignal): Promise<number[]>;
   matchCareerContext(request: RetrievalRequest, signal?: AbortSignal): Promise<RetrievalResult>;
+  matchCareerContextRpc?: CareerContextRpcInvoker;
+  matchCareerContextHybrid?: (request: HybridRpcRequest, signal?: AbortSignal) => Promise<HybridRpcResult>;
+  rewriteAdapter?: RewriteAdapter;
   generateContentStream(request: GenerationRequest, signal?: AbortSignal): Promise<AsyncIterable<{ text?: string }>>;
 }
 
@@ -72,6 +78,7 @@ export interface PreparedChat {
   matches: CareerContextMatch[];
   retrievalError: boolean;
   generationRequest: GenerationRequest;
+  diagnostics?: HybridRetrievalDiagnostics;
 }
 
 function isMissingFilteredRpc(error: unknown): boolean {
@@ -178,14 +185,32 @@ export async function prepareChat(
   syntheticMatches?: CareerContextMatch[],
   signal?: AbortSignal,
 ): Promise<PreparedChat> {
-  const latestUserMessage = messages.at(-1)?.content ?? "";
   const contentLocale = (locale === "tr" ? "tr" : "en") as Locale;
   let matches: CareerContextMatch[] = [];
   let retrievalError = false;
+  let diagnostics: HybridRetrievalDiagnostics | undefined;
 
   if (syntheticMatches) {
     matches = syntheticMatches;
+  } else if (dependencies.matchCareerContextHybrid) {
+    const hybridResult = await performHybridRetrieval(
+      messages,
+      contentLocale,
+      {
+        embedQuery: dependencies.embedQuery,
+        invokeHybridRpc: dependencies.matchCareerContextHybrid,
+        invokeFilteredRpc: dependencies.matchCareerContextRpc ?? (async (_name, request, rpcSignal) =>
+          dependencies.matchCareerContext(request as RetrievalRequest, rpcSignal)),
+        rewriteAdapter: dependencies.rewriteAdapter,
+      },
+      { documentType: null, organization: null, role: null },
+      { signal },
+    );
+    matches = hybridResult.matches;
+    retrievalError = hybridResult.retrievalError;
+    diagnostics = hybridResult.diagnostics;
   } else {
+    const latestUserMessage = messages.at(-1)?.content ?? "";
     const queryEmbedding = signal
       ? await dependencies.embedQuery(latestUserMessage, signal)
       : await dependencies.embedQuery(latestUserMessage);
@@ -213,6 +238,7 @@ export async function prepareChat(
     matches,
     retrievalError,
     generationRequest: buildGenerationRequest(messages, locale, contextBlock),
+    ...(diagnostics ? { diagnostics } : {}),
   };
 }
 

@@ -1,4 +1,5 @@
 import type { ChatDependencies, ChatMessage, CareerContextMatch } from "../../src/lib/chat/core";
+import type { HybridRetrievalDiagnostics } from "../../src/lib/chat/retrieval";
 import { generatePreparedChat, prepareChat } from "../../src/lib/chat/core";
 import { aggregateScores, scoreCase, type CaseObservation } from "./scoring";
 import type { AssistantCase } from "./schema";
@@ -31,6 +32,7 @@ export interface EvaluationTurnResult {
   generationLatencyMs: number;
   totalLatencyMs: number;
   failure?: SanitizedFailure;
+  retrievalDiagnostics?: HybridRetrievalDiagnostics;
 }
 
 export interface EvaluationCaseResult {
@@ -175,6 +177,7 @@ export async function runCase(
       generationLatencyMs,
       totalLatencyMs: Date.now() - started,
       ...(failure ? { failure } : {}),
+      ...(prepared.diagnostics ? { retrievalDiagnostics: prepared.diagnostics } : {}),
     };
     turns.push(result);
     history.push({ role: "assistant", content: response });

@@ -129,6 +129,15 @@ function markdown(report: BaselineReport): string {
       lines.push(
         `Turn ${index + 1} retrieval (${turn.retrievalLatencyMs} ms): ${turn.retrieval.map((item) => `${item.source} (${item.similarity.toFixed(3)})`).join(", ") || "none"}`,
         "",
+      );
+      if (turn.retrievalDiagnostics) {
+        const rd = turn.retrievalDiagnostics;
+        lines.push(
+          `Turn ${index + 1} retrieval diagnostics: rewrite=${rd.rewrite.used ? "yes" : "no"}(${rd.rewrite.reason}); embedding=${rd.embedding.fallback ? "fallback" : "ok"}(${rd.embedding.reason}); retrieval=${rd.retrieval.stage}(${rd.retrieval.reason}, ${rd.retrieval.candidateCount} candidates); reranking=${rd.reranking.inputCount}→${rd.reranking.outputCount} (${rd.reranking.durationMs} ms); total=${rd.totalDurationMs} ms`,
+          "",
+        );
+      }
+      lines.push(
         `Turn ${index + 1} answer (${turn.generationLatencyMs} ms):`,
         "",
         "````text",

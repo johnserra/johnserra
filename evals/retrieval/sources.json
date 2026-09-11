@@ -1,0 +1,144 @@
+{
+  "schemaVersion": "1.0.0",
+  "corpusVersion": "retrieval-v1",
+  "generatedAt": "2026-09-11T00:00:00.000Z",
+  "normalization": "source IDs match the production career_context source identity; content hashes reference the assistant source manifest",
+  "scope": "hybrid retrieval evaluation — semantic + lexical + reranking, locale invariants, follow-up rewrite, scope traps. No answer generation.",
+  "sources": [
+    {
+      "sourceId": "wordpress/post/32/en",
+      "locale": "en",
+      "type": "post",
+      "title": "What is Errorless Teaching — and Why Does It Work for Adult Professionals?",
+      "slug": "errorless-teaching-method",
+      "canonicalUrl": "https://johnserra.com/blog/errorless-teaching-method",
+      "keywords": ["errorless teaching", "method", "phases"]
+    },
+    {
+      "sourceId": "wordpress/post/37/en",
+      "locale": "en",
+      "type": "post",
+      "title": "The Architect's Leap: Orchestrating Agency in a Multi-Track World",
+      "slug": "orchestrating-agency",
+      "canonicalUrl": "https://johnserra.com/blog/orchestrating-agency",
+      "keywords": ["architect", "orchestrating", "agency"]
+    },
+    {
+      "sourceId": "wordpress/post/42/en",
+      "locale": "en",
+      "type": "post",
+      "title": "The Machine is Wrong: Designing AI Feedback Loops for EFL",
+      "slug": "ai-feedback-loops-efl",
+      "canonicalUrl": "https://johnserra.com/blog/ai-feedback-loops-efl",
+      "keywords": ["machine", "AI feedback", "EFL"]
+    },
+    {
+      "sourceId": "wordpress/post/46/en",
+      "locale": "en",
+      "type": "post",
+      "title": "Your AI Tutor is Making You Worse at English",
+      "slug": "ai-tutor-making-you-worse",
+      "canonicalUrl": "https://johnserra.com/blog/ai-tutor-making-you-worse",
+      "keywords": ["AI tutor", "worse", "English"]
+    },
+    {
+      "sourceId": "wordpress/js_project/51/en",
+      "locale": "en",
+      "type": "js_project",
+      "title": "CareerTalkLab",
+      "slug": "careertalklab",
+      "canonicalUrl": "https://johnserra.com/projects/careertalklab",
+      "keywords": ["CareerTalkLab", "platform", "career conversation"]
+    },
+    {
+      "sourceId": "wordpress/js_project/49/en",
+      "locale": "en",
+      "type": "js_project",
+      "title": "BD Automation Suite",
+      "slug": "bd-automation-suite",
+      "canonicalUrl": "https://johnserra.com/projects/bd-automation-suite",
+      "keywords": ["BD Automation", "automation", "business development"]
+    },
+    {
+      "sourceId": "wordpress/js_project/53/en",
+      "locale": "en",
+      "type": "js_project",
+      "title": "Digital Transformation in Crisis",
+      "slug": "digital-transformation",
+      "canonicalUrl": "https://johnserra.com/projects/digital-transformation",
+      "keywords": ["digital transformation", "crisis", "March 2020"]
+    },
+    {
+      "sourceId": "wordpress/post/59/tr",
+      "locale": "tr",
+      "type": "post",
+      "title": "Mimarın Atılımı: Çok Kanallı Bir Dünyada Eylem Gücünü Yönetmek",
+      "slug": "mimarin-atilimi",
+      "canonicalUrl": "https://johnserra.com/tr/blog/mimarin-atilimi",
+      "keywords": ["mimar", "atılım", "eylem gücü"]
+    },
+    {
+      "sourceId": "wordpress/page/54/tr",
+      "locale": "tr",
+      "type": "page",
+      "title": "John Serra Hakkında",
+      "slug": "hakkimda",
+      "canonicalUrl": "https://johnserra.com/tr/hakkimda",
+      "keywords": ["hakkında", "John Serra"]
+    },
+    {
+      "sourceId": "wordpress/js_project/64/tr",
+      "locale": "tr",
+      "type": "js_project",
+      "title": "CareerTalkLab",
+      "slug": "careertalklab",
+      "canonicalUrl": "https://johnserra.com/tr/projeler/careertalklab",
+      "keywords": ["CareerTalkLab", "platform", "kariyer"]
+    },
+    {
+      "sourceId": "cv/john-serra/en/experience-premium-parking-account-manager",
+      "locale": "en",
+      "type": "cv",
+      "title": "Premium Parking Account Manager",
+      "slug": "experience-premium-parking-account-manager",
+      "canonicalUrl": "https://johnserra.com/cv/john-serra.en.md",
+      "keywords": ["Premium Parking", "account manager", "export"]
+    },
+    {
+      "sourceId": "cv/john-serra/en/experience-sunwell-global-sales-manager",
+      "locale": "en",
+      "type": "cv",
+      "title": "Sunwell Global Ltd. Sales Manager",
+      "slug": "experience-sunwell-global-sales-manager",
+      "canonicalUrl": "https://johnserra.com/cv/john-serra.en.md",
+      "keywords": ["Sunwell", "sales manager", "INPAK"]
+    },
+    {
+      "sourceId": "cv/john-serra/en/project-careertalklab",
+      "locale": "en",
+      "type": "cv",
+      "title": "CareerTalkLab Project",
+      "slug": "project-careertalklab",
+      "canonicalUrl": "https://johnserra.com/cv/john-serra.en.md",
+      "keywords": ["CareerTalkLab", "project", "analytics"]
+    },
+    {
+      "sourceId": "cv/john-serra/en/project-business-development-automation",
+      "locale": "en",
+      "type": "cv",
+      "title": "Business Development Automation Project",
+      "slug": "project-business-development-automation",
+      "canonicalUrl": "https://johnserra.com/cv/john-serra.en.md",
+      "keywords": ["BD automation", "project", "documented_from"]
+    },
+    {
+      "sourceId": "cv/john-serra/en/education-bogazici-university",
+      "locale": "en",
+      "type": "cv",
+      "title": "Boğaziçi University Education",
+      "slug": "education-bogazici-university",
+      "canonicalUrl": "https://johnserra.com/cv/john-serra.en.md",
+      "keywords": ["Boğaziçi", "university", "education"]
+    }
+  ]
+}

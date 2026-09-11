@@ -6,7 +6,8 @@ The paired comparison completed with **no lost expected sources** across 39 case
 | --- | ---: | ---: |
 | Cases retrieving an expected source | 32/39 | 36/39 |
 | Expected sources retrieved | 33/42 | 37/42 |
-| WordPress chunks | 208 | 182 |
+| WordPress chunks | 69 | 182 |
+| Retained legacy filesystem chunks (fixed) | 139 | 139 |
 | CV chunks (fixed in both indexes) | 18 | 18 |
 
 All 12 CV cases retained their expected section hit. Four WordPress cases gained a source hit: English professional identity, English manufacturing history, Turkish current role, and Turkish manufacturing history. No case lost a previously retrieved expected source. Three WordPress cases still miss their expected source, so this is evidence of non-regression on this corpus, not perfect retrieval.
@@ -25,6 +26,6 @@ The [machine-readable report](comparison-2026-09-11.json) contains every case's 
 
 `npm run test:knowledge:sql` executes the new migration and rollback fixtures using embedded PostgreSQL with pgvector. It verifies reapplication, legacy rows, stale-chunk removal, timestamp/tombstone ordering, null validation, insert-failure rollback of both rows and version state, CV old/new payload compatibility, source isolation, and RPC grants. The isolated setup omits pgmq provisioning. Hosted Supabase rollout and multi-session concurrency remain separate operational checks.
 
-No production migration, deployment, or reindex was performed. Generated-answer quality and human grounding were not evaluated.
+This paired evaluation did not modify production. The subsequent [production rollout](production-2026-09-11.md) applied the migration and rebuilt the live index. Generated-answer quality and human grounding were not evaluated.
 
 Final local checks passed: assistant/CV tests, both corpus validators, lint, TypeScript, all migration contract checks, the embedded SQL regression, and `CONTENT_SOURCE=filesystem npm run build` (39 generated pages). The build used network access for external assets; it does not verify WordPress-backed production page reads.

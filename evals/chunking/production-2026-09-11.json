@@ -1,0 +1,287 @@
+{
+  "timestamp": "2026-09-11T09:56:36.459Z",
+  "evidence": "live Supabase retrieval using cached paired-evaluation query vectors",
+  "embeddingCalls": 0,
+  "rows": 339,
+  "wordpressChunks": 182,
+  "cvChunks": 18,
+  "indexedChunks": 200,
+  "retainedLegacyChunks": 139,
+  "invalidMetadata": 0,
+  "versionRecords": 24,
+  "newFailures": 0,
+  "caseCount": 39,
+  "caseHits": 36,
+  "sourceHits": 37,
+  "regressions": [],
+  "results": [
+    {
+      "id": "identity-professional-summary-en",
+      "hits": [
+        "wordpress/page/27/en"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "career-chronology-en",
+      "hits": [],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "manufacturing-1998-en",
+      "hits": [
+        "wordpress/post/37/en"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "current-urban-mobility-role-en",
+      "hits": [
+        "wordpress/post/37/en",
+        "wordpress/page/27/en"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "digital-transformation-crisis-en",
+      "hits": [
+        "wordpress/js_project/53/en"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "careertalklab-overview-en",
+      "hits": [
+        "wordpress/js_project/51/en"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "careertalklab-technology-en",
+      "hits": [
+        "wordpress/js_project/51/en"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "careertalklab-curriculum-en",
+      "hits": [
+        "wordpress/js_project/51/en"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "bd-automation-suite-en",
+      "hits": [
+        "wordpress/js_project/49/en"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "viewpoint-machine-wrong-en",
+      "hits": [
+        "wordpress/post/42/en"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "viewpoint-ai-tutor-crutch-en",
+      "hits": [
+        "wordpress/post/46/en"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "viewpoint-data-narration-en",
+      "hits": [
+        "wordpress/post/45/en"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "viewpoint-professional-register-en",
+      "hits": [
+        "wordpress/post/44/en"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "errorless-teaching-method-en",
+      "hits": [
+        "wordpress/post/32/en"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "multi-track-agency-en",
+      "hits": [
+        "wordpress/post/37/en"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "followup-careertalklab-stack-en",
+      "hits": [
+        "wordpress/js_project/51/en"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "followup-digital-transition-en",
+      "hits": [
+        "wordpress/js_project/53/en"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "followup-bd-safety-en",
+      "hits": [
+        "wordpress/js_project/49/en"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "direct-injection-ignore-sources-en",
+      "hits": [],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "direct-injection-hypothetical-as-fact-en",
+      "hits": [
+        "wordpress/post/44/en"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "identity-professional-summary-tr",
+      "hits": [],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "current-role-tr",
+      "hits": [
+        "wordpress/post/59/tr"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "manufacturing-1998-tr",
+      "hits": [
+        "wordpress/post/59/tr"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "digital-transformation-tr",
+      "hits": [
+        "wordpress/js_project/65/tr"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "careertalklab-overview-tr",
+      "hits": [
+        "wordpress/js_project/64/tr"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "careertalklab-technology-tr",
+      "hits": [
+        "wordpress/js_project/64/tr"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "bd-automation-tr",
+      "hits": [
+        "wordpress/js_project/63/tr"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "premium-parking-dates-en",
+      "hits": [
+        "cv/john-serra/en/experience-premium-parking-account-manager"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "consulting-technical-sales-liaison-en",
+      "hits": [
+        "cv/john-serra/en/experience-self-employed-consultant"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "sunwell-contractor-inpak-en",
+      "hits": [
+        "cv/john-serra/en/experience-sunwell-global-sales-manager"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "pakis-descriptive-title-en",
+      "hits": [
+        "cv/john-serra/en/experience-pakis-general-manager-operations"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "pagysa-traceability-haccp-en",
+      "hits": [
+        "cv/john-serra/en/experience-pagysa-operations-manager"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "education-unknown-degree-en",
+      "hits": [
+        "cv/john-serra/en/education-bogazici-university"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "languages-no-levels-en",
+      "hits": [
+        "cv/john-serra/en/languages"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "careertalklab-planned-analytics-en",
+      "hits": [
+        "cv/john-serra/en/project-careertalklab"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "bd-automation-dates-en",
+      "hits": [
+        "cv/john-serra/en/project-business-development-automation"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "sunwell-contractor-inpak-tr",
+      "hits": [
+        "cv/john-serra/en/experience-sunwell-global-sales-manager"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "pagysa-traceability-haccp-tr",
+      "hits": [
+        "cv/john-serra/en/experience-pagysa-operations-manager"
+      ],
+      "lostCandidateSources": []
+    },
+    {
+      "id": "education-unknown-degree-tr",
+      "hits": [
+        "cv/john-serra/en/education-bogazici-university"
+      ],
+      "lostCandidateSources": []
+    }
+  ]
+}

@@ -6,7 +6,7 @@ WordPress knowledge now uses a structure-aware, versioned indexing contract.
 
 The worker parses headings, paragraphs, and list items. Heading levels build a section path such as `Role > Project`; every continuation repeats the document title and full section path. Short meaningful sections are retained. Oversized sections are split at word boundaries with a maximum rendered chunk size of 2,400 characters and at most 300 characters of overlap. Overlap is reset at every section boundary, so role/project sections cannot bleed into one another. HTML without structural blocks follows the same deterministic bounded fallback.
 
-The chunker configuration is `structure-aware-v1`; the surrounding indexing contract is `wordpress-indexing-v2`. Each indexed chunk records title, section path, locale, `document_type=wordpress`, canonical frontend URL, authority, source version, embedding configuration, and both configuration versions. Canonical URLs follow the application routes: English posts use `/blog/<slug>`, Turkish posts `/tr/blog/<slug>`, English projects `/projects/<slug>`, Turkish projects `/tr/projeler/<slug>`, and localized About/privacy pages use their established slugs. Raw WordPress API URLs and internal source IDs are not canonical URLs.
+The chunker configuration is `structure-aware-v1`; the surrounding indexing contract is `wordpress-indexing-v2`. An empty section path denotes the document body before any heading. Each indexed chunk records title, section path, locale, `document_type=wordpress`, canonical frontend URL, authority, source version, embedding configuration, and both configuration versions. Canonical URLs follow the application routes: English posts use `/blog/<slug>`, Turkish posts `/tr/blog/<slug>`, English projects `/projects/<slug>`, Turkish projects `/tr/projeler/<slug>`, and localized About/privacy pages use their established slugs. Raw WordPress API URLs and internal source IDs are not canonical URLs.
 
 Authority is claim-domain metadata, not a general truth score:
 
@@ -29,7 +29,7 @@ The rollback limit is intentional: rolling back application code or the migratio
 
 ## Isolated retrieval comparison
 
-The [2026-09-11 paired comparison](../evals/chunking/comparison-2026-09-11.md) completed against isolated old/new indexes: expected-source case hits rose from 32/39 to 36/39, source hits from 33/42 to 37/42, with no lost expected sources. The existing baseline reports and corpora remain unchanged. This is retrieval evidence on the fixed corpus; generated-answer grounding and hosted rollout remain separate checks.
+The [2026-09-11 paired comparison](../evals/chunking/comparison-2026-09-11.md) completed against isolated old/new indexes: expected-source case hits rose from 32/39 to 36/39, source hits from 33/42 to 37/42, with no lost expected sources. The existing baseline reports and corpora remain unchanged. This is retrieval evidence on the fixed corpus; generated-answer grounding remains a separate check. The [hosted rollout](../evals/chunking/production-2026-09-11.md) subsequently reproduced the retrieval result.
 
 To produce a reproducible comparison in an isolated Supabase project:
 

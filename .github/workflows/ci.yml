@@ -25,5 +25,10 @@ jobs:
       - name: Run Linting
         run: npm run lint
 
+      - name: Verify knowledge indexing
+        run: |
+          npm run test:cv
+          npm run test:knowledge:sql
+
       - name: Build Next.js
         run: npm run build

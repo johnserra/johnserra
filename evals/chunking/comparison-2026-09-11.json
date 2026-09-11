@@ -1,0 +1,1751 @@
+{
+  "timestamp": "2026-09-11T03:34:40.840Z",
+  "status": "complete",
+  "method": "paired local indexes from one read-only production snapshot; latest-turn queries; no generation",
+  "embeddingConfig": "gemini-embedding-2:768:v1",
+  "threshold": 0.65,
+  "count": 6,
+  "productionWrites": 0,
+  "embeddingCalls": 221,
+  "limitations": [
+    "No generated answer or human grounding evaluation",
+    "No multi-session concurrency proof"
+  ],
+  "snapshotHash": "264d82f722919b2a89fdc3c386c159bed0d48b578f1683884f88582aa6cec705",
+  "baselineChunks": 226,
+  "corpusHash": "f8805ad930ae5d042ddb2f8d5bf5de4ffea37ee5e218329a6805593d7e888c92",
+  "caseCount": 39,
+  "expectedSources": 42,
+  "candidateWordPressChunks": 182,
+  "baseline": {
+    "caseHits": 32,
+    "sourceHits": 33
+  },
+  "candidate": {
+    "caseHits": 36,
+    "sourceHits": 37
+  },
+  "results": [
+    {
+      "id": "identity-professional-summary-en",
+      "expected": [
+        "wordpress/page/27/en"
+      ],
+      "baseline": [],
+      "candidate": [
+        {
+          "source": "wordpress/page/47/en",
+          "similarity": 0.6983509290344257
+        },
+        {
+          "source": "wordpress/page/27/en",
+          "similarity": 0.6541184726887566
+        }
+      ],
+      "baselineHits": [],
+      "candidateHits": [
+        "wordpress/page/27/en"
+      ]
+    },
+    {
+      "id": "career-chronology-en",
+      "expected": [
+        "wordpress/post/37/en",
+        "wordpress/js_project/53/en",
+        "wordpress/page/27/en"
+      ],
+      "baseline": [
+        {
+          "source": "cv/john-serra/en/experience-self-employed-consultant",
+          "similarity": 0.6592241355804036
+        }
+      ],
+      "candidate": [
+        {
+          "source": "cv/john-serra/en/experience-self-employed-consultant",
+          "similarity": 0.6592241355804036
+        }
+      ],
+      "baselineHits": [],
+      "candidateHits": []
+    },
+    {
+      "id": "manufacturing-1998-en",
+      "expected": [
+        "wordpress/post/37/en"
+      ],
+      "baseline": [
+        {
+          "source": "cv/john-serra/en/experience-pagysa-operations-manager",
+          "similarity": 0.7399302100970755
+        },
+        {
+          "source": "cv/john-serra/en/experience-pakis-general-manager-operations",
+          "similarity": 0.7297560315016121
+        },
+        {
+          "source": "cv/john-serra/en/experience-sunwell-global-sales-manager",
+          "similarity": 0.6509822219028106
+        }
+      ],
+      "candidate": [
+        {
+          "source": "cv/john-serra/en/experience-pagysa-operations-manager",
+          "similarity": 0.7399302100970755
+        },
+        {
+          "source": "cv/john-serra/en/experience-pakis-general-manager-operations",
+          "similarity": 0.7297560315016121
+        },
+        {
+          "source": "wordpress/post/37/en",
+          "similarity": 0.7159595665788372
+        },
+        {
+          "source": "wordpress/page/27/en",
+          "similarity": 0.6554378611578296
+        },
+        {
+          "source": "cv/john-serra/en/experience-sunwell-global-sales-manager",
+          "similarity": 0.6509822219028106
+        }
+      ],
+      "baselineHits": [],
+      "candidateHits": [
+        "wordpress/post/37/en"
+      ]
+    },
+    {
+      "id": "current-urban-mobility-role-en",
+      "expected": [
+        "wordpress/post/37/en",
+        "wordpress/page/27/en"
+      ],
+      "baseline": [
+        {
+          "source": "wordpress/page/27/en",
+          "similarity": 0.6778082897402828
+        },
+        {
+          "source": "wordpress/post/37/en",
+          "similarity": 0.6653199592423427
+        },
+        {
+          "source": "cv/john-serra/en/summary",
+          "similarity": 0.6623615812221632
+        },
+        {
+          "source": "cv/john-serra/en/experience-premium-parking-account-manager",
+          "similarity": 0.6576244455279429
+        }
+      ],
+      "candidate": [
+        {
+          "source": "wordpress/page/27/en",
+          "similarity": 0.7079278505063817
+        },
+        {
+          "source": "wordpress/post/37/en",
+          "similarity": 0.6817764775494131
+        },
+        {
+          "source": "cv/john-serra/en/summary",
+          "similarity": 0.6623615812221632
+        },
+        {
+          "source": "wordpress/page/27/en",
+          "similarity": 0.6599286991336557
+        },
+        {
+          "source": "cv/john-serra/en/experience-premium-parking-account-manager",
+          "similarity": 0.6576244455279429
+        }
+      ],
+      "baselineHits": [
+        "wordpress/post/37/en",
+        "wordpress/page/27/en"
+      ],
+      "candidateHits": [
+        "wordpress/post/37/en",
+        "wordpress/page/27/en"
+      ]
+    },
+    {
+      "id": "digital-transformation-crisis-en",
+      "expected": [
+        "wordpress/js_project/53/en"
+      ],
+      "baseline": [
+        {
+          "source": "wordpress/js_project/53/en",
+          "similarity": 0.7690835044583216
+        },
+        {
+          "source": "cv/john-serra/en/experience-amerikan-kultur-education-coordinator",
+          "similarity": 0.7215819475677845
+        },
+        {
+          "source": "cv/john-serra/en/project-careertalklab",
+          "similarity": 0.7120636751443555
+        },
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.685028719616042
+        },
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.6734959878475697
+        },
+        {
+          "source": "wordpress/post/45/en",
+          "similarity": 0.6627398101681783
+        }
+      ],
+      "candidate": [
+        {
+          "source": "wordpress/js_project/53/en",
+          "similarity": 0.7622979029290667
+        },
+        {
+          "source": "wordpress/js_project/53/en",
+          "similarity": 0.7371553715626645
+        },
+        {
+          "source": "cv/john-serra/en/experience-amerikan-kultur-education-coordinator",
+          "similarity": 0.7215819475677845
+        },
+        {
+          "source": "cv/john-serra/en/project-careertalklab",
+          "similarity": 0.7120636751443555
+        },
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.6738203148728127
+        },
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.6530739251463336
+        }
+      ],
+      "baselineHits": [
+        "wordpress/js_project/53/en"
+      ],
+      "candidateHits": [
+        "wordpress/js_project/53/en"
+      ]
+    },
+    {
+      "id": "careertalklab-overview-en",
+      "expected": [
+        "wordpress/js_project/51/en"
+      ],
+      "baseline": [
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.7249164997934114
+        },
+        {
+          "source": "wordpress/post/45/en",
+          "similarity": 0.7109937163224783
+        },
+        {
+          "source": "wordpress/post/46/en",
+          "similarity": 0.7088486989773922
+        },
+        {
+          "source": "wordpress/post/32/en",
+          "similarity": 0.7025275439778614
+        },
+        {
+          "source": "cv/john-serra/en/project-careertalklab",
+          "similarity": 0.6918259652906503
+        },
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.6776773604423383
+        }
+      ],
+      "candidate": [
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.7805134334322457
+        },
+        {
+          "source": "wordpress/post/45/en",
+          "similarity": 0.7232467646531473
+        },
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.7117822301714594
+        },
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.7021881468969229
+        },
+        {
+          "source": "wordpress/post/46/en",
+          "similarity": 0.7019208105136814
+        },
+        {
+          "source": "cv/john-serra/en/project-careertalklab",
+          "similarity": 0.6918259652906503
+        }
+      ],
+      "baselineHits": [
+        "wordpress/js_project/51/en"
+      ],
+      "candidateHits": [
+        "wordpress/js_project/51/en"
+      ]
+    },
+    {
+      "id": "careertalklab-technology-en",
+      "expected": [
+        "wordpress/js_project/51/en"
+      ],
+      "baseline": [
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.7405808170208497
+        },
+        {
+          "source": "cv/john-serra/en/project-careertalklab",
+          "similarity": 0.6876781283959925
+        },
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.6624722670706538
+        },
+        {
+          "source": "wordpress/post/32/en",
+          "similarity": 0.6545593391707422
+        },
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.6544437430303568
+        },
+        {
+          "source": "wordpress/post/45/en",
+          "similarity": 0.6544258116893957
+        }
+      ],
+      "candidate": [
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.8134495484725135
+        },
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.7381787796466792
+        },
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.7180778766251399
+        },
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.6879661750995509
+        },
+        {
+          "source": "cv/john-serra/en/project-careertalklab",
+          "similarity": 0.6876781283959925
+        },
+        {
+          "source": "wordpress/post/45/en",
+          "similarity": 0.6743952784566843
+        }
+      ],
+      "baselineHits": [
+        "wordpress/js_project/51/en"
+      ],
+      "candidateHits": [
+        "wordpress/js_project/51/en"
+      ]
+    },
+    {
+      "id": "careertalklab-curriculum-en",
+      "expected": [
+        "wordpress/js_project/51/en"
+      ],
+      "baseline": [
+        {
+          "source": "cv/john-serra/en/project-careertalklab",
+          "similarity": 0.7049291656682996
+        },
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.6945616902179087
+        },
+        {
+          "source": "wordpress/post/45/en",
+          "similarity": 0.6589585628798506
+        },
+        {
+          "source": "wordpress/post/46/en",
+          "similarity": 0.6557083227324546
+        },
+        {
+          "source": "wordpress/post/32/en",
+          "similarity": 0.6543359907382279
+        },
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.6534633553843662
+        }
+      ],
+      "candidate": [
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.7632677508880518
+        },
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.7577826769499753
+        },
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.7217982823666746
+        },
+        {
+          "source": "cv/john-serra/en/project-careertalklab",
+          "similarity": 0.7049291656682996
+        },
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.7027154226653342
+        },
+        {
+          "source": "wordpress/post/46/en",
+          "similarity": 0.6863697259293711
+        }
+      ],
+      "baselineHits": [
+        "wordpress/js_project/51/en"
+      ],
+      "candidateHits": [
+        "wordpress/js_project/51/en"
+      ]
+    },
+    {
+      "id": "bd-automation-suite-en",
+      "expected": [
+        "wordpress/js_project/49/en"
+      ],
+      "baseline": [
+        {
+          "source": "wordpress/js_project/49/en",
+          "similarity": 0.765290330263886
+        },
+        {
+          "source": "cv/john-serra/en/project-business-development-automation",
+          "similarity": 0.7059263096031605
+        }
+      ],
+      "candidate": [
+        {
+          "source": "wordpress/js_project/49/en",
+          "similarity": 0.7714453620617224
+        },
+        {
+          "source": "wordpress/js_project/49/en",
+          "similarity": 0.7445957673559955
+        },
+        {
+          "source": "cv/john-serra/en/project-business-development-automation",
+          "similarity": 0.7059263096031605
+        },
+        {
+          "source": "wordpress/js_project/49/en",
+          "similarity": 0.6773637139012405
+        },
+        {
+          "source": "wordpress/post/37/en",
+          "similarity": 0.6626537456558708
+        },
+        {
+          "source": "wordpress/js_project/49/en",
+          "similarity": 0.6542018512717003
+        }
+      ],
+      "baselineHits": [
+        "wordpress/js_project/49/en"
+      ],
+      "candidateHits": [
+        "wordpress/js_project/49/en"
+      ]
+    },
+    {
+      "id": "viewpoint-machine-wrong-en",
+      "expected": [
+        "wordpress/post/42/en"
+      ],
+      "baseline": [
+        {
+          "source": "wordpress/post/42/en",
+          "similarity": 0.7208420398361647
+        }
+      ],
+      "candidate": [
+        {
+          "source": "wordpress/post/42/en",
+          "similarity": 0.7296662588718065
+        },
+        {
+          "source": "wordpress/post/42/en",
+          "similarity": 0.6919774802930064
+        },
+        {
+          "source": "wordpress/post/42/en",
+          "similarity": 0.6778679450030571
+        },
+        {
+          "source": "wordpress/post/42/en",
+          "similarity": 0.6721668409307189
+        },
+        {
+          "source": "wordpress/post/46/en",
+          "similarity": 0.6707607289501719
+        },
+        {
+          "source": "wordpress/post/42/en",
+          "similarity": 0.6627112849287904
+        }
+      ],
+      "baselineHits": [
+        "wordpress/post/42/en"
+      ],
+      "candidateHits": [
+        "wordpress/post/42/en"
+      ]
+    },
+    {
+      "id": "viewpoint-ai-tutor-crutch-en",
+      "expected": [
+        "wordpress/post/46/en"
+      ],
+      "baseline": [
+        {
+          "source": "wordpress/post/46/en",
+          "similarity": 0.774706986581584
+        },
+        {
+          "source": "wordpress/post/46/en",
+          "similarity": 0.7696296341772756
+        },
+        {
+          "source": "wordpress/post/42/en",
+          "similarity": 0.7550133320699415
+        },
+        {
+          "source": "wordpress/post/45/en",
+          "similarity": 0.7525376837117602
+        },
+        {
+          "source": "wordpress/post/32/en",
+          "similarity": 0.6992567389983908
+        },
+        {
+          "source": "wordpress/post/42/en",
+          "similarity": 0.6736926630920033
+        }
+      ],
+      "candidate": [
+        {
+          "source": "wordpress/post/45/en",
+          "similarity": 0.8284583705217043
+        },
+        {
+          "source": "wordpress/post/46/en",
+          "similarity": 0.8063298656965263
+        },
+        {
+          "source": "wordpress/post/46/en",
+          "similarity": 0.7776618202323125
+        },
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.7670425193576378
+        },
+        {
+          "source": "wordpress/post/46/en",
+          "similarity": 0.7439838385678352
+        },
+        {
+          "source": "wordpress/post/42/en",
+          "similarity": 0.7405759318180626
+        }
+      ],
+      "baselineHits": [
+        "wordpress/post/46/en"
+      ],
+      "candidateHits": [
+        "wordpress/post/46/en"
+      ]
+    },
+    {
+      "id": "viewpoint-data-narration-en",
+      "expected": [
+        "wordpress/post/45/en"
+      ],
+      "baseline": [
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.6755298399856764
+        },
+        {
+          "source": "wordpress/post/45/en",
+          "similarity": 0.6668576599535831
+        },
+        {
+          "source": "wordpress/post/45/en",
+          "similarity": 0.6601309752933449
+        }
+      ],
+      "candidate": [
+        {
+          "source": "wordpress/post/45/en",
+          "similarity": 0.7638326817357162
+        },
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.6754517748682645
+        },
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.654534499212074
+        },
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.6519003925442227
+        }
+      ],
+      "baselineHits": [
+        "wordpress/post/45/en"
+      ],
+      "candidateHits": [
+        "wordpress/post/45/en"
+      ]
+    },
+    {
+      "id": "viewpoint-professional-register-en",
+      "expected": [
+        "wordpress/post/44/en"
+      ],
+      "baseline": [
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.7401391816803009
+        },
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.7080112732659083
+        },
+        {
+          "source": "wordpress/post/45/en",
+          "similarity": 0.6777749362894141
+        },
+        {
+          "source": "wordpress/post/46/en",
+          "similarity": 0.6741200317013414
+        },
+        {
+          "source": "wordpress/post/32/en",
+          "similarity": 0.6704499318525966
+        },
+        {
+          "source": "wordpress/post/42/en",
+          "similarity": 0.6633728922631071
+        }
+      ],
+      "candidate": [
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.7874271850924557
+        },
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.719080989278659
+        },
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.7177616449168337
+        },
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.7111571907874676
+        },
+        {
+          "source": "wordpress/post/45/en",
+          "similarity": 0.6893515526008527
+        },
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.6762875485670987
+        }
+      ],
+      "baselineHits": [
+        "wordpress/post/44/en"
+      ],
+      "candidateHits": [
+        "wordpress/post/44/en"
+      ]
+    },
+    {
+      "id": "errorless-teaching-method-en",
+      "expected": [
+        "wordpress/post/32/en"
+      ],
+      "baseline": [
+        {
+          "source": "wordpress/post/32/en",
+          "similarity": 0.7689652214791569
+        },
+        {
+          "source": "wordpress/post/46/en",
+          "similarity": 0.7041267399939439
+        },
+        {
+          "source": "wordpress/post/45/en",
+          "similarity": 0.6933396832192639
+        },
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.6577029840285222
+        },
+        {
+          "source": "wordpress/post/42/en",
+          "similarity": 0.6506024153836756
+        }
+      ],
+      "candidate": [
+        {
+          "source": "wordpress/post/32/en",
+          "similarity": 0.820873477563133
+        },
+        {
+          "source": "wordpress/post/45/en",
+          "similarity": 0.8065804387793244
+        },
+        {
+          "source": "wordpress/post/46/en",
+          "similarity": 0.7868540863475922
+        },
+        {
+          "source": "wordpress/post/32/en",
+          "similarity": 0.7482403520964737
+        },
+        {
+          "source": "wordpress/post/32/en",
+          "similarity": 0.7422033462231934
+        },
+        {
+          "source": "wordpress/post/46/en",
+          "similarity": 0.7257884529393536
+        }
+      ],
+      "baselineHits": [
+        "wordpress/post/32/en"
+      ],
+      "candidateHits": [
+        "wordpress/post/32/en"
+      ]
+    },
+    {
+      "id": "multi-track-agency-en",
+      "expected": [
+        "wordpress/post/37/en"
+      ],
+      "baseline": [
+        {
+          "source": "wordpress/post/37/en",
+          "similarity": 0.7015680492859028
+        },
+        {
+          "source": "wordpress/post/37/en",
+          "similarity": 0.6884387770483703
+        }
+      ],
+      "candidate": [
+        {
+          "source": "wordpress/post/37/en",
+          "similarity": 0.7786207167239096
+        },
+        {
+          "source": "wordpress/post/37/en",
+          "similarity": 0.7153645157814229
+        },
+        {
+          "source": "wordpress/post/37/en",
+          "similarity": 0.6704291911212191
+        },
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.6659618417001975
+        },
+        {
+          "source": "wordpress/post/37/en",
+          "similarity": 0.6554469897011896
+        }
+      ],
+      "baselineHits": [
+        "wordpress/post/37/en"
+      ],
+      "candidateHits": [
+        "wordpress/post/37/en"
+      ]
+    },
+    {
+      "id": "followup-careertalklab-stack-en",
+      "expected": [
+        "wordpress/js_project/51/en"
+      ],
+      "baseline": [
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.720442047369463
+        },
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.6984904049027647
+        },
+        {
+          "source": "wordpress/post/29/en",
+          "similarity": 0.6952158856768512
+        },
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.6889244318008864
+        }
+      ],
+      "candidate": [
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.7147666514923223
+        },
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.7025007364153782
+        },
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.6959698123805944
+        },
+        {
+          "source": "wordpress/post/29/en",
+          "similarity": 0.6809649277308842
+        },
+        {
+          "source": "wordpress/post/29/en",
+          "similarity": 0.6658184526075769
+        },
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.6571294043709256
+        }
+      ],
+      "baselineHits": [
+        "wordpress/js_project/51/en"
+      ],
+      "candidateHits": [
+        "wordpress/js_project/51/en"
+      ]
+    },
+    {
+      "id": "followup-digital-transition-en",
+      "expected": [
+        "wordpress/js_project/53/en"
+      ],
+      "baseline": [
+        {
+          "source": "wordpress/js_project/53/en",
+          "similarity": 0.7822120679688984
+        },
+        {
+          "source": "cv/john-serra/en/experience-amerikan-kultur-education-coordinator",
+          "similarity": 0.708906738828152
+        },
+        {
+          "source": "cv/john-serra/en/experience-pagysa-operations-manager",
+          "similarity": 0.6526900906400306
+        }
+      ],
+      "candidate": [
+        {
+          "source": "wordpress/js_project/53/en",
+          "similarity": 0.8067412156067614
+        },
+        {
+          "source": "wordpress/js_project/53/en",
+          "similarity": 0.7393742127710924
+        },
+        {
+          "source": "cv/john-serra/en/experience-amerikan-kultur-education-coordinator",
+          "similarity": 0.708906738828152
+        },
+        {
+          "source": "wordpress/js_project/53/en",
+          "similarity": 0.700903588910453
+        },
+        {
+          "source": "wordpress/js_project/53/en",
+          "similarity": 0.6920252784633873
+        },
+        {
+          "source": "cv/john-serra/en/experience-pagysa-operations-manager",
+          "similarity": 0.6526900906400306
+        }
+      ],
+      "baselineHits": [
+        "wordpress/js_project/53/en"
+      ],
+      "candidateHits": [
+        "wordpress/js_project/53/en"
+      ]
+    },
+    {
+      "id": "followup-bd-safety-en",
+      "expected": [
+        "wordpress/js_project/49/en"
+      ],
+      "baseline": [
+        {
+          "source": "wordpress/js_project/49/en",
+          "similarity": 0.7102308083682408
+        },
+        {
+          "source": "wordpress/js_project/49/en",
+          "similarity": 0.6852133119617254
+        },
+        {
+          "source": "cv/john-serra/en/project-business-development-automation",
+          "similarity": 0.6685898314303217
+        }
+      ],
+      "candidate": [
+        {
+          "source": "wordpress/js_project/49/en",
+          "similarity": 0.7495673368828536
+        },
+        {
+          "source": "wordpress/js_project/49/en",
+          "similarity": 0.713510717248808
+        },
+        {
+          "source": "cv/john-serra/en/project-business-development-automation",
+          "similarity": 0.6685898314303217
+        },
+        {
+          "source": "wordpress/js_project/49/en",
+          "similarity": 0.6586589152750822
+        }
+      ],
+      "baselineHits": [
+        "wordpress/js_project/49/en"
+      ],
+      "candidateHits": [
+        "wordpress/js_project/49/en"
+      ]
+    },
+    {
+      "id": "direct-injection-ignore-sources-en",
+      "expected": [
+        "wordpress/page/27/en"
+      ],
+      "baseline": [],
+      "candidate": [],
+      "baselineHits": [],
+      "candidateHits": []
+    },
+    {
+      "id": "direct-injection-hypothetical-as-fact-en",
+      "expected": [
+        "wordpress/post/44/en"
+      ],
+      "baseline": [
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.7002361864204392
+        },
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.6725783532671133
+        },
+        {
+          "source": "wordpress/post/46/en",
+          "similarity": 0.6622450746444488
+        }
+      ],
+      "candidate": [
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.7085600631594718
+        },
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.6926594330085448
+        },
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.650626828855596
+        }
+      ],
+      "baselineHits": [
+        "wordpress/post/44/en"
+      ],
+      "candidateHits": [
+        "wordpress/post/44/en"
+      ]
+    },
+    {
+      "id": "identity-professional-summary-tr",
+      "expected": [
+        "wordpress/page/54/tr"
+      ],
+      "baseline": [],
+      "candidate": [],
+      "baselineHits": [],
+      "candidateHits": []
+    },
+    {
+      "id": "current-role-tr",
+      "expected": [
+        "wordpress/post/59/tr"
+      ],
+      "baseline": [],
+      "candidate": [
+        {
+          "source": "wordpress/page/54/tr",
+          "similarity": 0.7091154553615011
+        },
+        {
+          "source": "wordpress/post/59/tr",
+          "similarity": 0.66767978613866
+        }
+      ],
+      "baselineHits": [],
+      "candidateHits": [
+        "wordpress/post/59/tr"
+      ]
+    },
+    {
+      "id": "manufacturing-1998-tr",
+      "expected": [
+        "wordpress/post/59/tr"
+      ],
+      "baseline": [
+        {
+          "source": "cv/john-serra/en/experience-pakis-general-manager-operations",
+          "similarity": 0.696410858203275
+        },
+        {
+          "source": "cv/john-serra/en/experience-pagysa-operations-manager",
+          "similarity": 0.6779735664176825
+        }
+      ],
+      "candidate": [
+        {
+          "source": "cv/john-serra/en/experience-pakis-general-manager-operations",
+          "similarity": 0.696410858203275
+        },
+        {
+          "source": "cv/john-serra/en/experience-pagysa-operations-manager",
+          "similarity": 0.6779735664176825
+        },
+        {
+          "source": "wordpress/post/59/tr",
+          "similarity": 0.677036370745102
+        },
+        {
+          "source": "wordpress/page/54/tr",
+          "similarity": 0.6582439730458227
+        }
+      ],
+      "baselineHits": [],
+      "candidateHits": [
+        "wordpress/post/59/tr"
+      ]
+    },
+    {
+      "id": "digital-transformation-tr",
+      "expected": [
+        "wordpress/js_project/65/tr"
+      ],
+      "baseline": [
+        {
+          "source": "wordpress/js_project/65/tr",
+          "similarity": 0.7802690542867493
+        },
+        {
+          "source": "cv/john-serra/en/experience-amerikan-kultur-education-coordinator",
+          "similarity": 0.6904111362485053
+        },
+        {
+          "source": "wordpress/js_project/64/tr",
+          "similarity": 0.6884370817620211
+        }
+      ],
+      "candidate": [
+        {
+          "source": "wordpress/js_project/65/tr",
+          "similarity": 0.8134316043615778
+        },
+        {
+          "source": "wordpress/js_project/65/tr",
+          "similarity": 0.7675525310824305
+        },
+        {
+          "source": "wordpress/js_project/65/tr",
+          "similarity": 0.722718745736435
+        },
+        {
+          "source": "cv/john-serra/en/experience-amerikan-kultur-education-coordinator",
+          "similarity": 0.6904111362485053
+        },
+        {
+          "source": "wordpress/js_project/64/tr",
+          "similarity": 0.6651196474265547
+        },
+        {
+          "source": "wordpress/js_project/64/tr",
+          "similarity": 0.6622217869756565
+        }
+      ],
+      "baselineHits": [
+        "wordpress/js_project/65/tr"
+      ],
+      "candidateHits": [
+        "wordpress/js_project/65/tr"
+      ]
+    },
+    {
+      "id": "careertalklab-overview-tr",
+      "expected": [
+        "wordpress/js_project/64/tr"
+      ],
+      "baseline": [
+        {
+          "source": "wordpress/js_project/64/tr",
+          "similarity": 0.7468514004794812
+        },
+        {
+          "source": "cv/john-serra/en/project-careertalklab",
+          "similarity": 0.6529747661383398
+        }
+      ],
+      "candidate": [
+        {
+          "source": "wordpress/js_project/64/tr",
+          "similarity": 0.801181757661454
+        },
+        {
+          "source": "wordpress/js_project/64/tr",
+          "similarity": 0.6901421177557097
+        },
+        {
+          "source": "wordpress/js_project/64/tr",
+          "similarity": 0.6885127913707233
+        },
+        {
+          "source": "wordpress/js_project/64/tr",
+          "similarity": 0.6597380613343982
+        },
+        {
+          "source": "wordpress/js_project/64/tr",
+          "similarity": 0.6573293934236655
+        },
+        {
+          "source": "cv/john-serra/en/project-careertalklab",
+          "similarity": 0.6529747661383398
+        }
+      ],
+      "baselineHits": [
+        "wordpress/js_project/64/tr"
+      ],
+      "candidateHits": [
+        "wordpress/js_project/64/tr"
+      ]
+    },
+    {
+      "id": "careertalklab-technology-tr",
+      "expected": [
+        "wordpress/js_project/64/tr"
+      ],
+      "baseline": [
+        {
+          "source": "wordpress/js_project/64/tr",
+          "similarity": 0.7714596841916638
+        },
+        {
+          "source": "wordpress/js_project/64/tr",
+          "similarity": 0.6688214739806401
+        },
+        {
+          "source": "cv/john-serra/en/project-careertalklab",
+          "similarity": 0.658619603720472
+        }
+      ],
+      "candidate": [
+        {
+          "source": "wordpress/js_project/64/tr",
+          "similarity": 0.8090117701004973
+        },
+        {
+          "source": "wordpress/js_project/64/tr",
+          "similarity": 0.7489926142979852
+        },
+        {
+          "source": "wordpress/js_project/64/tr",
+          "similarity": 0.7454989460553619
+        },
+        {
+          "source": "wordpress/js_project/64/tr",
+          "similarity": 0.6874510179898703
+        },
+        {
+          "source": "cv/john-serra/en/project-careertalklab",
+          "similarity": 0.658619603720472
+        }
+      ],
+      "baselineHits": [
+        "wordpress/js_project/64/tr"
+      ],
+      "candidateHits": [
+        "wordpress/js_project/64/tr"
+      ]
+    },
+    {
+      "id": "bd-automation-tr",
+      "expected": [
+        "wordpress/js_project/63/tr"
+      ],
+      "baseline": [
+        {
+          "source": "wordpress/js_project/63/tr",
+          "similarity": 0.7921821498328128
+        },
+        {
+          "source": "cv/john-serra/en/project-business-development-automation",
+          "similarity": 0.6673846443066225
+        }
+      ],
+      "candidate": [
+        {
+          "source": "wordpress/js_project/63/tr",
+          "similarity": 0.7950644256155396
+        },
+        {
+          "source": "wordpress/js_project/63/tr",
+          "similarity": 0.7270010060664117
+        },
+        {
+          "source": "wordpress/js_project/63/tr",
+          "similarity": 0.7248401165771392
+        },
+        {
+          "source": "wordpress/js_project/63/tr",
+          "similarity": 0.7012552433433433
+        },
+        {
+          "source": "cv/john-serra/en/project-business-development-automation",
+          "similarity": 0.6673846443066225
+        },
+        {
+          "source": "wordpress/js_project/63/tr",
+          "similarity": 0.6508044004440354
+        }
+      ],
+      "baselineHits": [
+        "wordpress/js_project/63/tr"
+      ],
+      "candidateHits": [
+        "wordpress/js_project/63/tr"
+      ]
+    },
+    {
+      "id": "premium-parking-dates-en",
+      "expected": [
+        "cv/john-serra/en/experience-premium-parking-account-manager"
+      ],
+      "baseline": [
+        {
+          "source": "cv/john-serra/en/experience-premium-parking-account-manager",
+          "similarity": 0.7384830924065227
+        },
+        {
+          "source": "cv/john-serra/en/experience-amerikan-kultur-education-coordinator",
+          "similarity": 0.6655250594496491
+        },
+        {
+          "source": "cv/john-serra/en/project-careertalklab",
+          "similarity": 0.6595010605745526
+        }
+      ],
+      "candidate": [
+        {
+          "source": "cv/john-serra/en/experience-premium-parking-account-manager",
+          "similarity": 0.7384830924065227
+        },
+        {
+          "source": "cv/john-serra/en/experience-amerikan-kultur-education-coordinator",
+          "similarity": 0.6655250594496491
+        },
+        {
+          "source": "cv/john-serra/en/project-careertalklab",
+          "similarity": 0.6595010605745526
+        }
+      ],
+      "baselineHits": [
+        "cv/john-serra/en/experience-premium-parking-account-manager"
+      ],
+      "candidateHits": [
+        "cv/john-serra/en/experience-premium-parking-account-manager"
+      ]
+    },
+    {
+      "id": "consulting-technical-sales-liaison-en",
+      "expected": [
+        "cv/john-serra/en/experience-self-employed-consultant"
+      ],
+      "baseline": [
+        {
+          "source": "cv/john-serra/en/experience-self-employed-consultant",
+          "similarity": 0.7983400814265466
+        },
+        {
+          "source": "cv/john-serra/en/experience-sunwell-global-sales-manager",
+          "similarity": 0.7410032770628464
+        },
+        {
+          "source": "cv/john-serra/en/experience-pakis-general-manager-operations",
+          "similarity": 0.6990308281293691
+        }
+      ],
+      "candidate": [
+        {
+          "source": "cv/john-serra/en/experience-self-employed-consultant",
+          "similarity": 0.7983400814265466
+        },
+        {
+          "source": "cv/john-serra/en/experience-sunwell-global-sales-manager",
+          "similarity": 0.7410032770628464
+        },
+        {
+          "source": "cv/john-serra/en/experience-pakis-general-manager-operations",
+          "similarity": 0.6990308281293691
+        }
+      ],
+      "baselineHits": [
+        "cv/john-serra/en/experience-self-employed-consultant"
+      ],
+      "candidateHits": [
+        "cv/john-serra/en/experience-self-employed-consultant"
+      ]
+    },
+    {
+      "id": "sunwell-contractor-inpak-en",
+      "expected": [
+        "cv/john-serra/en/experience-sunwell-global-sales-manager"
+      ],
+      "baseline": [
+        {
+          "source": "cv/john-serra/en/experience-sunwell-global-sales-manager",
+          "similarity": 0.7622787410245498
+        },
+        {
+          "source": "cv/john-serra/en/experience-pakis-general-manager-operations",
+          "similarity": 0.677892504115283
+        },
+        {
+          "source": "cv/john-serra/en/experience-pagysa-operations-manager",
+          "similarity": 0.6557109209485431
+        }
+      ],
+      "candidate": [
+        {
+          "source": "cv/john-serra/en/experience-sunwell-global-sales-manager",
+          "similarity": 0.7622787410245498
+        },
+        {
+          "source": "cv/john-serra/en/experience-pakis-general-manager-operations",
+          "similarity": 0.677892504115283
+        },
+        {
+          "source": "cv/john-serra/en/experience-pagysa-operations-manager",
+          "similarity": 0.6557109209485431
+        }
+      ],
+      "baselineHits": [
+        "cv/john-serra/en/experience-sunwell-global-sales-manager"
+      ],
+      "candidateHits": [
+        "cv/john-serra/en/experience-sunwell-global-sales-manager"
+      ]
+    },
+    {
+      "id": "pakis-descriptive-title-en",
+      "expected": [
+        "cv/john-serra/en/experience-pakis-general-manager-operations"
+      ],
+      "baseline": [
+        {
+          "source": "cv/john-serra/en/experience-pakis-general-manager-operations",
+          "similarity": 0.845802334701635
+        },
+        {
+          "source": "cv/john-serra/en/experience-pagysa-operations-manager",
+          "similarity": 0.7813485115296785
+        },
+        {
+          "source": "cv/john-serra/en/experience-amerikan-kultur-education-coordinator",
+          "similarity": 0.6873382442374415
+        }
+      ],
+      "candidate": [
+        {
+          "source": "cv/john-serra/en/experience-pakis-general-manager-operations",
+          "similarity": 0.845802334701635
+        },
+        {
+          "source": "cv/john-serra/en/experience-pagysa-operations-manager",
+          "similarity": 0.7813485115296785
+        },
+        {
+          "source": "cv/john-serra/en/experience-amerikan-kultur-education-coordinator",
+          "similarity": 0.6873382442374415
+        }
+      ],
+      "baselineHits": [
+        "cv/john-serra/en/experience-pakis-general-manager-operations"
+      ],
+      "candidateHits": [
+        "cv/john-serra/en/experience-pakis-general-manager-operations"
+      ]
+    },
+    {
+      "id": "pagysa-traceability-haccp-en",
+      "expected": [
+        "cv/john-serra/en/experience-pagysa-operations-manager"
+      ],
+      "baseline": [
+        {
+          "source": "cv/john-serra/en/experience-pagysa-operations-manager",
+          "similarity": 0.8224254111267876
+        },
+        {
+          "source": "cv/john-serra/en/experience-pakis-general-manager-operations",
+          "similarity": 0.697812762400193
+        }
+      ],
+      "candidate": [
+        {
+          "source": "cv/john-serra/en/experience-pagysa-operations-manager",
+          "similarity": 0.8224254111267876
+        },
+        {
+          "source": "cv/john-serra/en/experience-pakis-general-manager-operations",
+          "similarity": 0.697812762400193
+        },
+        {
+          "source": "wordpress/post/37/en",
+          "similarity": 0.6699630817760196
+        },
+        {
+          "source": "wordpress/page/27/en",
+          "similarity": 0.6556903104228383
+        }
+      ],
+      "baselineHits": [
+        "cv/john-serra/en/experience-pagysa-operations-manager"
+      ],
+      "candidateHits": [
+        "cv/john-serra/en/experience-pagysa-operations-manager"
+      ]
+    },
+    {
+      "id": "education-unknown-degree-en",
+      "expected": [
+        "cv/john-serra/en/education-bogazici-university"
+      ],
+      "baseline": [
+        {
+          "source": "cv/john-serra/en/education-bogazici-university",
+          "similarity": 0.7780087955638628
+        },
+        {
+          "source": "cv/john-serra/en/experience-amerikan-kultur-education-coordinator",
+          "similarity": 0.6964496789247212
+        },
+        {
+          "source": "cv/john-serra/en/languages",
+          "similarity": 0.6855430295672558
+        }
+      ],
+      "candidate": [
+        {
+          "source": "cv/john-serra/en/education-bogazici-university",
+          "similarity": 0.7780087955638628
+        },
+        {
+          "source": "cv/john-serra/en/experience-amerikan-kultur-education-coordinator",
+          "similarity": 0.6964496789247212
+        },
+        {
+          "source": "cv/john-serra/en/languages",
+          "similarity": 0.6855430295672558
+        }
+      ],
+      "baselineHits": [
+        "cv/john-serra/en/education-bogazici-university"
+      ],
+      "candidateHits": [
+        "cv/john-serra/en/education-bogazici-university"
+      ]
+    },
+    {
+      "id": "languages-no-levels-en",
+      "expected": [
+        "cv/john-serra/en/languages"
+      ],
+      "baseline": [
+        {
+          "source": "cv/john-serra/en/languages",
+          "similarity": 0.8011091119370828
+        },
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.6693000204474291
+        },
+        {
+          "source": "wordpress/post/45/en",
+          "similarity": 0.660596622290529
+        },
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.6591773182720244
+        },
+        {
+          "source": "wordpress/post/32/en",
+          "similarity": 0.651911218521461
+        },
+        {
+          "source": "cv/john-serra/en/summary",
+          "similarity": 0.651894442263249
+        }
+      ],
+      "candidate": [
+        {
+          "source": "cv/john-serra/en/languages",
+          "similarity": 0.8011091119370828
+        },
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.6558881597486874
+        },
+        {
+          "source": "cv/john-serra/en/summary",
+          "similarity": 0.651894442263249
+        }
+      ],
+      "baselineHits": [
+        "cv/john-serra/en/languages"
+      ],
+      "candidateHits": [
+        "cv/john-serra/en/languages"
+      ]
+    },
+    {
+      "id": "careertalklab-planned-analytics-en",
+      "expected": [
+        "cv/john-serra/en/project-careertalklab"
+      ],
+      "baseline": [
+        {
+          "source": "cv/john-serra/en/project-careertalklab",
+          "similarity": 0.7570733057582485
+        },
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.7230020403281763
+        },
+        {
+          "source": "wordpress/post/45/en",
+          "similarity": 0.7198155544045101
+        },
+        {
+          "source": "wordpress/post/46/en",
+          "similarity": 0.707626904850163
+        },
+        {
+          "source": "wordpress/post/32/en",
+          "similarity": 0.7033584746742537
+        },
+        {
+          "source": "cv/john-serra/en/credential-ask-questions-data",
+          "similarity": 0.65620838754256
+        }
+      ],
+      "candidate": [
+        {
+          "source": "cv/john-serra/en/project-careertalklab",
+          "similarity": 0.7570733057582485
+        },
+        {
+          "source": "wordpress/post/45/en",
+          "similarity": 0.7375574644606366
+        },
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.7297036108111318
+        },
+        {
+          "source": "wordpress/js_project/51/en",
+          "similarity": 0.7194896790932398
+        },
+        {
+          "source": "wordpress/post/44/en",
+          "similarity": 0.7112567384910196
+        },
+        {
+          "source": "cv/john-serra/en/credential-ask-questions-data",
+          "similarity": 0.65620838754256
+        }
+      ],
+      "baselineHits": [
+        "cv/john-serra/en/project-careertalklab"
+      ],
+      "candidateHits": [
+        "cv/john-serra/en/project-careertalklab"
+      ]
+    },
+    {
+      "id": "bd-automation-dates-en",
+      "expected": [
+        "cv/john-serra/en/project-business-development-automation"
+      ],
+      "baseline": [
+        {
+          "source": "cv/john-serra/en/project-business-development-automation",
+          "similarity": 0.7832187514194738
+        },
+        {
+          "source": "wordpress/js_project/49/en",
+          "similarity": 0.7368451294127318
+        },
+        {
+          "source": "wordpress/js_project/49/en",
+          "similarity": 0.6908376000783749
+        },
+        {
+          "source": "wordpress/post/125/en",
+          "similarity": 0.6752037971485353
+        }
+      ],
+      "candidate": [
+        {
+          "source": "cv/john-serra/en/project-business-development-automation",
+          "similarity": 0.7832187514194738
+        },
+        {
+          "source": "wordpress/js_project/49/en",
+          "similarity": 0.7287209625267549
+        },
+        {
+          "source": "wordpress/js_project/49/en",
+          "similarity": 0.7055341078354863
+        },
+        {
+          "source": "wordpress/js_project/49/en",
+          "similarity": 0.6961616847374781
+        },
+        {
+          "source": "wordpress/post/125/en",
+          "similarity": 0.6799899494683468
+        },
+        {
+          "source": "wordpress/js_project/49/en",
+          "similarity": 0.6792878632022973
+        }
+      ],
+      "baselineHits": [
+        "cv/john-serra/en/project-business-development-automation"
+      ],
+      "candidateHits": [
+        "cv/john-serra/en/project-business-development-automation"
+      ]
+    },
+    {
+      "id": "sunwell-contractor-inpak-tr",
+      "expected": [
+        "cv/john-serra/en/experience-sunwell-global-sales-manager"
+      ],
+      "baseline": [
+        {
+          "source": "cv/john-serra/en/experience-sunwell-global-sales-manager",
+          "similarity": 0.7041236657766895
+        }
+      ],
+      "candidate": [
+        {
+          "source": "cv/john-serra/en/experience-sunwell-global-sales-manager",
+          "similarity": 0.7041236657766895
+        }
+      ],
+      "baselineHits": [
+        "cv/john-serra/en/experience-sunwell-global-sales-manager"
+      ],
+      "candidateHits": [
+        "cv/john-serra/en/experience-sunwell-global-sales-manager"
+      ]
+    },
+    {
+      "id": "pagysa-traceability-haccp-tr",
+      "expected": [
+        "cv/john-serra/en/experience-pagysa-operations-manager"
+      ],
+      "baseline": [
+        {
+          "source": "cv/john-serra/en/experience-pagysa-operations-manager",
+          "similarity": 0.7186269881387459
+        }
+      ],
+      "candidate": [
+        {
+          "source": "cv/john-serra/en/experience-pagysa-operations-manager",
+          "similarity": 0.7186269881387459
+        }
+      ],
+      "baselineHits": [
+        "cv/john-serra/en/experience-pagysa-operations-manager"
+      ],
+      "candidateHits": [
+        "cv/john-serra/en/experience-pagysa-operations-manager"
+      ]
+    },
+    {
+      "id": "education-unknown-degree-tr",
+      "expected": [
+        "cv/john-serra/en/education-bogazici-university"
+      ],
+      "baseline": [
+        {
+          "source": "cv/john-serra/en/education-bogazici-university",
+          "similarity": 0.7403664941360592
+        }
+      ],
+      "candidate": [
+        {
+          "source": "cv/john-serra/en/education-bogazici-university",
+          "similarity": 0.7403664941360592
+        }
+      ],
+      "baselineHits": [
+        "cv/john-serra/en/education-bogazici-university"
+      ],
+      "candidateHits": [
+        "cv/john-serra/en/education-bogazici-university"
+      ]
+    }
+  ],
+  "regressions": [],
+  "aggregateNoRegression": true
+}

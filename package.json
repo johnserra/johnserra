@@ -13,6 +13,8 @@
     "eval:assistant:validate": "node --import tsx scripts/evaluation/cli.ts --validate",
     "test:assistant": "node --import tsx --test scripts/evaluation/*.test.ts src/lib/chat/*.test.ts",
     "test:cv": "node --import tsx --test src/lib/knowledge/*.test.ts scripts/evaluation/cv.test.ts",
+    "test:knowledge:sql": "node --import tsx supabase/tests/structure-aware.test.ts",
+    "eval:chunking": "NODE_OPTIONS=--conditions=react-server node --import tsx scripts/evaluation/chunking-cli.ts",
     "eval:cv": "NODE_OPTIONS=--conditions=react-server node --import tsx scripts/evaluation/cv-cli.ts",
     "seed": "NODE_OPTIONS=--conditions=react-server tsx scripts/seed-knowledge-base.ts",
     "seed:cv": "NODE_OPTIONS=--conditions=react-server node --import tsx scripts/seed-cv.ts",
@@ -39,6 +41,8 @@
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "@electric-sql/pglite-pgvector": "^0.0.9",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

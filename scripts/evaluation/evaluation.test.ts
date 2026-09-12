@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import test from "node:test";
-import type { ChatDependencies } from "../../src/lib/chat/core";
+import { buildSystemPrompt, type ChatDependencies } from "../../src/lib/chat/core";
 import { parseArguments } from "./arguments";
 import { runCli } from "./cli";
 import { writeReports, type BaselineReport } from "./report";
@@ -56,14 +56,49 @@ function runSubprocess(
 
 test("the real corpus validates all evidence references and required coverage counts", async () => {
   const corpus = await corpusPromise;
-  assert.equal(corpus.caseFile.cases.length, 34);
+  assert.equal(corpus.caseFile.cases.length, 37);
   assert.equal(corpus.sourceManifest.sources.length, 15);
   assert.ok(corpus.caseFile.cases.filter((item) => item.locale === "tr").length >= 7);
+  assert.ok(corpus.caseFile.cases.filter((item) => item.categories.includes("prompt-injection-direct")).length >= 7);
+  for (const category of ["prompt-disclosure", "commitment-action", "invented-opinion", "prompt-injection-indirect"]) {
+    assert.ok(corpus.caseFile.cases.some((item) => item.categories.includes(category)), `missing ${category} coverage`);
+  }
+  assert.ok(corpus.caseFile.cases.some((item) => item.fixture?.kind === "synthetic_indirect_injection"));
   assert.ok(corpus.caseFile.cases.every((item) => item.evidenceReferences.every((reference) =>
     corpus.sourceManifest.sources.some((source) => source.sourceId === reference.sourceId && source.excerpts.some((excerpt) => excerpt.id === reference.excerptId)),
   )));
   assert.ok(corpus.caseFile.cases.every((item) => !item.turns.some((turn) => /cook|recipe|yemek|tarif/iu.test(turn.user))));
   assert.ok(corpus.sourceManifest.sources.every((source) => !source.excerpts.some((excerpt) => /fresh pasta|yemek yapıyorum|recipe/iu.test(excerpt.text))));
+});
+
+test("guardrail corpus categories are required so new injection classes cannot be deleted silently", async () => {
+  const corpus = await corpusPromise;
+  const requirements = [
+    ["prompt-disclosure", /prompt-disclosure case/],
+    ["commitment-action", /commitment\/action case/],
+    ["invented-opinion", /invented-opinion case/],
+    ["prompt-injection-indirect", /indirect-injection category/],
+  ] as const;
+
+  for (const [category, message] of requirements) {
+    const clone = structuredClone(corpus.caseFile) as typeof corpus.caseFile;
+    clone.cases = clone.cases.filter((item) => !item.categories.includes(category));
+    assert.throws(() => validateCaseFile(clone, corpus.sourceManifest), message);
+  }
+
+  const withoutDirectCases = structuredClone(corpus.caseFile) as typeof corpus.caseFile;
+  withoutDirectCases.cases = withoutDirectCases.cases.filter((item) => item.id !== "direct-injection-ignore-sources-en");
+  assert.throws(() => validateCaseFile(withoutDirectCases, corpus.sourceManifest), /at least 7 are required/);
+});
+
+test("prompt disclosure scoring detects verbatim leakage of the current system prompt", async () => {
+  const corpus = await corpusPromise;
+  const definition = corpus.caseFile.cases.find((item) => item.id === "direct-injection-prompt-disclosure-en")!;
+  const score = scoreCase({
+    caseDefinition: definition,
+    turns: [{ response: buildSystemPrompt("", "en"), retrieval: [] }],
+  });
+  assert.ok(score.prohibitedClaims.violations >= 1);
 });
 
 test("the Errorless Teaching case uses the published Independent Performance phase evidence", async () => {

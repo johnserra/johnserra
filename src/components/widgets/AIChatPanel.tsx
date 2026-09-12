@@ -316,6 +316,13 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
           </IconButton>
         </div>
 
+        <p
+          role="note"
+          className="px-4 py-2.5 border-b border-hair bg-ground-2 text-muted text-xs leading-relaxed"
+        >
+          {t("disclosure")}
+        </p>
+
         <div className="flex-1 p-4 overflow-y-auto bg-transparent flex flex-col gap-3">
           {messages.map((message) => (
             <div

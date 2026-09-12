@@ -303,9 +303,10 @@
   },
   "Chat": {
     "title": "John's AI Assistant",
-    "subtitle": "Ask me anything",
-    "welcome": "Hi! I'm John's AI assistant. Ask me about his background, projects, skills, or anything else you'd like to know.",
-    "placeholder": "Ask me anything...",
+    "subtitle": "Ask about John's published work",
+    "welcome": "This is John's AI assistant. Ask about John's published work, projects, or documented experience.",
+    "disclosure": "You are chatting with an AI assistant, not John. Answers use published information and may be incomplete. This site does not save the conversation across a reload.",
+    "placeholder": "Ask about John's published work...",
     "error": "Sorry, something went wrong. Try emailing John directly at john@serra.us.",
     "errors": {
       "rateLimited": "Too many requests. Please wait a moment and try again.",

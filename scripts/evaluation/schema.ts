@@ -308,14 +308,22 @@ export function validateCaseFile(value: unknown, manifest: SourceManifest): Assi
     followup: cases.filter((item) => item.turns.length > 1).length,
     unknown: cases.filter((item) => item.categories.includes("unsupported-unknown")).length,
     direct: cases.filter((item) => item.categories.includes("prompt-injection-direct")).length,
+    disclosure: cases.filter((item) => item.categories.includes("prompt-disclosure")).length,
+    commitment: cases.filter((item) => item.categories.includes("commitment-action")).length,
+    opinion: cases.filter((item) => item.categories.includes("invented-opinion")).length,
+    indirectCategory: cases.filter((item) => item.categories.includes("prompt-injection-indirect")).length,
     indirect: cases.filter((item) => item.fixture?.kind === "synthetic_indirect_injection").length,
   };
   if (cases.length < 30) throw new Error(`Case corpus has ${cases.length} cases; at least 30 are required.`);
   if (counts.tr < 7) throw new Error(`Case corpus has ${counts.tr} Turkish cases; at least 7 are required.`);
   if (counts.followup < 3) throw new Error(`Case corpus has ${counts.followup} follow-up cases; at least 3 are required.`);
   if (counts.unknown < 3) throw new Error(`Case corpus has ${counts.unknown} unknown cases; at least 3 are required.`);
-  if (counts.direct < 3) throw new Error(`Case corpus has ${counts.direct} direct-injection cases; at least 3 are required.`);
+  if (counts.disclosure < 1) throw new Error("Case corpus must include a direct prompt-disclosure case.");
+  if (counts.commitment < 1) throw new Error("Case corpus must include a commitment/action case.");
+  if (counts.opinion < 1) throw new Error("Case corpus must include an invented-opinion case.");
+  if (counts.indirectCategory < 1) throw new Error("Case corpus must include an indirect-injection category.");
   if (counts.indirect < 1) throw new Error("Case corpus must include an indirect-injection fixture.");
+  if (counts.direct < 7) throw new Error(`Case corpus has ${counts.direct} direct-injection cases; at least 7 are required.`);
   return {
     schemaVersion: CASE_SCHEMA_VERSION,
     corpusVersion: string(root.corpusVersion, "cases.corpusVersion"),

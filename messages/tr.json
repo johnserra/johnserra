@@ -287,9 +287,10 @@
   },
   "Chat": {
     "title": "John'un Yapay Zeka Asistanı",
-    "subtitle": "Bana her şeyi sorun",
-    "welcome": "Merhaba! Ben John'un yapay zeka asistanıyım. Bana geçmişi, projeleri, becerileri veya bilmek istediğiniz herhangi bir şey hakkında soru sorabilirsiniz.",
-    "placeholder": "Bana bir şey sorun...",
+    "subtitle": "John'un yayımlanmış çalışmaları hakkında sorun",
+    "welcome": "Bu, John'un yapay zeka asistanıdır. John'un yayımlanmış çalışmaları, projeleri veya belgelenmiş deneyimi hakkında soru sorabilirsiniz.",
+    "disclosure": "Bir yapay zeka asistanıyla, John'la değil, sohbet ediyorsunuz. Yanıtlar yayımlanmış bilgilere dayanır ve eksik olabilir. Bu site, sayfa yeniden yüklenince sohbeti kaydetmez.",
+    "placeholder": "John'un yayımlanmış çalışmaları hakkında sorun...",
     "error": "Üzgünüm, bir şeyler yanlış gitti. John'a doğrudan john@serra.us adresinden e-posta göndermeyi deneyin.",
     "errors": {
       "rateLimited": "Çok fazla istek gönderildi. Lütfen biraz bekleyip tekrar deneyin.",

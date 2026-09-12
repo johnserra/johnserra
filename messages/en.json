@@ -307,6 +307,16 @@
     "welcome": "Hi! I'm John's AI assistant. Ask me about his background, projects, skills, or anything else you'd like to know.",
     "placeholder": "Ask me anything...",
     "error": "Sorry, something went wrong. Try emailing John directly at john@serra.us.",
+    "errors": {
+      "rateLimited": "Too many requests. Please wait a moment and try again.",
+      "timeout": "That took too long. Please try again with a shorter question.",
+      "model": "The assistant could not finish that answer. Please try again.",
+      "retrieval": "John's knowledge is temporarily unavailable. Please try again shortly.",
+      "service": "Chat is temporarily unavailable. Please try again shortly.",
+      "cancelled": "The request was cancelled.",
+      "invalidRequest": "That request was not valid. Please check your message and try again.",
+      "tooLarge": "That message is too large. Please shorten it and try again."
+    },
     "openChat": "Open AI Chat",
     "closeChat": "Close chat",
     "sendMessage": "Send message"

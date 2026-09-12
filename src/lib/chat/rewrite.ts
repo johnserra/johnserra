@@ -1,5 +1,6 @@
 import type { Locale } from "@/types";
 import type { ChatMessage } from "./core";
+import type { ProviderUsageMetadata } from "./observability";
 
 export { CHAT_MODEL, RETRIEVAL_COUNT, RETRIEVAL_THRESHOLD } from "./config";
 
@@ -18,6 +19,8 @@ export interface RewriteDiagnostics {
   rewrittenQuery: string;
   durationMs: number;
   fallback: boolean;
+  usageMetadata?: ProviderUsageMetadata;
+  model?: string;
 }
 
 export interface RewriteResult {
@@ -30,7 +33,14 @@ export interface RewriteAdapter {
     conversation: ChatMessage[],
     locale: Locale,
     signal?: AbortSignal,
-  ): Promise<string>;
+  ): Promise<string | RewriteProviderResponse>;
+}
+
+export interface RewriteProviderResponse {
+  text: string;
+  usageMetadata?: ProviderUsageMetadata;
+  finishReason?: string;
+  model?: string;
 }
 
 const CONTEXT_REFERENCE_WORDS = new Set([
@@ -165,7 +175,7 @@ export interface GeminiGenerateContent {
     model: string;
     contents: Array<{ role: string; parts: Array<{ text: string }> }>;
     config?: Record<string, unknown>;
-  }): Promise<{ text?: string }>;
+  }): Promise<{ text?: string; usageMetadata?: ProviderUsageMetadata; candidates?: Array<{ finishReason?: string }> }>;
 }
 
 const TRUNCATION_MARKER = "\n…[truncated]…\n";
@@ -204,7 +214,7 @@ export function createGeminiRewriteAdapter(
   config: GeminiRewriteConfig = {},
 ): RewriteAdapter {
   return {
-    async rewrite(conversation: ChatMessage[], locale: Locale, signal?: AbortSignal): Promise<string> {
+    async rewrite(conversation: ChatMessage[], locale: Locale, signal?: AbortSignal): Promise<string | RewriteProviderResponse> {
       signal?.throwIfAborted();
       const model = config.model ?? REWRITE_MODEL;
       const systemInstruction = buildRewritePrompt(locale);
@@ -222,7 +232,14 @@ export function createGeminiRewriteAdapter(
       signal?.throwIfAborted();
       const text = response.text;
       if (!text) throw new Error("Rewrite adapter returned no text.");
-      return sanitizeOutput(text);
+      const sanitized = sanitizeOutput(text);
+      if (!response.usageMetadata && !response.candidates?.[0]?.finishReason) return sanitized;
+      return {
+        text: sanitized,
+        ...(response.usageMetadata ? { usageMetadata: response.usageMetadata } : {}),
+        ...(response.candidates?.[0]?.finishReason ? { finishReason: response.candidates[0].finishReason } : {}),
+        model,
+      };
     },
   };
 }
@@ -316,12 +333,15 @@ export async function rewriteQuery(
   }
 
   try {
-    const rewritten = await withDeadline(
+    const providerResponse = await withDeadline(
       deadlineMs,
       (signal) => adapter.rewrite(messages, locale, signal),
       options.signal,
     );
     options.signal?.throwIfAborted();
+    const rewritten = typeof providerResponse === "string" ? providerResponse : providerResponse.text;
+    const usageMetadata = typeof providerResponse === "string" ? undefined : providerResponse.usageMetadata;
+    const model = typeof providerResponse === "string" ? undefined : providerResponse.model;
     const validation = validateRewrite(messages, latestUserMessage, rewritten, locale);
     if (!validation.valid) {
       return {
@@ -333,6 +353,8 @@ export async function rewriteQuery(
           rewrittenQuery: latestUserMessage,
           durationMs: Date.now() - started,
           fallback: true,
+          ...(usageMetadata ? { usageMetadata } : {}),
+          ...(model ? { model } : {}),
         },
       };
     }
@@ -345,6 +367,8 @@ export async function rewriteQuery(
         rewrittenQuery: validation.reason === "unchanged" ? latestUserMessage : rewritten,
         durationMs: Date.now() - started,
         fallback: false,
+        ...(usageMetadata ? { usageMetadata } : {}),
+        ...(model ? { model } : {}),
       },
     };
   } catch (error) {

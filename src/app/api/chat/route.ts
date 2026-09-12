@@ -1,4 +1,4 @@
-import { generatePreparedChat, prepareChat } from "@/lib/chat/core";
+import { prepareChat, streamPreparedChat } from "@/lib/chat/core";
 import { serverChatDependencies, consumeChatRateLimit } from "@/lib/chat/server";
 import {
   CHAT_MAX_OUTPUT_BYTES,
@@ -12,11 +12,15 @@ import { createChatErrorResponse } from "@/lib/chat/http";
 import { encodeChatFrame, terminalChatFrame } from "@/lib/chat/protocol";
 import { CHAT_SESSION_HEADER, extractTrustedVercelIp, isValidChatSession, ChatRateLimitServiceError } from "@/lib/chat/rate-limit";
 import { parseChatJson, validateChatRequest, validateContentType, type ChatErrorCode } from "@/lib/chat/validation";
+import {
+  addCorrelationHeader,
+  createChatRequestTrace,
+  failureCategoryForCode,
+  type ChatRequestTrace,
+} from "@/lib/chat/observability";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
-
-const errorResponse = createChatErrorResponse;
 
 function safeError(error: unknown, fallbackCode: ChatErrorCode): { code: ChatErrorCode; message: string; status: number } {
   if (error instanceof ChatDeadlineError) {
@@ -35,135 +39,207 @@ function safeError(error: unknown, fallbackCode: ChatErrorCode): { code: ChatErr
     : "The assistant is temporarily unavailable. Please try again shortly.", status: 503 };
 }
 
+function completeJsonError(
+  trace: ChatRequestTrace,
+  status: number,
+  code: ChatErrorCode,
+  message: string,
+  retryAfter?: number,
+): Response {
+  const response = createChatErrorResponse(status, code, message, retryAfter);
+  trace.complete({
+    httpStatus: status,
+    outcome: code === "CLIENT_ABORTED" ? "cancelled" : "failure",
+    failureCategory: failureCategoryForCode(code),
+  });
+  return addCorrelationHeader(response, trace.correlationId);
+}
+
 export async function POST(req: Request) {
-  if (!validateContentType(req.headers.get("content-type"))) {
-    return errorResponse(415, "UNSUPPORTED_MEDIA_TYPE", "Content-Type must be application/json.");
-  }
+  const trace = createChatRequestTrace();
+  trace.beginStage("validation");
 
-  const sessionId = req.headers.get(CHAT_SESSION_HEADER);
-  if (!isValidChatSession(sessionId)) {
-    return errorResponse(400, "INVALID_SESSION", "A valid chat session is required.");
-  }
-  const ip = extractTrustedVercelIp(req.headers);
-  if (!ip) {
-    return errorResponse(503, "SERVICE_UNAVAILABLE", "Chat is temporarily unavailable. Please try again shortly.");
-  }
-
-  const contentLength = req.headers.get("content-length");
-  if (contentLength && Number.isSafeInteger(Number(contentLength)) && Number(contentLength) > CHAT_MAX_BODY_BYTES) {
-    return errorResponse(413, "BODY_TOO_LARGE", "The request body is too large.");
-  }
-
-  let bodyBytes: Uint8Array;
   try {
-    bodyBytes = new Uint8Array(await req.arrayBuffer());
-  } catch {
-    return errorResponse(400, "INVALID_JSON", "The request body must contain valid JSON.");
-  }
-  if (bodyBytes.byteLength > CHAT_MAX_BODY_BYTES) {
-    return errorResponse(413, "BODY_TOO_LARGE", "The request body is too large.");
-  }
-  let rawBody: string;
-  try {
-    rawBody = new TextDecoder("utf-8", { fatal: true }).decode(bodyBytes);
-  } catch {
-    return errorResponse(400, "INVALID_JSON", "The request body must contain valid JSON.");
-  }
-  const parsed = parseChatJson(rawBody);
-  if (!parsed.ok) return errorResponse(parsed.code === "BODY_TOO_LARGE" ? 413 : 400, parsed.code, parsed.message);
-  const validated = validateChatRequest(parsed.value, bodyBytes.byteLength);
-  if (!validated.ok) return errorResponse(validated.status, validated.code, validated.message);
-
-  let rateLimit: Awaited<ReturnType<typeof consumeChatRateLimit>>;
-  try {
-    rateLimit = await consumeChatRateLimit(sessionId, ip, req.signal);
-  } catch (error) {
-    if (error instanceof ChatRateLimitServiceError) {
-      return errorResponse(503, "SERVICE_UNAVAILABLE", "Chat is temporarily unavailable. Please try again shortly.");
+    if (!validateContentType(req.headers.get("content-type"))) {
+      return completeJsonError(trace, 415, "UNSUPPORTED_MEDIA_TYPE", "Content-Type must be application/json.");
     }
-    return errorResponse(503, "SERVICE_UNAVAILABLE", "Chat is temporarily unavailable. Please try again shortly.");
-  }
-  if (!rateLimit.allowed) {
-    return errorResponse(429, "RATE_LIMITED", "Chat is busy. Please wait a moment and try again.", rateLimit.retryAfterSeconds);
-  }
 
-  if (req.signal.aborted) {
-    return errorResponse(499, "CLIENT_ABORTED", "The request was cancelled.");
-  }
+    const sessionId = req.headers.get(CHAT_SESSION_HEADER);
+    if (!isValidChatSession(sessionId)) {
+      return completeJsonError(trace, 400, "INVALID_SESSION", "A valid chat session is required.");
+    }
+    const ip = extractTrustedVercelIp(req.headers);
+    if (!ip) {
+      return completeJsonError(trace, 503, "SERVICE_UNAVAILABLE", "Chat is temporarily unavailable. Please try again shortly.");
+    }
 
-  let prepared: Awaited<ReturnType<typeof prepareChat>>;
-  try {
-    prepared = await withChatDeadline(
-      (signal) => prepareChat(validated.value.messages, validated.value.locale, serverChatDependencies, undefined, signal),
-      { stage: "preparation", deadlineMs: CHAT_PREPARATION_DEADLINE_MS, signal: req.signal },
-    );
-  } catch (error) {
-    const safe = safeError(error, "RETRIEVAL_ERROR");
-    return errorResponse(safe.status, safe.code, safe.message);
-  }
-  if (prepared.retrievalError) {
-    return errorResponse(503, "RETRIEVAL_ERROR", "Knowledge retrieval is temporarily unavailable. Please try again shortly.");
-  }
+    const contentLength = req.headers.get("content-length");
+    if (contentLength && Number.isSafeInteger(Number(contentLength)) && Number(contentLength) > CHAT_MAX_BODY_BYTES) {
+      return completeJsonError(trace, 413, "BODY_TOO_LARGE", "The request body is too large.");
+    }
 
-  const linkedModelController = createLinkedAbortController(req.signal);
-  let streamCancelled = false;
-  const stream = new ReadableStream({
-    async start(controller) {
-      let outputBytes = 0;
-      let hasOutput = false;
-      let sentTerminalFrame = false;
-      const send = (frame: Parameters<typeof encodeChatFrame>[0]) => {
-        if (!sentTerminalFrame && !streamCancelled) controller.enqueue(encodeChatFrame(frame));
-      };
-      try {
-        for await (const text of streamWithChatDeadline(
-          async (signal) => generatePreparedChat(prepared, serverChatDependencies, signal),
-          { stage: "model", deadlineMs: CHAT_MODEL_DEADLINE_MS, signal: linkedModelController.signal },
-        )) {
-          if (linkedModelController.signal.aborted) break;
-          const bounded = appendUtf8Output(outputBytes, text, CHAT_MAX_OUTPUT_BYTES);
-          if (bounded.overLimit) {
-            const prefix = bounded.accepted;
-            if (prefix) {
-              send({ type: "delta", text: prefix });
+    let bodyBytes: Uint8Array;
+    try {
+      bodyBytes = new Uint8Array(await req.arrayBuffer());
+    } catch {
+      return completeJsonError(trace, 400, "INVALID_JSON", "The request body must contain valid JSON.");
+    }
+    if (bodyBytes.byteLength > CHAT_MAX_BODY_BYTES) {
+      return completeJsonError(trace, 413, "BODY_TOO_LARGE", "The request body is too large.");
+    }
+    let rawBody: string;
+    try {
+      rawBody = new TextDecoder("utf-8", { fatal: true }).decode(bodyBytes);
+    } catch {
+      return completeJsonError(trace, 400, "INVALID_JSON", "The request body must contain valid JSON.");
+    }
+    const parsed = parseChatJson(rawBody);
+    if (!parsed.ok) {
+      return completeJsonError(trace, parsed.code === "BODY_TOO_LARGE" ? 413 : 400, parsed.code, parsed.message);
+    }
+    const validated = validateChatRequest(parsed.value, bodyBytes.byteLength);
+    if (!validated.ok) return completeJsonError(trace, validated.status, validated.code, validated.message);
+    trace.setLocale(validated.value.locale);
+    trace.endStage("validation");
+
+    let rateLimit: Awaited<ReturnType<typeof consumeChatRateLimit>>;
+    trace.beginStage("rateLimiting");
+    try {
+      rateLimit = await consumeChatRateLimit(sessionId, ip, req.signal);
+    } catch (error) {
+      trace.endStage("rateLimiting");
+      if (req.signal.aborted || (error instanceof DOMException && error.name === "AbortError")) {
+        return completeJsonError(trace, 499, "CLIENT_ABORTED", "The request was cancelled.");
+      }
+      if (error instanceof ChatRateLimitServiceError) {
+        return completeJsonError(trace, 503, "SERVICE_UNAVAILABLE", "Chat is temporarily unavailable. Please try again shortly.");
+      }
+      return completeJsonError(trace, 503, "SERVICE_UNAVAILABLE", "Chat is temporarily unavailable. Please try again shortly.");
+    }
+    trace.endStage("rateLimiting");
+    if (!rateLimit.allowed) {
+      return completeJsonError(trace, 429, "RATE_LIMITED", "Chat is busy. Please wait a moment and try again.", rateLimit.retryAfterSeconds);
+    }
+
+    if (req.signal.aborted) {
+      return completeJsonError(trace, 499, "CLIENT_ABORTED", "The request was cancelled.");
+    }
+
+    let prepared: Awaited<ReturnType<typeof prepareChat>>;
+    trace.beginStage("preparation");
+    try {
+      prepared = await withChatDeadline(
+        (signal) => prepareChat(validated.value.messages, validated.value.locale, serverChatDependencies, undefined, signal),
+        { stage: "preparation", deadlineMs: CHAT_PREPARATION_DEADLINE_MS, signal: req.signal },
+      );
+    } catch (error) {
+      trace.endStage("preparation");
+      const safe = safeError(error, "RETRIEVAL_ERROR");
+      return completeJsonError(trace, safe.status, safe.code, safe.message);
+    }
+    trace.endStage("preparation");
+    trace.setPreparedData(prepared);
+    if (prepared.retrievalError) {
+      return completeJsonError(trace, 503, "RETRIEVAL_ERROR", "Knowledge retrieval is temporarily unavailable. Please try again shortly.");
+    }
+
+    const linkedModelController = createLinkedAbortController(req.signal);
+    let streamCancelled = false;
+    const stream = new ReadableStream<Uint8Array>({
+      async start(controller) {
+        trace.beginStage("generation");
+        trace.recordOutput("", 0);
+        let outputBytes = 0;
+        let hasOutput = false;
+        let sentTerminalFrame = false;
+        const finalStatus = 200;
+        let finalOutcome: "success" | "failure" | "cancelled" = "failure";
+        let finalFailureCategory: ReturnType<typeof failureCategoryForCode> = "provider_error";
+        const send = (frame: Parameters<typeof encodeChatFrame>[0]) => {
+          if (!sentTerminalFrame && !streamCancelled) controller.enqueue(encodeChatFrame(frame));
+        };
+        try {
+          for await (const chunk of streamWithChatDeadline(
+            async (signal) => streamPreparedChat(prepared, serverChatDependencies, signal),
+            { stage: "model", deadlineMs: CHAT_MODEL_DEADLINE_MS, signal: linkedModelController.signal },
+          )) {
+            trace.observeGenerationChunk(chunk);
+            if (linkedModelController.signal.aborted) break;
+            const text = chunk.text ?? "";
+            const bounded = appendUtf8Output(outputBytes, text, CHAT_MAX_OUTPUT_BYTES);
+            if (bounded.overLimit) {
+              if (bounded.accepted) {
+                hasOutput = true;
+                send({ type: "delta", text: bounded.accepted });
+                trace.recordOutput(bounded.accepted, bounded.bytes);
+                outputBytes = bounded.bytes;
+              }
+              send({ type: "error", code: "OUTPUT_TOO_LARGE", message: "The generated answer was too large. Please ask a shorter question." });
+              sentTerminalFrame = true;
+              finalFailureCategory = "output_limit";
+              break;
+            }
+            if (bounded.accepted) {
+              hasOutput = true;
+              send({ type: "delta", text: bounded.accepted });
+              trace.recordOutput(bounded.accepted, bounded.bytes);
               outputBytes = bounded.bytes;
             }
-            send({ type: "error", code: "OUTPUT_TOO_LARGE", message: "The generated answer was too large. Please ask a shorter question." });
+          }
+          if (linkedModelController.signal.aborted || streamCancelled) {
+            finalOutcome = "cancelled";
+            finalFailureCategory = "cancelled";
+          } else if (!sentTerminalFrame) {
+            send(terminalChatFrame(hasOutput));
             sentTerminalFrame = true;
-            break;
+            if (hasOutput) {
+              finalOutcome = "success";
+              finalFailureCategory = null;
+            } else {
+              finalFailureCategory = "empty_output";
+            }
           }
-          if (text) {
-            hasOutput = true;
-            send({ type: "delta", text });
-            outputBytes = bounded.bytes;
+        } catch (error) {
+          if (linkedModelController.signal.aborted || streamCancelled || req.signal.aborted) {
+            finalOutcome = "cancelled";
+            finalFailureCategory = "cancelled";
+          } else {
+            const safe = safeError(error, error instanceof ChatDeadlineError ? "MODEL_TIMEOUT" : "MODEL_ERROR");
+            send({ type: "error", code: safe.code, message: safe.message });
+            sentTerminalFrame = true;
+            finalOutcome = safe.code === "CLIENT_ABORTED" ? "cancelled" : "failure";
+            finalFailureCategory = failureCategoryForCode(safe.code);
           }
+        } finally {
+          trace.endStage("generation");
+          linkedModelController.dispose();
+          if (!streamCancelled) controller.close();
+          trace.complete({
+            httpStatus: finalStatus,
+            outcome: finalOutcome,
+            failureCategory: finalFailureCategory,
+          });
         }
-        if (!linkedModelController.signal.aborted && !sentTerminalFrame) {
-          send(terminalChatFrame(hasOutput));
-          sentTerminalFrame = true;
-        }
-      } catch (error) {
-        if (!linkedModelController.signal.aborted) {
-          const safe = safeError(error, error instanceof ChatDeadlineError ? "MODEL_TIMEOUT" : "MODEL_ERROR");
-          send({ type: "error", code: safe.code, message: safe.message });
-          sentTerminalFrame = true;
-        }
-      } finally {
-        linkedModelController.dispose();
-        if (!streamCancelled) controller.close();
-      }
-    },
-    cancel(reason) {
-      streamCancelled = true;
-      linkedModelController.abort(reason);
-    },
-  });
+      },
+      cancel(reason) {
+        streamCancelled = true;
+        linkedModelController.abort(reason);
+      },
+    });
 
-  return new Response(stream, {
-    headers: {
-      "Content-Type": "application/x-ndjson; charset=utf-8",
-      "Cache-Control": "no-cache, no-transform",
-      "X-Content-Type-Options": "nosniff",
-    },
-  });
+    return addCorrelationHeader(new Response(stream, {
+      headers: {
+        "Content-Type": "application/x-ndjson; charset=utf-8",
+        "Cache-Control": "no-cache, no-transform",
+        "X-Content-Type-Options": "nosniff",
+      },
+    }), trace.correlationId);
+  } catch {
+    return completeJsonError(
+      trace,
+      req.signal.aborted ? 499 : 503,
+      req.signal.aborted ? "CLIENT_ABORTED" : "SERVICE_UNAVAILABLE",
+      req.signal.aborted ? "The request was cancelled." : "Chat is temporarily unavailable. Please try again shortly.",
+    );
+  }
 }

@@ -106,7 +106,7 @@ WordPress logs failed webhook deliveries but does not durably retry them. Reseed
 | Citations | Internal source IDs/scores enter the prompt; public URLs and claim-to-source support are not enforced or verified. Rendered links can be generated incorrectly. | [#12](https://github.com/johnserra/johnserra/issues/12) |
 | Public API | Only a nonempty-message check; no robust validation, bounded history/output, rate controls, request deadline, or structured stream errors. | [#14](https://github.com/johnserra/johnserra/issues/14) |
 | Persona and privacy | Third-person AI-assistant persona grounded in retrieved public evidence, with explicit untrusted-context, disclosure, action-claim, and retention rules. Deterministic corpus coverage is a proxy and does not prove complete security. | [#20](https://github.com/johnserra/johnserra/issues/20) |
-| Operations | Console errors and batch counts exist; no request correlation, stage metrics, token/cost accounting, or quality dashboard. Queue/reconciliation limits are described above. | [#13](https://github.com/johnserra/johnserra/issues/13) |
+| Operations | Chat emits one privacy-safe completion event per request to Vercel runtime logs, with server correlation, outcome/failure categories, stage timings, retrieval/citation aggregates, normalized provider usage, and partial/complete Gemini text-cost estimates. It does not persist telemetry or provide a quality dashboard; platform log retention remains a deployment concern. | [chat observability runbook](chat-observability.md), [#13](https://github.com/johnserra/johnserra/issues/13) |
 | Tools | Retrieval always runs in server code; no model-callable registry or multi-tool behavior. | [#18](https://github.com/johnserra/johnserra/issues/18), [#16](https://github.com/johnserra/johnserra/issues/16) |
 | Verification agent | One generation stream with no evidence-sufficiency loop, verification pass, revision, or recorded agent stop reason. | [#19](https://github.com/johnserra/johnserra/issues/19) |
 | Production evidence | Deployment configuration is documented, but end-to-end production scenarios, rollback demonstration, and public case-study evidence remain to be collected. | [#11](https://github.com/johnserra/johnserra/issues/11) |
@@ -133,7 +133,7 @@ Execution order: **#17 → #10 → #21 → #8 → #15 → #12 → #14 → #20 �
 | Concern | Implementation |
 | --- | --- |
 | Homepage and chat UI | [page.tsx](../src/app/[locale]/page.tsx), [AIChatWidget.tsx](../src/components/widgets/AIChatWidget.tsx), [AIChatPanel.tsx](../src/components/widgets/AIChatPanel.tsx) |
-| Retrieval and generation | [chat route](../src/app/api/chat/route.ts), [shared chat core](../src/lib/chat/core.ts), [server dependencies](../src/lib/chat/server.ts), [embedding helpers](../src/lib/knowledge/embeddings.ts) |
+| Retrieval and generation | [chat route](../src/app/api/chat/route.ts), [shared chat core](../src/lib/chat/core.ts), [server dependencies](../src/lib/chat/server.ts), [embedding helpers](../src/lib/knowledge/embeddings.ts), [observability](../src/lib/chat/observability.ts) |
 | Assistant evaluation | [harness guide](../evals/assistant/README.md), [cases](../evals/assistant/cases.json), [professional sources](../evals/assistant/sources.json) |
 | Database clients and base tables | [supabase.ts](../src/lib/supabase.ts), [base schema](../supabase-schema.sql) |
 | Vectors, retrieval RPC, queue, grants | [vector/queue migration](../supabase/migrations/00001_wordpress_vector_queue.sql) |

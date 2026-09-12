@@ -39,6 +39,8 @@ Chat content currently remains only in React component memory for the mounted pa
 
 This application boundary is distinct from external provider processing. The site does not claim that Gemini or any other provider retains nothing. Provider handling, retention, and deletion are governed by the applicable provider terms and privacy terms; visitors should consult those terms and the site's applicable privacy notice for the relevant processing context. The application description above is not a guarantee about external providers.
 
+Chat completion observability is limited to privacy-safe Vercel runtime logs: a server-generated correlation UUID, validated locale, status/outcome, stable categories, stage timings, numeric/boolean retrieval and citation aggregates, normalized provider usage, and cost estimates when adequate usage exists. It excludes message, rewrite, generated, retrieved, identity, header, error-detail, and secret data. See [the chat observability runbook](chat-observability.md). Vercel log retention is a platform setting separate from application conversation memory; raw payload logging requires a new retention and disclosure review.
+
 ## Decision gate before future chat storage
 
 No future feature may add chat-content storage until the repository documents and reviews all of the following:

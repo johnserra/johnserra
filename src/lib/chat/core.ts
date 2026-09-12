@@ -3,6 +3,7 @@ import { CHAT_MODEL, RETRIEVAL_COUNT, RETRIEVAL_THRESHOLD } from "./config";
 import type { HybridRetrievalDiagnostics, HybridRpcRequest, HybridRpcResult } from "./retrieval";
 import { performHybridRetrieval } from "./retrieval";
 import type { RewriteAdapter } from "./rewrite";
+import type { ProviderUsageMetadata } from "./observability";
 
 export { CHAT_MODEL, RETRIEVAL_COUNT, RETRIEVAL_THRESHOLD } from "./config";
 
@@ -63,13 +64,21 @@ export interface GenerationRequest {
   config: { systemInstruction: string };
 }
 
+export interface ChatStreamChunk {
+  text?: string;
+  usageMetadata?: ProviderUsageMetadata;
+  finishReason?: string;
+  /** Cumulative count of tools actually executed by the application. */
+  toolCallCount?: number;
+}
+
 export interface ChatDependencies {
   embedQuery(query: string, signal?: AbortSignal): Promise<number[]>;
   matchCareerContext(request: RetrievalRequest, signal?: AbortSignal): Promise<RetrievalResult>;
   matchCareerContextRpc?: CareerContextRpcInvoker;
   matchCareerContextHybrid?: (request: HybridRpcRequest, signal?: AbortSignal) => Promise<HybridRpcResult>;
   rewriteAdapter?: RewriteAdapter;
-  generateContentStream(request: GenerationRequest, signal?: AbortSignal): Promise<AsyncIterable<{ text?: string }>>;
+  generateContentStream(request: GenerationRequest, signal?: AbortSignal): Promise<AsyncIterable<ChatStreamChunk>>;
 }
 
 export interface PreparedChat {
@@ -291,10 +300,20 @@ export async function* generatePreparedChat(
   dependencies: ChatDependencies,
   signal?: AbortSignal,
 ): AsyncGenerator<string> {
+  for await (const chunk of streamPreparedChat(prepared, dependencies, signal)) {
+    if (chunk.text) yield chunk.text;
+  }
+}
+
+export async function* streamPreparedChat(
+  prepared: PreparedChat,
+  dependencies: ChatDependencies,
+  signal?: AbortSignal,
+): AsyncGenerator<ChatStreamChunk> {
   const responseStream = signal
     ? await dependencies.generateContentStream(prepared.generationRequest, signal)
     : await dependencies.generateContentStream(prepared.generationRequest);
   for await (const chunk of responseStream) {
-    if (chunk.text) yield chunk.text;
+    yield chunk;
   }
 }

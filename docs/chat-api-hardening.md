@@ -47,3 +47,5 @@ Preparation (embedding, rewrite, and retrieval) has a 12-second deadline. Model 
 Apply migrations in order through `00005_chat_api_hardening.sql` after the existing retrieval migrations. The migration creates an RLS-enabled counter table and a bounded atomic `SECURITY DEFINER` RPC with an empty `search_path`; public, anon, and authenticated privileges are revoked and only `service_role` receives table access and function execution. The cleanup operation is bounded to 1,000 stale rows per call and the SQL contract is exercised with PGlite in `supabase/tests/chat-rate-limit.test.ts`.
 
 The limiter is intentionally fail-closed: availability is preferred over allowing unbounded anonymous model access. No conversational content is persisted by this hardening layer.
+
+Every chat response also carries the server-generated `X-Chat-Correlation-Id` header. It is an opaque UUID used to locate the single privacy-safe completion event in Vercel runtime logs; clients cannot choose it. See [chat observability](chat-observability.md) for the event schema, failure categories, stage metrics, and retention boundary.

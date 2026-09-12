@@ -5,6 +5,7 @@ import { embedQuery } from "@/lib/knowledge/embeddings";
 import { createAdminClient } from "@/lib/supabase";
 import {
   retrieveCareerContext,
+  type ChatStreamChunk,
   type CareerContextRpcInvoker,
   type ChatDependencies,
   type GenerationRequest,
@@ -75,13 +76,32 @@ export const serverChatDependencies: ChatDependencies = {
   },
   rewriteAdapter: createGeminiRewriteAdapter(async (request) => {
     const response = await ai.models.generateContent(request);
-    return { text: response.text };
+    const finishReason = response.candidates?.[0]?.finishReason;
+    return {
+      text: response.text,
+      usageMetadata: response.usageMetadata,
+      ...(typeof finishReason === "string" ? { candidates: [{ finishReason }] } : {}),
+    };
   }),
   async generateContentStream(request: GenerationRequest, signal) {
-    if (!signal) return ai.models.generateContentStream(request);
-    return ai.models.generateContentStream({
-      ...request,
-      config: { ...request.config, abortSignal: signal },
-    });
+    const stream = signal
+      ? await ai.models.generateContentStream({
+        ...request,
+        config: { ...request.config, abortSignal: signal },
+      })
+      : await ai.models.generateContentStream(request);
+    async function* withMetadata(): AsyncGenerator<ChatStreamChunk> {
+      for await (const response of stream) {
+        const finishReason = response.candidates?.[0]?.finishReason;
+        yield {
+          text: response.text || undefined,
+          usageMetadata: response.usageMetadata,
+          ...(typeof finishReason === "string" ? { finishReason } : {}),
+          // No tools are configured or executed in the current chat path.
+          toolCallCount: 0,
+        };
+      }
+    }
+    return withMetadata();
   },
 };

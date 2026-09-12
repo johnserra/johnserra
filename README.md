@@ -4,7 +4,7 @@ Have a project you'd like to discuss? [Let's talk.](https://johnserra.com/contac
 
 English/Turkish portfolio, professional writing, and a personal AI assistant built with Next.js 16 App Router, React 19, TypeScript, Tailwind CSS v4, and next-intl. The assistant retrieves published knowledge from Supabase pgvector and streams Gemini answers about John Serra's documented public work.
 
-The [Digital Twin architecture and baseline](docs/digital-twin-architecture.md) documents the current request flow, indexing pipeline, limitations, and six-week AI Engineering challenge mapping. The [persona, privacy, and prompt-injection guardrails](docs/persona-privacy-guardrails.md) are the canonical policy for assistant behavior and chat retention. The [assistant evaluation harness](evals/assistant/README.md) provides the reproducible corpus and runner for [#10](https://github.com/johnserra/johnserra/issues/10). The [first live report](evals/assistant/reports/baseline-2026-09-10T02-27-41-980Z.md) records 34 attempted cases: 33 completed and one embedding quota failure. It remains marked incomplete; automated quality scores are proxies, with semantic support awaiting human review.
+The [Digital Twin architecture and baseline](docs/digital-twin-architecture.md) documents the current request flow, indexing pipeline, limitations, and six-week AI Engineering challenge mapping. The [chat observability runbook](docs/chat-observability.md) defines the privacy-safe completion event, correlation header, metrics, pricing limits, and incident flow. The [persona, privacy, and prompt-injection guardrails](docs/persona-privacy-guardrails.md) are the canonical policy for assistant behavior and chat retention. The [assistant evaluation harness](evals/assistant/README.md) provides the reproducible corpus and runner for [#10](https://github.com/johnserra/johnserra/issues/10). The [first live report](evals/assistant/reports/baseline-2026-09-10T02-27-41-980Z.md) records 34 attempted cases: 33 completed and one embedding quota failure. It remains marked incomplete; automated quality scores are proxies, with semantic support awaiting human review.
 
 ## Current implementation
 
@@ -12,6 +12,7 @@ The [Digital Twin architecture and baseline](docs/digital-twin-architecture.md) 
 - **Knowledge:** published WordPress posts, pages, and projects are indexed through a durable Supabase `pgmq` queue. A reviewed, structured English CV is a registered source and uses the same queue with approval-bound jobs and atomic replacement. Its production migration and 18-section index were completed on 2026-09-10; the bounded live retrieval evaluation passed 12/12 English and Turkish cases against the current approval digest. Signed publishing webhooks invalidate page caches and enqueue WordPress updates; an immediate worker attempt and a scheduled worker process jobs. Recipe posts were removed on 2026-08-23, and John reaffirmed the broader exclusion of cooking on 2026-09-09.
 - **Page content:** `CONTENT_SOURCE=wordpress` selects the WordPress REST adapter. Any other value, including an unset variable, selects the retained filesystem Markdown/MDX adapter. This setting does **not** change chat retrieval or the WordPress knowledge seeder.
 - **Other services:** contact submissions use Supabase and Resend; contact and data-audit routes can sync leads to Jetpack CRM. These integrations are separate from the assistant and are not model-callable tools.
+- **Chat operations:** privacy-safe completion events are written as structured Vercel runtime logs. The [chat observability runbook](docs/chat-observability.md) documents correlation, metrics, retention boundaries, and investigation.
 
 The current assistant performs one retrieval step before generation. Model-selected tools, conversation-aware retrieval, reliable public citations, and bounded answer verification are planned work, not completed capabilities.
 
@@ -137,6 +138,7 @@ For page-content rollback, set `CONTENT_SOURCE=filesystem` (or unset it) and red
 ## Documentation map
 
 - [Digital Twin architecture and baseline](docs/digital-twin-architecture.md): current behavior, diagrams, source map, limitations, and challenge mapping.
+- [Chat observability runbook](docs/chat-observability.md): completion event schema, metrics, privacy exclusions, pricing limits, and incident response.
 - [Assistant evaluation harness](evals/assistant/README.md): case/source schemas, offline checks, bounded live runner, metrics, and human-review rubric.
 - [CV knowledge operations](docs/cv-knowledge.md): public artifact review, approval-bound indexing, authority, filtering, locale behavior, evaluation, and rollback.
 - [WordPress knowledge indexing](docs/wordpress-knowledge.md): structure-aware chunking, public canonical URLs, claim-domain authority, atomic replacement, version ordering, and the isolated retrieval comparison plan.

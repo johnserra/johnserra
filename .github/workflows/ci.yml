@@ -30,6 +30,7 @@ jobs:
           npm run test:cv
           npm run test:knowledge:sql
           npm run test:hybrid:sql
+          npm run test:chat-rate-limit
           npm run test:assistant
           npm run eval:retrieval:validate
 

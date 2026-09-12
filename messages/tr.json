@@ -291,6 +291,16 @@
     "welcome": "Merhaba! Ben John'un yapay zeka asistanıyım. Bana geçmişi, projeleri, becerileri veya bilmek istediğiniz herhangi bir şey hakkında soru sorabilirsiniz.",
     "placeholder": "Bana bir şey sorun...",
     "error": "Üzgünüm, bir şeyler yanlış gitti. John'a doğrudan john@serra.us adresinden e-posta göndermeyi deneyin.",
+    "errors": {
+      "rateLimited": "Çok fazla istek gönderildi. Lütfen biraz bekleyip tekrar deneyin.",
+      "timeout": "Bu işlem çok uzun sürdü. Lütfen daha kısa bir soruyla tekrar deneyin.",
+      "model": "Asistan bu yanıtı tamamlayamadı. Lütfen tekrar deneyin.",
+      "retrieval": "John'un bilgi kaynağı geçici olarak kullanılamıyor. Lütfen biraz sonra tekrar deneyin.",
+      "service": "Sohbet geçici olarak kullanılamıyor. Lütfen biraz sonra tekrar deneyin.",
+      "cancelled": "İstek iptal edildi.",
+      "invalidRequest": "Bu istek geçerli değil. Lütfen mesajınızı kontrol edip tekrar deneyin.",
+      "tooLarge": "Bu mesaj çok büyük. Lütfen kısaltıp tekrar deneyin."
+    },
     "openChat": "Yapay Zeka Sohbetini Aç",
     "closeChat": "Sohbeti kapat",
     "sendMessage": "Mesaj gönder"

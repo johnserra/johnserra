@@ -14,6 +14,7 @@
     "test:assistant": "node --import tsx --test scripts/evaluation/*.test.ts src/lib/chat/*.test.ts",
     "test:cv": "node --import tsx --test src/lib/knowledge/*.test.ts scripts/evaluation/cv.test.ts",
     "test:knowledge:sql": "node --import tsx supabase/tests/structure-aware.test.ts",
+    "test:chat-rate-limit": "node --import tsx --test src/lib/chat/hardening.test.ts supabase/tests/chat-rate-limit.test.ts",
     "test:hybrid:sql": "node --import tsx --test supabase/tests/hybrid-retrieval.test.ts",
     "test:retrieval": "node --import tsx --test scripts/evaluation/retrieval.test.ts",
     "eval:retrieval": "NODE_OPTIONS=--conditions=react-server node --import tsx scripts/evaluation/retrieval-cli.ts",

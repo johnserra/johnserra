@@ -1,21 +1,94 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Chat, Close, SendAlt } from "@carbon/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { IconButton } from "@/components/ui/IconButton";
+import { NdjsonChatParser } from "@/lib/chat/protocol";
 
 interface Message {
   id: string;
   role: "user" | "assistant";
   content: string;
+  failed?: boolean;
+}
+
+export function filterChatHistory(messages: Message[]): Array<Pick<Message, "role" | "content">> {
+  const visibleMessages = messages.filter((message) => message.id !== "welcome");
+  const history: Array<Pick<Message, "role" | "content">> = [];
+
+  for (let index = 0; index < visibleMessages.length;) {
+    const user = visibleMessages[index];
+    if (user.role !== "user" || user.failed || !user.content.trim()) {
+      index += 1;
+      continue;
+    }
+
+    const assistant = visibleMessages[index + 1];
+    if (!assistant) {
+      history.push({ role: "user", content: user.content });
+      break;
+    }
+    if (assistant.role === "assistant") {
+      if (!assistant.failed && assistant.content.trim()) {
+        history.push({ role: "user", content: user.content });
+        history.push({ role: "assistant", content: assistant.content });
+      }
+      index += 2;
+      continue;
+    }
+    index += 1;
+  }
+
+  return history;
+}
+
+export function chatErrorTranslationKey(code: string):
+  "errors.rateLimited" | "errors.timeout" | "errors.model" | "errors.retrieval" | "errors.service" | "errors.cancelled" | "errors.invalidRequest" | "errors.tooLarge" {
+  switch (code) {
+    case "INVALID_JSON":
+    case "INVALID_REQUEST":
+    case "INVALID_SESSION":
+    case "UNSUPPORTED_LOCALE":
+    case "UNSUPPORTED_MEDIA_TYPE": return "errors.invalidRequest";
+    case "BODY_TOO_LARGE":
+    case "INPUT_TOO_LARGE":
+    case "MESSAGE_TOO_LARGE": return "errors.tooLarge";
+    case "RATE_LIMITED": return "errors.rateLimited";
+    case "PREPARATION_TIMEOUT":
+    case "MODEL_TIMEOUT": return "errors.timeout";
+    case "MODEL_ERROR":
+    case "OUTPUT_TOO_LARGE": return "errors.model";
+    case "RETRIEVAL_ERROR": return "errors.retrieval";
+    case "CLIENT_ABORTED": return "errors.cancelled";
+    default: return "errors.service";
+  }
+}
+
+function sessionId(): string {
+  const storageKey = "johnserra.chat.session";
+  try {
+    const existing = window.sessionStorage.getItem(storageKey);
+    if (existing && /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(existing)) return existing;
+    const created = crypto.randomUUID();
+    window.sessionStorage.setItem(storageKey, created);
+    return created;
+  } catch {
+    return crypto.randomUUID();
+  }
 }
 
 interface AIChatPanelProps {
   isOpen: boolean;
   onClose: () => void;
   onReady: () => void;
+}
+
+interface ActiveRequest {
+  controller: AbortController;
+  userId: string;
+  assistantId: string;
 }
 
 export function isSafeUrl(url: string): boolean {
@@ -81,6 +154,31 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const requestAbortRef = useRef<AbortController | null>(null);
+  const activeRequestRef = useRef<ActiveRequest | null>(null);
+
+  const cancelActiveRequest = useCallback(() => {
+    const activeRequest = activeRequestRef.current;
+    if (!activeRequest) return;
+
+    activeRequest.controller.abort();
+    activeRequestRef.current = null;
+    requestAbortRef.current = null;
+    setMessages((prev) => prev.filter((message) =>
+      message.id !== activeRequest.userId && message.id !== activeRequest.assistantId));
+    setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) cancelActiveRequest();
+  }, [cancelActiveRequest, isOpen]);
+
+  useEffect(() => () => {
+    const activeRequest = activeRequestRef.current;
+    activeRequestRef.current = null;
+    requestAbortRef.current = null;
+    activeRequest?.controller.abort();
+  }, []);
 
   useEffect(() => {
     onReady();
@@ -104,47 +202,84 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
     setMessages((prev) => [...prev, userMsg, assistantMsg]);
     setInput("");
     setIsLoading(true);
+    const requestAbort = new AbortController();
+    requestAbortRef.current = requestAbort;
+    activeRequestRef.current = { controller: requestAbort, userId: userMsg.id, assistantId };
 
     try {
-      const history = [...messages, userMsg]
-        .filter((message) => message.id !== "welcome")
-        .map(({ role, content }) => ({ role, content }));
+      const history = filterChatHistory([...messages, userMsg]);
 
       const response = await fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Chat-Session": sessionId() },
         body: JSON.stringify({ messages: history, locale }),
+        signal: requestAbort.signal,
       });
 
-      if (!response.ok || !response.body) throw new Error("Request failed");
+      if (!response.ok) {
+        let code = "SERVICE_UNAVAILABLE";
+        try {
+          const payload = await response.json() as { error?: { code?: string } };
+          code = payload.error?.code ?? code;
+        } catch {
+          // Keep the service message safe when a proxy returns a malformed body.
+        }
+        throw new Error(code);
+      }
+      if (!response.body) throw new Error("SERVICE_UNAVAILABLE");
 
       const reader = response.body.getReader();
-      const decoder = new TextDecoder();
+      const parser = new NdjsonChatParser();
       let accumulated = "";
+      let completed = false;
+      let failed = false;
 
       while (true) {
         const { done, value } = await reader.read();
-        if (done) break;
-        accumulated += decoder.decode(value, { stream: true });
-        setMessages((prev) =>
-          prev.map((message) =>
-            message.id === assistantId
-              ? { ...message, content: accumulated }
-              : message
-          )
-        );
+        const frames = done ? parser.finish() : parser.push(value);
+        for (const frame of frames) {
+          if (frame.type === "delta") {
+            accumulated += frame.text;
+            setMessages((prev) => prev.map((message) =>
+              message.id === assistantId ? { ...message, content: accumulated } : message));
+          } else if (frame.type === "error") {
+            failed = true;
+            setMessages((prev) => prev.map((message) =>
+              message.id === assistantId
+                ? { ...message, content: t(chatErrorTranslationKey(frame.code)), failed: true }
+                : message));
+            await reader.cancel();
+          } else if (frame.type === "done") {
+            completed = true;
+          }
+        }
+        if (done || failed) break;
       }
-    } catch {
+      if (!completed && !failed) {
+        throw new Error("SERVICE_UNAVAILABLE");
+      }
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") return;
+      const code = error instanceof Error ? error.message : "SERVICE_UNAVAILABLE";
       setMessages((prev) =>
         prev.map((message) =>
           message.id === assistantId
-            ? { ...message, content: t("error") }
+            ? { ...message, content: t(chatErrorTranslationKey(code)), failed: true }
             : message
         )
       );
     } finally {
-      setIsLoading(false);
+      if (activeRequestRef.current?.assistantId === assistantId) {
+        activeRequestRef.current = null;
+        requestAbortRef.current = null;
+        setIsLoading(false);
+      }
     }
+  }
+
+  function handleClose() {
+    cancelActiveRequest();
+    onClose();
   }
 
   if (!isOpen) return null;
@@ -171,7 +306,7 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
             </div>
           </div>
           <IconButton
-            onClick={onClose}
+            onClick={handleClose}
             description={t("closeChat")}
             kind="ghost"
             size="sm"
@@ -242,7 +377,7 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
 
       <div
         className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 md:hidden"
-        onClick={onClose}
+        onClick={handleClose}
       />
     </>
   );

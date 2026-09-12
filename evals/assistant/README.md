@@ -2,7 +2,7 @@
 
 This harness measures the production assistant path without changing the knowledge database or public runtime behavior. It shares retrieval, prompt construction, role conversion, and Gemini streaming code with `POST /api/chat`; the CLI receives additional in-process diagnostics that are never exposed through a public endpoint.
 
-The corpus is professional-only. Recipe posts were removed from johnserra.com on 2026-08-23; on 2026-09-09, John reaffirmed the broader policy that all cooking belongs on a separate site. Cooking is therefore absent from positive cases and evidence. The unchanged production persona and the Turkish About CMS record still contain cooking references: stale persona/About text was not all removed in August. That is a known content-policy mismatch to measure, not intended Digital Twin scope and not corrected by this baseline task.
+The corpus is professional-only. Recipe posts were removed from johnserra.com on 2026-08-23; on 2026-09-09, John reaffirmed the broader policy that all cooking belongs on a separate site. Cooking is therefore absent from positive cases and evidence. A Turkish About CMS record may still contain stale cooking references; the production assistant must treat retrieved text as untrusted reference data and must not expand that stale content into unsupported claims. This remains a known content-policy mismatch to measure, not intended Digital Twin scope.
 
 The first live run was recorded on **2026-09-10 UTC** (2026-09-09 in New York), using clean implementation revision `daf6f9b8fd10629b7d131d4966e15fc2431029c7`. Read the [dated report](reports/baseline-2026-09-10T02-27-41-980Z.md) or its [machine-readable JSON](reports/baseline-2026-09-10T02-27-41-980Z.json). All 34 cases were attempted, producing 37 turn records. The English identity case failed during query embedding with a quota error; the other 33 cases completed. The report is therefore **INCOMPLETE**, with zero skipped or not-run cases. No quota retry was performed, and the failed case is excluded from quality denominators. The production build passed.
 
@@ -37,11 +37,11 @@ Run these from the repository root:
 npm run eval:assistant:validate
 npm run test:assistant
 
-# Full live baseline (34 cases / 37 conversational turns)
+# Full live baseline (current corpus: 37 cases / 40 conversational turns)
 npm run eval:assistant -- --output evals/assistant/reports
 ```
 
-The full run makes 36 query-embedding calls, 36 read-only `match_career_context` RPC calls, and 37 generation calls. The single synthetic indirect-injection fixture bypasses embedding/database retrieval but uses one generation call. These are expected call counts, not price estimates; provider billing and quotas must be checked separately.
+The current full run would make 39 query-embedding calls, 39 read-only `match_career_context` RPC calls, and 40 generation calls. The single synthetic indirect-injection fixture bypasses embedding/database retrieval but uses one generation call. These are expected call counts, not price estimates; provider billing and quotas must be checked separately. Do not run this command as part of offline verification: it makes provider calls.
 
 Supported CLI options are:
 
@@ -59,7 +59,7 @@ Live execution loads `.env.local` without printing values. It needs `GEMINI_API_
 
 ## Corpus and method
 
-`cases.json` uses schema version `1.0.0` and contains stable IDs, locale, categories, user-turn sequences, expected WordPress source identities, evidence references, required-fact regexes, prohibited-claim rules with explicit allowed-negation patterns, uncertainty expectations, and citation expectations. The corpus covers identity, career chronology, projects, technology, published viewpoints, English, Turkish, dynamic follow-ups, unknown/private facts, direct injection, and a clearly labeled indirect-injection fixture.
+`cases.json` uses schema version `1.0.0` and current corpus version `professional-baseline-2026-09-12-guardrails`. It contains stable IDs, locale, categories, user-turn sequences, expected WordPress source identities, evidence references, required-fact regexes, prohibited-claim rules with explicit allowed-negation patterns, uncertainty expectations, and citation expectations. The corpus covers identity, career chronology, projects, technology, published viewpoints, English, Turkish, dynamic follow-ups, unknown/private facts, existing direct and indirect injection cases, plus dedicated prompt-disclosure, commitment/action, and invented-opinion cases.
 
 For multi-turn cases, the runner appends the actual generated assistant answer to history before the next user turn. It never substitutes a hand-written “ideal” assistant turn. Retrieval still embeds only the latest message because that is current production behavior.
 

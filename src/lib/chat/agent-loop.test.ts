@@ -174,6 +174,70 @@ test("structured no-tools requests use the provider-compatible config shape", as
   }
 });
 
+test("citation authority comes only from tool citations and rejects an embedded CV URL", async () => {
+  const embeddedProjectUrl = "https://johnserra.com/projects/careertalklab";
+  const requests: GenerationRequest[] = [];
+  const traces: AgentTraceSummary[] = [];
+  const result = await collect(streamBoundedEvidenceAgent(
+    [{ role: "user", content: "Summarize the reviewed CV and published project." }], "en",
+    deps((request) => {
+      requests.push(request);
+      if (request.config.tools) return (async function* () {
+        yield { functionCalls: [{ id: "cv", name: "get_cv_timeline", args: { locale: "en" } }] };
+      })();
+      const properties = (request.config.responseJsonSchema as { properties?: Record<string, unknown> } | undefined)?.properties;
+      if (properties && "status" in properties) return (async function* () {
+        yield { text: JSON.stringify({ status: "sufficient", query: null }) };
+      })();
+      if (properties && "decision" in properties) return (async function* () {
+        yield { text: JSON.stringify({
+          decision: "revise",
+          finalAnswer: `The CV mentions CareerTalkLab ([project](${embeddedProjectUrl})).`,
+          supportedClaims: 1,
+          qualifiedClaims: 0,
+          removedClaims: 0,
+        }) };
+      })();
+      return (async function* () {
+        yield { text: `Draft with the embedded reference [project](${embeddedProjectUrl}).` };
+      })();
+    }),
+    registry({
+      async loadCv() {
+        return {
+          schema_version: "1.0.0", document_id: "john-serra", title: "Reviewed CV", locale: "en", visibility: "public",
+          document_type: "cv", authority: "reviewed_public_cv", canonical_url: "https://johnserra.com/cv/john-serra.en.md",
+          sections: [{
+            id: "project", category: "project", title: "CareerTalkLab", organization: null, role: "Builder",
+            dates: { kind: "undated", start: null, end: null, ongoing: false, start_unknown: true, end_unknown: true },
+            locale: "en", visibility: "public", document_type: "cv", authority: "reviewed_public_cv",
+            canonical_url: "https://johnserra.com/cv/john-serra.en.md", paragraphs: [`Project reference: ${embeddedProjectUrl}`],
+            bullets: [], references: [],
+          }],
+        };
+      },
+    }),
+    new AbortController().signal,
+    { correlationId, onAgentTrace: (trace) => traces.push(trace) },
+  ));
+
+  // These tests verify request wiring and fail-closed enforcement; semantic model prompt compliance is live-checked separately.
+  const expectedAllowlist = 'ALLOWED_CITATION_URLS: ["https://johnserra.com/cv/john-serra.en.md"]';
+  const allowlistLine = (request: GenerationRequest) => request.config.systemInstruction.split("\n").find((line) => line.startsWith("ALLOWED_CITATION_URLS:"));
+  const draft = requests.find((request) => !request.config.tools && !request.config.responseJsonSchema);
+  const verifierRequest = requests.find((request) => "decision" in (((request.config.responseJsonSchema as { properties?: Record<string, unknown> } | undefined)?.properties) ?? {}));
+  assert.ok(draft);
+  assert.ok(verifierRequest);
+  assert.equal(allowlistLine(draft), expectedAllowlist);
+  assert.equal(allowlistLine(verifierRequest), expectedAllowlist);
+  assert.match(draft.config.systemInstruction, new RegExp(embeddedProjectUrl.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&"), "u"));
+  assert.match(verifierRequest.config.systemInstruction, new RegExp(embeddedProjectUrl.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&"), "u"));
+  assert.equal(traces[0].acceptedToolExecutions, 1);
+  assert.equal(traces[0].verificationPasses, 1);
+  assert.equal(traces[0].stopReason, "verifier_failure");
+  assert.doesNotMatch(answer(result), new RegExp(embeddedProjectUrl.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&"), "u"));
+});
+
 test("sufficient evidence is inspected, drafted, verified, and only the verified answer is emitted", async () => {
   const traces: AgentTraceSummary[] = [];
   const result = await collect(streamBoundedEvidenceAgent(

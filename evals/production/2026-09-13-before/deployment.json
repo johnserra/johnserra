@@ -1,0 +1,10 @@
+{
+  "checkedAt": "2026-09-13T21:22:30Z",
+  "source": "Vercel get_deployment for johnserra.com",
+  "deploymentId": "dpl_8XC7fqNb273vLovd2Eq4KgaApwpn",
+  "url": "https://johnserra.com",
+  "deploymentUrl": "https://johnserra-ki640lx53-john-serras-projects.vercel.app",
+  "state": "READY",
+  "target": "production",
+  "commit": "e37251031c360215f4f429f7491458f8038fd445"
+}

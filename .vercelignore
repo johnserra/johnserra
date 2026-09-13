@@ -3,3 +3,8 @@
 /workspace/
 /wordpress/
 /supabase/
+/docs/cv-review.md
+/.claude/
+/.codex/
+/.agents/
+/.env*

@@ -1,145 +1,159 @@
-# Digital Twin architecture and challenge baseline
+# Digital Twin architecture
 
-Source baseline: **2026-09-09**, repository commit **4147fda**, prepared for [#17](https://github.com/johnserra/johnserra/issues/17). This is a review of the checked-in implementation, not a production test or a measured quality report. [#10](https://github.com/johnserra/johnserra/issues/10) will establish the repeatable evaluation harness and dated results before retrieval changes.
+This document describes the current implementation at the repository baseline for issue #11. The readable narrative is the [Digital Twin engineering case study](digital-twin-case-study.md); the [operations runbook](digital-twin-operations.md) is the procedural companion. Historical evaluation material remains dated and unchanged.
 
-Subsequent note, **2026-09-10 UTC**: the [#10 assistant evaluation harness](../evals/assistant/README.md) now provides a professional-only case corpus, public evidence manifest, shared chat runner, offline tests, and a [dated live report](../evals/assistant/reports/baseline-2026-09-10T02-27-41-980Z.md). All 34 cases were attempted; 33 completed and one query-embedding quota error leaves the report marked incomplete. Recipe posts were removed on 2026-08-23; John reaffirmed the broader exclusion of cooking on 2026-09-09. At the time of this saved September 10 baseline, the production prompt and a Turkish About record still referred to cooking because stale persona/About text was not all removed in August. The current production prompt no longer contains that stale persona wording; the Turkish About content mismatch may remain. Captured baseline answers confirm this known scope mismatch.
+## Current topology
 
-Subsequent update, **2026-09-11 UTC**: [#15](https://github.com/johnserra/johnserra/issues/15) adds a conversational hybrid retrieval pipeline. The chat path now rewrites context-dependent follow-ups into standalone queries using a bounded Gemini call, retrieves a wider candidate set using semantic + lexical (full-text) branches with locale and filter preservation, reranks candidates to ≤6 using reciprocal rank fusion with query-term coverage and source diversity, and preserves the original conversation for generation. The hybrid SQL RPC (`match_career_context_hybrid`) is additive and service-role only; when absent, the original `match_career_context_filtered` path is preserved as a fallback. A versioned EN/TR retrieval corpus and deterministic evaluator report expected-source recall and a clearly labeled context-precision proxy. See [docs/conversational-retrieval.md](conversational-retrieval.md) for the current architecture. The September 9 baseline text below is retained as history.
-
-The Digital Twin is John Serra's personal-site assistant. It combines a third-person, evidence-only persona prompt, browser-managed conversation history, Gemini model-selected access to five bounded read-only tools, public citations, and streamed generation. The [persona, privacy, and prompt-injection guardrails](persona-privacy-guardrails.md) are the canonical policy for this boundary. A selection may request complementary tools in one bounded batch; greetings can still be answered without retrieval.
-
-## Request and deployment architecture
+The public site is a Next.js 16 App Router application on Vercel. `POST /api/chat` receives the browser-held conversation history, validates it, applies rate limits, and invokes the bounded evidence agent with server-owned dependencies. The agent uses Gemini for interpretation, retrieval planning, drafting, and bounded review; it uses Supabase for public knowledge retrieval and WordPress/CV adapters for bounded public records.
 
 ```mermaid
 flowchart TD
-    Visitor[Visitor on EN or TR homepage] --> Widget[AIChatWidget loads AIChatPanel]
-    Widget --> History[React state: conversation history]
-    History -->|POST messages and locale| Chat[Vercel: POST /api/chat]
-    Chat -->|Full supplied conversation| Select[Gemini 2.5 Flash: AUTO/VALIDATED selection]
-    Select -->|No tool call| Generate[Gemini answer stream]
-    Select -->|search_knowledge| Embed[Gemini query embedding: 768 dimensions]
-    Embed -->|Query vector| Match[Supabase hybrid retrieval RPC]
-    Store[(career_context with pgvector and HNSW index)] --> Match
-    Match -->|Bounded public evidence and citations| Final[Tool-disabled final Gemini turn]
-    Select -->|CV/projects/articles/contact| Sources[Allowlisted public adapters]
-    Sources --> Final
-    Final --> Generate
-    Generate -->|Text chunks through API response| Widget
-    Visitor --> Pages[Vercel: Next.js pages]
-    Pages --> Adapter[site-content adapter]
-    Adapter -->|CONTENT_SOURCE=wordpress| CMS[External WordPress REST API]
-    Adapter -->|Otherwise| MDX[Repository Markdown and MDX]
+    U[Browser chat panel<br/>EN or TR history] --> API[POST /api/chat]
+    API --> V[Validate body, locale, history<br/>HMAC rate limits]
+    V --> D[Server dependencies<br/>Gemini + Supabase + public adapters]
+    D --> I
+
+    subgraph I[Finite evidence agent]
+        I0[Interpret request] --> G{Simple pleasantry?}
+        G -->|yes| DIRECT[No-tool model answer]
+        G -->|no| R1[Retrieve round 1<br/>model selects validated calls]
+        R1 --> T1[Execute accepted read-only tools<br/>max 3 total; canonicalize duplicates]
+        T1 --> X1[Inspect accepted evidence]
+        X1 --> Q{Sufficient?}
+        Q -->|no, query available| R2[Retrieve round 2]
+        R2 --> T2[Execute remaining accepted tools]
+        T2 --> X2[Inspect accepted evidence]
+        X2 --> Q2{Sufficient?}
+        Q -->|yes| DR[Draft into buffer]
+        Q2 -->|yes| DR
+        Q2 -->|no or inspection failure| QUAL[Qualified or safe terminal answer]
+        DR --> VR[One verifier pass<br/>model review against evidence]
+        VR --> DEC{Accept, revise, or reject}
+        DEC -->|accept| OUT[Accepted answer]
+        DEC -->|revise| REV[Revised answer in buffer]
+        REV --> OUT
+        DEC -->|reject/failure| QUAL
+        DIRECT --> OUT
+        I0 -.-> B[Global guard: 12 steps<br/>45s model deadline]
+        R1 -.-> B
+        R2 -.-> B
+        DR -.-> B
+        VR -.-> B
+    end
+
+    OUT --> S[Stream only accepted/revised final text]
+    QUAL --> S
+    S --> L[Privacy-safe runtime logs<br/>completion + agent trace]
+
+    subgraph K[Public knowledge retrieval]
+        E[Gemini query embedding<br/>768 dimensions] --> H[Supabase Postgres<br/>pgvector semantic branch]
+        F[Simple text search<br/>lexical branch] --> H
+        H --> RF[Rank fusion + locale/authority filters]
+    end
+    T1 -.-> K
+    T2 -.-> K
+
+    subgraph P[Knowledge write path]
+        WP[Published WordPress EN/TR] --> WH[Signed webhook or seed]
+        WH --> PM[Supabase pgmq durable queue]
+        PM --> WK[Scheduled/immediate worker]
+        WK --> AT[Atomic source replacement<br/>version/tombstone ordering]
+        AT --> H
+        CV[Reviewed public CV<br/>approval digest] --> PM
+    end
 ```
 
-Vercel hosts the Next.js frontend and route handlers; WordPress is hosted independently; Supabase hosts PostgreSQL, vectors, and the indexing queue; Google's Gemini API supplies embeddings and answer generation. WordPress content is read by server code. Browser chat calls the site's own API, with provider and service-role credentials kept out of the client. Resend, contact storage, optional Jetpack CRM, and optional Google Analytics support other site features; they are outside the assistant's retrieval path.
+The internal selection, inspection, draft, and verifier responses are buffered. They are not streamed to the browser. The final stream can be a direct no-tool answer, an accepted answer, a revised answer, or a qualified/safe failure response.
 
-The production frontend domain and `main` auto-deploy behavior are recorded in repository deployment notes. The exact live CMS configuration, active deployment, migration state, index coverage, and provider availability are not asserted by this source review. See the [README](../README.md) for environment setup and deployment workflow.
+## Retrieval: semantic plus lexical RAG
 
-### One chat turn
+Retrieval-augmented generation (RAG) means that the model receives a bounded packet of retrieved source evidence at answer time instead of relying only on its parametric memory. Here, `search_knowledge` is a hybrid public-knowledge retriever:
 
-1. The [widget](../src/components/widgets/AIChatWidget.tsx) dynamically imports the [panel](../src/components/widgets/AIChatPanel.tsx) after first opening. The panel starts with a localized welcome message.
-2. On submission, the panel appends a user message and an empty assistant placeholder to React state. It sends previous messages plus the new user message to `/api/chat`, excluding the welcome message and the new placeholder.
-3. The [route](../src/app/api/chat/route.ts) validates the complete request, keeps the Node runtime, and sends the supplied history plus locale-aware system instructions to Gemini with the five declarations. SDK automatic function execution is disabled.
-4. Gemini may answer directly, in which case zero tools execute, or return a bounded set of function calls. The application validates the complete batch before dispatching, rejects more than five requested calls, and canonicalizes equivalent validated calls independently of provider ID or object-key order.
-5. `search_knowledge` invokes the existing hybrid retrieval layer. The other tools use the reviewed CV or public site-content/contact adapters. Results are projected to public evidence, descriptive titles, and locale-correct canonical URLs; internal IDs, scores, private CV source data, and writes are excluded. Handler failures degrade to typed unavailable evidence while successful siblings remain usable.
-6. Accepted tool results are returned with the model function-call parts and matching IDs in one function-response message. A single final Gemini turn runs with tools disabled. Any final follow-on call fails closed; if every selected tool fails, no evidence-free final turn is attempted.
-7. `gemini-2.5-flash` text streams through the existing `application/x-ndjson` response contract. The panel decodes deltas and terminal frames; no provider or tool errors are exposed.
+1. The query is embedded with the configured 768-dimensional Gemini embedding model.
+2. Supabase Postgres searches the `pgvector` embedding column for semantic similarity and a GIN full-text index for lexical matches. The lexical configuration is `simple`, chosen so English and Turkish text can be tokenized without depending on language-specific dictionaries.
+3. The SQL function fuses the branches, applies publication, visibility, locale, document-type, authority, and optional CV filters, and returns a small evidence set with canonical URLs.
+4. The agent inspects the accepted evidence. If it is insufficient, it may formulate one narrower query for a second retrieval round.
 
-### Conversation state and failure behavior
+The retriever is limited to published public WordPress content and the reviewed public CV. It is not a general web search engine and it does not ingest private conversations. The vector-column and RPC shape follows the [Supabase vector columns guidance](https://supabase.com/docs/guides/ai/vector-columns); the repository-specific hybrid function is in [00004_hybrid_retrieval.sql](../supabase/migrations/00004_hybrid_retrieval.sql).
 
-History exists only in the mounted panel's React state. Closing the panel hides it without unmounting it, so reopening retains the conversation. Reloading or unmounting clears it. There is no local-storage persistence, server session store, or application chat-transcript database in this path. The complete supplied history is sent to Gemini on each turn; query embeddings contain only the last message. These observations do not establish an external provider's retention policy.
+## Model-selected, read-only tools
 
-Earlier turns can influence model selection and answer generation. A follow-up may select `search_knowledge` with a rewritten query through the existing hybrid retrieval layer, while a greeting can take the direct path. Request, tool, output, rate, and deadline boundaries are documented in [chat API hardening](chat-api-hardening.md). The [bounded multi-tool evaluation](multi-tool-evaluation.md) covers fixture replay and privacy-safe traces. This issue adds bounded tool selection, not an iterative verification agent.
+The registry exposes exactly five names to the model:
 
-Network/non-OK response errors show a generic localized error in the panel. Errors during Gemini streaming are logged server-side and the stream closes; this can look like a successful partial or empty answer. Existing error text and empty assistant entries are not filtered from subsequent history. These are baseline limitations to address in #14, not guarantees of graceful recovery.
-
-## Knowledge ingestion and indexing
-
-```mermaid
-flowchart TD
-    Editor[WordPress publish, update, unpublish, or delete] --> Plugin[John Serra Site Core plugin]
-    Plugin -->|HMAC signed event| Hook[Vercel: /api/revalidate/wordpress]
-    Hook --> Cache[Invalidate collection, item, and translation cache tags]
-    Hook -->|Enqueue before returning 202| Queue[(Supabase pgmq: content_indexing)]
-    Seed[Local npm run seed: enumerate published EN and TR content] --> Queue
-    Hook -->|after: process 1 job| Worker[WordPress indexing worker]
-    Cron[Vercel daily cron: process up to 5 jobs] --> Worker
-    Seed -->|Drain visible batches of 5| Worker
-    Queue -->|Read with 180 second visibility timeout| Worker
-    Worker -->|Upsert: fetch current published record| WP[WordPress REST API]
-    WP --> Text[Strip HTML, decode entities, chunk text]
-    Text --> Embed[Gemini document embeddings: 768 dimensions]
-    Embed --> Rows[(career_context: upsert chunks and remove excess chunks)]
-    Worker -->|Delete job| Rows
-    Worker -->|Success| Archive[Archive queue message]
-    Worker -->|Failure: retry after visibility timeout| Queue
-    Worker -->|Failure on read 5 or later| Failure[content_indexing_failures and archive]
-```
-
-### Source contract and chunking
-
-The [WordPress plugin](../wordpress/wp-content/plugins/johnserra-core/README.md) defines locale metadata and translation relationships. Core posts contain blog entries and recipes, core pages include About and Privacy Policy, and `js_project` records are exposed through `/wp/v2/projects`. The [seeder](../scripts/seed-knowledge-base.ts) enumerates all published posts, pages, and projects for `en` and `tr`, independently of `CONTENT_SOURCE`.
-
-For an upsert, the [worker](../src/lib/knowledge/wordpress-indexer.ts) fetches the current record without cached revalidation, using anonymous `context=view`. It checks publication status and locale. An accessible record that no longer matches causes removal; an HTTP error instead follows the retry/failure path. Explicit delete jobs remove rows by WordPress ID and locale without fetching the record.
-
-HTML-to-text conversion removes scripts, styles, and tags, collapses whitespace, and decodes entities. The title is prepended once. Text is split into approximately **2,400-character chunks**, preferring a nearby word boundary, with **300-character overlap**; chunks of 50 characters or fewer are dropped. This does not preserve heading/section hierarchy or role/project boundaries. It indexes rendered title/body text, not every structured ACF field.
-
-Each chunk calls `gemini-embedding-2` with `RETRIEVAL_DOCUMENT`, the document title, and 768 output dimensions. Chunk embedding calls run concurrently within one document; queue jobs are processed sequentially within a batch. The recorded embedding configuration is `gemini-embedding-2:768:v1`.
-
-Rows use source identity `wordpress/<content_type>/<wordpress_id>/<locale>` and a zero-based `chunk_index`. Stored fields include title, slug, locale, content type, publication status, WordPress modified time, embedding model/dimensions, and vector. JSON metadata includes event ID, title, type, slug, locale, WordPress ID, and embedding configuration. Canonical public URLs, section paths, and source-authority rankings are not stored by this worker.
-
-Upserts target the unique `(source, chunk_index)` key, then a separate delete removes excess old chunks. These operations are not an atomic document replacement. Legacy filesystem rows are retained by default; rows without embeddings or with no matching locale cannot satisfy the current retrieval RPC. The retained full-text index is unused by chat.
-
-### Queue, cache, and recovery semantics
-
-The [webhook](../src/app/api/revalidate/wordpress/route.ts) verifies an HMAC-SHA256 signature over the raw body and validates the job shape. It invalidates localized collection, item, and translation cache tags with the `max` profile, then enqueues the event. Queue failure returns 503; a successful enqueue returns 202 and schedules an `after()` attempt to process one available job. Cache freshness and embedding freshness are separate: page revalidation can happen before new embeddings are ready.
-
-The worker reads jobs with a 180-second visibility timeout. Successful jobs are archived. Failed jobs can be retried once visible; on the fifth or later read, failure is recorded in `content_indexing_failures` and the job is archived. The daily cron handles five jobs per invocation, and the seeder drains currently visible batches of five. The queue is durable in Supabase, but there is no continuous dedicated worker, lease renewal, event-ID deduplication, or stale-event ordering guard. Concurrent invocations can therefore overlap, especially when work exceeds the visibility timeout.
-
-WordPress logs failed webhook deliveries but does not durably retry them. Reseeding can recover missed published updates; it does not discover deleted/unpublished records absent from the published enumeration. Locale changes can also leave old-locale rows unless a corresponding removal is processed. Monitor worker logs and the failure table rather than treating the queue alone as proof that all indexed content is current.
-
-## Baseline limitations and follow-on issues
-
-| Area | Current boundary | Roadmap work |
+| Tool | Public evidence returned | Write capability |
 | --- | --- | --- |
-| Evaluation | The [professional-only harness](../evals/assistant/README.md) measures retrieval and answer proxies. The versioned [bounded multi-tool corpus](multi-tool-evaluation.md) measures selection, deduplication, limits, degradation, evidence/citation support, and no-tool controls offline; no live Gemini reliability claim is made here. | [#10](https://github.com/johnserra/johnserra/issues/10), [#16](https://github.com/johnserra/johnserra/issues/16) |
-| Professional authority | Published WordPress content and a hard-coded biography supply context; no first-class sanitized CV source or conflict-resolution policy. | [#21](https://github.com/johnserra/johnserra/issues/21), [#8](https://github.com/johnserra/johnserra/issues/8) |
-| Retrieval | Hybrid semantic + lexical retrieval with query rewrite, reranking, locale invariants, and bounded fallbacks as of 2026-09-11 ([#15](conversational-retrieval.md)). No live retrieval evaluation or paired baseline measurement has been run yet. | [#15](https://github.com/johnserra/johnserra/issues/15) (implemented; live evaluation pending) |
-| Citations | Internal source IDs/scores enter the prompt; public URLs and claim-to-source support are not enforced or verified. Rendered links can be generated incorrectly. | [#12](https://github.com/johnserra/johnserra/issues/12) |
-| Public API | Only a nonempty-message check; no robust validation, bounded history/output, rate controls, request deadline, or structured stream errors. | [#14](https://github.com/johnserra/johnserra/issues/14) |
-| Persona and privacy | Third-person AI-assistant persona grounded in retrieved public evidence, with explicit untrusted-context, disclosure, action-claim, and retention rules. Deterministic corpus coverage is a proxy and does not prove complete security. | [#20](https://github.com/johnserra/johnserra/issues/20) |
-| Operations | Chat emits one privacy-safe completion event per request to Vercel runtime logs, with server correlation, outcome/failure categories, stage timings, retrieval/citation aggregates, normalized provider usage, and partial/complete Gemini text-cost estimates. It does not persist telemetry or provide a quality dashboard; platform log retention remains a deployment concern. | [chat observability runbook](chat-observability.md), [#13](https://github.com/johnserra/johnserra/issues/13) |
-| Tools | Five application-owned read-only tools are model-selectable with strict schemas, runtime validation, canonical deduplication, per-tool deadlines, UTF-8 result caps, safe logs, graceful degradation, and one final tool-disabled turn. | [model-callable tools](model-callable-tools.md), [multi-tool evaluation](multi-tool-evaluation.md) |
-| Verification agent | One generation stream with no evidence-sufficiency loop, verification pass, revision, or recorded agent stop reason. | [#19](https://github.com/johnserra/johnserra/issues/19) |
-| Production evidence | Deployment configuration is documented, but end-to-end production scenarios, rollback demonstration, and public case-study evidence remain to be collected. | [#11](https://github.com/johnserra/johnserra/issues/11) |
+| `search_knowledge` | Hybrid search matches and canonical citations | None |
+| `get_cv_timeline` | Reviewed public CV timeline and references | None |
+| `get_project_details` | One published project by slug | None |
+| `list_articles` | Bounded summaries of published articles | None |
+| `get_contact_options` | Existing public contact routes | None; it never submits a message or sends email |
 
-The original architecture snapshot made no retrieval accuracy, latency, cost, security pass rate, or production availability claim. The subsequent evaluation report records observed retrieval, timings, automated quality proxies, and failures under its stated limitations; it does not establish security or availability guarantees. Keep model and retrieval settings recorded with future evaluation runs so comparisons have a clear reference point.
+Schemas reject unknown fields and constrain locale, slug, URL, and result sizes. A handler result is accepted only after validation and bounded serialization. Tool failures become typed, safe evidence gaps; an all-failure path does not let the model pretend that evidence exists. Duplicate calls are canonicalized independently of provider call IDs and object-key order.
 
-## Six-week AI Engineering challenge mapping
+## Bounded orchestration and verification semantics
 
-The curriculum mapping below follows [#22](https://github.com/johnserra/johnserra/issues/22). Week labels describe the challenge topics; implementation follows the dependency order beneath the table.
+The current loop is intentionally agentic but finite:
 
-| Challenge week | Evidence in the baseline | Remaining work |
-| --- | --- | --- |
-| 1 — LLM fundamentals | Gemini system instruction, user/model roles, streaming, and client-managed conversation history. | #17 architecture documentation; #10 reproducible evaluation baseline. |
-| 2 — AI app and guardrails | Next.js chat UI and public API; basic empty-input check. | #14 request hardening, #20 persona/privacy/injection policy, #13 observability. |
-| 3 — Tool calling | Five allowlisted application-owned tools, strict runtime validation, disabled SDK auto-execution, bounded multi-call dispatch, matching function responses, safe logs, and offline evaluation. | #19 bounded evidence gathering and answer verification. |
-| 4 — RAG | WordPress ingestion, Gemini embeddings, pgvector retrieval, locale filtering, and durable indexing queue. | #21 CV, #8 structure/authority, #15 conversational hybrid retrieval/reranking, #12 public citations. |
-| 5 — Deployment | Vercel frontend/API configuration, cron routes, external WordPress/Supabase/Gemini dependencies. | #11 production verification, deployment/rollback evidence, and public case study. |
-| 6 — Agentic AI | No agent loop in the current chat path. | #19 bounded evidence gathering and answer verification. |
+- at most **3 accepted tool executions** across the run;
+- at most **2 retrieval rounds**;
+- one evidence inspection after each retrieval round;
+- one buffered draft;
+- exactly **1 verifier pass** when a draft exists;
+- at most **12 state-machine steps**;
+- a **45,000 ms model/agent deadline**.
 
-Execution order: **#17 → #10 → #21 → #8 → #15 → #12 → #14 → #20 → #13 → #18 → #16 → #19 → #11**. The CareerTalkLab follow-on backlog is deferred until this Digital Twin roadmap is complete.
+The 45-second value is the agent's model deadline, including its bounded turns. The HTTP stream can end earlier because of client cancellation, provider failure, or an outer platform/transport boundary; an HTTP 200 is not proof of a supported answer. Tool handlers also have shorter per-tool deadlines.
 
-## Source map
+The verifier is a model review of the draft against the accepted evidence packet. It can accept, return a complete revised answer with unsupported claims removed or qualified, or reject the draft. It is not a semantic proof system, fact-checking oracle, or guarantee that a source is true. The fail-closed contract is narrower: every professional, biographical, project, and citation claim in an accepted answer must be grounded in the packet or explicitly qualified.
 
-| Concern | Implementation |
-| --- | --- |
-| Homepage and chat UI | [page.tsx](../src/app/[locale]/page.tsx), [AIChatWidget.tsx](../src/components/widgets/AIChatWidget.tsx), [AIChatPanel.tsx](../src/components/widgets/AIChatPanel.tsx) |
-| Retrieval, tool calling, and generation | [chat route](../src/app/api/chat/route.ts), [shared chat core](../src/lib/chat/core.ts), [tool registry](../src/lib/chat/tools.ts), [orchestration](../src/lib/chat/tool-calling.ts), [server dependencies](../src/lib/chat/server.ts), [embedding helpers](../src/lib/knowledge/embeddings.ts), [observability](../src/lib/chat/observability.ts) |
-| Assistant evaluation | [harness guide](../evals/assistant/README.md), [cases](../evals/assistant/cases.json), [professional sources](../evals/assistant/sources.json), [multi-tool evaluation](multi-tool-evaluation.md) |
-| Database clients and base tables | [supabase.ts](../src/lib/supabase.ts), [base schema](../supabase-schema.sql) |
-| Vectors, retrieval RPC, queue, grants | [vector/queue migration](../supabase/migrations/00001_wordpress_vector_queue.sql) |
-| Indexing and initial population | [WordPress indexer](../src/lib/knowledge/wordpress-indexer.ts), [seed script](../scripts/seed-knowledge-base.ts) |
-| CMS events and preview | [plugin webhook](../wordpress/wp-content/plugins/johnserra-core/includes/class-webhook.php), [revalidation route](../src/app/api/revalidate/wordpress/route.ts), [preview route](../src/app/api/preview/wordpress/route.ts) |
-| Content source and locale | [site-content.ts](../src/lib/site-content.ts), [WordPress client](../src/lib/wordpress/client.ts), [WordPress content](../src/lib/wordpress/content.ts), [routing.ts](../src/i18n/routing.ts) |
-| Scheduling and builds | [vercel.json](../vercel.json), [indexing cron](../src/app/api/cron/process-content-indexing/route.ts), [keep-alive cron](../src/app/api/cron/keep-alive/route.ts), [CI](../.github/workflows/ci.yml), [package.json](../package.json) |
+Agent terminal reasons include `direct_no_tools`, `supported_evidence`, `qualified_completion`, `insufficient_evidence`, `all_tools_failure`, `verifier_failure`, `inspection_failure`, `deadline_exceeded`, `budget_exceeded`, `provider_failure`, `output_limit`, and `cancellation`. These reasons are operational outcomes, not quality scores.
+
+## WordPress and CV indexing
+
+Published WordPress posts, pages, and projects arrive through a signed webhook or an explicit seed. The webhook enqueues a source job in Supabase `pgmq`; an immediate attempt may process one available job and the scheduled cron processes bounded batches. The worker embeds public content, replaces the source's rows atomically, removes excess stale chunks, and preserves per-source version/tombstone state so older events cannot resurrect deleted content. A full seed covers the current published snapshot; it is not a complete repair for every missed deletion event.
+
+The CV is a separate registered source. A human reviews the structured public artifact, computes its canonical approval digest, and only then runs the approval-bound apply procedure. The worker checks the same digest before embedding. This approval boundary prevents an unreviewed local CV edit from becoming retrievable public knowledge. The CV's authority is distinct from authored posts and project pages.
+
+The numbered database sequence is:
+
+1. [`00001_wordpress_vector_queue.sql`](../supabase/migrations/00001_wordpress_vector_queue.sql) — vector extension, WordPress fields, queue, and base retrieval support.
+2. [`00002_cv_knowledge.sql`](../supabase/migrations/00002_cv_knowledge.sql) — reviewed CV fields, strict validation, and filtered retrieval.
+3. [`00003_wordpress_structure_aware.sql`](../supabase/migrations/00003_wordpress_structure_aware.sql) — section metadata and version-ordered atomic replacement.
+4. [`00004_hybrid_retrieval.sql`](../supabase/migrations/00004_hybrid_retrieval.sql) — additive semantic-plus-lexical retrieval and rank fusion.
+5. [`00005_chat_api_hardening.sql`](../supabase/migrations/00005_chat_api_hardening.sql) — private HMAC identity counters for fixed-window chat limits.
+
+Apply them only with the compatible worker and application cutover plan described in the [operations runbook](digital-twin-operations.md). Do not switch a structure-aware worker onto a database that lacks 00003, and do not enqueue CV work before the reviewed source, application code, and 00002 are verified.
+
+## Multilingual behavior and citations
+
+The assistant accepts `en` and `tr` locales. WordPress records are indexed per locale and returned with locale-appropriate canonical URLs. Hybrid retrieval uses shared structural metadata and the `simple` lexical configuration. When Turkish retrieval needs professional-history context, the filtered SQL path can reserve reviewed English CV evidence; that fallback is explicit and bounded, not an instruction to translate arbitrary private material.
+
+Citation objects are produced by the public adapters and constrained to `https://johnserra.com/...`. The draft prompt requires exact canonical URLs from the accepted packet, and the verifier checks that citations remain supported. The UI may render Markdown links; observability records only citation counts and presence, never URLs or answer text.
+
+## Security, privacy, and failure boundaries
+
+The application keeps provider keys, WordPress credentials, and the Supabase service-role key server-side. Tool declarations are an allowlist; arguments and results are schema-validated; output is capped by UTF-8 byte budgets; rate limits use HMAC-SHA-256 digests of session/IP identities; and the private rate-limit table is service-role-only. Read-only tools do not submit contact forms, send mail, mutate WordPress, or write Supabase rows.
+
+Runtime logs contain stable, sanitized event metadata and a correlation UUID. They exclude prompts, conversation history, generated text, retrieved content, URLs, internal IDs, query text, tool arguments, provider error text, secrets, IP addresses, session IDs, and stack traces. See the [chat observability runbook](chat-observability.md) and [persona/privacy guardrails](persona-privacy-guardrails.md).
+
+## Known limitations
+
+- The model verifier is bounded review, not semantic proof; source correctness and answer usefulness still need human evaluation.
+- The checked-in agent evaluator computes metadata from deterministic fixture replay. It does not call live providers and is not runtime state-machine testing; actual node tests and live traces are separate evidence.
+- The paired retrieval corpus still misses three WordPress expected sources after the structure-aware improvement; the result is non-regression evidence, not perfect retrieval.
+- Generated-answer quality, multi-session concurrency, current live trace capture, screenshot evidence, and the requested approximately two-minute demonstration are separate evidence items. Their status is recorded as pending in the [case study](digital-twin-case-study.md); no success is inferred from source or deployment metadata.
+- Vercel runtime logs are operational evidence, not a durable transcript or trace store; retention is governed by the platform. The `CONTENT_SOURCE=wordpress` page adapter and filesystem fallback are separate from chat retrieval.
+
+## Historical baseline and source map
+
+The September 10 assistant baseline is preserved in [`evals/assistant/reports/baseline-2026-09-10T02-27-41-980Z.md`](../evals/assistant/reports/baseline-2026-09-10T02-27-41-980Z.md). It attempted 34 cases, completed 33, and stopped on one embedding quota error. It describes an earlier evaluation path and is not a current bounded-agent benchmark. The September 11 retrieval comparison is preserved in [`evals/chunking/comparison-2026-09-11.md`](../evals/chunking/comparison-2026-09-11.md); its figures and scope are summarized in the [case study](digital-twin-case-study.md).
+
+Implementation references:
+
+- [Production chat route](../src/app/api/chat/route.ts)
+- [Bounded agent loop](../src/lib/chat/agent-loop.ts)
+- [Agent and chat limits](../src/lib/chat/limits.ts)
+- [Tool registry and dispatch](../src/lib/chat/tools.ts)
+- [WordPress knowledge operations](wordpress-knowledge.md)
+- [Reviewed CV knowledge operations](cv-knowledge.md)
+- [Bounded evidence-agent design](bounded-evidence-agent.md)

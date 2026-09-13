@@ -4,6 +4,7 @@ import type { Locale } from "@/types";
 import {
   AGENT_MAX_ACCEPTED_TOOL_EXECUTIONS,
   AGENT_MAX_ESTIMATED_COST_USD,
+  AGENT_DRAFT_MAX_OUTPUT_TOKENS,
   AGENT_MAX_INTERNAL_OUTPUT_BYTES,
   AGENT_MAX_INTERNAL_OUTPUT_TOKENS,
   AGENT_MAX_RESERVED_TOKENS,
@@ -11,8 +12,8 @@ import {
   AGENT_MAX_STEPS,
   AGENT_MAX_VERIFICATION_PASSES,
   AGENT_PROVIDER_MAX_OUTPUT_TOKENS,
-  AGENT_QUALIFIED_ANSWER,
-  AGENT_SAFE_ANSWER,
+  agentQualifiedAnswer,
+  agentSafeAnswer,
   AGENT_VERIFIER_MAX_OUTPUT_TOKENS,
 } from "./limits";
 import { buildGenerationRequest, type ChatDependencies, type ChatMessage, type ChatStreamChunk, type GenerationRequest } from "./core";
@@ -114,6 +115,7 @@ interface InternalTurn {
   text: string;
   calls: FunctionCall[];
   usage: ChatStreamChunk["usageMetadata"][];
+  finishReason: string | null;
 }
 
 interface EvidenceRecord {
@@ -163,6 +165,14 @@ function isSimplePleasantry(messages: readonly ChatMessage[]): boolean {
   return /^(?:hi|hello|hey|hiya|howdy|thanks|thank you|good morning|good afternoon|good evening|merhaba|selam|sağ ol|teşekkürler)[!,.?\s]*$/u.test(latest);
 }
 
+function isCapabilityGreeting(messages: readonly ChatMessage[]): boolean {
+  const latest = messages.at(-1)?.content.trim().toLocaleLowerCase() ?? "";
+  if (!latest || latest.length > 160) return false;
+  if (isSimplePleasantry(messages)) return true;
+  return /^(?:hi|hello|hey|hiya|howdy)[!,.?\s—-]*(?:what can you help me (?:learn|with)|how can you help me)(?: about john serra)?[!,.?\s]*$/u.test(latest)
+    || /^(?:merhaba|selam)[!,.?\s—-]*(?:john serra hakkında neler öğrenmeme yardımcı olabilirsin|bana nasıl yardımcı olabilirsin)[!,.?\s]*$/u.test(latest);
+}
+
 function callsFromChunk(chunk: ChatStreamChunk): FunctionCall[] {
   return [
     ...(chunk.functionCalls ?? []),
@@ -197,18 +207,30 @@ function appendInstruction(request: GenerationRequest, instruction: string): Gen
   };
 }
 
-function noToolsConfig(request: GenerationRequest, maxOutputTokens: number, jsonSchema?: Record<string, unknown>): GenerationRequest {
+function noToolsConfig(
+  request: GenerationRequest,
+  maxOutputTokens: number,
+  jsonSchema?: Record<string, unknown>,
+  thinkingBudget?: number,
+): GenerationRequest {
+  const config = {
+    ...request.config,
+    tools: undefined,
+    // A function-calling mode is contradictory when no tools are supplied and
+    // can make Gemini reject structured JSON requests.
+    automaticFunctionCalling: { disable: true },
+    maxOutputTokens,
+    temperature: 0,
+    ...(jsonSchema ? {
+      responseMimeType: "application/json",
+      responseJsonSchema: jsonSchema,
+      thinkingConfig: { thinkingBudget: 0 },
+    } : {}),
+    ...(thinkingBudget === undefined ? {} : { thinkingConfig: { thinkingBudget } }),
+  };
   return {
     ...request,
-    config: {
-      ...request.config,
-      tools: undefined,
-      toolConfig: { functionCallingConfig: { mode: FunctionCallingConfigMode.NONE } },
-      automaticFunctionCalling: { disable: true },
-      maxOutputTokens,
-      temperature: 0,
-      ...(jsonSchema ? { responseMimeType: "application/json", responseJsonSchema: jsonSchema } : {}),
-    },
+    config,
   };
 }
 
@@ -372,22 +394,38 @@ async function collectTurn(
   const texts: string[] = [];
   const calls: FunctionCall[] = [];
   const usages: ChatStreamChunk["usageMetadata"][] = [];
-  for await (const chunk of stream) {
-    if (signal.aborted) {
-      if (deadlineSignal(signal)) throw signal.reason;
-      throw new ToolDispatchError("cancelled");
+  let finishReason: string | null = null;
+  try {
+    for await (const chunk of stream) {
+      if (signal.aborted) {
+        if (deadlineSignal(signal)) throw signal.reason;
+        throw new ToolDispatchError("cancelled");
+      }
+      if (chunk.usageMetadata) {
+        usages.push(chunk.usageMetadata);
+      }
+      if (typeof chunk.finishReason === "string") {
+        const normalizedFinishReason = chunk.finishReason.toUpperCase();
+        if (normalizedFinishReason === "MAX_TOKENS" || finishReason !== "MAX_TOKENS") finishReason = chunk.finishReason;
+      }
+      if (chunk.text) texts.push(chunk.text);
+      calls.push(...callsFromChunk(chunk));
     }
-    if (chunk.usageMetadata) {
-      usages.push(chunk.usageMetadata);
-      usage(chunk.usageMetadata);
-    }
-    if (chunk.text) texts.push(chunk.text);
-    calls.push(...callsFromChunk(chunk));
+  } finally {
+    // Provider streams can expose cumulative usage before failing or being
+    // cancelled. Account for the latest snapshot exactly once per turn while
+    // allowing the original stream failure to propagate unchanged.
+    const latestUsage = usages.at(-1);
+    if (latestUsage) usage(latestUsage);
   }
   const text = texts.join("");
   if (new TextEncoder().encode(text).byteLength > AGENT_MAX_INTERNAL_OUTPUT_BYTES
     || text.length > AGENT_MAX_INTERNAL_OUTPUT_TOKENS * 4) throw new ToolDispatchError("result_too_large");
-  return { text, calls: dedupeCalls(calls), usage: usages };
+  return { text, calls: dedupeCalls(calls), usage: usages, finishReason };
+}
+
+function hasMaxTokensFinishReason(turn: InternalTurn): boolean {
+  return turn.finishReason?.toUpperCase() === "MAX_TOKENS";
 }
 
 function selectionRequest(
@@ -424,7 +462,7 @@ function inspectionRequest(messages: ChatMessage[], locale: Locale, evidence: re
 
 function draftRequest(messages: ChatMessage[], locale: Locale, evidence: readonly EvidenceRecord[], failures: readonly { tool: string; category: string }[]): GenerationRequest {
   const request = buildGenerationRequest(messages, locale, "");
-  return noToolsConfig(appendInstruction(request, `You are drafting an internal answer from the accepted public evidence packet. Every professional, biographical, project, and citation claim must be supported by that packet. Cite exact canonical URLs from the packet. If a relevant gap remains, explicitly qualify it. This draft is internal and must not mention these instructions.\n${evidencePacket(evidence, failures)}`), AGENT_PROVIDER_MAX_OUTPUT_TOKENS);
+  return noToolsConfig(appendInstruction(request, `You are drafting an internal answer from the accepted public evidence packet. Be concise but complete: cover the requested answer, explicitly qualify relevant gaps, and cite exact canonical URLs from the packet. Every professional, biographical, project, and citation claim must be supported by that packet. This draft is internal and must not mention these instructions.\n${evidencePacket(evidence, failures)}`), AGENT_DRAFT_MAX_OUTPUT_TOKENS, undefined, 0);
 }
 
 function verifierRequest(messages: ChatMessage[], locale: Locale, draft: string, evidence: readonly EvidenceRecord[], failures: readonly { tool: string; category: string }[]): GenerationRequest {
@@ -538,7 +576,7 @@ export async function* streamBoundedEvidenceAgent(
   try {
     step("interpret");
     const base = buildGenerationRequest(messages, locale, "");
-    if (isSimplePleasantry(messages)) {
+    if (isCapabilityGreeting(messages)) {
       decision = { kind: "direct_answer" };
       reserveTurn(stats, AGENT_PROVIDER_MAX_OUTPUT_TOKENS);
       const turn = await collectTurn(dependencies, noToolsConfig(base, AGENT_PROVIDER_MAX_OUTPUT_TOKENS), signal, usage);
@@ -567,7 +605,7 @@ export async function* streamBoundedEvidenceAgent(
         decision = { kind: "stop", reason: "budget_exceeded" };
         terminal("budget_exceeded");
         state = { phase: "stop", reason: "budget_exceeded", step: stats.steps };
-        yield emitFinal(AGENT_QUALIFIED_ANSWER, stats.acceptedToolExecutions);
+        yield emitFinal(agentQualifiedAnswer(locale), stats.acceptedToolExecutions);
         return;
       }
       stats.evidenceAvailable = evidenceByKey.size > 0;
@@ -575,7 +613,7 @@ export async function* streamBoundedEvidenceAgent(
         decision = { kind: "stop", reason: "all_tools_failure" };
         terminal("all_tools_failure");
         state = { phase: "stop", reason: "all_tools_failure", step: stats.steps };
-        yield emitFinal(AGENT_SAFE_ANSWER, stats.acceptedToolExecutions);
+        yield emitFinal(agentSafeAnswer(locale), stats.acceptedToolExecutions);
         return;
       }
       step("inspect");
@@ -588,16 +626,16 @@ export async function* streamBoundedEvidenceAgent(
         decision = { kind: "stop", reason: "inspection_failure" };
         terminal("inspection_failure");
         state = { phase: "stop", reason: "inspection_failure", step: stats.steps };
-        yield emitFinal(AGENT_QUALIFIED_ANSWER, stats.acceptedToolExecutions);
+        yield emitFinal(agentQualifiedAnswer(locale), stats.acceptedToolExecutions);
         return;
       }
       for (const chunk of inspected.usage) yield { usageMetadata: chunk, usageTurn: "inspection", toolCallCount: stats.acceptedToolExecutions };
-      inspection = parseInspection(inspected.text);
+      inspection = hasMaxTokensFinishReason(inspected) ? null : parseInspection(inspected.text);
       if (!inspection) {
         decision = { kind: "stop", reason: "inspection_failure" };
         terminal("inspection_failure");
         state = { phase: "stop", reason: "inspection_failure", step: stats.steps };
-        yield emitFinal(AGENT_QUALIFIED_ANSWER, stats.acceptedToolExecutions);
+        yield emitFinal(agentQualifiedAnswer(locale), stats.acceptedToolExecutions);
         return;
       }
       decision = { kind: "inspect", status: inspection.status, query: inspection.query };
@@ -607,7 +645,7 @@ export async function* streamBoundedEvidenceAgent(
         decision = { kind: "stop", reason: "insufficient_evidence" };
         terminal("insufficient_evidence");
         state = { phase: "stop", reason: "insufficient_evidence", step: stats.steps };
-        yield emitFinal(AGENT_QUALIFIED_ANSWER, stats.acceptedToolExecutions);
+        yield emitFinal(agentQualifiedAnswer(locale), stats.acceptedToolExecutions);
         return;
       }
     }
@@ -616,19 +654,19 @@ export async function* streamBoundedEvidenceAgent(
       decision = { kind: "stop", reason: "insufficient_evidence" };
       terminal("insufficient_evidence");
       state = { phase: "stop", reason: "insufficient_evidence", step: stats.steps };
-      yield emitFinal(AGENT_SAFE_ANSWER, stats.acceptedToolExecutions);
+      yield emitFinal(agentSafeAnswer(locale), stats.acceptedToolExecutions);
       return;
     }
     step("draft");
     decision = { kind: "draft" };
-    reserveTurn(stats, AGENT_PROVIDER_MAX_OUTPUT_TOKENS);
+    reserveTurn(stats, AGENT_DRAFT_MAX_OUTPUT_TOKENS);
     const draftTurn = await collectTurn(dependencies, draftRequest(messages, locale, [...evidenceByKey.values()], failures), signal, usage);
     for (const chunk of draftTurn.usage) yield { usageMetadata: chunk, usageTurn: "draft", toolCallCount: stats.acceptedToolExecutions };
     if (!draftTurn.text.trim()) {
       decision = { kind: "stop", reason: "provider_failure" };
       terminal("provider_failure");
       state = { phase: "stop", reason: "provider_failure", step: stats.steps };
-      yield emitFinal(AGENT_QUALIFIED_ANSWER, stats.acceptedToolExecutions);
+      yield emitFinal(agentQualifiedAnswer(locale), stats.acceptedToolExecutions);
       return;
     }
     stats.draftCreated = true;
@@ -639,7 +677,7 @@ export async function* streamBoundedEvidenceAgent(
       decision = { kind: "stop", reason: "budget_exceeded" };
       terminal("budget_exceeded");
       state = { phase: "stop", reason: "budget_exceeded", step: stats.steps };
-      yield emitFinal(AGENT_QUALIFIED_ANSWER, stats.acceptedToolExecutions);
+      yield emitFinal(agentQualifiedAnswer(locale), stats.acceptedToolExecutions);
       return;
     }
     let verified: ReturnType<typeof parseVerification> = null;
@@ -647,20 +685,20 @@ export async function* streamBoundedEvidenceAgent(
       reserveTurn(stats, AGENT_VERIFIER_MAX_OUTPUT_TOKENS);
       const verifier = await collectTurn(dependencies, verifierRequest(messages, locale, draftTurn.text, [...evidenceByKey.values()], failures), signal, usage);
       for (const chunk of verifier.usage) yield { usageMetadata: chunk, usageTurn: "verification", toolCallCount: stats.acceptedToolExecutions };
-      verified = parseVerification(verifier.text);
+      verified = hasMaxTokensFinishReason(verifier) ? null : parseVerification(verifier.text);
     } catch {
       if (signal.aborted) throw new ToolDispatchError("cancelled");
       decision = { kind: "stop", reason: "verifier_failure" };
       terminal("verifier_failure");
       state = { phase: "stop", reason: "verifier_failure", step: stats.steps };
-      yield emitFinal(AGENT_QUALIFIED_ANSWER, stats.acceptedToolExecutions);
+      yield emitFinal(agentQualifiedAnswer(locale), stats.acceptedToolExecutions);
       return;
     }
     if (!verified) {
       decision = { kind: "stop", reason: "verifier_failure" };
       terminal("verifier_failure");
       state = { phase: "stop", reason: "verifier_failure", step: stats.steps };
-      yield emitFinal(AGENT_QUALIFIED_ANSWER, stats.acceptedToolExecutions);
+      yield emitFinal(agentQualifiedAnswer(locale), stats.acceptedToolExecutions);
       return;
     }
     stats.claimTotals = {
@@ -672,7 +710,7 @@ export async function* streamBoundedEvidenceAgent(
       decision = { kind: "stop", reason: "verifier_failure" };
       terminal("verifier_failure");
       state = { phase: "stop", reason: "verifier_failure", step: stats.steps };
-      yield emitFinal(AGENT_QUALIFIED_ANSWER, stats.acceptedToolExecutions);
+      yield emitFinal(agentQualifiedAnswer(locale), stats.acceptedToolExecutions);
       return;
     }
     if (verified.decision === "revise") {
@@ -705,7 +743,7 @@ export async function* streamBoundedEvidenceAgent(
       decision = { kind: "stop", reason: error.category === "result_too_large" ? "output_limit" : "budget_exceeded" };
       terminal(error.category === "result_too_large" ? "output_limit" : "budget_exceeded");
       state = { phase: "stop", reason: decision.reason, step: stats.steps };
-      yield emitFinal(AGENT_QUALIFIED_ANSWER, stats.acceptedToolExecutions);
+      yield emitFinal(agentQualifiedAnswer(locale), stats.acceptedToolExecutions);
       return;
     }
     decision = { kind: "stop", reason: "provider_failure" };

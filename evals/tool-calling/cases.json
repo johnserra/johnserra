@@ -1,0 +1,277 @@
+{
+  "schemaVersion": "1.0.0",
+  "corpusVersion": "bounded-multi-tool-2026-09-13",
+  "cases": [
+    {
+      "id": "ai-product-role-demo",
+      "prompt": "Which of John's projects best demonstrates experience relevant to an AI product role?",
+      "categories": ["multi-source", "public-demo"],
+      "expectedTools": ["search_knowledge", "get_cv_timeline"],
+      "allowedTools": ["search_knowledge", "get_cv_timeline"],
+      "forbiddenTools": ["get_contact_options"],
+      "minimumDistinctSuccessfulTools": 2,
+      "expectedOutcome": "answer",
+      "evidenceExpectations": [
+        { "resultId": "demo-project-evidence", "requiredFacts": ["CareerTalkLab", "standalone hybrid LMS", "Next.js 16.1"], "requiredCitations": ["https://johnserra.com/projects/careertalklab"] },
+        { "resultId": "demo-reviewed-cv", "requiredFacts": ["CareerTalkLab", "Work in progress", "data analytics curriculum is planned"], "requiredCitations": ["https://johnserra.com/cv/john-serra.en.md"] }
+      ],
+      "answerChecks": { "requiredPatterns": ["CareerTalkLab", "work in progress", "https://johnserra.com/projects/careertalklab", "https://johnserra.com/cv/john-serra.en.md"], "forbiddenPatterns": ["I am John"] },
+      "gracefulDegradation": { "mode": "none", "failureCategories": [], "requiresSuccessfulSibling": false, "acknowledgementPatterns": [] },
+      "fixture": {
+        "requestedCalls": [
+          { "tool": "search_knowledge", "identity": "search-careertalklab" },
+          { "tool": "get_cv_timeline", "identity": "cv-en" }
+        ],
+        "executions": [
+          { "tool": "search_knowledge", "identity": "search-careertalklab", "resultId": "demo-project-evidence" },
+          { "tool": "get_cv_timeline", "identity": "cv-en", "resultId": "demo-reviewed-cv" }
+        ],
+        "results": [
+          { "id": "demo-project-evidence", "tool": "search_knowledge", "disposition": "success", "category": null, "retryable": false, "facts": ["CareerTalkLab is a standalone hybrid LMS for Global professionals learning English, built with Next.js 16.1, Supabase, and a JSON-native lesson engine."], "citations": ["https://johnserra.com/projects/careertalklab"] },
+          { "id": "demo-reviewed-cv", "tool": "get_cv_timeline", "disposition": "success", "category": null, "retryable": false, "facts": ["The reviewed public CV records CareerTalkLab as a Work in progress and says a data analytics curriculum is planned."], "citations": ["https://johnserra.com/cv/john-serra.en.md"] }
+        ],
+        "answer": "CareerTalkLab is relevant to an AI product role because the public project describes a standalone hybrid LMS built with Next.js 16.1, while the reviewed CV records it as a work in progress and says a data analytics curriculum is planned. [CareerTalkLab](https://johnserra.com/projects/careertalklab) [Reviewed public CV](https://johnserra.com/cv/john-serra.en.md)"
+      }
+    },
+    {
+      "id": "careertalklab-and-cv-architecture",
+      "prompt": "How can CareerTalkLab's public architecture be discussed alongside John's professional background?",
+      "categories": ["multi-source", "project-background"],
+      "expectedTools": ["get_project_details", "get_cv_timeline"],
+      "allowedTools": ["get_project_details", "get_cv_timeline"],
+      "forbiddenTools": ["get_contact_options"],
+      "minimumDistinctSuccessfulTools": 2,
+      "expectedOutcome": "answer",
+      "evidenceExpectations": [
+        { "resultId": "careertalklab-project", "requiredFacts": ["Flipped Classroom", "8\\+ interactive block types", "AI Feedback Engine"], "requiredCitations": ["https://johnserra.com/projects/careertalklab"] },
+        { "resultId": "careertalklab-cv", "requiredFacts": ["Education Coordinator", "online education", "learning platform"], "requiredCitations": ["https://johnserra.com/cv/john-serra.en.md"] }
+      ],
+      "answerChecks": { "requiredPatterns": ["Flipped Classroom", "Education Coordinator", "https://johnserra.com/projects/careertalklab", "https://johnserra.com/cv/john-serra.en.md"], "forbiddenPatterns": ["guaranteed"] },
+      "gracefulDegradation": { "mode": "none", "failureCategories": [], "requiresSuccessfulSibling": false, "acknowledgementPatterns": [] },
+      "fixture": {
+        "requestedCalls": [
+          { "tool": "get_project_details", "identity": "project-careertalklab" },
+          { "tool": "get_cv_timeline", "identity": "cv-en" }
+        ],
+        "executions": [
+          { "tool": "get_project_details", "identity": "project-careertalklab", "resultId": "careertalklab-project" },
+          { "tool": "get_cv_timeline", "identity": "cv-en", "resultId": "careertalklab-cv" }
+        ],
+        "results": [
+          { "id": "careertalklab-project", "tool": "get_project_details", "disposition": "success", "category": null, "retryable": false, "facts": ["CareerTalkLab uses a Flipped Classroom model, includes 8+ interactive block types, and has an AI Feedback Engine."], "citations": ["https://johnserra.com/projects/careertalklab"] },
+          { "id": "careertalklab-cv", "tool": "get_cv_timeline", "disposition": "success", "category": null, "retryable": false, "facts": ["The reviewed CV describes John's Education Coordinator work, a transition to online education, and a learning platform context."], "citations": ["https://johnserra.com/cv/john-serra.en.md"] }
+        ],
+        "answer": "The public CareerTalkLab architecture uses a Flipped Classroom model, an AI Feedback Engine, and 8+ interactive block types; the reviewed CV adds the Education Coordinator experience and transition to online education that frame the learning platform work. [CareerTalkLab](https://johnserra.com/projects/careertalklab) [Reviewed public CV](https://johnserra.com/cv/john-serra.en.md)"
+      }
+    },
+    {
+      "id": "bd-automation-and-cv",
+      "prompt": "What does the public BD Automation Suite show when considered with John's professional background?",
+      "categories": ["multi-source", "automation"],
+      "expectedTools": ["get_project_details", "get_cv_timeline"],
+      "allowedTools": ["get_project_details", "get_cv_timeline"],
+      "forbiddenTools": ["get_contact_options"],
+      "minimumDistinctSuccessfulTools": 2,
+      "expectedOutcome": "answer",
+      "evidenceExpectations": [
+        { "resultId": "bd-project", "requiredFacts": ["seven discrete modules", "YAML-driven business logic"], "requiredCitations": ["https://johnserra.com/projects/bd-automation-suite"] },
+        { "resultId": "bd-cv", "requiredFacts": ["business development", "export markets", "workflow automation"], "requiredCitations": ["https://johnserra.com/cv/john-serra.en.md"] }
+      ],
+      "answerChecks": { "requiredPatterns": ["seven discrete modules", "business development", "https://johnserra.com/projects/bd-automation-suite", "https://johnserra.com/cv/john-serra.en.md"], "forbiddenPatterns": ["auto-sent"] },
+      "gracefulDegradation": { "mode": "none", "failureCategories": [], "requiresSuccessfulSibling": false, "acknowledgementPatterns": [] },
+      "fixture": {
+        "requestedCalls": [
+          { "tool": "get_project_details", "identity": "project-bd-automation-suite" },
+          { "tool": "get_cv_timeline", "identity": "cv-en" }
+        ],
+        "executions": [
+          { "tool": "get_project_details", "identity": "project-bd-automation-suite", "resultId": "bd-project" },
+          { "tool": "get_cv_timeline", "identity": "cv-en", "resultId": "bd-cv" }
+        ],
+        "results": [
+          { "id": "bd-project", "tool": "get_project_details", "disposition": "success", "category": null, "retryable": false, "facts": ["The BD Automation Suite runs as seven discrete modules, uses YAML-driven business logic, and drafts outreach that is never auto-sent."], "citations": ["https://johnserra.com/projects/bd-automation-suite"] },
+          { "id": "bd-cv", "tool": "get_cv_timeline", "disposition": "success", "category": null, "retryable": false, "facts": ["The reviewed CV describes business development, export markets, and workflow automation experience."], "citations": ["https://johnserra.com/cv/john-serra.en.md"] }
+        ],
+        "answer": "The BD Automation Suite shows seven discrete modules and YAML-driven business logic, with outreach drafts kept for human review; the reviewed CV connects that work to business development, export markets, and workflow automation. [BD Automation Suite](https://johnserra.com/projects/bd-automation-suite) [Reviewed public CV](https://johnserra.com/cv/john-serra.en.md)"
+      }
+    },
+    {
+      "id": "digital-transformation-and-cv",
+      "prompt": "What public evidence connects John's digital-transformation project with his professional experience?",
+      "categories": ["multi-source", "digital-transformation"],
+      "expectedTools": ["get_project_details", "get_cv_timeline"],
+      "allowedTools": ["get_project_details", "get_cv_timeline"],
+      "forbiddenTools": ["get_contact_options"],
+      "minimumDistinctSuccessfulTools": 2,
+      "expectedOutcome": "answer",
+      "evidenceExpectations": [
+        { "resultId": "digital-project", "requiredFacts": ["complete transition", "live online learning environment", "Staff training"], "requiredCitations": ["https://johnserra.com/projects/digital-transformation"] },
+        { "resultId": "digital-cv", "requiredFacts": ["Education Coordinator", "student feedback system", "online education"], "requiredCitations": ["https://johnserra.com/cv/john-serra.en.md"] }
+      ],
+      "answerChecks": { "requiredPatterns": ["complete transition", "Education Coordinator", "https://johnserra.com/projects/digital-transformation", "https://johnserra.com/cv/john-serra.en.md"], "forbiddenPatterns": ["permanently closed"] },
+      "gracefulDegradation": { "mode": "none", "failureCategories": [], "requiresSuccessfulSibling": false, "acknowledgementPatterns": [] },
+      "fixture": {
+        "requestedCalls": [
+          { "tool": "get_project_details", "identity": "project-digital-transformation" },
+          { "tool": "get_cv_timeline", "identity": "cv-en" }
+        ],
+        "executions": [
+          { "tool": "get_project_details", "identity": "project-digital-transformation", "resultId": "digital-project" },
+          { "tool": "get_cv_timeline", "identity": "cv-en", "resultId": "digital-cv" }
+        ],
+        "results": [
+          { "id": "digital-project", "tool": "get_project_details", "disposition": "success", "category": null, "retryable": false, "facts": ["The Digital Transformation in Crisis project describes a complete transition from paper-based operations to a live online learning environment and includes staff training."], "citations": ["https://johnserra.com/projects/digital-transformation"] },
+          { "id": "digital-cv", "tool": "get_cv_timeline", "disposition": "success", "category": null, "retryable": false, "facts": ["The reviewed CV identifies an Education Coordinator role, a student feedback system, and a transition to online education."], "citations": ["https://johnserra.com/cv/john-serra.en.md"] }
+        ],
+        "answer": "The public project records a complete transition to a live online learning environment, including staff training; the reviewed CV identifies John as an Education Coordinator who built a student feedback system and led a transition to online education. [Digital Transformation in Crisis](https://johnserra.com/projects/digital-transformation) [Reviewed public CV](https://johnserra.com/cv/john-serra.en.md)"
+      }
+    },
+    {
+      "id": "project-article-cv-triangulation",
+      "prompt": "How can a careful public explanation connect CareerTalkLab's project architecture, an article, and John's professional background?",
+      "categories": ["multi-source", "triangulation"],
+      "expectedTools": ["search_knowledge", "get_cv_timeline", "list_articles"],
+      "allowedTools": ["search_knowledge", "get_cv_timeline", "list_articles"],
+      "forbiddenTools": ["get_contact_options"],
+      "minimumDistinctSuccessfulTools": 2,
+      "expectedOutcome": "answer",
+      "evidenceExpectations": [
+        { "resultId": "triangulation-project", "requiredFacts": ["Errorless Teaching", "JSON-native Lesson Engine", "PWA"], "requiredCitations": ["https://johnserra.com/projects/careertalklab"] },
+        { "resultId": "triangulation-cv", "requiredFacts": ["CareerTalkLab", "Work in progress", "Software development"], "requiredCitations": ["https://johnserra.com/cv/john-serra.en.md"] },
+        { "resultId": "triangulation-article", "requiredFacts": ["Errorless Teaching", "Prompt-Fading Methodology"], "requiredCitations": ["https://johnserra.com/blog/why-generic-ai-is-failing"] }
+      ],
+      "answerChecks": { "requiredPatterns": ["Errorless Teaching", "Work in progress", "Prompt-Fading Methodology", "https://johnserra.com/projects/careertalklab", "https://johnserra.com/cv/john-serra.en.md", "https://johnserra.com/blog/why-generic-ai-is-failing"], "forbiddenPatterns": ["certainly proves"] },
+      "gracefulDegradation": { "mode": "none", "failureCategories": [], "requiresSuccessfulSibling": false, "acknowledgementPatterns": [] },
+      "fixture": {
+        "requestedCalls": [
+          { "tool": "search_knowledge", "identity": "search-careertalklab" },
+          { "tool": "get_cv_timeline", "identity": "cv-en" },
+          { "tool": "list_articles", "identity": "articles-why-generic-ai" }
+        ],
+        "executions": [
+          { "tool": "search_knowledge", "identity": "search-careertalklab", "resultId": "triangulation-project" },
+          { "tool": "get_cv_timeline", "identity": "cv-en", "resultId": "triangulation-cv" },
+          { "tool": "list_articles", "identity": "articles-why-generic-ai", "resultId": "triangulation-article" }
+        ],
+        "results": [
+          { "id": "triangulation-project", "tool": "search_knowledge", "disposition": "success", "category": null, "retryable": false, "facts": ["CareerTalkLab uses Errorless Teaching, a JSON-native Lesson Engine, and PWA support."], "citations": ["https://johnserra.com/projects/careertalklab"] },
+          { "id": "triangulation-cv", "tool": "get_cv_timeline", "disposition": "success", "category": null, "retryable": false, "facts": ["The reviewed CV records CareerTalkLab as a Work in progress and lists software development among John's skills."], "citations": ["https://johnserra.com/cv/john-serra.en.md"] },
+          { "id": "triangulation-article", "tool": "list_articles", "disposition": "success", "category": null, "retryable": false, "facts": ["The published article explains Errorless Teaching and the Prompt-Fading Methodology at CareerTalkLab."], "citations": ["https://johnserra.com/blog/why-generic-ai-is-failing"] }
+        ],
+        "answer": "A careful explanation can connect CareerTalkLab's Errorless Teaching, JSON-native Lesson Engine, and PWA architecture with the reviewed CV's description of the project as a Work in progress and its software development skill, while the published article explains the Prompt-Fading Methodology. [CareerTalkLab](https://johnserra.com/projects/careertalklab) [Reviewed public CV](https://johnserra.com/cv/john-serra.en.md) [Why Generic AI Is Failing](https://johnserra.com/blog/why-generic-ai-is-failing)"
+      }
+    },
+    {
+      "id": "partial-digital-project-evidence",
+      "prompt": "Give a project-focused answer, and say what is unavailable if one supporting source cannot be loaded.",
+      "categories": ["multi-source", "graceful-degradation"],
+      "expectedTools": ["search_knowledge", "get_cv_timeline"],
+      "allowedTools": ["search_knowledge", "get_cv_timeline"],
+      "forbiddenTools": ["get_contact_options"],
+      "minimumDistinctSuccessfulTools": 1,
+      "expectedOutcome": "answer",
+      "evidenceExpectations": [
+        { "resultId": "partial-digital-project", "requiredFacts": ["live online learning environment", "curriculum digitization"], "requiredCitations": ["https://johnserra.com/projects/digital-transformation"] }
+      ],
+      "answerChecks": { "requiredPatterns": ["live online learning environment", "unavailable", "https://johnserra.com/projects/digital-transformation"], "forbiddenPatterns": ["CV proves"] },
+      "gracefulDegradation": { "mode": "partial_success", "failureCategories": ["timeout"], "requiresSuccessfulSibling": true, "acknowledgementPatterns": ["unavailable"] },
+      "fixture": {
+        "requestedCalls": [
+          { "tool": "search_knowledge", "identity": "search-digital-transformation" },
+          { "tool": "get_cv_timeline", "identity": "cv-en" }
+        ],
+        "executions": [
+          { "tool": "search_knowledge", "identity": "search-digital-transformation", "resultId": "partial-digital-project" },
+          { "tool": "get_cv_timeline", "identity": "cv-en", "resultId": "partial-cv-timeout" }
+        ],
+        "results": [
+          { "id": "partial-digital-project", "tool": "search_knowledge", "disposition": "success", "category": null, "retryable": false, "facts": ["The Digital Transformation in Crisis project describes curriculum digitization and a live online learning environment."], "citations": ["https://johnserra.com/projects/digital-transformation"] },
+          { "id": "partial-cv-timeout", "tool": "get_cv_timeline", "disposition": "safe_failure", "category": "timeout", "retryable": true, "facts": [], "citations": [] }
+        ],
+        "answer": "The project describes curriculum digitization and a live online learning environment. The reviewed CV source was unavailable, so the answer is intentionally limited. [Digital Transformation in Crisis](https://johnserra.com/projects/digital-transformation)"
+      }
+    },
+    {
+      "id": "all-tools-unavailable",
+      "prompt": "Summarize the requested project evidence only when at least one source succeeds.",
+      "categories": ["multi-source", "graceful-degradation", "all-failed"],
+      "expectedTools": ["search_knowledge", "get_cv_timeline"],
+      "allowedTools": ["search_knowledge", "get_cv_timeline"],
+      "forbiddenTools": ["get_contact_options"],
+      "minimumDistinctSuccessfulTools": 0,
+      "expectedOutcome": "answer",
+      "evidenceExpectations": [],
+      "answerChecks": { "requiredPatterns": ["No evidence was available"], "forbiddenPatterns": ["John led"] },
+      "gracefulDegradation": { "mode": "all_failed", "failureCategories": ["handler_failure", "timeout"], "requiresSuccessfulSibling": false, "acknowledgementPatterns": [] },
+      "fixture": {
+        "requestedCalls": [
+          { "tool": "search_knowledge", "identity": "search-all-failed" },
+          { "tool": "get_cv_timeline", "identity": "cv-all-failed" }
+        ],
+        "executions": [
+          { "tool": "search_knowledge", "identity": "search-all-failed", "resultId": "all-failed-search" },
+          { "tool": "get_cv_timeline", "identity": "cv-all-failed", "resultId": "all-failed-cv" }
+        ],
+        "results": [
+          { "id": "all-failed-search", "tool": "search_knowledge", "disposition": "safe_failure", "category": "handler_failure", "retryable": true, "facts": [], "citations": [] },
+          { "id": "all-failed-cv", "tool": "get_cv_timeline", "disposition": "safe_failure", "category": "timeout", "retryable": true, "facts": [], "citations": [] }
+        ],
+        "answer": "No evidence was available, so the assistant cannot ground a project summary."
+      }
+    },
+    {
+      "id": "greeting-control",
+      "prompt": "Hello!",
+      "categories": ["no-tool-control"],
+      "expectedTools": [],
+      "allowedTools": [],
+      "forbiddenTools": ["search_knowledge", "get_cv_timeline", "get_project_details", "list_articles", "get_contact_options"],
+      "minimumDistinctSuccessfulTools": 0,
+      "expectedOutcome": "answer",
+      "evidenceExpectations": [],
+      "answerChecks": { "requiredPatterns": ["hello"], "forbiddenPatterns": ["tool"] },
+      "gracefulDegradation": { "mode": "none", "failureCategories": [], "requiresSuccessfulSibling": false, "acknowledgementPatterns": [] },
+      "fixture": { "requestedCalls": [], "executions": [], "results": [], "answer": "Hello! How can I help?" }
+    },
+    {
+      "id": "greeting-control-john",
+      "prompt": "Hi there",
+      "categories": ["no-tool-control"],
+      "expectedTools": [],
+      "allowedTools": [],
+      "forbiddenTools": ["search_knowledge", "get_cv_timeline", "get_project_details", "list_articles", "get_contact_options"],
+      "minimumDistinctSuccessfulTools": 0,
+      "expectedOutcome": "answer",
+      "evidenceExpectations": [],
+      "answerChecks": { "requiredPatterns": ["John"], "forbiddenPatterns": ["search_knowledge"] },
+      "gracefulDegradation": { "mode": "none", "failureCategories": [], "requiresSuccessfulSibling": false, "acknowledgementPatterns": [] },
+      "fixture": { "requestedCalls": [], "executions": [], "results": [], "answer": "Hi — I can help with John's public work." }
+    },
+    {
+      "id": "call-cap-rejection",
+      "prompt": "Use only the bounded call budget for this synthetic limit check.",
+      "categories": ["limit-control"],
+      "expectedTools": ["get_contact_options"],
+      "allowedTools": ["get_contact_options"],
+      "forbiddenTools": [],
+      "minimumDistinctSuccessfulTools": 0,
+      "expectedOutcome": "call_limit_rejected",
+      "evidenceExpectations": [],
+      "answerChecks": { "requiredPatterns": ["rejected"], "forbiddenPatterns": ["model answer"] },
+      "gracefulDegradation": { "mode": "none", "failureCategories": [], "requiresSuccessfulSibling": false, "acknowledgementPatterns": [] },
+      "fixture": {
+        "requestedCalls": [
+          { "tool": "get_contact_options", "identity": "contact-1" },
+          { "tool": "get_contact_options", "identity": "contact-2" },
+          { "tool": "get_contact_options", "identity": "contact-3" },
+          { "tool": "get_contact_options", "identity": "contact-4" },
+          { "tool": "get_contact_options", "identity": "contact-5" },
+          { "tool": "get_contact_options", "identity": "contact-6" }
+        ],
+        "executions": [],
+        "results": [],
+        "answer": "The request was rejected before any tool execution because it exceeded the bounded call limit."
+      }
+    }
+  ]
+}

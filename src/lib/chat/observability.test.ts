@@ -275,3 +275,36 @@ test("safe logging swallows logger failures and stop reasons are stable enums", 
   assert.equal(normalizeStopReason("made-up-provider-value"), "unknown");
   assert.equal(normalizeStopReason({ marker: "must not log" }), null);
 });
+
+test("development multi-tool traces contain bounded counts only and direct answers can record zero tools", () => {
+  const lines: string[] = [];
+  const trace = createChatRequestTrace({
+    correlationId,
+    logger: { info(line) { lines.push(line); } },
+  });
+  trace.recordMultiToolTrace({
+    event: "chat_multi_tool_trace",
+    schemaVersion: 1,
+    correlationId,
+    selectedCount: 0,
+    uniqueExecutionCount: 0,
+    duplicateCount: 0,
+    calls: [],
+    finalStopState: "direct_no_tools",
+  });
+  if (process.env.NODE_ENV !== "production") {
+    assert.equal(lines.length, 1);
+    const event = JSON.parse(lines[0]) as Record<string, unknown>;
+    assert.deepEqual(event, {
+      event: "chat_multi_tool_trace",
+      schemaVersion: 1,
+      correlationId,
+      selectedCount: 0,
+      uniqueExecutionCount: 0,
+      duplicateCount: 0,
+      calls: [],
+      finalStopState: "direct_no_tools",
+    });
+    assert.equal(JSON.stringify(event).includes("query"), false);
+  }
+});

@@ -114,6 +114,15 @@ test("each tool is dependency-injected, typed, and citation-bearing", async () =
   }
 });
 
+test("project citations use the localized public project route", async () => {
+  const result = await dispatchToolCall(createChatToolRegistry(sources), {
+    name: "get_project_details",
+    args: { slug: "demo", locale: "tr" },
+  }, context());
+  const project = (result.result as { project: { citation: { url: string } } }).project;
+  assert.equal(project.citation.url, "https://johnserra.com/tr/projeler/demo");
+});
+
 test("accepted search results expose only bounded retrieval metadata to the trace path", async () => {
   const accepted = await dispatchToolCall(createChatToolRegistry(sources), {
     name: "search_knowledge",

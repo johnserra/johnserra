@@ -154,7 +154,11 @@ export async function POST(req: Request) {
               serverChatDependencies,
               serverChatToolRegistry,
               signal,
-              { correlationId: trace.correlationId, logger: console },
+              {
+                correlationId: trace.correlationId,
+                logger: console,
+                onMultiToolTrace: trace.recordMultiToolTrace,
+              },
             ),
             { stage: "model", deadlineMs: CHAT_MODEL_DEADLINE_MS, signal: linkedModelController.signal },
           )) {

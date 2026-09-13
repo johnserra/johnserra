@@ -13,6 +13,8 @@
     "eval:assistant:validate": "node --import tsx scripts/evaluation/cli.ts --validate",
     "eval:tool-calling:validate": "node --import tsx scripts/evaluation/tool-calling-cli.ts --validate-only",
     "eval:tool-calling:offline": "node --import tsx scripts/evaluation/tool-calling-cli.ts --offline",
+    "eval:agent-loop:validate": "node --import tsx scripts/evaluation/agent-loop-cli.ts --validate-only",
+    "eval:agent-loop:offline": "node --import tsx scripts/evaluation/agent-loop-cli.ts --offline",
     "test:assistant": "node --import tsx --test scripts/evaluation/*.test.ts src/lib/chat/*.test.ts",
     "test:cv": "node --import tsx --test src/lib/knowledge/*.test.ts scripts/evaluation/cv.test.ts",
     "test:knowledge:sql": "node --import tsx supabase/tests/structure-aware.test.ts",

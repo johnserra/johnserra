@@ -14,7 +14,7 @@ The [Digital Twin architecture and baseline](docs/digital-twin-architecture.md) 
 - **Other services:** contact submissions use Supabase and Resend; contact and data-audit routes can sync leads to Jetpack CRM. These integrations are separate from the assistant and are not model-callable tools.
 - **Chat operations:** privacy-safe completion and per-dispatch tool events are written as structured Vercel runtime logs. The [chat observability runbook](docs/chat-observability.md) documents correlation, metrics, retention boundaries, and investigation; [model-callable tools](docs/model-callable-tools.md) documents the registry, limits, failures, tests, and rollback.
 
-The current assistant has bounded model-selected tools and public citation-bearing results. Bounded answer verification remains planned work in #19; this issue does not add an iterative verification agent.
+The current assistant uses a bounded evidence-gathering and answer-verification loop with read-only public tools and citation-bearing verified output. Its finite controls, stop reasons, privacy-safe trace, and offline corpus are documented in [bounded-evidence-agent.md](docs/bounded-evidence-agent.md).
 
 ## Local setup
 
@@ -143,7 +143,8 @@ For page-content rollback, set `CONTENT_SOURCE=filesystem` (or unset it) and red
 - [Model-callable tools](docs/model-callable-tools.md): allowlist, public adapters, limits, safe failures/logging, tests, and rollback.
 - [Chat observability runbook](docs/chat-observability.md): completion event schema, metrics, privacy exclusions, pricing limits, and incident response.
 - [Assistant evaluation harness](evals/assistant/README.md): case/source schemas, offline checks, bounded live runner, metrics, and human-review rubric.
-- [Bounded multi-tool evaluation](docs/multi-tool-evaluation.md): versioned fixture corpus, validation, offline replay, bounded metrics, trace privacy, and rollback.
+- [Bounded evidence-agent evaluation](docs/bounded-evidence-agent.md): finite retrieval/inspection/verification architecture, stop reasons, privacy-safe telemetry, and deterministic offline replay.
+- [Bounded multi-tool evaluation](docs/multi-tool-evaluation.md): issue #16 compatibility corpus, validation, offline replay, bounded metrics, trace privacy, and rollback.
 - [CV knowledge operations](docs/cv-knowledge.md): public artifact review, approval-bound indexing, authority, filtering, locale behavior, evaluation, and rollback.
 - [WordPress knowledge indexing](docs/wordpress-knowledge.md): structure-aware chunking, public canonical URLs, claim-domain authority, atomic replacement, version ordering, and the isolated retrieval comparison plan.
 - [WordPress implementation guide](HEADLESS_WORDPRESS_IMPLEMENTATION.md): migration setup and acceptance checklist.

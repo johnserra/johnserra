@@ -308,3 +308,45 @@ test("development multi-tool traces contain bounded counts only and direct answe
     assert.equal(JSON.stringify(event).includes("query"), false);
   }
 });
+
+test("agent traces are exact-once, sanitized, and connect their stop reason to completion telemetry", () => {
+  const lines: string[] = [];
+  const trace = createChatRequestTrace({
+    correlationId,
+    logger: { info(line) { lines.push(line); } },
+  });
+  trace.recordAgentTrace({
+    event: "chat_agent_trace",
+    schemaVersion: 1,
+    correlationId,
+    stopReason: "qualified_completion",
+    stageSequence: ["interpret", "retrieve", "inspect", "draft", "verify", "revise", "stop"],
+    stepCount: 6,
+    selectedCallCount: 2,
+    acceptedToolExecutions: 1,
+    duplicateCallCount: 1,
+    retrievalRounds: 1,
+    verificationPasses: 1,
+    toolFailureCount: 1,
+    evidenceAvailable: true,
+    draftCreated: true,
+    revisionApplied: true,
+    claimTotals: { supported: 2, qualified: 1, removed: 1 },
+    usage: { tokenCount: 700, costUsd: 0.002, completeness: "partial" },
+    durationMs: 1200,
+    latencyBucket: "1_to_5s",
+  });
+  trace.recordAgentTrace({
+    event: "chat_agent_trace", schemaVersion: 1, correlationId, stopReason: "provider_failure",
+    stageSequence: ["stop"], stepCount: 99, selectedCallCount: 99, acceptedToolExecutions: 99,
+    duplicateCallCount: 99, retrievalRounds: 99, verificationPasses: 99, toolFailureCount: 99,
+    evidenceAvailable: false, draftCreated: false, revisionApplied: false,
+    claimTotals: { supported: 0, qualified: 0, removed: 0 },
+    usage: { tokenCount: null, costUsd: null, completeness: "unknown" }, durationMs: 0, latencyBucket: "lt_1s",
+  });
+  const event = trace.complete({ httpStatus: 200, outcome: "success", failureCategory: null });
+  const agentLines = lines.filter((line) => line.includes("chat_agent_trace"));
+  assert.equal(agentLines.length, 1);
+  assert.equal(JSON.stringify(JSON.parse(agentLines[0])).includes("provider_failure"), false);
+  assert.equal(event.agentStopReason, "qualified_completion");
+});

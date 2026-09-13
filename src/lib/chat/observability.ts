@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { HybridRetrievalDiagnostics } from "./retrieval";
 import type { MultiToolTrace } from "./tool-calling";
+import type { AgentStopReason, AgentTraceSummary } from "./agent-loop";
 
 export const CHAT_CORRELATION_HEADER = "X-Chat-Correlation-Id";
 export const CHAT_OBSERVABILITY_EVENT = "chat_request_completed";
@@ -143,7 +144,7 @@ export interface ChatCompletionEvent {
   };
   toolCallCount: number;
   stopReason: ChatStopReason;
-  agentStopReason: null;
+  agentStopReason: AgentStopReason | null;
   model: string | null;
 }
 
@@ -370,6 +371,17 @@ function safeStopReason(value: ChatStopReason): ChatStopReason {
     .includes(value) ? value : null;
 }
 
+function safeAgentStopReason(value: unknown): AgentStopReason | null {
+  const allowed: readonly AgentStopReason[] = [
+    "direct_no_tools", "supported_evidence", "qualified_completion", "insufficient_evidence",
+    "all_tools_failure", "verifier_failure", "inspection_failure", "deadline_exceeded",
+    "budget_exceeded", "provider_failure", "output_limit", "cancellation",
+  ];
+  return typeof value === "string" && allowed.includes(value as AgentStopReason)
+    ? value as AgentStopReason
+    : null;
+}
+
 function safeEvent(event: ChatCompletionEvent): ChatCompletionEvent {
   const generationCost = event.cost.generation;
   const rewriteCost = event.cost.rewrite;
@@ -411,7 +423,7 @@ function safeEvent(event: ChatCompletionEvent): ChatCompletionEvent {
     },
     toolCallCount: finiteNonNegativeInteger(event.toolCallCount) ?? 0,
     stopReason: safeStopReason(event.stopReason),
-    agentStopReason: null,
+    agentStopReason: safeAgentStopReason(event.agentStopReason),
     model: typeof event.model === "string" && event.model.length <= 120 ? event.model : null,
   };
 }
@@ -502,6 +514,7 @@ export interface ChatTraceCompletionInput {
   httpStatus: number;
   outcome: ChatOutcome;
   failureCategory: ChatFailureCategory;
+  agentStopReason?: AgentStopReason;
 }
 
 export interface ChatRequestTrace {
@@ -517,13 +530,15 @@ export interface ChatRequestTrace {
   }): void;
   observeGenerationChunk(chunk: {
     usageMetadata?: unknown;
-    usageTurn?: "selection" | "final";
+    usageTurn?: "direct" | "selection" | "inspection" | "draft" | "verification" | "revision" | "final";
     finishReason?: unknown;
     toolCallCount?: unknown;
     retrieval?: unknown;
   }): void;
   /** Emits only the development/evaluation multi-tool trace; never part of the production completion event. */
   recordMultiToolTrace(trace: MultiToolTrace): void;
+  /** Emits one privacy-safe bounded evidence-agent terminal summary. */
+  recordAgentTrace(trace: AgentTraceSummary): void;
   recordOutput(text: string, utf8Bytes: number): void;
   complete(input: ChatTraceCompletionInput): ChatCompletionEvent;
 }
@@ -544,13 +559,15 @@ export function createChatRequestTrace(options: ChatRequestTraceOptions = {}): C
   let candidateCount: number | null = null;
   let model: string | null = null;
   let generationUsage: NormalizedTokenUsage | null = null;
-  const turnUsage = new Map<"selection" | "final", NormalizedTokenUsage | null>();
+  const turnUsage = new Map<"direct" | "selection" | "inspection" | "draft" | "verification" | "revision" | "final", NormalizedTokenUsage | null>();
   let rewriteUsage: NormalizedTokenUsage | null = null;
   let rewriteModel: string | null = null;
   let stopReason: ChatStopReason = null;
   let toolCallCount = 0;
   let generatedUtf8Bytes: number | null = null;
   let generatedAnswer = "";
+  let agentStopReason: AgentStopReason | null = null;
+  let agentTraceRecorded = false;
   let completed: ChatCompletionEvent | undefined;
 
   const trace: ChatRequestTrace = {
@@ -575,7 +592,7 @@ export function createChatRequestTrace(options: ChatRequestTraceOptions = {}): C
     },
     observeGenerationChunk(chunk) {
       const latestUsage = normalizeUsageMetadata(chunk.usageMetadata);
-      if (chunk.usageTurn === "selection" || chunk.usageTurn === "final") {
+      if (chunk.usageTurn) {
         turnUsage.set(chunk.usageTurn, mergeLatestUsage(turnUsage.get(chunk.usageTurn) ?? null, latestUsage));
       } else {
         // Untagged chunks are the original single-provider no-tool stream.
@@ -638,6 +655,47 @@ export function createChatRequestTrace(options: ChatRequestTraceOptions = {}): C
         // Development telemetry must never change the response path.
       }
     },
+    recordAgentTrace(value) {
+      if (agentTraceRecorded) return;
+      agentTraceRecorded = true;
+      agentStopReason = safeAgentStopReason(value.stopReason);
+      try {
+        const safeTrace = {
+          event: "chat_agent_trace" as const,
+          schemaVersion: 1 as const,
+          correlationId: safeCorrelationId(correlationId),
+          stopReason: safeAgentStopReason(value.stopReason) ?? "provider_failure",
+          stageSequence: Array.isArray(value.stageSequence)
+            ? value.stageSequence.filter((stage): stage is AgentTraceSummary["stageSequence"][number] => ["interpret", "retrieve", "inspect", "draft", "verify", "revise", "stop"].includes(stage)).slice(0, 20)
+            : [],
+          stepCount: finiteNonNegativeInteger(value.stepCount) ?? 0,
+          selectedCallCount: finiteNonNegativeInteger(value.selectedCallCount) ?? 0,
+          acceptedToolExecutions: finiteNonNegativeInteger(value.acceptedToolExecutions) ?? 0,
+          duplicateCallCount: finiteNonNegativeInteger(value.duplicateCallCount) ?? 0,
+          retrievalRounds: finiteNonNegativeInteger(value.retrievalRounds) ?? 0,
+          verificationPasses: finiteNonNegativeInteger(value.verificationPasses) ?? 0,
+          toolFailureCount: finiteNonNegativeInteger(value.toolFailureCount) ?? 0,
+          evidenceAvailable: value.evidenceAvailable === true,
+          draftCreated: value.draftCreated === true,
+          revisionApplied: value.revisionApplied === true,
+          claimTotals: {
+            supported: finiteNonNegativeInteger(value.claimTotals?.supported) ?? 0,
+            qualified: finiteNonNegativeInteger(value.claimTotals?.qualified) ?? 0,
+            removed: finiteNonNegativeInteger(value.claimTotals?.removed) ?? 0,
+          },
+          usage: {
+            tokenCount: finiteNonNegativeInteger(value.usage?.tokenCount) ?? null,
+            costUsd: finiteNonNegative(value.usage?.costUsd),
+            completeness: value.usage?.completeness === "complete" || value.usage?.completeness === "partial" ? value.usage.completeness : "unknown",
+          },
+          durationMs: finiteNonNegative(value.durationMs) ?? 0,
+          latencyBucket: ["lt_1s", "1_to_5s", "5_to_15s", "15_to_45s", "over_45s"].includes(value.latencyBucket) ? value.latencyBucket : "over_45s",
+        };
+        (options.logger ?? console).info(JSON.stringify(safeTrace));
+      } catch {
+        // Agent telemetry must never change the response path.
+      }
+    },
     recordOutput(text, utf8Bytes) {
       generatedAnswer += text;
       generatedUtf8Bytes = finiteNonNegativeInteger(utf8Bytes) ?? generatedUtf8Bytes ?? 0;
@@ -683,7 +741,7 @@ export function createChatRequestTrace(options: ChatRequestTraceOptions = {}): C
         cost: { generation: generationCost, rewrite: rewriteCost, totalUsd },
         toolCallCount,
         stopReason,
-        agentStopReason: null,
+        agentStopReason: input.agentStopReason ?? agentStopReason,
         model,
       };
       logChatCompletion(completed, options.logger);

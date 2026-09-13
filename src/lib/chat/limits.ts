@@ -10,6 +10,20 @@ export const CHAT_MODEL_DEADLINE_MS = 45_000;
 
 /** Model-selected tool limits. Tool result caps are measured as UTF-8 bytes. */
 export const CHAT_MAX_TOOL_CALLS = 5;
+/** Issue #19 bounded evidence-agent limits. These are deliberately lower than the legacy batch cap. */
+export const AGENT_MAX_ACCEPTED_TOOL_EXECUTIONS = 3;
+export const AGENT_MAX_RETRIEVAL_ROUNDS = 2;
+export const AGENT_MAX_VERIFICATION_PASSES = 1;
+export const AGENT_MAX_STEPS = 12;
+export const AGENT_OVERALL_DEADLINE_MS = 45_000;
+export const AGENT_MAX_INTERNAL_OUTPUT_BYTES = 24 * 1024;
+export const AGENT_MAX_INTERNAL_OUTPUT_TOKENS = 1_024;
+export const AGENT_MAX_RESERVED_TOKENS = 4_096;
+export const AGENT_MAX_ESTIMATED_COST_USD = 0.05;
+export const AGENT_PROVIDER_MAX_OUTPUT_TOKENS = 768;
+export const AGENT_VERIFIER_MAX_OUTPUT_TOKENS = 384;
+export const AGENT_SAFE_ANSWER = "The available public evidence is insufficient to answer that reliably. Please ask about a documented project, career entry, or public contact option.";
+export const AGENT_QUALIFIED_ANSWER = "I can only confirm what is supported by the available public sources. Some requested details could not be verified, so I’m leaving them out.";
 export const CHAT_TOOL_DEADLINES_MS = {
   search_knowledge: 10_000,
   get_cv_timeline: 4_000,

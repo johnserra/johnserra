@@ -1,6 +1,6 @@
 # Bounded multi-tool evaluation
 
-Issue #16 demonstrates and evaluates the issue #18 tool architecture without turning chat into an open-ended agent. One Gemini selection response may request several approved functions. The server validates the complete batch, rejects more than five requested calls before dispatch, canonicalizes equivalent validated calls, executes each distinct call in deterministic provider order, and permits at most one tool-disabled final model response. Issue #19 remains the separate verification-agent follow-on.
+Issue #16 demonstrates and evaluates the issue #18 tool architecture without turning chat into an open-ended agent. One Gemini selection response may request several approved functions. The server validates the complete batch, rejects more than five requested calls before dispatch, canonicalizes equivalent validated calls, executes each distinct call in deterministic provider order, and permits at most one tool-disabled final model response. Production issue #19 now uses the bounded evidence agent documented in [bounded-evidence-agent.md](bounded-evidence-agent.md); this evaluator remains a compatibility corpus for the reusable tool validation/dispatch safety layer.
 
 ## Corpus and commands
 

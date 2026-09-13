@@ -76,6 +76,10 @@ export interface GenerationRequest {
     tools?: Tool[];
     toolConfig?: ToolConfig;
     automaticFunctionCalling?: { disable?: boolean; maximumRemoteCalls?: number };
+    maxOutputTokens?: number;
+    temperature?: number;
+    responseMimeType?: string;
+    responseJsonSchema?: Record<string, unknown>;
   };
 }
 
@@ -83,7 +87,7 @@ export interface ChatStreamChunk {
   text?: string;
   usageMetadata?: ProviderUsageMetadata;
   /** Provider snapshots from separate model turns are aggregated independently. */
-  usageTurn?: "selection" | "final";
+  usageTurn?: "direct" | "selection" | "inspection" | "draft" | "verification" | "revision" | "final";
   finishReason?: string;
   functionCalls?: FunctionCall[];
   modelContent?: Content;

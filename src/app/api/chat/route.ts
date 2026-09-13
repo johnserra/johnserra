@@ -1,10 +1,10 @@
 import { CHAT_MODEL } from "@/lib/chat/core";
-import { streamModelSelectedChat } from "@/lib/chat/tool-calling";
+import { streamBoundedEvidenceAgent, type AgentStopReason } from "@/lib/chat/agent-loop";
 import { serverChatDependencies, serverChatToolRegistry, consumeChatRateLimit } from "@/lib/chat/server";
 import {
   CHAT_MAX_OUTPUT_BYTES,
   CHAT_MAX_BODY_BYTES,
-  CHAT_MODEL_DEADLINE_MS,
+  AGENT_OVERALL_DEADLINE_MS,
   appendUtf8Output,
 } from "@/lib/chat/limits";
 import { ChatDeadlineError, createLinkedAbortController, streamWithChatDeadline } from "@/lib/chat/deadline";
@@ -19,6 +19,30 @@ import {
   failureCategoryForCode,
   type ChatRequestTrace,
 } from "@/lib/chat/observability";
+
+function fallbackAgentTrace(reason: AgentStopReason, correlationId: string) {
+  return {
+    event: "chat_agent_trace" as const,
+    schemaVersion: 1 as const,
+    correlationId,
+    stopReason: reason,
+    stageSequence: ["interpret" as const, "stop" as const],
+    stepCount: 1,
+    selectedCallCount: 0,
+    acceptedToolExecutions: 0,
+    duplicateCallCount: 0,
+    retrievalRounds: 0,
+    verificationPasses: 0,
+    toolFailureCount: 0,
+    evidenceAvailable: false,
+    draftCreated: false,
+    revisionApplied: false,
+    claimTotals: { supported: 0, qualified: 0, removed: 0 },
+    usage: { tokenCount: null, costUsd: null, completeness: "unknown" as const },
+    durationMs: 0,
+    latencyBucket: "over_45s" as const,
+  };
+}
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -148,7 +172,7 @@ export async function POST(req: Request) {
         };
         try {
           for await (const chunk of streamWithChatDeadline(
-            async (signal) => streamModelSelectedChat(
+            async (signal) => streamBoundedEvidenceAgent(
               validated.value.messages,
               validated.value.locale,
               serverChatDependencies,
@@ -157,10 +181,10 @@ export async function POST(req: Request) {
               {
                 correlationId: trace.correlationId,
                 logger: console,
-                onMultiToolTrace: trace.recordMultiToolTrace,
+                onAgentTrace: trace.recordAgentTrace,
               },
             ),
-            { stage: "model", deadlineMs: CHAT_MODEL_DEADLINE_MS, signal: linkedModelController.signal },
+            { stage: "model", deadlineMs: AGENT_OVERALL_DEADLINE_MS, signal: linkedModelController.signal },
           )) {
             trace.observeGenerationChunk(chunk);
             if (linkedModelController.signal.aborted) break;
@@ -200,9 +224,11 @@ export async function POST(req: Request) {
           }
         } catch (error) {
           if (linkedModelController.signal.aborted || streamCancelled || req.signal.aborted) {
+            trace.recordAgentTrace(fallbackAgentTrace("cancellation", trace.correlationId));
             finalOutcome = "cancelled";
             finalFailureCategory = "cancelled";
           } else {
+            trace.recordAgentTrace(fallbackAgentTrace(error instanceof ChatDeadlineError ? "deadline_exceeded" : "provider_failure", trace.correlationId));
             const safe = safeError(error, error instanceof ChatDeadlineError ? "MODEL_TIMEOUT" : "MODEL_ERROR");
             send({ type: "error", code: safe.code, message: safe.message });
             sentTerminalFrame = true;

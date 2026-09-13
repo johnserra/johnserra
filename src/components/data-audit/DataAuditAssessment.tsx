@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { ArrowLeft, ArrowRight, Checkmark } from "@carbon/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -79,6 +79,7 @@ function readSavedSession(): {
   answers: Partial<Record<ScoredQuestionId, ScoredResponse>>;
   redFlags: Partial<Record<FlagId, FlagResponse>>;
 } | null {
+  if (typeof window === "undefined") return null;
   try {
     const parsed: unknown = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null");
     if (!isRecord(parsed) || parsed.version !== ASSESSMENT_VERSION) return null;
@@ -127,6 +128,9 @@ function readSavedSession(): {
 }
 
 const selectClassName = "h-11 w-full rounded-field border border-hair bg-ground-2 px-4 text-sm text-ink focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50";
+const subscribeToHydration = () => () => {};
+const getHydrationClientSnapshot = () => true;
+const getHydrationServerSnapshot = () => false;
 
 function Progress({ step, label }: { step: AssessmentStep; label: (key: string, values?: Record<string, number>) => string }) {
   const current = ASSESSMENT_STEPS.indexOf(step) + 1;
@@ -194,28 +198,27 @@ function RadioQuestion<T extends string>({
 }
 
 export function DataAuditAssessment() {
+  const hydrated = useSyncExternalStore(
+    subscribeToHydration,
+    getHydrationClientSnapshot,
+    getHydrationServerSnapshot,
+  );
+
+  return <DataAuditAssessmentState key={hydrated ? "hydrated" : "initial"} hydrated={hydrated} />;
+}
+
+function DataAuditAssessmentState({ hydrated }: { hydrated: boolean }) {
   const t = useTranslations("DataAudit");
   const locale = useLocale();
-  const [screen, setScreen] = useState<Screen>("landing");
-  const [context, setContext] = useState<ContextDraft>({});
-  const [answers, setAnswers] = useState<Partial<Record<ScoredQuestionId, ScoredResponse>>>({});
-  const [redFlags, setRedFlags] = useState<Partial<Record<FlagId, FlagResponse>>>({});
+  const [savedSession] = useState(() => (hydrated ? readSavedSession() : null));
+  const [screen, setScreen] = useState<Screen>(() => savedSession?.screen ?? "landing");
+  const [context, setContext] = useState<ContextDraft>(() => savedSession?.context ?? {});
+  const [answers, setAnswers] = useState<Partial<Record<ScoredQuestionId, ScoredResponse>>>(() => savedSession?.answers ?? {});
+  const [redFlags, setRedFlags] = useState<Partial<Record<FlagId, FlagResponse>>>(() => savedSession?.redFlags ?? {});
   const [error, setError] = useState("");
   const [submissionState, setSubmissionState] = useState<"idle" | "submitting" | "error">("idle");
-  const [hydrated, setHydrated] = useState(false);
   const trackedScreens = useRef(new Set<string>());
   const result = useMemo(() => scoreAssessment(answers, redFlags), [answers, redFlags]);
-
-  useEffect(() => {
-    const saved = readSavedSession();
-    if (saved) {
-      setScreen(saved.screen);
-      setContext(saved.context);
-      setAnswers(saved.answers);
-      setRedFlags(saved.redFlags);
-    }
-    setHydrated(true);
-  }, []);
 
   useEffect(() => {
     if (!hydrated || screen === "lead" || screen === "plan") return;

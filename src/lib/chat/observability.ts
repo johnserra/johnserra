@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { HybridRetrievalDiagnostics } from "./retrieval";
+import type { MultiToolTrace } from "./tool-calling";
 
 export const CHAT_CORRELATION_HEADER = "X-Chat-Correlation-Id";
 export const CHAT_OBSERVABILITY_EVENT = "chat_request_completed";
@@ -521,6 +522,8 @@ export interface ChatRequestTrace {
     toolCallCount?: unknown;
     retrieval?: unknown;
   }): void;
+  /** Emits only the development/evaluation multi-tool trace; never part of the production completion event. */
+  recordMultiToolTrace(trace: MultiToolTrace): void;
   recordOutput(text: string, utf8Bytes: number): void;
   complete(input: ChatTraceCompletionInput): ChatCompletionEvent;
 }
@@ -595,6 +598,44 @@ export function createChatRequestTrace(options: ChatRequestTraceOptions = {}): C
             ? null
             : candidateCount + observedCandidateCount;
         }
+      }
+    },
+    recordMultiToolTrace(value) {
+      if (process.env.NODE_ENV === "production") return;
+      try {
+        const safeCalls = Array.isArray(value.calls)
+          ? value.calls.map((call) => ({
+            tool: typeof call?.tool === "string" && call.tool.length <= 80 ? call.tool : "unknown",
+            disposition: call?.disposition === "success"
+              || call?.disposition === "safe_failure"
+              || call?.disposition === "duplicate"
+              || call?.disposition === "fatal_failure"
+              ? call.disposition
+              : "fatal_failure",
+            category: typeof call?.category === "string" && call.category.length <= 40 ? call.category : null,
+            acceptedResultKind: typeof call?.acceptedResultKind === "string" && call.acceptedResultKind.length <= 80
+              ? call.acceptedResultKind
+              : null,
+            acceptedResultCount: finiteNonNegativeInteger(call?.acceptedResultCount) ?? null,
+            citationCount: finiteNonNegativeInteger(call?.citationCount) ?? null,
+          }))
+          : [];
+        const stopStates: MultiToolTrace["finalStopState"][] = [
+          "direct_no_tools", "answered_with_evidence", "partial_evidence", "all_tools_failed", "fatal_failure", "cancelled",
+        ];
+        const safeTrace = {
+          event: "chat_multi_tool_trace" as const,
+          schemaVersion: 1 as const,
+          correlationId: safeCorrelationId(correlationId),
+          selectedCount: finiteNonNegativeInteger(value.selectedCount) ?? 0,
+          uniqueExecutionCount: finiteNonNegativeInteger(value.uniqueExecutionCount) ?? 0,
+          duplicateCount: finiteNonNegativeInteger(value.duplicateCount) ?? 0,
+          calls: safeCalls,
+          finalStopState: stopStates.includes(value.finalStopState) ? value.finalStopState : "fatal_failure" as const,
+        };
+        (options.logger ?? console).info(JSON.stringify(safeTrace));
+      } catch {
+        // Development telemetry must never change the response path.
       }
     },
     recordOutput(text, utf8Bytes) {

@@ -1,5 +1,6 @@
 import type { FunctionCall, FunctionDeclaration } from "@google/genai";
 import type { Locale } from "@/types";
+import { projectsPath } from "@/lib/routes";
 import type { SiteContentItem } from "@/lib/site-content";
 import type { CvDocument } from "@/lib/knowledge/cv";
 import { CV_CANONICAL_URL } from "@/lib/knowledge/cv";
@@ -133,6 +134,7 @@ export type ToolFailureCategory =
   | "handler_failure"
   | "result_too_large"
   | "invalid_result"
+  | "all_tools_failed"
   | "unexpected_follow_on";
 
 const SAFE_FAILURE_MESSAGES: Record<ToolFailureCategory, string> = {
@@ -144,6 +146,7 @@ const SAFE_FAILURE_MESSAGES: Record<ToolFailureCategory, string> = {
   handler_failure: "The requested information is temporarily unavailable.",
   result_too_large: "The requested information was too large to return.",
   invalid_result: "The requested information could not be safely returned.",
+  all_tools_failed: "The requested information is temporarily unavailable.",
   unexpected_follow_on: "The assistant could not complete that request.",
 };
 
@@ -208,7 +211,7 @@ const PROJECT_SCHEMA = {
   type: "object",
   properties: {
     title: { type: "string", minLength: 1, maxLength: 500 },
-    slug: { type: "string", minLength: 1, maxLength: 100 },
+    slug: { type: "string", pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$", minLength: 1, maxLength: 100 },
     summary: { type: ["string", "null"], maxLength: 2_000 },
     details: { type: "string", maxLength: 12_000 },
     citation: CITATION_SCHEMA,
@@ -298,6 +301,37 @@ const CONTACT_RESULT_SCHEMA = {
   additionalProperties: false,
 };
 
+export interface SafeToolFailureResponse {
+  error: {
+    type: "tool_error";
+    category: "timeout" | "handler_failure" | "result_too_large" | "invalid_result";
+    retryable: boolean;
+  };
+}
+
+export type DegradableToolFailureCategory = SafeToolFailureResponse["error"]["category"];
+
+const DEGRADABLE_TOOL_FAILURES: readonly DegradableToolFailureCategory[] = [
+  "timeout",
+  "handler_failure",
+  "result_too_large",
+  "invalid_result",
+];
+
+export function isDegradableToolFailureCategory(category: ToolFailureCategory): category is DegradableToolFailureCategory {
+  return DEGRADABLE_TOOL_FAILURES.includes(category as DegradableToolFailureCategory);
+}
+
+export function safeToolFailureResponse(category: DegradableToolFailureCategory): SafeToolFailureResponse {
+  return {
+    error: {
+      type: "tool_error",
+      category,
+      retryable: category === "timeout" || category === "handler_failure",
+    },
+  };
+}
+
 export const CHAT_TOOL_DECLARATIONS: readonly FunctionDeclaration[] = [
   {
     name: "search_knowledge",
@@ -367,6 +401,11 @@ function isPublicUrl(value: unknown, allowExternalContactUrls = false): value is
   return allowExternalContactUrls && (value === "https://linkedin.com/in/johnserra" || value === "mailto:john@serra.us");
 }
 
+function projectSlugFromUrl(value: string): string | null {
+  const match = value.match(/^https:\/\/johnserra\.com(?:\/tr\/projeler|\/projects)\/([a-z0-9]+(?:-[a-z0-9]+)*)$/u);
+  return match?.[1] ?? null;
+}
+
 function isCitation(value: unknown, allowExternalContactUrls = false): value is ToolCitation {
   return isRecord(value)
     && exactKeys(value, ["title", "url"])
@@ -403,10 +442,12 @@ function isProject(value: unknown): value is ProjectDetailsResult["project"] {
     && exactKeys(value, ["title", "slug", "summary", "details", "citation"])
     && nonEmptyString(value.title, 500)
     && nonEmptyString(value.slug, 100)
+    && /^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(value.slug)
     && nullableString(value.summary, 2_000)
     && typeof value.details === "string"
     && value.details.length <= 12_000
-    && isCitation(value.citation);
+    && isCitation(value.citation)
+    && projectSlugFromUrl(value.citation.url) === value.slug;
 }
 
 function isArticle(value: unknown): value is ArticleSummary {
@@ -499,8 +540,33 @@ export function validateToolArguments(name: string, value: unknown): ToolArgumen
   return null;
 }
 
+function stableSerialize(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(stableSerialize).join(",")}]`;
+  if (isRecord(value)) {
+    return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${stableSerialize(value[key])}`).join(",")}}`;
+  }
+  return JSON.stringify(value) ?? "null";
+}
+
+/** Stable identity for a validated call; provider IDs and object key order are excluded. */
+export function canonicalToolCallIdentity(call: FunctionCall): string | null {
+  const name = typeof call.name === "string" && CHAT_TOOL_NAMES.includes(call.name as ChatToolName)
+    ? call.name as ChatToolName
+    : null;
+  if (!name) return null;
+  const args = validateToolArguments(name, call.args);
+  if (!args) return null;
+  const normalizedArgs = "query" in args
+    ? { ...args, query: args.query.trim() }
+    : "slug" in args
+      ? { ...args, slug: args.slug.trim() }
+      : args;
+  return `${name}:${stableSerialize(normalizedArgs)}`;
+}
+
 function canonicalSiteUrl(localeValue: Locale, section: "projects" | "blog" | "contact", slug?: string): string {
   const prefix = localeValue === "tr" ? "/tr" : "";
+  if (section === "projects") return `https://johnserra.com${prefix}${projectsPath(localeValue, slug)}`;
   return `https://johnserra.com${prefix}/${section}${slug ? `/${slug}` : ""}`;
 }
 
@@ -625,6 +691,20 @@ export interface AcceptedToolExecution {
   result: ChatToolResult;
   outputBytes: number;
   retrieval?: ChatRetrievalObservation;
+}
+
+export function summarizeAcceptedToolResult(result: ChatToolResult): {
+  kind: ChatToolResult["kind"];
+  resultCount: number;
+  citationCount: number;
+} {
+  let resultCount = 0;
+  if (result.kind === "search_knowledge") resultCount = result.evidence.length;
+  if (result.kind === "get_cv_timeline") resultCount = result.entries.length;
+  if (result.kind === "get_project_details") resultCount = 1;
+  if (result.kind === "list_articles") resultCount = result.articles.length;
+  if (result.kind === "get_contact_options") resultCount = result.options.length;
+  return { kind: result.kind, resultCount, citationCount: result.citations.length };
 }
 
 export async function dispatchToolCall(

@@ -11,6 +11,8 @@
     "test:data-audit": "node --import tsx --test src/lib/data-audit.test.ts",
     "eval:assistant": "NODE_OPTIONS=--conditions=react-server node --import tsx scripts/evaluation/cli.ts",
     "eval:assistant:validate": "node --import tsx scripts/evaluation/cli.ts --validate",
+    "eval:tool-calling:validate": "node --import tsx scripts/evaluation/tool-calling-cli.ts --validate-only",
+    "eval:tool-calling:offline": "node --import tsx scripts/evaluation/tool-calling-cli.ts --offline",
     "test:assistant": "node --import tsx --test scripts/evaluation/*.test.ts src/lib/chat/*.test.ts",
     "test:cv": "node --import tsx --test src/lib/knowledge/*.test.ts scripts/evaluation/cv.test.ts",
     "test:knowledge:sql": "node --import tsx supabase/tests/structure-aware.test.ts",

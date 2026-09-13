@@ -11,6 +11,7 @@ import {
   normalizeStopReason,
   normalizeUsageMetadata,
   serializeChatCompletionEvent,
+  sumSeparateUsageSnapshots,
 } from "./observability";
 
 const correlationId = "123e4567-e89b-42d3-a456-426614174000";
@@ -69,6 +70,68 @@ test("usage normalization rejects invalid counts and streaming snapshots are lat
     totalTokens: 170,
   });
   assert.deepEqual(mergeLatestUsage(first, null), first);
+});
+
+test("separate selection and final turn snapshots are summed after each turn keeps its latest value", () => {
+  const trace = createChatRequestTrace({ correlationId, logger: { info() {} } });
+  trace.setModel("gemini-2.5-flash");
+  trace.observeGenerationChunk({
+    usageTurn: "selection",
+    usageMetadata: { promptTokenCount: 100, candidatesTokenCount: 4, totalTokenCount: 104 },
+  });
+  trace.observeGenerationChunk({
+    usageTurn: "selection",
+    usageMetadata: { promptTokenCount: 120, candidatesTokenCount: 6, totalTokenCount: 126 },
+  });
+  trace.observeGenerationChunk({
+    usageTurn: "final",
+    usageMetadata: { promptTokenCount: 200, candidatesTokenCount: 8, totalTokenCount: 208 },
+  });
+  trace.observeGenerationChunk({
+    usageTurn: "final",
+    usageMetadata: { promptTokenCount: 230, candidatesTokenCount: 10, totalTokenCount: 240 },
+  });
+  assert.deepEqual(trace.complete({ httpStatus: 200, outcome: "success", failureCategory: null }).usage.generation, {
+    promptTokens: 350,
+    cachedInputTokens: null,
+    candidateTokens: 16,
+    thinkingTokens: null,
+    toolPromptTokens: null,
+    totalTokens: 366,
+  });
+  assert.deepEqual(sumSeparateUsageSnapshots([
+    normalizeUsageMetadata({ promptTokenCount: 3, totalTokenCount: 3 }),
+    normalizeUsageMetadata({ promptTokenCount: 4, totalTokenCount: 4 }),
+  ]), {
+    promptTokens: 7,
+    cachedInputTokens: null,
+    candidateTokens: null,
+    thinkingTokens: null,
+    toolPromptTokens: null,
+    totalTokens: 7,
+  });
+});
+
+test("search tool retrieval observations are bounded and other paths stay null", () => {
+  const searchTrace = createChatRequestTrace({ correlationId, logger: { info() {} } });
+  searchTrace.observeGenerationChunk({ retrieval: { resultCount: 2, candidateCount: null, noContext: false } });
+  const searchEvent = searchTrace.complete({ httpStatus: 200, outcome: "success", failureCategory: null });
+  assert.deepEqual(searchEvent.retrieval, { resultCount: 2, candidateCount: null, noContext: false });
+
+  const emptySearchTrace = createChatRequestTrace({ correlationId, logger: { info() {} } });
+  emptySearchTrace.observeGenerationChunk({ retrieval: { resultCount: 0, candidateCount: null, noContext: true } });
+  assert.deepEqual(emptySearchTrace.complete({ httpStatus: 200, outcome: "success", failureCategory: null }).retrieval, {
+    resultCount: 0,
+    candidateCount: null,
+    noContext: true,
+  });
+
+  const directTrace = createChatRequestTrace({ correlationId, logger: { info() {} } });
+  assert.deepEqual(directTrace.complete({ httpStatus: 200, outcome: "success", failureCategory: null }).retrieval, {
+    resultCount: null,
+    candidateCount: null,
+    noContext: null,
+  });
 });
 
 test("Gemini 2.5 Flash standard cost arithmetic avoids cached and thinking double counts", () => {

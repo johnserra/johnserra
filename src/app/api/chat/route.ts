@@ -1,17 +1,18 @@
-import { prepareChat, streamPreparedChat } from "@/lib/chat/core";
-import { serverChatDependencies, consumeChatRateLimit } from "@/lib/chat/server";
+import { CHAT_MODEL } from "@/lib/chat/core";
+import { streamModelSelectedChat } from "@/lib/chat/tool-calling";
+import { serverChatDependencies, serverChatToolRegistry, consumeChatRateLimit } from "@/lib/chat/server";
 import {
   CHAT_MAX_OUTPUT_BYTES,
   CHAT_MAX_BODY_BYTES,
   CHAT_MODEL_DEADLINE_MS,
-  CHAT_PREPARATION_DEADLINE_MS,
   appendUtf8Output,
 } from "@/lib/chat/limits";
-import { ChatDeadlineError, createLinkedAbortController, streamWithChatDeadline, withChatDeadline } from "@/lib/chat/deadline";
+import { ChatDeadlineError, createLinkedAbortController, streamWithChatDeadline } from "@/lib/chat/deadline";
 import { createChatErrorResponse } from "@/lib/chat/http";
 import { encodeChatFrame, terminalChatFrame } from "@/lib/chat/protocol";
 import { CHAT_SESSION_HEADER, extractTrustedVercelIp, isValidChatSession, ChatRateLimitServiceError } from "@/lib/chat/rate-limit";
 import { parseChatJson, validateChatRequest, validateContentType, type ChatErrorCode } from "@/lib/chat/validation";
+import { ToolDispatchError } from "@/lib/chat/tools";
 import {
   addCorrelationHeader,
   createChatRequestTrace,
@@ -30,6 +31,9 @@ function safeError(error: unknown, fallbackCode: ChatErrorCode): { code: ChatErr
   }
   if (error instanceof ChatRateLimitServiceError) {
     return { code: "SERVICE_UNAVAILABLE", message: "Chat is temporarily unavailable. Please try again shortly.", status: 503 };
+  }
+  if (error instanceof ToolDispatchError) {
+    return { code: "TOOL_ERROR", message: error.safeMessage, status: 503 };
   }
   if (error instanceof DOMException && error.name === "AbortError") {
     return { code: "CLIENT_ABORTED", message: "The request was cancelled.", status: 499 };
@@ -125,23 +129,7 @@ export async function POST(req: Request) {
       return completeJsonError(trace, 499, "CLIENT_ABORTED", "The request was cancelled.");
     }
 
-    let prepared: Awaited<ReturnType<typeof prepareChat>>;
-    trace.beginStage("preparation");
-    try {
-      prepared = await withChatDeadline(
-        (signal) => prepareChat(validated.value.messages, validated.value.locale, serverChatDependencies, undefined, signal),
-        { stage: "preparation", deadlineMs: CHAT_PREPARATION_DEADLINE_MS, signal: req.signal },
-      );
-    } catch (error) {
-      trace.endStage("preparation");
-      const safe = safeError(error, "RETRIEVAL_ERROR");
-      return completeJsonError(trace, safe.status, safe.code, safe.message);
-    }
-    trace.endStage("preparation");
-    trace.setPreparedData(prepared);
-    if (prepared.retrievalError) {
-      return completeJsonError(trace, 503, "RETRIEVAL_ERROR", "Knowledge retrieval is temporarily unavailable. Please try again shortly.");
-    }
+    trace.setModel(CHAT_MODEL);
 
     const linkedModelController = createLinkedAbortController(req.signal);
     let streamCancelled = false;
@@ -160,7 +148,14 @@ export async function POST(req: Request) {
         };
         try {
           for await (const chunk of streamWithChatDeadline(
-            async (signal) => streamPreparedChat(prepared, serverChatDependencies, signal),
+            async (signal) => streamModelSelectedChat(
+              validated.value.messages,
+              validated.value.locale,
+              serverChatDependencies,
+              serverChatToolRegistry,
+              signal,
+              { correlationId: trace.correlationId, logger: console },
+            ),
             { stage: "model", deadlineMs: CHAT_MODEL_DEADLINE_MS, signal: linkedModelController.signal },
           )) {
             trace.observeGenerationChunk(chunk);

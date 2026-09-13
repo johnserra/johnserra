@@ -32,6 +32,7 @@ export type ChatFailureCategory =
   | "retrieval_failure"
   | "model_timeout"
   | "provider_error"
+  | "tool_error"
   | "empty_output"
   | "output_limit"
   | null;
@@ -202,6 +203,27 @@ export function mergeLatestUsage(
   };
 }
 
+function sumKnownUsageField(values: readonly (number | null)[]): number | null {
+  const known = values.filter((value): value is number => value !== null);
+  return known.length ? known.reduce((total, value) => total + value, 0) : null;
+}
+
+/** Sum one latest snapshot per independent provider turn; never sum chunks within a turn. */
+export function sumSeparateUsageSnapshots(
+  snapshots: readonly (NormalizedTokenUsage | null)[],
+): NormalizedTokenUsage | null {
+  const present = snapshots.filter((snapshot): snapshot is NormalizedTokenUsage => snapshot !== null);
+  if (!present.length) return null;
+  return {
+    promptTokens: sumKnownUsageField(present.map((snapshot) => snapshot.promptTokens)),
+    cachedInputTokens: sumKnownUsageField(present.map((snapshot) => snapshot.cachedInputTokens)),
+    candidateTokens: sumKnownUsageField(present.map((snapshot) => snapshot.candidateTokens)),
+    thinkingTokens: sumKnownUsageField(present.map((snapshot) => snapshot.thinkingTokens)),
+    toolPromptTokens: sumKnownUsageField(present.map((snapshot) => snapshot.toolPromptTokens)),
+    totalTokens: sumKnownUsageField(present.map((snapshot) => snapshot.totalTokens)),
+  };
+}
+
 export function normalizeStopReason(value: unknown): ChatStopReason {
   if (typeof value !== "string") return null;
   switch (value) {
@@ -337,7 +359,7 @@ function safeFailureCategory(value: ChatFailureCategory): ChatFailureCategory {
   const allowed: readonly Exclude<ChatFailureCategory, null>[] = [
     "unsupported_media_type", "invalid_session", "invalid_request", "body_too_large", "service_unavailable",
     "rate_limited", "cancelled", "preparation_timeout", "preparation_failure", "retrieval_failure",
-    "model_timeout", "provider_error", "empty_output", "output_limit",
+    "model_timeout", "provider_error", "tool_error", "empty_output", "output_limit",
   ];
   return value !== null && allowed.includes(value) ? value : null;
 }
@@ -486,6 +508,7 @@ export interface ChatRequestTrace {
   beginStage(stage: "validation" | "rateLimiting" | "preparation" | "generation"): void;
   endStage(stage: "validation" | "rateLimiting" | "preparation" | "generation"): void;
   setLocale(locale: "en" | "tr"): void;
+  setModel(model: string): void;
   setPreparedData(prepared: {
     matches: readonly unknown[];
     diagnostics?: HybridRetrievalDiagnostics;
@@ -493,8 +516,10 @@ export interface ChatRequestTrace {
   }): void;
   observeGenerationChunk(chunk: {
     usageMetadata?: unknown;
+    usageTurn?: "selection" | "final";
     finishReason?: unknown;
     toolCallCount?: unknown;
+    retrieval?: unknown;
   }): void;
   recordOutput(text: string, utf8Bytes: number): void;
   complete(input: ChatTraceCompletionInput): ChatCompletionEvent;
@@ -516,6 +541,7 @@ export function createChatRequestTrace(options: ChatRequestTraceOptions = {}): C
   let candidateCount: number | null = null;
   let model: string | null = null;
   let generationUsage: NormalizedTokenUsage | null = null;
+  const turnUsage = new Map<"selection" | "final", NormalizedTokenUsage | null>();
   let rewriteUsage: NormalizedTokenUsage | null = null;
   let rewriteModel: string | null = null;
   let stopReason: ChatStopReason = null;
@@ -535,6 +561,7 @@ export function createChatRequestTrace(options: ChatRequestTraceOptions = {}): C
       if (state.startedAt !== null) state.durationMs = Math.max(0, now() - state.startedAt);
     },
     setLocale(value) { locale = value; },
+    setModel(value) { model = value; },
     setPreparedData(prepared) {
       resultCount = prepared.matches.length;
       candidateCount = prepared.diagnostics?.retrieval.candidateCount ?? null;
@@ -544,10 +571,31 @@ export function createChatRequestTrace(options: ChatRequestTraceOptions = {}): C
       rewriteModel = prepared.diagnostics?.rewrite.model ?? null;
     },
     observeGenerationChunk(chunk) {
-      generationUsage = mergeLatestUsage(generationUsage, normalizeUsageMetadata(chunk.usageMetadata));
+      const latestUsage = normalizeUsageMetadata(chunk.usageMetadata);
+      if (chunk.usageTurn === "selection" || chunk.usageTurn === "final") {
+        turnUsage.set(chunk.usageTurn, mergeLatestUsage(turnUsage.get(chunk.usageTurn) ?? null, latestUsage));
+      } else {
+        // Untagged chunks are the original single-provider no-tool stream.
+        generationUsage = mergeLatestUsage(generationUsage, latestUsage);
+      }
       if (chunk.finishReason !== undefined && chunk.finishReason !== null) stopReason = normalizeStopReason(chunk.finishReason);
       const count = finiteNonNegativeInteger(chunk.toolCallCount);
       if (count !== undefined) toolCallCount = count;
+      const retrieval = chunk.retrieval;
+      if (isRecord(retrieval)) {
+        const observedResultCount = finiteNonNegativeInteger(retrieval.resultCount);
+        const observedCandidateCount = retrieval.candidateCount === null
+          ? null
+          : finiteNonNegativeInteger(retrieval.candidateCount);
+        if (observedResultCount !== undefined
+          && (retrieval.candidateCount === null || observedCandidateCount !== undefined)
+          && typeof retrieval.noContext === "boolean") {
+          resultCount = (resultCount ?? 0) + observedResultCount;
+          candidateCount = candidateCount === null || observedCandidateCount === null || observedCandidateCount === undefined
+            ? null
+            : candidateCount + observedCandidateCount;
+        }
+      }
     },
     recordOutput(text, utf8Bytes) {
       generatedAnswer += text;
@@ -556,7 +604,10 @@ export function createChatRequestTrace(options: ChatRequestTraceOptions = {}): C
     complete(input) {
       if (completed) return completed;
       (Object.keys(stages) as Array<keyof typeof stages>).forEach((stage) => trace.endStage(stage));
-      const generationCost = estimateGeminiTextCost(model ?? "", generationUsage);
+      const observedGenerationUsage = turnUsage.size
+        ? sumSeparateUsageSnapshots([...turnUsage.values()])
+        : generationUsage;
+      const generationCost = estimateGeminiTextCost(model ?? "", observedGenerationUsage);
       const rewriteCost = estimateGeminiTextCost(rewriteModel ?? "", rewriteUsage);
       const totalUsd = generationCost || rewriteCost
         ? (generationCost?.estimateUsd ?? 0) + (rewriteCost?.estimateUsd ?? 0)
@@ -587,7 +638,7 @@ export function createChatRequestTrace(options: ChatRequestTraceOptions = {}): C
         generatedUtf8Bytes,
         citationCount: generatedUtf8Bytes === null ? null : countCitations(generatedAnswer),
         hasCitations: generatedUtf8Bytes === null ? null : countCitations(generatedAnswer) > 0,
-        usage: { generation: generationUsage, rewrite: rewriteUsage, embeddingTokens: null },
+        usage: { generation: observedGenerationUsage, rewrite: rewriteUsage, embeddingTokens: null },
         cost: { generation: generationCost, rewrite: rewriteCost, totalUsd },
         toolCallCount,
         stopReason,
@@ -619,6 +670,7 @@ export function failureCategoryForCode(code: string): ChatFailureCategory {
     case "MODEL_TIMEOUT": return "model_timeout";
     case "OUTPUT_TOO_LARGE": return "output_limit";
     case "MODEL_ERROR": return "provider_error";
+    case "TOOL_ERROR": return "tool_error";
     case "SERVICE_UNAVAILABLE": return "service_unavailable";
     default: return "provider_error";
   }

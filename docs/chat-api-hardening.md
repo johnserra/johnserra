@@ -14,7 +14,7 @@ Text limits are measured in UTF-8 bytes, not JavaScript characters:
 | Aggregate input | 32 KiB |
 | Generated output | 32 KiB |
 
-The endpoint returns JSON errors for request, media-type, limit, rate-limit, preparation, and pre-stream service failures. Errors have the stable shape `{ "error": { "code": "...", "message": "...", "retryAfter": 60 } }`, where numeric `retryAfter` is included for rate limits and matches the `Retry-After` header; it is omitted otherwise. Messages never include provider, database, identity, or stack details. Limit failures are `413`, unsupported content is `415`, rate limiting is `429`, and unavailable dependencies are `503`.
+The endpoint returns JSON errors for request, media-type, limit, rate-limit, tool, and pre-stream service failures. Errors have the stable shape `{ "error": { "code": "...", "message": "...", "retryAfter": 60 } }`, where numeric `retryAfter` is included for rate limits and matches the `Retry-After` header; it is omitted otherwise. Messages never include provider, database, identity, tool-argument, or stack details. Limit failures are `413`, unsupported content is `415`, rate limiting is `429`, and unavailable dependencies/tool failures are `503`.
 
 Successful responses are Node streams with `Content-Type: application/x-ndjson`. Each line is one frame:
 
@@ -42,7 +42,7 @@ Set `CHAT_RATE_LIMIT_SECRET` in Vercel for every environment before enabling the
 
 ## Deadlines and rollout
 
-Preparation (embedding, rewrite, and retrieval) has a 12-second deadline. Model startup and streaming have a separate 45-second deadline. Both deadlines abort provider work, and the route also passes through the request abort signal. The route runs on Node and declares a 60-second Vercel function duration.
+The production route no longer performs embedding/retrieval before model selection. The model-selection/final-generation budget is 45 seconds overall. If selected, search has a 10-second deadline; CV, project, and article reads have 4 seconds; contact options have 2 seconds. Tool deadlines abort handlers and also race the promise, so handlers that ignore abort cannot hold the response open. The route runs on Node and declares a 60-second Vercel function duration. The standalone retrieval evaluator retains its own preparation deadlines.
 
 Apply migrations in order through `00005_chat_api_hardening.sql` after the existing retrieval migrations. The migration creates an RLS-enabled counter table and a bounded atomic `SECURITY DEFINER` RPC with an empty `search_path`; public, anon, and authenticated privileges are revoked and only `service_role` receives table access and function execution. The cleanup operation is bounded to 1,000 stale rows per call and the SQL contract is exercised with PGlite in `supabase/tests/chat-rate-limit.test.ts`.
 

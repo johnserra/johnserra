@@ -22,6 +22,7 @@ export type ChatErrorCode =
   | "PREPARATION_TIMEOUT"
   | "MODEL_TIMEOUT"
   | "MODEL_ERROR"
+  | "TOOL_ERROR"
   | "RETRIEVAL_ERROR"
   | "OUTPUT_TOO_LARGE"
   | "CLIENT_ABORTED";

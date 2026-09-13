@@ -8,6 +8,23 @@ export const CHAT_MAX_OUTPUT_BYTES = 32 * 1024;
 export const CHAT_PREPARATION_DEADLINE_MS = 12_000;
 export const CHAT_MODEL_DEADLINE_MS = 45_000;
 
+/** Model-selected tool limits. Tool result caps are measured as UTF-8 bytes. */
+export const CHAT_MAX_TOOL_CALLS = 5;
+export const CHAT_TOOL_DEADLINES_MS = {
+  search_knowledge: 10_000,
+  get_cv_timeline: 4_000,
+  get_project_details: 4_000,
+  list_articles: 4_000,
+  get_contact_options: 2_000,
+} as const;
+export const CHAT_TOOL_RESULT_BYTES = {
+  search_knowledge: 12 * 1024,
+  get_cv_timeline: 12 * 1024,
+  get_project_details: 12 * 1024,
+  list_articles: 8 * 1024,
+  get_contact_options: 2 * 1024,
+} as const;
+
 export const CHAT_RATE_LIMIT_WINDOW_SECONDS = 60;
 export const CHAT_RATE_LIMIT_SESSION_LIMIT = 20;
 export const CHAT_RATE_LIMIT_IP_LIMIT = 60;

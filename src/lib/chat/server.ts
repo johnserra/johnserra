@@ -2,6 +2,8 @@ import "server-only";
 
 import { GoogleGenAI } from "@google/genai";
 import { embedQuery } from "@/lib/knowledge/embeddings";
+import { loadRegisteredCv } from "@/lib/knowledge/cv";
+import { getAllSiteContent, getSiteContentBySlug } from "@/lib/site-content";
 import { createAdminClient } from "@/lib/supabase";
 import {
   retrieveCareerContext,
@@ -11,13 +13,14 @@ import {
   type GenerationRequest,
 } from "./core";
 import { createGeminiRewriteAdapter } from "./rewrite";
-import type { HybridRpcRequest, HybridRpcResult } from "./retrieval";
+import { performHybridRetrieval, type HybridRpcRequest, type HybridRpcResult } from "./retrieval";
 import {
   CHAT_RATE_LIMIT_IP_LIMIT,
   CHAT_RATE_LIMIT_SESSION_LIMIT,
   CHAT_RATE_LIMIT_WINDOW_SECONDS,
 } from "./limits";
 import { ChatRateLimitServiceError, hashChatIdentities, hasUsableRateLimitSecret } from "./rate-limit";
+import { createChatToolRegistry, type ChatToolDataSources } from "./tools";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -29,6 +32,59 @@ const matchCareerContextRpc: CareerContextRpcInvoker = async (name, args, signal
   const result = signal ? await rpc.abortSignal(signal) : await rpc;
   return result as Awaited<ReturnType<CareerContextRpcInvoker>>;
 };
+
+const matchCareerContextHybridRpc = async (request: HybridRpcRequest, signal?: AbortSignal): Promise<HybridRpcResult> => {
+  const supabase = createAdminClient();
+  const rpc = supabase.rpc("match_career_context_hybrid", request);
+  const result = signal ? await rpc.abortSignal(signal) : await rpc;
+  return result as HybridRpcResult;
+};
+
+const toolDataSources: ChatToolDataSources = {
+  async searchKnowledge({ query, locale }, signal) {
+    const result = await performHybridRetrieval(
+      [{ role: "user", content: query }],
+      locale,
+      {
+        embedQuery,
+        invokeHybridRpc: matchCareerContextHybridRpc,
+        invokeFilteredRpc: matchCareerContextRpc,
+      },
+      undefined,
+      { signal },
+    );
+    if (result.retrievalError) throw new Error("knowledge retrieval failed");
+    return result.matches.flatMap((match) => {
+      const url = typeof match.metadata.canonical_url === "string" && /^https:\/\/johnserra\.com(?:\/|$)/u.test(match.metadata.canonical_url)
+        ? match.metadata.canonical_url
+        : null;
+      if (!url) return [];
+      const title = typeof match.metadata.title === "string" && match.metadata.title.trim()
+        ? match.metadata.title.trim()
+        : "Public evidence";
+      return [{ title, excerpt: match.content, url }];
+    });
+  },
+  async loadCv() {
+    return loadRegisteredCv();
+  },
+  async getProject(slug, locale) {
+    return getSiteContentBySlug("projects", slug, locale);
+  },
+  async listArticles(locale) {
+    return getAllSiteContent("blog", locale);
+  },
+  async getContactOptions(locale) {
+    const prefix = locale === "tr" ? "/tr" : "";
+    return [
+      { label: "Contact form", url: `https://johnserra.com${prefix}/contact`, description: "Send a message through the public contact form." },
+      { label: "LinkedIn", url: "https://linkedin.com/in/johnserra", description: "Connect through John's public LinkedIn profile." },
+      { label: "Email", url: "mailto:john@serra.us", description: "Use John's public email address." },
+    ];
+  },
+};
+
+export const serverChatToolRegistry = createChatToolRegistry(toolDataSources);
 
 export interface ChatRateLimitResult {
   allowed: boolean;
@@ -68,12 +124,7 @@ export const serverChatDependencies: ChatDependencies = {
     }, signal);
   },
   matchCareerContextRpc,
-  async matchCareerContextHybrid(request: HybridRpcRequest, signal?: AbortSignal): Promise<HybridRpcResult> {
-    const supabase = createAdminClient();
-    const rpc = supabase.rpc("match_career_context_hybrid", request);
-    const result = signal ? await rpc.abortSignal(signal) : await rpc;
-    return result as HybridRpcResult;
-  },
+  matchCareerContextHybrid: matchCareerContextHybridRpc,
   rewriteAdapter: createGeminiRewriteAdapter(async (request) => {
     const response = await ai.models.generateContent(request);
     const finishReason = response.candidates?.[0]?.finishReason;
@@ -96,8 +147,9 @@ export const serverChatDependencies: ChatDependencies = {
         yield {
           text: response.text || undefined,
           usageMetadata: response.usageMetadata,
+          functionCalls: response.functionCalls,
+          modelContent: response.candidates?.[0]?.content,
           ...(typeof finishReason === "string" ? { finishReason } : {}),
-          // No tools are configured or executed in the current chat path.
           toolCallCount: 0,
         };
       }

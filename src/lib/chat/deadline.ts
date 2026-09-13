@@ -7,6 +7,15 @@ export class ChatDeadlineError extends Error {
   }
 }
 
+export class ChatToolDeadlineError extends Error {
+  override name = "ChatToolDeadlineError";
+  readonly code = "TOOL_TIMEOUT" as const;
+
+  constructor() {
+    super("tool deadline exceeded");
+  }
+}
+
 export interface LinkedAbortController {
   signal: AbortSignal;
   abort(reason?: unknown): void;
@@ -65,6 +74,42 @@ export async function withChatDeadline<T>(
           const error = abortError(options.signal!);
           controller.abort(error);
           reject(error);
+        };
+        options.signal!.addEventListener("abort", onAbort, { once: true });
+        removeAbort = () => options.signal!.removeEventListener("abort", onAbort);
+      })
+    : undefined;
+  try {
+    const pending = work(controller.signal);
+    return await Promise.race(cancellation ? [pending, timeout, cancellation] : [pending, timeout]);
+  } finally {
+    if (timer) clearTimeout(timer);
+    removeAbort?.();
+  }
+}
+
+/** A real promise deadline for handlers that ignore AbortSignal. */
+export async function withToolDeadline<T>(
+  work: (signal: AbortSignal) => Promise<T>,
+  options: { deadlineMs: number; signal?: AbortSignal },
+): Promise<T> {
+  options.signal?.throwIfAborted();
+  const controller = new AbortController();
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  let removeAbort: (() => void) | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => {
+      const error = new ChatToolDeadlineError();
+      controller.abort(error);
+      reject(error);
+    }, Math.max(1, options.deadlineMs));
+  });
+  const cancellation = options.signal
+    ? new Promise<never>((_, reject) => {
+        const onAbort = () => {
+          const reason = abortError(options.signal!);
+          controller.abort(reason);
+          reject(reason);
         };
         options.signal!.addEventListener("abort", onAbort, { once: true });
         removeAbort = () => options.signal!.removeEventListener("abort", onAbort);

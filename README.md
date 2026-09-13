@@ -8,13 +8,13 @@ The [Digital Twin architecture and baseline](docs/digital-twin-architecture.md) 
 
 ## Current implementation
 
-- **Chat:** the homepage loads a floating chat panel on demand. It sends browser-held conversation history to `POST /api/chat`, embeds the latest message with `gemini-embedding-2` (768 dimensions), retrieves up to six matching public/published chunks for the selected locale (plus only the reviewed English CV for Turkish queries), then streams `gemini-2.5-flash` text back to the panel.
+- **Chat:** the homepage loads a floating chat panel on demand. It sends browser-held conversation history to `POST /api/chat`; Gemini may answer directly or select one of five server-owned read-only tools. Search uses the existing hybrid retrieval layer, project/article tools use the public content adapters, and CV/contact tools return bounded public evidence and citations before the final `gemini-2.5-flash` answer streams back.
 - **Knowledge:** published WordPress posts, pages, and projects are indexed through a durable Supabase `pgmq` queue. A reviewed, structured English CV is a registered source and uses the same queue with approval-bound jobs and atomic replacement. Its production migration and 18-section index were completed on 2026-09-10; the bounded live retrieval evaluation passed 12/12 English and Turkish cases against the current approval digest. Signed publishing webhooks invalidate page caches and enqueue WordPress updates; an immediate worker attempt and a scheduled worker process jobs. Recipe posts were removed on 2026-08-23, and John reaffirmed the broader exclusion of cooking on 2026-09-09.
 - **Page content:** `CONTENT_SOURCE=wordpress` selects the WordPress REST adapter. Any other value, including an unset variable, selects the retained filesystem Markdown/MDX adapter. This setting does **not** change chat retrieval or the WordPress knowledge seeder.
 - **Other services:** contact submissions use Supabase and Resend; contact and data-audit routes can sync leads to Jetpack CRM. These integrations are separate from the assistant and are not model-callable tools.
-- **Chat operations:** privacy-safe completion events are written as structured Vercel runtime logs. The [chat observability runbook](docs/chat-observability.md) documents correlation, metrics, retention boundaries, and investigation.
+- **Chat operations:** privacy-safe completion and per-dispatch tool events are written as structured Vercel runtime logs. The [chat observability runbook](docs/chat-observability.md) documents correlation, metrics, retention boundaries, and investigation; [model-callable tools](docs/model-callable-tools.md) documents the registry, limits, failures, tests, and rollback.
 
-The current assistant performs one retrieval step before generation. Model-selected tools, conversation-aware retrieval, reliable public citations, and bounded answer verification are planned work, not completed capabilities.
+The current assistant has bounded model-selected tools and public citation-bearing results. Bounded answer verification remains planned work in #19; this issue does not add an iterative verification agent.
 
 ## Local setup
 
@@ -138,6 +138,7 @@ For page-content rollback, set `CONTENT_SOURCE=filesystem` (or unset it) and red
 ## Documentation map
 
 - [Digital Twin architecture and baseline](docs/digital-twin-architecture.md): current behavior, diagrams, source map, limitations, and challenge mapping.
+- [Model-callable tools](docs/model-callable-tools.md): allowlist, public adapters, limits, safe failures/logging, tests, and rollback.
 - [Chat observability runbook](docs/chat-observability.md): completion event schema, metrics, privacy exclusions, pricing limits, and incident response.
 - [Assistant evaluation harness](evals/assistant/README.md): case/source schemas, offline checks, bounded live runner, metrics, and human-review rubric.
 - [CV knowledge operations](docs/cv-knowledge.md): public artifact review, approval-bound indexing, authority, filtering, locale behavior, evaluation, and rollback.

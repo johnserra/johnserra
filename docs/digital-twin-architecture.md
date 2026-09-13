@@ -6,7 +6,7 @@ Subsequent note, **2026-09-10 UTC**: the [#10 assistant evaluation harness](../e
 
 Subsequent update, **2026-09-11 UTC**: [#15](https://github.com/johnserra/johnserra/issues/15) adds a conversational hybrid retrieval pipeline. The chat path now rewrites context-dependent follow-ups into standalone queries using a bounded Gemini call, retrieves a wider candidate set using semantic + lexical (full-text) branches with locale and filter preservation, reranks candidates to ≤6 using reciprocal rank fusion with query-term coverage and source diversity, and preserves the original conversation for generation. The hybrid SQL RPC (`match_career_context_hybrid`) is additive and service-role only; when absent, the original `match_career_context_filtered` path is preserved as a fallback. A versioned EN/TR retrieval corpus and deterministic evaluator report expected-source recall and a clearly labeled context-precision proxy. See [docs/conversational-retrieval.md](conversational-retrieval.md) for the current architecture. The September 9 baseline text below is retained as history.
 
-The Digital Twin is John Serra's personal-site assistant. It combines a third-person, evidence-only persona prompt, browser-managed conversation history, semantic retrieval from published WordPress content, and streamed Gemini generation. The [persona, privacy, and prompt-injection guardrails](persona-privacy-guardrails.md) are the canonical policy for this boundary. It currently uses a fixed retrieval-then-generation pipeline.
+The Digital Twin is John Serra's personal-site assistant. It combines a third-person, evidence-only persona prompt, browser-managed conversation history, Gemini model-selected access to five bounded read-only tools, public citations, and streamed generation. The [persona, privacy, and prompt-injection guardrails](persona-privacy-guardrails.md) are the canonical policy for this boundary. Search retrieval is now a tool choice; greetings can be answered without retrieval.
 
 ## Request and deployment architecture
 
@@ -15,12 +15,15 @@ flowchart TD
     Visitor[Visitor on EN or TR homepage] --> Widget[AIChatWidget loads AIChatPanel]
     Widget --> History[React state: conversation history]
     History -->|POST messages and locale| Chat[Vercel: POST /api/chat]
-    Chat -->|Last message text| Embed[Gemini query embedding: 768 dimensions]
-    Embed -->|Query vector| Match[Supabase: match_career_context RPC]
+    Chat -->|Full supplied conversation| Select[Gemini 2.5 Flash: AUTO/VALIDATED selection]
+    Select -->|No tool call| Generate[Gemini answer stream]
+    Select -->|search_knowledge| Embed[Gemini query embedding: 768 dimensions]
+    Embed -->|Query vector| Match[Supabase hybrid retrieval RPC]
     Store[(career_context with pgvector and HNSW index)] --> Match
-    Match -->|Up to 6 published chunks in requested locale| Prompt[Persona and retrieved context]
-    Chat -->|Full supplied conversation| Generate[Gemini 2.5 Flash]
-    Prompt --> Generate
+    Match -->|Bounded public evidence and citations| Final[Tool-disabled final Gemini turn]
+    Select -->|CV/projects/articles/contact| Sources[Allowlisted public adapters]
+    Sources --> Final
+    Final --> Generate
     Generate -->|Text chunks through API response| Widget
     Visitor --> Pages[Vercel: Next.js pages]
     Pages --> Adapter[site-content adapter]
@@ -36,18 +39,17 @@ The production frontend domain and `main` auto-deploy behavior are recorded in r
 
 1. The [widget](../src/components/widgets/AIChatWidget.tsx) dynamically imports the [panel](../src/components/widgets/AIChatPanel.tsx) after first opening. The panel starts with a localized welcome message.
 2. On submission, the panel appends a user message and an empty assistant placeholder to React state. It sends previous messages plus the new user message to `/api/chat`, excluding the welcome message and the new placeholder.
-3. The [route](../src/app/api/chat/route.ts) checks for a nonempty `messages` collection. It uses `messages.at(-1).content` as the retrieval query; despite the local variable name, it does not verify that the final message has a user role. Locale `tr` selects Turkish; everything else selects English for retrieval.
-4. [embedQuery](../src/lib/knowledge/embeddings.ts) calls `gemini-embedding-2` with `RETRIEVAL_QUERY` and requests 768 dimensions. Unexpected vector length throws an error.
-5. Using the server's Supabase service-role client, the route calls `match_career_context` with similarity threshold **0.65**, match count **6**, and the content locale. The [SQL function](../supabase/migrations/00001_wordpress_vector_queue.sql) requires a non-null embedding, `publication_status='publish'`, and an exact locale match. It ranks cosine similarity descending with ID as a tie-breaker. The migration defines an HNSW cosine index; actual query-plan/index use has not been measured here.
-6. Each retrieved chunk becomes `[Source: <internal source>; similarity: <score>]` followed by its text. Although the RPC returns metadata, the route does not convert it into public source titles or URLs. No matches or an RPC error produces an empty context block; embedding errors can fail the request before streaming begins.
-7. The system instruction establishes a third-person AI-assistant identity, evidence-only grounding, CV authority, privacy and prompt-injection rules, an optional Turkish-language instruction, and retrieved context. Generation receives the full supplied history, mapping `user` to Gemini's `user` role and other roles to `model`.
-8. `gemini-2.5-flash` streams text through a `ReadableStream` with `Content-Type: text/plain; charset=utf-8`. This is a raw text stream, not Server-Sent Events. The panel decodes chunks, accumulates the answer, and renders Markdown-style links using a small regex renderer rather than a full Markdown renderer.
+3. The [route](../src/app/api/chat/route.ts) validates the complete request, keeps the Node runtime, and sends the supplied history plus locale-aware system instructions to Gemini with the five declarations. SDK automatic function execution is disabled.
+4. Gemini may answer directly, in which case zero tools execute, or return a bounded set of function calls. The application validates each name and exact argument object before dispatching.
+5. `search_knowledge` invokes the existing hybrid retrieval layer. The other tools use the reviewed CV or public site-content/contact adapters. Results are projected to public evidence, descriptive titles, and locale-correct canonical URLs; internal IDs, scores, private CV source data, and writes are excluded.
+6. Accepted tool results are returned with the model function-call parts and matching IDs in one function-response message. A single final Gemini turn runs with tools disabled. Any final follow-on call fails closed.
+7. `gemini-2.5-flash` text streams through the existing `application/x-ndjson` response contract. The panel decodes deltas and terminal frames; no provider or tool errors are exposed.
 
 ### Conversation state and failure behavior
 
 History exists only in the mounted panel's React state. Closing the panel hides it without unmounting it, so reopening retains the conversation. Reloading or unmounting clears it. There is no local-storage persistence, server session store, or application chat-transcript database in this path. The complete supplied history is sent to Gemini on each turn; query embeddings contain only the last message. These observations do not establish an external provider's retention policy.
 
-Earlier turns can influence answer generation but cannot disambiguate retrieval queries. A follow-up such as “What technology did he use for it?” is embedded as-is. There is no history summarization, role validation, input/output budget, rate limiter, explicit request deadline, or model-selected retrieval decision in the route. Even greetings trigger an embedding and retrieval request.
+Earlier turns can influence model selection and answer generation. A follow-up may select `search_knowledge` with a rewritten query through the existing hybrid retrieval layer, while a greeting can take the direct path. Request, tool, output, rate, and deadline boundaries are documented in [chat API hardening](chat-api-hardening.md). This issue adds bounded tool selection, not an iterative verification agent.
 
 Network/non-OK response errors show a generic localized error in the panel. Errors during Gemini streaming are logged server-side and the stream closes; this can look like a successful partial or empty answer. Existing error text and empty assistant entries are not filtered from subsequent history. These are baseline limitations to address in #14, not guarantees of graceful recovery.
 
@@ -107,7 +109,7 @@ WordPress logs failed webhook deliveries but does not durably retry them. Reseed
 | Public API | Only a nonempty-message check; no robust validation, bounded history/output, rate controls, request deadline, or structured stream errors. | [#14](https://github.com/johnserra/johnserra/issues/14) |
 | Persona and privacy | Third-person AI-assistant persona grounded in retrieved public evidence, with explicit untrusted-context, disclosure, action-claim, and retention rules. Deterministic corpus coverage is a proxy and does not prove complete security. | [#20](https://github.com/johnserra/johnserra/issues/20) |
 | Operations | Chat emits one privacy-safe completion event per request to Vercel runtime logs, with server correlation, outcome/failure categories, stage timings, retrieval/citation aggregates, normalized provider usage, and partial/complete Gemini text-cost estimates. It does not persist telemetry or provide a quality dashboard; platform log retention remains a deployment concern. | [chat observability runbook](chat-observability.md), [#13](https://github.com/johnserra/johnserra/issues/13) |
-| Tools | Retrieval always runs in server code; no model-callable registry or multi-tool behavior. | [#18](https://github.com/johnserra/johnserra/issues/18), [#16](https://github.com/johnserra/johnserra/issues/16) |
+| Tools | Five application-owned read-only tools are model-selectable with strict schemas, runtime validation, per-tool deadlines, UTF-8 result caps, safe logs, and one final tool-disabled turn. | [model-callable tools](model-callable-tools.md); bounded multi-tool evaluation remains #16 |
 | Verification agent | One generation stream with no evidence-sufficiency loop, verification pass, revision, or recorded agent stop reason. | [#19](https://github.com/johnserra/johnserra/issues/19) |
 | Production evidence | Deployment configuration is documented, but end-to-end production scenarios, rollback demonstration, and public case-study evidence remain to be collected. | [#11](https://github.com/johnserra/johnserra/issues/11) |
 
@@ -121,7 +123,7 @@ The curriculum mapping below follows [#22](https://github.com/johnserra/johnserr
 | --- | --- | --- |
 | 1 — LLM fundamentals | Gemini system instruction, user/model roles, streaming, and client-managed conversation history. | #17 architecture documentation; #10 reproducible evaluation baseline. |
 | 2 — AI app and guardrails | Next.js chat UI and public API; basic empty-input check. | #14 request hardening, #20 persona/privacy/injection policy, #13 observability. |
-| 3 — Tool calling | Retrieval is a fixed server step; there are no model-selected tools. | #18 allowlisted tool registry; #16 bounded multi-tool demonstration/evaluation. |
+| 3 — Tool calling | Five allowlisted application-owned tools, strict runtime validation, disabled SDK auto-execution, bounded dispatch, matching function responses, and safe tool logs. | #16 bounded multi-tool demonstration/evaluation. |
 | 4 — RAG | WordPress ingestion, Gemini embeddings, pgvector retrieval, locale filtering, and durable indexing queue. | #21 CV, #8 structure/authority, #15 conversational hybrid retrieval/reranking, #12 public citations. |
 | 5 — Deployment | Vercel frontend/API configuration, cron routes, external WordPress/Supabase/Gemini dependencies. | #11 production verification, deployment/rollback evidence, and public case study. |
 | 6 — Agentic AI | No agent loop in the current chat path. | #19 bounded evidence gathering and answer verification. |
@@ -133,7 +135,7 @@ Execution order: **#17 → #10 → #21 → #8 → #15 → #12 → #14 → #20 �
 | Concern | Implementation |
 | --- | --- |
 | Homepage and chat UI | [page.tsx](../src/app/[locale]/page.tsx), [AIChatWidget.tsx](../src/components/widgets/AIChatWidget.tsx), [AIChatPanel.tsx](../src/components/widgets/AIChatPanel.tsx) |
-| Retrieval and generation | [chat route](../src/app/api/chat/route.ts), [shared chat core](../src/lib/chat/core.ts), [server dependencies](../src/lib/chat/server.ts), [embedding helpers](../src/lib/knowledge/embeddings.ts), [observability](../src/lib/chat/observability.ts) |
+| Retrieval, tool calling, and generation | [chat route](../src/app/api/chat/route.ts), [shared chat core](../src/lib/chat/core.ts), [tool registry](../src/lib/chat/tools.ts), [orchestration](../src/lib/chat/tool-calling.ts), [server dependencies](../src/lib/chat/server.ts), [embedding helpers](../src/lib/knowledge/embeddings.ts), [observability](../src/lib/chat/observability.ts) |
 | Assistant evaluation | [harness guide](../evals/assistant/README.md), [cases](../evals/assistant/cases.json), [professional sources](../evals/assistant/sources.json) |
 | Database clients and base tables | [supabase.ts](../src/lib/supabase.ts), [base schema](../supabase-schema.sql) |
 | Vectors, retrieval RPC, queue, grants | [vector/queue migration](../supabase/migrations/00001_wordpress_vector_queue.sql) |

@@ -6,6 +6,7 @@ import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import { getSiteContentBySlug, getSiteContentSlugs, getSiteTranslationSlug } from "@/lib/site-content";
 import { projectsPath } from "@/lib/routes";
+import { getProjectMetadataPaths } from "@/lib/project-metadata";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ProseLayout } from "@/components/ui/ProseLayout";
@@ -38,9 +39,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const content = await getSiteContentBySlug("projects", slug, locale as Locale);
   if (!content) return {};
+  const targetLocale = (locale === "en" ? "tr" : "en") as Locale;
+  const translatedSlug = await getSiteTranslationSlug(
+    "projects",
+    content,
+    locale as Locale,
+    targetLocale,
+  );
+  const metadataPaths = getProjectMetadataPaths(locale as Locale, slug, translatedSlug);
+
   return {
     title: `${content.frontmatter.title} — John Serra`,
     description: content.frontmatter.description,
+    alternates: {
+      canonical: metadataPaths.canonical,
+      languages: metadataPaths.languages,
+    },
   };
 }
 

@@ -162,7 +162,9 @@ The two successful factual API answers have independently retrieved production l
 
 The demo uses selected explicit-source questions and is reported separately from the six-case replay. Earlier recording attempts are disclosed in the evidence README: one failed before sending requests because of an incorrect button selector; a later UI attempt showed a broad English role-fit fallback and a cited Turkish project answer before recording finalization was interrupted. Selecting explicit project/CV questions for a walkthrough does not resolve those broader failures.
 
-Known limitations include ambiguous follow-ups, generic qualification of unsupported premises, combined-source Turkish requests that can still fail verification, and inconsistent requested answer length. The verifier is not semantic proof. The checked-in agent evaluation computes fixture metadata; runtime contracts are covered by the separate assistant tests. Runtime logs are not a durable transcript, the paired retrieval evaluation did not measure generated-answer quality or concurrency, and full seeding does not repair every missed deletion event. Conversations are not persisted across reloads; that future work remains in #27.
+A targeted follow-up fix on **2026-09-14 UTC** passed **3/3** exact conversations on a production-configured deployment, which was then promoted to the public domain. The original ambiguous strengths question used the CV and two successful knowledge searches; English and Turkish project references each used project details. Every answer had one verifier pass and working citations. [The dated follow-up evidence](../evals/production/2026-09-14-followups/README.md) preserves exact inputs, answers, server traces, failed local attempts, and method limitations. This targeted sample does not replace the historical six-case score above.
+
+Known limitations include generic qualification of unsupported premises, combined-source Turkish requests that can still fail verification, and inconsistent requested answer length. Broader follow-up reliability is not established by three cases. The verifier is not semantic proof. The checked-in agent evaluation computes fixture metadata; runtime contracts are covered by the separate assistant tests. Runtime logs are not a durable transcript, the paired retrieval evaluation did not measure generated-answer quality or concurrency, and full seeding does not repair every missed deletion event. Conversations are not persisted across reloads; that future work remains in #27.
 
 ## Milestones and follow-ons
 
@@ -185,7 +187,7 @@ These are the roadmap issue/PR mappings relevant to this work:
 | [#11](https://github.com/johnserra/johnserra/issues/11) | Production verification and evidence | [PR #36](https://github.com/johnserra/johnserra/pull/36) |
 | [#22](https://github.com/johnserra/johnserra/issues/22) | Roadmap parent | — |
 
-[#27](https://github.com/johnserra/johnserra/issues/27) is deferred until roadmap [#22](https://github.com/johnserra/johnserra/issues/22) is complete. Its scope is instant FAQs, persistent conversations, and additional business-development functionality; it is not the live evaluation or evidence-capture issue. Those acceptance gaps remain in #11.
+[#27](https://github.com/johnserra/johnserra/issues/27) is deferred until roadmap [#22](https://github.com/johnserra/johnserra/issues/22) is complete. Its scope is instant FAQs, persistent conversations, and additional business-development functionality; it is not the live evaluation or evidence-capture issue. Issue #11 is complete; subsequent follow-up behavior was corrected in [PR #37](https://github.com/johnserra/johnserra/pull/37), with the parent roadmap still tracked in #22.
 
 ## Related documents
 

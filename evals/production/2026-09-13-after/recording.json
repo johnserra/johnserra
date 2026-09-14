@@ -1,0 +1,118 @@
+{
+  "baseUrl": "https://johnserra.com",
+  "startedAt": "2026-09-14T03:24:01.311Z",
+  "scenarios": [
+    {
+      "name": "English greeting",
+      "locale": "en",
+      "request": "Hello",
+      "startedAt": "2026-09-14T03:24:02.103Z",
+      "status": "passed",
+      "reason": "completed with verified response",
+      "httpStatus": 200,
+      "terminal": "done",
+      "answer": "Hello! I'm an AI assistant here to provide information about John Serra. How can I help you today?",
+      "citations": [],
+      "correlationId": "e838eeba-c5f6-4839-b9a5-340bcfb5e421",
+      "elapsedMs": 4553,
+      "requestBody": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "Hello"
+          }
+        ],
+        "locale": "en"
+      },
+      "requestSentAt": "2026-09-14T03:24:03.025Z",
+      "finishedAt": "2026-09-14T03:24:06.656Z"
+    },
+    {
+      "name": "English role fit",
+      "locale": "en",
+      "request": "Compare John Serra's CareerTalkLab project with his education and career timeline from the public project page and reviewed public CV, with citations.",
+      "startedAt": "2026-09-14T03:24:16.664Z",
+      "status": "passed",
+      "reason": "completed with verified response",
+      "httpStatus": 200,
+      "terminal": "done",
+      "answer": "John Serra's CareerTalkLab project is a standalone hybrid Learning Management System (LMS) designed for global professionals learning English. It uses a \"Flipped Classroom\" model, with web-based input and live sessions for speaking practice. The project incorporates a JSON-native lesson engine, a 4-tier evaluation suite, and an AI feedback engine powered by Anthropic Claude API. It also features a Python-based news ingestion pipeline and PWA support for mobile devices [CareerTalkLab](https://johnserra.com/projects/careertalklab).\n\nLooking at John's career timeline, he has experience as an Education Coordinator at Amerikan Kültür Dil Okulları from May 2017 to October 2022. In this role, he developed a student feedback system, led the transition to online education, developed curriculum, and built and trained a team of English teachers [John Serra — Professional CV](https://johnserra.com/cv/john-serra.en.md). This experience aligns with the educational focus and curriculum development aspects of CareerTalkLab.\n\nAdditionally, John's professional summary mentions experience in business development, operations, international sales, and language education, along with hands-on development of software and automation tools [John Serra — Professional CV](https://johnserra.com/cv/john-serra.en.md). This background in both education and software development directly relates to the creation of an advanced LMS like CareerTalkLab, which combines educational content with technical architecture and AI-assisted features. The project is listed as \"Work in progress\" with a status date of March 2026–present, evolving into a long-term personal effort to share knowledge [John Serra — Professional CV](https://johnserra.com/cv/john-serra.en.md).",
+      "citations": [
+        {
+          "text": "CareerTalkLab",
+          "url": "https://johnserra.com/projects/careertalklab",
+          "httpStatus": 200,
+          "ok": true
+        },
+        {
+          "text": "John Serra — Professional CV",
+          "url": "https://johnserra.com/cv/john-serra.en.md",
+          "httpStatus": 200,
+          "ok": true
+        }
+      ],
+      "correlationId": "6d747f13-2b9d-432c-948d-f0e3b6c2019d",
+      "elapsedMs": 10766,
+      "requestBody": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "Hello"
+          },
+          {
+            "role": "assistant",
+            "content": "Hello! I'm an AI assistant here to provide information about John Serra. How can I help you today?"
+          },
+          {
+            "role": "user",
+            "content": "Compare John Serra's CareerTalkLab project with his education and career timeline from the public project page and reviewed public CV, with citations."
+          }
+        ],
+        "locale": "en"
+      },
+      "requestSentAt": "2026-09-14T03:24:16.680Z",
+      "finishedAt": "2026-09-14T03:24:27.430Z"
+    },
+    {
+      "name": "Turkish professional experience",
+      "locale": "tr",
+      "request": "CareerTalkLab projesi ne yapıyor? Türkçe olarak 80 kelimeyi aşmadan açıkla ve yayımlanmış proje sayfasını kaynak göster.",
+      "startedAt": "2026-09-14T03:24:37.686Z",
+      "status": "passed",
+      "reason": "completed with verified response",
+      "httpStatus": 200,
+      "terminal": "done",
+      "answer": "CareerTalkLab, global profesyoneller için İngilizce öğrenimine yönelik hibrit bir Öğrenme Yönetim Sistemi (LMS) projesidir. John, bu projeyi Next.js 16.1, Supabase ve JSON tabanlı bir ders motoru kullanarak inşa etti. Sistem, öğrencilerin web tabanlı dersleri tamamlayıp canlı seanslarda konuşma pratiği yapmalarını sağlayan \"Ters Yüz Edilmiş Sınıf\" modelini kullanır. Proje, profesyonel işlevlere odaklanan \"Executive Track\" ve haber içerikli \"Skills Lab\" gibi farklı öğrenci kulvarları sunar. Ayrıca, öğrenci yazılarına AI destekli geri bildirim sağlar ve tam mobil uyumluluk için PWA entegrasyonuna sahiptir [CareerTalkLab](https://johnserra.com/tr/projeler/careertalklab).",
+      "citations": [
+        {
+          "text": "CareerTalkLab",
+          "url": "https://johnserra.com/tr/projeler/careertalklab",
+          "httpStatus": 200,
+          "ok": true
+        }
+      ],
+      "correlationId": "e0b6a483-1cd7-495b-aec8-7f36e030ff4f",
+      "elapsedMs": 6745,
+      "requestBody": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "CareerTalkLab projesi ne yapıyor? Türkçe olarak 80 kelimeyi aşmadan açıkla ve yayımlanmış proje sayfasını kaynak göster."
+          }
+        ],
+        "locale": "tr"
+      },
+      "requestSentAt": "2026-09-14T03:24:38.537Z",
+      "finishedAt": "2026-09-14T03:24:44.431Z"
+    }
+  ],
+  "durationReviewNeeded": false,
+  "actualWallTimeMs": 120006,
+  "finishedAt": "2026-09-14T03:26:01.317Z",
+  "scenarioCount": 3,
+  "videoPath": "../../../public/digital-twin/demo-2026-09-14.webm",
+  "deploymentId": "dpl_DLTw265AKUjT2ESHPBHHzhDVS36a",
+  "commit": "fd35295159579b8845b7ed15a0e656db43b795f1",
+  "encodedVideoDurationSeconds": 119.64,
+  "mediaNotes": "English PNG is the unmodified video frame at 24.3 seconds, showing a CV citation before recorder scrolling hid the long answer. Turkish PNG is the original screenshot. The video is unedited."
+}

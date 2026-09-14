@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-09-13T22:34:16.842Z",
+  "productionUrl": "https://johnserra.com",
+  "id": "dpl_DLTw265AKUjT2ESHPBHHzhDVS36a",
+  "url": "https://johnserra-62774qjeq-john-serras-projects.vercel.app",
+  "target": "production",
+  "state": "READY",
+  "commit": "fd35295159579b8845b7ed15a0e656db43b795f1",
+  "source": "cli",
+  "verification": {
+    "ci": "passed",
+    "stagedHomepageHttpStatus": 200,
+    "promoted": true
+  },
+  "previousDeploymentId": "dpl_8XC7fqNb273vLovd2Eq4KgaApwpn"
+}

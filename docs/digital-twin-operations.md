@@ -34,7 +34,7 @@ These commands validate fixtures or replay deterministic cases. They do not prov
 
 ## Deployment verification
 
-Record this tuple for every verification: deployment ID, deployment URL, target, state, serving commit, check time, active `CONTENT_SOURCE`, and the EN/TR URLs tested. The deployment lookup records production deployment `dpl_8XC7fqNb273vLovd2Eq4KgaApwpn` as `READY` for `https://johnserra.com` at `2026-09-13T21:22:30Z`, serving commit `e37251031c360215f4f429f7491458f8038fd445`.
+Record this tuple for every verification: deployment ID, deployment URL, target, state, serving commit, check time, active `CONTENT_SOURCE`, and the EN/TR URLs tested. The [case study](digital-twin-case-study.md) and [dated deployment record](../evals/production/2026-09-13-after/deployment.json) identify the production runtime used for the 2026-09-13 capture. Its prior deployment is preserved as rollback provenance in the same record. Check current hosting state before an operational change; this snapshot is not a live status page.
 
 The verification sequence is:
 
@@ -46,7 +46,7 @@ The verification sequence is:
 6. Confirm indexing health separately: queue visibility, worker outcomes, source versions, failure/dead-letter records, and expected public row counts.
 7. Label screenshots/video with the deployment, timestamp, locale, correlation ID where safe, and redaction review. A fixture or storyboard is not live evidence.
 
-Current live assistant traces and media remain pending; this runbook does not claim them.
+The case study links dated live evidence and its limitations. The procedures here also cover checks not executed during that capture, including database recovery and indexing health.
 
 ## Migration order and cutover
 

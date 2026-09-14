@@ -1,6 +1,6 @@
 # Digital Twin engineering case study
 
-**Date:** 2026-09-13 UTC  
+**Verification dates:** 2026-09-13–14 UTC
 **Repository:** `johnserra`  
 This is a repository-published technical case study. It does not add an application route, an MDX project, or a WordPress record. That boundary matters because the live site can select `CONTENT_SOURCE=wordpress`; this document is independently reviewable in the repository and is not evidence that a CMS page has been published.
 
@@ -10,17 +10,16 @@ The Digital Twin is a bilingual Next.js assistant that answers from John's publi
 
 ## Verified deployment state
 
-The deployment lookup was checked at `2026-09-13T21:22:30Z` and records:
+The production build was staged with production configuration, passed CI and a homepage readiness check, then promoted on 2026-09-13. The [dated deployment record](../evals/production/2026-09-13-after/deployment.json) identifies the version used for capture:
 
 | Field | Value |
 | --- | --- |
-| Production URL | `https://johnserra.com` |
-| Deployment | `dpl_8XC7fqNb273vLovd2Eq4KgaApwpn` |
-| Target | `production` |
-| State | `READY` |
-| Serving commit | `e37251031c360215f4f429f7491458f8038fd445` |
+| Production URL | [johnserra.com](https://johnserra.com) |
+| Deployment | `dpl_DLTw265AKUjT2ESHPBHHzhDVS36a` |
+| Target/state | `production` / `READY` |
+| Runtime commit | `fd35295159579b8845b7ed15a0e656db43b795f1` |
 
-This is deployment metadata, not an end-to-end behavior claim. It does not establish that a live request selected two tools, completed verification, returned a citation-bearing answer, or produced a usable video.
+The initial runtime commit `e37251031c360215f4f429f7491458f8038fd445`, deployment, and failed baseline remain in the [before evidence](../evals/production/2026-09-13-before/). Deployment readiness alone does not prove answer quality; the response and runtime evidence below provide that separate check.
 
 ## Architecture and control flow
 
@@ -87,13 +86,13 @@ The migration order is verified from the repository as:
 4. [`00004_hybrid_retrieval.sql`](../supabase/migrations/00004_hybrid_retrieval.sql)
 5. [`00005_chat_api_hardening.sql`](../supabase/migrations/00005_chat_api_hardening.sql)
 
-Setup, cutover, inspection, and rollback are procedures in [digital-twin-operations.md](digital-twin-operations.md); no mutation is performed by this documentation change.
+Setup, cutover, inspection, and rollback are procedures in [digital-twin-operations.md](digital-twin-operations.md). This release changes the agent runtime and documentation; it adds no database migration or indexing mutation.
 
 ## Multilingual handling and citations
 
 The application accepts English and Turkish locale values. WordPress knowledge is indexed with locale and canonical URL metadata. The `simple` lexical configuration gives the two locales a shared tokenization baseline without relying on a missing language-specific dictionary. A Turkish professional-history lookup may use explicitly filtered reviewed English CV evidence where the source policy allows it; it does not search private data or silently broaden authority.
 
-Answers cite canonical `https://johnserra.com/...` URLs from accepted public evidence. The draft prompt requires exact packet citations and the verifier checks citation support. Citation presence and count are observable; citation URLs and answer text are not logged.
+Answers cite canonical `https://johnserra.com/...` URLs from accepted public evidence. The drafter and verifier receive an explicit URL allowlist derived only from accepted tool citations. A link merely mentioned inside source text does not become an authorized citation. A deterministic final check rejects any answer with URLs outside that allowlist; the model verifier separately reviews support. Citation presence and count are observable; citation URLs and answer text are not logged.
 
 ## Why pgvector and Vercel here
 
@@ -132,17 +131,38 @@ The checked-in [paired comparison](../evals/chunking/comparison-2026-09-11.md) u
 
 There were no lost expected sources; four WordPress cases gained a source hit and three WordPress cases still missed their expected source. The hosted rollout later reproduced 36/39 case hits and 37/42 expected-source hits. This demonstrates retrieval non-regression on a fixed corpus, not perfect retrieval and not generated-answer grounding. The original baseline reports remain unchanged.
 
-## Evidence status and limits
+## What production verification changed
 
-**Verified now:** repository source alignment, the five tool names, bounded limits, migration filenames/order, historical evaluation figures, the production deployment state/commit, and the dated initial production evidence in [`evals/production/2026-09-13-before/`](../evals/production/2026-09-13-before/).
+The initial six-case run exposed failures that the offline fixtures had not caught. Successful CV retrieval was followed by an empty structured inspector response, and a later local reproduction exposed verifier output truncation. The release removes the incompatible no-tools configuration, disables thinking for the bounded JSON/draft calls, and reserves enough output for the verifier: 512 draft tokens and 640 verifier tokens within the existing 4,096-token reservation envelope. Cumulative provider usage snapshots are counted once per internal turn, including failure paths. A narrow capability-greeting path and English/Turkish safe fallbacks complete the runtime changes.
 
-**Initial production baseline:** all six public synthetic scenarios failed their behavioral criteria. The first five returned HTTP 200/done generic uncited fallbacks; the multi-tool scenario returned HTTP 503 at the rate-limit stage. Two sampled CV traces show `get_cv_timeline` success followed by `inspection_failure`, with zero verifier passes. The greeting trace has zero tool calls and stopped `insufficient_evidence`; HTTP 200/done is not a useful greeting result. The harness kept `locale=en` even for the Turkish-language prompt, so this is Turkish-language request evidence, not a test of the `tr` locale and not proof of a Turkish-locale regression. See the dated [production evidence README](../evals/production/2026-09-13-before/README.md).
+A further Turkish reproduction exposed a source-authority problem: a project URL embedded in CV content was treated as if the project page had been retrieved. The explicit citation allowlist and source-boundary instructions clarify that distinction while preserving the final rejection guard. They do not guarantee model compliance: the subsequent combined CV/project Turkish request still ended in `verifier_failure`, while the English comparison completed with two tools and one verification pass. Both exact outcomes are retained in [predeployment live results](../evals/production/2026-09-13-after/predeployment-live-results.json).
 
-Initial media collection failed. The browser capture environment subsequently recovered, as shown by the later smoke status, but representative cited screenshots/video still await a working assistant capture. The smoke homepage/status is not the requested demo evidence.
+The final local assistant suite passed **173 tests**, including rejection of an unapproved URL embedded in a CV, provider configuration, token accounting, and bounded failure behavior. Lint and TypeScript passed. The [CI run for the captured runtime commit](https://github.com/johnserra/johnserra/actions/runs/34787050732) also passed the repository's CV, SQL, hybrid retrieval, rate-limit, assistant, retrieval-validation, and build checks. These deterministic checks establish runtime contracts; they do not establish general answer accuracy.
 
-**Pending after-fix evidence:** no after-fix results are available yet; the runtime fix is not part of this evidence set. Re-run the same six prompts with the same request shape and headers, capture sanitized response frames and runtime events, and require: a useful greeting; answer-specific citations for the factual prompts; correct Turkish-language output; explicit qualification of the unsupported Nobel premise; a persistent follow-up answer; and a multi-tool trace with at least two distinct accepted tools plus one verifier pass. Also capture the requested representative cited screenshots and approximately two-minute video. Do not close issue #11 or defer its acceptance to #27 until these criteria are met.
+## Demonstration
 
-Other known limitations are that the verifier is not semantic proof, the checked-in agent evaluation computes fixture metadata rather than calling providers or testing runtime state transitions, runtime logs are not a durable transcript, live generated-answer quality and concurrency were not covered by the paired retrieval evaluation, and full seeding does not repair every possible missed deletion event.
+[Watch the two-minute production walkthrough](../public/digital-twin/demo-2026-09-14.webm), captured on 2026-09-14 UTC. The selected greeting, explicit CareerTalkLab/CV comparison, and Turkish project question all completed. The English comparison used two tools and one verifier; the Turkish answer used one tool and one verifier. Citation destinations returned HTTP 200. The [evidence README](../evals/production/2026-09-13-after/README.md) includes cited response images, the exact transcript, server traces, and the video's English-panel scrolling limitation.
+
+## Live evidence and remaining limitations
+
+The fixed six-scenario API replay on **2026-09-13 UTC** passed **3/6** behavioral checks, compared with **0/6** on the initial production deployment. Exact answers, timestamps, citation checks and correlation IDs are public in [the after evidence](../evals/production/2026-09-13-after/README.md); the [original failures](../evals/production/2026-09-13-before/README.md) remain unchanged.
+
+| Scenario | Initial | After | Actual after trace |
+| --- | --- | --- | --- |
+| Capability greeting | Fail | Pass | `direct_no_tools` |
+| Professional strengths with citations | Fail | Pass | CV + knowledge search; one verifier; `qualified_completion` |
+| Ambiguous follow-up | Fail | Fail | `insufficient_evidence`, zero tools |
+| Turkish-language professional question | Fail | Fail | `insufficient_evidence`, one tool; request locale was `en` |
+| Unsupported Nobel Prize premise | Fail | Fail | Generic qualification; `insufficient_evidence`, one tool |
+| Multi-source AI product assessment | Fail | Pass | CV + knowledge search; one verifier; `qualified_completion` |
+
+This is a small diagnostic sample, not a reliability estimate. The same six prompts and harness policy were retained, including its `locale=en` setting and history built from earlier passing answers. Because earlier answers now pass, later requests contain different generated history; this is not a controlled paired comparison of identical payloads. An HTTP 200/done response alone does not pass. The unsupported-premise result was safe but too generic to meet its behavioral criterion.
+
+The two successful factual API answers have independently retrieved production logs showing `get_cv_timeline` and `search_knowledge`, followed by one verifier pass. The [trace example](../evals/production/2026-09-13-after/multi-tool-trace.md) connects one exact public answer to those events. The verifier's supported-claim counts are model judgments, not audited truth labels.
+
+The demo uses selected explicit-source questions and is reported separately from the six-case replay. Earlier recording attempts are disclosed in the evidence README: one failed before sending requests because of an incorrect button selector; a later UI attempt showed a broad English role-fit fallback and a cited Turkish project answer before recording finalization was interrupted. Selecting explicit project/CV questions for a walkthrough does not resolve those broader failures.
+
+Known limitations include ambiguous follow-ups, generic qualification of unsupported premises, combined-source Turkish requests that can still fail verification, and inconsistent requested answer length. The verifier is not semantic proof. The checked-in agent evaluation computes fixture metadata; runtime contracts are covered by the separate assistant tests. Runtime logs are not a durable transcript, the paired retrieval evaluation did not measure generated-answer quality or concurrency, and full seeding does not repair every missed deletion event. Conversations are not persisted across reloads; that future work remains in #27.
 
 ## Milestones and follow-ons
 
@@ -162,7 +182,7 @@ These are the roadmap issue/PR mappings relevant to this work:
 | [#18](https://github.com/johnserra/johnserra/issues/18) | Tools | [PR #33](https://github.com/johnserra/johnserra/pull/33) |
 | [#16](https://github.com/johnserra/johnserra/issues/16) | Multi-tool evaluation | [PR #34](https://github.com/johnserra/johnserra/pull/34) |
 | [#19](https://github.com/johnserra/johnserra/issues/19) | Bounded evidence agent | [PR #35](https://github.com/johnserra/johnserra/pull/35) |
-| [#11](https://github.com/johnserra/johnserra/issues/11) | Production verification and evidence | In progress |
+| [#11](https://github.com/johnserra/johnserra/issues/11) | Production verification and evidence | [PR #36](https://github.com/johnserra/johnserra/pull/36) |
 | [#22](https://github.com/johnserra/johnserra/issues/22) | Roadmap parent | — |
 
 [#27](https://github.com/johnserra/johnserra/issues/27) is deferred until roadmap [#22](https://github.com/johnserra/johnserra/issues/22) is complete. Its scope is instant FAQs, persistent conversations, and additional business-development functionality; it is not the live evaluation or evidence-capture issue. Those acceptance gaps remain in #11.

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports -- Standalone Node CommonJS replay without transpilation. */
 const fs = require('node:fs');
 const path = require('node:path');
 

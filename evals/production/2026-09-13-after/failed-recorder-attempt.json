@@ -1,0 +1,59 @@
+{
+  "baseUrl": "https://johnserra.com",
+  "startedAt": "2026-09-13T22:34:20.409Z",
+  "scenarios": [
+    {
+      "name": "English greeting",
+      "locale": "en",
+      "request": "Hello",
+      "startedAt": "2026-09-13T22:34:21.174Z",
+      "status": "failed",
+      "reason": "generation/navigation timeout",
+      "httpStatus": null,
+      "terminal": null,
+      "answer": "",
+      "citations": [],
+      "correlationId": null,
+      "elapsedMs": 15004,
+      "requestBody": null,
+      "finishedAt": "2026-09-13T22:34:36.178Z"
+    },
+    {
+      "name": "English role fit",
+      "locale": "en",
+      "request": "Using both the reviewed CV timeline and evidence from published projects, what demonstrates John Serra's fit for an AI product role? Cite both kinds of source. Keep to 80 words.",
+      "startedAt": "2026-09-13T22:34:46.179Z",
+      "status": "failed",
+      "reason": "generation/navigation timeout",
+      "httpStatus": null,
+      "terminal": null,
+      "answer": "",
+      "citations": [],
+      "correlationId": null,
+      "elapsedMs": 15000,
+      "requestBody": null,
+      "finishedAt": "2026-09-13T22:35:01.179Z"
+    },
+    {
+      "name": "Turkish professional experience",
+      "locale": "tr",
+      "request": "CareerTalkLab projesi ne yapıyor? Türkçe olarak 80 kelimeyi aşmadan açıkla ve yayımlanmış proje sayfasını kaynak göster.",
+      "startedAt": "2026-09-13T22:35:11.424Z",
+      "status": "failed",
+      "reason": "locator.waitFor: Error: strict mode violation: getByRole('button', { name: /open chat|sohbet/i }) resolved to 2 elements:\n    1) <button class=\"rounded-pill font-medium transition-colors duration-150 ease-in-out cursor-pointer inline-flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50 disabled:cursor-not-allowed bg-accent text-on-accent hover:bg-accent-dim border border-transparent px-7 py-3 text-base\">Yapay Zeka Asistanımla Sohbet Edin</button> aka getByRole('button', { name: 'Yapay Zeka Asistanımla Sohbet' })\n    2) <button aria-busy=\"false\" aria-expanded=\"false\" aria-label=\"Yapay Zeka Sohbetini Aç\" class=\"fixed bottom-4 right-4 z-50 p-4 rounded-card transition-all duration-200 cursor-pointer inline-flex items-center justify-center border border-transparent bg-accent text-on-accent hover:bg-accent-dim focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-transparent\">…</button> aka getByRole('button', { name: 'Yapay Zeka Sohbetini Aç' })\n\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /open chat|sohbet/i }) to be visible\u001b[22m\n",
+      "httpStatus": null,
+      "terminal": null,
+      "answer": "",
+      "citations": [],
+      "correlationId": null,
+      "elapsedMs": 533,
+      "requestBody": null,
+      "finishedAt": "2026-09-13T22:35:11.957Z"
+    }
+  ],
+  "durationReviewNeeded": false,
+  "actualWallTimeMs": 120006,
+  "finishedAt": "2026-09-13T22:36:20.415Z",
+  "scenarioCount": 3,
+  "videoPath": "/tmp/johnserra-issue11/final-production/capture/capture/demo.webm"
+}

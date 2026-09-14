@@ -1,0 +1,415 @@
+{
+  "reportType": "offline_fixture_replay",
+  "corpusVersion": "issue-19-2026-09-13",
+  "completedAt": "2026-09-13T21:31:27.381Z",
+  "liveBaseline": false,
+  "aggregate": {
+    "caseCount": 12,
+    "termination": {
+      "numerator": 12,
+      "denominator": 12,
+      "rate": 1
+    },
+    "completion": {
+      "numerator": 10,
+      "denominator": 12,
+      "rate": 0.8333333333333334
+    },
+    "stopReasonAccuracy": {
+      "numerator": 12,
+      "denominator": 12,
+      "rate": 1
+    },
+    "claimSupport": {
+      "numerator": 8,
+      "denominator": 9,
+      "rate": 0.8888888888888888
+    },
+    "citationSupport": {
+      "numerator": 8,
+      "denominator": 8,
+      "rate": 1
+    },
+    "shortestPath": {
+      "numerator": 1,
+      "denominator": 1,
+      "rate": 1
+    },
+    "acceptedToolExecutions": 14,
+    "retrievalRounds": 11,
+    "verificationPasses": 6,
+    "revisions": 2,
+    "qualifications": 6,
+    "removedClaims": 1,
+    "infrastructureFailures": 3,
+    "usage": {
+      "complete": 5,
+      "partial": 4,
+      "unknown": 3,
+      "knownTokenCases": 10,
+      "knownCostCases": 10
+    }
+  },
+  "cases": [
+    {
+      "id": "direct-greeting",
+      "category": "shortest_path",
+      "terminated": true,
+      "completion": true,
+      "expectedStopReason": "direct_no_tools",
+      "stopReasonCorrect": true,
+      "shortestPathCorrect": true,
+      "acceptedToolExecutions": 0,
+      "retrievalRounds": 0,
+      "verificationPasses": 0,
+      "revised": false,
+      "qualified": false,
+      "claimSupport": {
+        "supported": 0,
+        "removed": 0,
+        "qualified": false
+      },
+      "citationSupport": {
+        "supported": 0,
+        "count": 0
+      },
+      "latencyMs": 120,
+      "usage": {
+        "tokens": 80,
+        "costUsd": 0.0002,
+        "completeness": "complete"
+      },
+      "infrastructureFailure": false
+    },
+    {
+      "id": "sufficient-first-round",
+      "category": "supported_answer",
+      "terminated": true,
+      "completion": true,
+      "expectedStopReason": "supported_evidence",
+      "stopReasonCorrect": true,
+      "shortestPathCorrect": null,
+      "acceptedToolExecutions": 2,
+      "retrievalRounds": 1,
+      "verificationPasses": 1,
+      "revised": false,
+      "qualified": false,
+      "claimSupport": {
+        "supported": 3,
+        "removed": 0,
+        "qualified": false
+      },
+      "citationSupport": {
+        "supported": 3,
+        "count": 3
+      },
+      "latencyMs": 3200,
+      "usage": {
+        "tokens": 900,
+        "costUsd": 0.003,
+        "completeness": "complete"
+      },
+      "infrastructureFailure": false
+    },
+    {
+      "id": "insufficient-then-second-round",
+      "category": "bounded_retrieval",
+      "terminated": true,
+      "completion": true,
+      "expectedStopReason": "supported_evidence",
+      "stopReasonCorrect": true,
+      "shortestPathCorrect": null,
+      "acceptedToolExecutions": 3,
+      "retrievalRounds": 2,
+      "verificationPasses": 1,
+      "revised": false,
+      "qualified": false,
+      "claimSupport": {
+        "supported": 2,
+        "removed": 0,
+        "qualified": false
+      },
+      "citationSupport": {
+        "supported": 2,
+        "count": 2
+      },
+      "latencyMs": 8200,
+      "usage": {
+        "tokens": 1400,
+        "costUsd": 0.0045,
+        "completeness": "partial"
+      },
+      "infrastructureFailure": false
+    },
+    {
+      "id": "unsupported-claim-removed",
+      "category": "revision",
+      "terminated": true,
+      "completion": true,
+      "expectedStopReason": "qualified_completion",
+      "stopReasonCorrect": true,
+      "shortestPathCorrect": null,
+      "acceptedToolExecutions": 1,
+      "retrievalRounds": 1,
+      "verificationPasses": 1,
+      "revised": true,
+      "qualified": false,
+      "claimSupport": {
+        "supported": 2,
+        "removed": 1,
+        "qualified": false
+      },
+      "citationSupport": {
+        "supported": 2,
+        "count": 2
+      },
+      "latencyMs": 4100,
+      "usage": {
+        "tokens": 1100,
+        "costUsd": 0.0034,
+        "completeness": "complete"
+      },
+      "infrastructureFailure": false
+    },
+    {
+      "id": "partial-tool-failure",
+      "category": "degradation",
+      "terminated": true,
+      "completion": true,
+      "expectedStopReason": "qualified_completion",
+      "stopReasonCorrect": true,
+      "shortestPathCorrect": null,
+      "acceptedToolExecutions": 1,
+      "retrievalRounds": 1,
+      "verificationPasses": 1,
+      "revised": true,
+      "qualified": true,
+      "claimSupport": {
+        "supported": 1,
+        "removed": 0,
+        "qualified": true
+      },
+      "citationSupport": {
+        "supported": 1,
+        "count": 1
+      },
+      "latencyMs": 5200,
+      "usage": {
+        "tokens": 1000,
+        "costUsd": 0.0031,
+        "completeness": "partial"
+      },
+      "infrastructureFailure": false
+    },
+    {
+      "id": "all-tools-failed",
+      "category": "degradation",
+      "terminated": true,
+      "completion": true,
+      "expectedStopReason": "all_tools_failure",
+      "stopReasonCorrect": true,
+      "shortestPathCorrect": null,
+      "acceptedToolExecutions": 0,
+      "retrievalRounds": 1,
+      "verificationPasses": 0,
+      "revised": false,
+      "qualified": true,
+      "claimSupport": {
+        "supported": 0,
+        "removed": 0,
+        "qualified": true
+      },
+      "citationSupport": {
+        "supported": 0,
+        "count": 0
+      },
+      "latencyMs": 3000,
+      "usage": {
+        "tokens": 500,
+        "costUsd": 0.0015,
+        "completeness": "unknown"
+      },
+      "infrastructureFailure": false
+    },
+    {
+      "id": "verifier-timeout",
+      "category": "verification_failure",
+      "terminated": true,
+      "completion": true,
+      "expectedStopReason": "verifier_failure",
+      "stopReasonCorrect": true,
+      "shortestPathCorrect": null,
+      "acceptedToolExecutions": 1,
+      "retrievalRounds": 1,
+      "verificationPasses": 1,
+      "revised": false,
+      "qualified": true,
+      "claimSupport": {
+        "supported": 0,
+        "removed": 0,
+        "qualified": true
+      },
+      "citationSupport": {
+        "supported": 0,
+        "count": 0
+      },
+      "latencyMs": 9000,
+      "usage": {
+        "tokens": null,
+        "costUsd": null,
+        "completeness": "unknown"
+      },
+      "infrastructureFailure": true
+    },
+    {
+      "id": "malformed-verifier-output",
+      "category": "verification_failure",
+      "terminated": true,
+      "completion": true,
+      "expectedStopReason": "verifier_failure",
+      "stopReasonCorrect": true,
+      "shortestPathCorrect": null,
+      "acceptedToolExecutions": 1,
+      "retrievalRounds": 1,
+      "verificationPasses": 1,
+      "revised": false,
+      "qualified": true,
+      "claimSupport": {
+        "supported": 0,
+        "removed": 0,
+        "qualified": true
+      },
+      "citationSupport": {
+        "supported": 0,
+        "count": 0
+      },
+      "latencyMs": 3900,
+      "usage": {
+        "tokens": 800,
+        "costUsd": 0.0025,
+        "completeness": "partial"
+      },
+      "infrastructureFailure": false
+    },
+    {
+      "id": "overall-deadline",
+      "category": "termination",
+      "terminated": true,
+      "completion": false,
+      "expectedStopReason": "deadline_exceeded",
+      "stopReasonCorrect": true,
+      "shortestPathCorrect": null,
+      "acceptedToolExecutions": 2,
+      "retrievalRounds": 1,
+      "verificationPasses": 0,
+      "revised": false,
+      "qualified": false,
+      "claimSupport": {
+        "supported": 0,
+        "removed": 0,
+        "qualified": false
+      },
+      "citationSupport": {
+        "supported": 0,
+        "count": 0
+      },
+      "latencyMs": 45000,
+      "usage": {
+        "tokens": 2000,
+        "costUsd": 0.006,
+        "completeness": "partial"
+      },
+      "infrastructureFailure": true
+    },
+    {
+      "id": "budget-exhaustion",
+      "category": "termination",
+      "terminated": true,
+      "completion": true,
+      "expectedStopReason": "budget_exceeded",
+      "stopReasonCorrect": true,
+      "shortestPathCorrect": null,
+      "acceptedToolExecutions": 3,
+      "retrievalRounds": 1,
+      "verificationPasses": 0,
+      "revised": false,
+      "qualified": true,
+      "claimSupport": {
+        "supported": 0,
+        "removed": 0,
+        "qualified": true
+      },
+      "citationSupport": {
+        "supported": 0,
+        "count": 0
+      },
+      "latencyMs": 7600,
+      "usage": {
+        "tokens": 4096,
+        "costUsd": 0.05,
+        "completeness": "complete"
+      },
+      "infrastructureFailure": false
+    },
+    {
+      "id": "cancellation",
+      "category": "termination",
+      "terminated": true,
+      "completion": false,
+      "expectedStopReason": "cancellation",
+      "stopReasonCorrect": true,
+      "shortestPathCorrect": null,
+      "acceptedToolExecutions": 0,
+      "retrievalRounds": 0,
+      "verificationPasses": 0,
+      "revised": false,
+      "qualified": false,
+      "claimSupport": {
+        "supported": 0,
+        "removed": 0,
+        "qualified": false
+      },
+      "citationSupport": {
+        "supported": 0,
+        "count": 0
+      },
+      "latencyMs": 40,
+      "usage": {
+        "tokens": null,
+        "costUsd": null,
+        "completeness": "unknown"
+      },
+      "infrastructureFailure": true
+    },
+    {
+      "id": "raw-cap-enforcement",
+      "category": "cap_enforcement",
+      "terminated": true,
+      "completion": true,
+      "expectedStopReason": "budget_exceeded",
+      "stopReasonCorrect": true,
+      "shortestPathCorrect": null,
+      "acceptedToolExecutions": 0,
+      "retrievalRounds": 1,
+      "verificationPasses": 0,
+      "revised": false,
+      "qualified": true,
+      "claimSupport": {
+        "supported": 0,
+        "removed": 0,
+        "qualified": true
+      },
+      "citationSupport": {
+        "supported": 0,
+        "count": 0
+      },
+      "latencyMs": 200,
+      "usage": {
+        "tokens": 400,
+        "costUsd": 0.0012,
+        "completeness": "complete"
+      },
+      "infrastructureFailure": false
+    }
+  ]
+}

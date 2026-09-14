@@ -1,0 +1,14 @@
+{
+  "english-citation-2026-09-14.png": {
+    "bytes": 610220,
+    "sha256": "e7b279bd323d5f6b5933ebd836bbe50fd09022a487cdae4fd3c6a7924762a4b8"
+  },
+  "turkish-citation-2026-09-14.png": {
+    "bytes": 550004,
+    "sha256": "cc9365d9bd07c6da96dfe786d0cb4f2cdff374354c69bb332f9cdea5bdfd0e21"
+  },
+  "demo-2026-09-14.webm": {
+    "bytes": 6503381,
+    "sha256": "1a011cfa543f79221caf4b7ec7fdf3be8eec777936a2823d344bc17887461189"
+  }
+}

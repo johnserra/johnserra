@@ -1,0 +1,316 @@
+{
+  "kind": "issue11-live-probe",
+  "requests": [
+    {
+      "request": "observed Turkish CV and published-project request",
+      "prompt": "John Serra’nın profesyonel deneyimini Türkçe olarak 80 kelimeyi aşmadan özetler misin? İncelenmiş özgeçmiş ve yayımlanmış projelerden kaynak bağlantıları ver.",
+      "locale": "tr",
+      "startedAt": "2026-09-13T22:28:01.342Z",
+      "completedAt": "2026-09-13T22:28:06.896Z",
+      "finalAnswer": "Yalnızca mevcut kamuya açık kaynaklarla desteklenen bilgileri doğrulayabilirim. İstenen bazı ayrıntılar doğrulanamadığı için bunları dahil etmiyorum.",
+      "citationUrls": [],
+      "stages": [
+        {
+          "stage": "selection",
+          "finishReasons": [
+            "STOP"
+          ],
+          "textBytes": 0,
+          "usageSnapshots": [
+            {
+              "promptTokenCount": 2632,
+              "candidatesTokenCount": 40,
+              "totalTokenCount": 2853,
+              "thoughtsTokenCount": 181
+            }
+          ],
+          "providerErrorCategory": null
+        },
+        {
+          "stage": "inspection",
+          "finishReasons": [
+            "STOP"
+          ],
+          "textBytes": 36,
+          "usageSnapshots": [
+            {
+              "promptTokenCount": 2956,
+              "candidatesTokenCount": 3,
+              "totalTokenCount": 2959
+            },
+            {
+              "promptTokenCount": 2956,
+              "candidatesTokenCount": 9,
+              "totalTokenCount": 2965
+            }
+          ],
+          "providerErrorCategory": null
+        },
+        {
+          "stage": "draft",
+          "finishReasons": [
+            "STOP"
+          ],
+          "textBytes": 650,
+          "usageSnapshots": [
+            {
+              "promptTokenCount": 2943,
+              "candidatesTokenCount": 3,
+              "totalTokenCount": 2946
+            },
+            {
+              "promptTokenCount": 2943,
+              "candidatesTokenCount": 19,
+              "totalTokenCount": 2962
+            },
+            {
+              "promptTokenCount": 2943,
+              "candidatesTokenCount": 67,
+              "totalTokenCount": 3010
+            },
+            {
+              "promptTokenCount": 2943,
+              "candidatesTokenCount": 115,
+              "totalTokenCount": 3058
+            },
+            {
+              "promptTokenCount": 2943,
+              "candidatesTokenCount": 154,
+              "totalTokenCount": 3097
+            }
+          ],
+          "providerErrorCategory": null
+        },
+        {
+          "stage": "verification",
+          "finishReasons": [
+            "STOP"
+          ],
+          "textBytes": 813,
+          "usageSnapshots": [
+            {
+              "promptTokenCount": 3115,
+              "candidatesTokenCount": 8,
+              "totalTokenCount": 3123
+            },
+            {
+              "promptTokenCount": 3115,
+              "candidatesTokenCount": 56,
+              "totalTokenCount": 3171
+            },
+            {
+              "promptTokenCount": 3115,
+              "candidatesTokenCount": 105,
+              "totalTokenCount": 3220
+            },
+            {
+              "promptTokenCount": 3115,
+              "candidatesTokenCount": 153,
+              "totalTokenCount": 3268
+            },
+            {
+              "promptTokenCount": 3115,
+              "candidatesTokenCount": 203,
+              "totalTokenCount": 3318
+            },
+            {
+              "promptTokenCount": 3115,
+              "candidatesTokenCount": 211,
+              "totalTokenCount": 3326
+            }
+          ],
+          "providerErrorCategory": null
+        }
+      ],
+      "stopReason": "verifier_failure",
+      "stopError": null,
+      "responseBytes": 163,
+      "responseClass": "nonempty",
+      "quotaOrAuth": false,
+      "traceCount": 1,
+      "finalSafeTrace": {
+        "toolCount": 1,
+        "verificationCount": 1,
+        "stopReason": "verifier_failure"
+      }
+    },
+    {
+      "request": "combined public project and CV overview",
+      "prompt": "Compare John Serra's CareerTalkLab project with his education and career timeline from the public project page and reviewed public CV, with citations.",
+      "locale": "en",
+      "startedAt": "2026-09-13T22:28:16.902Z",
+      "completedAt": "2026-09-13T22:28:23.206Z",
+      "finalAnswer": "John Serra's CareerTalkLab project is a standalone hybrid Learning Management System (LMS) designed for global professionals learning English. It uses a \"Flipped Classroom\" model, combining web-based lessons with live speaking practice sessions. The platform is built with Next.js 16.1, Supabase, and features a JSON-native lesson engine, AI feedback using Anthropic Claude API, and a Python-based news ingestion pipeline for content generation. The curriculum follows a CEFR-Task Hybrid Model, including an A1 Foundation, an A2 Business English course, and a Skills Lab for higher-level professionals [CareerTalkLab](https://johnserra.com/projects/careertalklab).\n\nThis project aligns with John's professional experience as an Education Coordinator at Amerikan Kültür Dil Okulları from May 2017 to October 2022. In this role, he developed a student feedback system, led the transition to online education using an LMS, developed curriculum, and built and trained a team of English teachers [John Serra — Professional CV](https://johnserra.com/cv/john-serra.en.md). CareerTalkLab directly reflects and expands upon these experiences by creating a comprehensive digital learning solution.\n\nCareerTalkLab is listed as a work-in-progress project on John's CV, with a status of \"Work in progress\" and dates from March 2026 to present. It is described as evolving into a long-term personal effort to share knowledge and help others learn, with business English as one part and a planned data analytics curriculum [John Serra — Professional CV](https://johnserra.com/cv/john-serra.en.md). This indicates a continuation of his interest in education and curriculum development, now with a strong focus on software development and automation, which are also listed among his skills [John Serra — Professional CV](https://johnserra.com/cv/john-serra.en.md).",
+      "citationUrls": [
+        "https://johnserra.com/projects/careertalklab",
+        "https://johnserra.com/cv/john-serra.en.md",
+        "https://johnserra.com/cv/john-serra.en.md",
+        "https://johnserra.com/cv/john-serra.en.md"
+      ],
+      "stages": [
+        {
+          "stage": "selection",
+          "finishReasons": [
+            "STOP"
+          ],
+          "textBytes": 0,
+          "usageSnapshots": [
+            {
+              "promptTokenCount": 2587,
+              "candidatesTokenCount": 42,
+              "totalTokenCount": 2777,
+              "thoughtsTokenCount": 148
+            }
+          ],
+          "providerErrorCategory": null
+        },
+        {
+          "stage": "inspection",
+          "finishReasons": [
+            "STOP"
+          ],
+          "textBytes": 36,
+          "usageSnapshots": [
+            {
+              "promptTokenCount": 4412,
+              "candidatesTokenCount": 9,
+              "totalTokenCount": 4421
+            }
+          ],
+          "providerErrorCategory": null
+        },
+        {
+          "stage": "draft",
+          "finishReasons": [
+            "STOP"
+          ],
+          "textBytes": 1856,
+          "usageSnapshots": [
+            {
+              "promptTokenCount": 4414,
+              "candidatesTokenCount": 4,
+              "totalTokenCount": 4418
+            },
+            {
+              "promptTokenCount": 4414,
+              "candidatesTokenCount": 20,
+              "totalTokenCount": 4434
+            },
+            {
+              "promptTokenCount": 4414,
+              "candidatesTokenCount": 70,
+              "totalTokenCount": 4484
+            },
+            {
+              "promptTokenCount": 4414,
+              "candidatesTokenCount": 118,
+              "totalTokenCount": 4532
+            },
+            {
+              "promptTokenCount": 4414,
+              "candidatesTokenCount": 169,
+              "totalTokenCount": 4583
+            },
+            {
+              "promptTokenCount": 4414,
+              "candidatesTokenCount": 220,
+              "totalTokenCount": 4634
+            },
+            {
+              "promptTokenCount": 4414,
+              "candidatesTokenCount": 270,
+              "totalTokenCount": 4684
+            },
+            {
+              "promptTokenCount": 4414,
+              "candidatesTokenCount": 319,
+              "totalTokenCount": 4733
+            },
+            {
+              "promptTokenCount": 4414,
+              "candidatesTokenCount": 370,
+              "totalTokenCount": 4784
+            },
+            {
+              "promptTokenCount": 4414,
+              "candidatesTokenCount": 416,
+              "totalTokenCount": 4830
+            }
+          ],
+          "providerErrorCategory": null
+        },
+        {
+          "stage": "verification",
+          "finishReasons": [
+            "STOP"
+          ],
+          "textBytes": 1961,
+          "usageSnapshots": [
+            {
+              "promptTokenCount": 4849,
+              "candidatesTokenCount": 13,
+              "totalTokenCount": 4862
+            },
+            {
+              "promptTokenCount": 4849,
+              "candidatesTokenCount": 61,
+              "totalTokenCount": 4910
+            },
+            {
+              "promptTokenCount": 4849,
+              "candidatesTokenCount": 109,
+              "totalTokenCount": 4958
+            },
+            {
+              "promptTokenCount": 4849,
+              "candidatesTokenCount": 157,
+              "totalTokenCount": 5006
+            },
+            {
+              "promptTokenCount": 4849,
+              "candidatesTokenCount": 205,
+              "totalTokenCount": 5054
+            },
+            {
+              "promptTokenCount": 4849,
+              "candidatesTokenCount": 253,
+              "totalTokenCount": 5102
+            },
+            {
+              "promptTokenCount": 4849,
+              "candidatesTokenCount": 301,
+              "totalTokenCount": 5150
+            },
+            {
+              "promptTokenCount": 4849,
+              "candidatesTokenCount": 349,
+              "totalTokenCount": 5198
+            },
+            {
+              "promptTokenCount": 4849,
+              "candidatesTokenCount": 397,
+              "totalTokenCount": 5246
+            },
+            {
+              "promptTokenCount": 4849,
+              "candidatesTokenCount": 445,
+              "totalTokenCount": 5294
+            }
+          ],
+          "providerErrorCategory": null
+        }
+      ],
+      "stopReason": "qualified_completion",
+      "stopError": null,
+      "responseBytes": 1856,
+      "responseClass": "nonempty",
+      "quotaOrAuth": false,
+      "traceCount": 1,
+      "finalSafeTrace": {
+        "toolCount": 2,
+        "verificationCount": 1,
+        "stopReason": "qualified_completion"
+      }
+    }
+  ]
+}

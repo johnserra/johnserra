@@ -1,0 +1,102 @@
+{
+  "source": "Vercel runtime logs",
+  "deploymentId": "dpl_8XC7fqNb273vLovd2Eq4KgaApwpn",
+  "queriedAt": "2026-09-13T21:26:21Z",
+  "events": [
+    {
+      "event": "chat_agent_trace",
+      "schemaVersion": 1,
+      "correlationId": "8ef39550-dea5-45d0-9618-c7270866ee41",
+      "stopReason": "insufficient_evidence",
+      "stageSequence": [
+        "interpret",
+        "retrieve",
+        "stop"
+      ],
+      "stepCount": 2,
+      "selectedCallCount": 0,
+      "acceptedToolExecutions": 0,
+      "duplicateCallCount": 0,
+      "retrievalRounds": 1,
+      "verificationPasses": 0,
+      "toolFailureCount": 0,
+      "evidenceAvailable": false,
+      "draftCreated": false,
+      "revisionApplied": false,
+      "claimTotals": {
+        "supported": 0,
+        "qualified": 0,
+        "removed": 0
+      },
+      "usage": {
+        "tokenCount": 7771,
+        "costUsd": 0.0194275,
+        "completeness": "complete"
+      },
+      "durationMs": 1293,
+      "latencyBucket": "1_to_5s"
+    },
+    {
+      "event": "chat_request_completed",
+      "schemaVersion": 1,
+      "timestamp": "2026-09-13T21:26:04.364Z",
+      "correlationId": "8ef39550-dea5-45d0-9618-c7270866ee41",
+      "route": "/api/chat",
+      "locale": "en",
+      "httpStatus": 200,
+      "outcome": "success",
+      "failureCategory": null,
+      "durationMs": 3555,
+      "stages": {
+        "validationMs": 4,
+        "rateLimitingMs": 2246,
+        "preparationMs": null,
+        "generationMs": 1304
+      },
+      "diagnostics": {
+        "totalDurationMs": null,
+        "rewrite": null,
+        "embedding": null,
+        "retrieval": null,
+        "reranking": null
+      },
+      "retrieval": {
+        "resultCount": null,
+        "candidateCount": null,
+        "noContext": null
+      },
+      "generatedUtf8Bytes": 149,
+      "citationCount": 0,
+      "hasCitations": false,
+      "usage": {
+        "generation": {
+          "promptTokens": 2449,
+          "cachedInputTokens": null,
+          "candidateTokens": 70,
+          "thinkingTokens": 88,
+          "toolPromptTokens": null,
+          "totalTokens": 2607
+        },
+        "rewrite": null,
+        "embeddingTokens": null
+      },
+      "cost": {
+        "generation": {
+          "currency": "USD",
+          "estimateUsd": 0.0011297,
+          "pricingSource": "https://ai.google.dev/gemini-api/docs/pricing",
+          "pricingVerifiedOn": "2026-09-12",
+          "pricingVersion": "gemini-2.5-flash-standard-text-2026-09-12",
+          "model": "gemini-2.5-flash",
+          "completeness": "complete"
+        },
+        "rewrite": null,
+        "totalUsd": 0.0011297
+      },
+      "toolCallCount": 0,
+      "stopReason": null,
+      "agentStopReason": "insufficient_evidence",
+      "model": "gemini-2.5-flash"
+    }
+  ]
+}

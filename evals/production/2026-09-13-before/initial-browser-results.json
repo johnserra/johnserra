@@ -1,0 +1,130 @@
+{
+  "deploymentCommit": "e37251031c360215f4f429f7491458f8038fd445",
+  "checkedAt": "2026-09-13T21:30:13.604Z",
+  "scenarios": [
+    {
+      "id": "greeting",
+      "prompt": "Hello — what can you help me learn about John Serra?",
+      "status": "fail",
+      "reason": "HTTP 200 and done terminal were observed, but the assistant returned a generic evidence-insufficient fallback instead of greeting/help content. HTTP 200; elapsed 2146 ms.",
+      "httpStatus": 200,
+      "terminal": {
+        "type": "done"
+      },
+      "answer": "The available public evidence is insufficient to answer that reliably. Please ask about a documented project, career entry, or public contact option.",
+      "citations": [],
+      "correlationId": "de71d378-583a-40f1-bd42-81067c3d71ea",
+      "elapsedMs": 2146,
+      "startedAt": "2026-09-13T21:29:18.425Z",
+      "endedAt": "2026-09-13T21:29:20.571Z",
+      "requestMessageCount": 1,
+      "responseFrameCount": 2,
+      "citationChecks": []
+    },
+    {
+      "id": "cited-professional-cv",
+      "prompt": "What are John Serra's professional strengths and experience? Use his published portfolio and reviewed CV evidence, and cite the source links for each material claim.",
+      "status": "fail",
+      "reason": "HTTP 200 and done terminal were observed, but the assistant returned only a generic evidence-insufficient fallback with no citation URLs. HTTP 200; elapsed 3592 ms.",
+      "httpStatus": 200,
+      "terminal": {
+        "type": "done"
+      },
+      "answer": "I can only confirm what is supported by the available public sources. Some requested details could not be verified, so I’m leaving them out.",
+      "citations": [],
+      "correlationId": "9a49403f-8df8-40f2-a8bf-49b74af37381",
+      "elapsedMs": 3592,
+      "startedAt": "2026-09-13T21:29:28.426Z",
+      "endedAt": "2026-09-13T21:29:32.018Z",
+      "requestMessageCount": 3,
+      "responseFrameCount": 2,
+      "citationChecks": []
+    },
+    {
+      "id": "ambiguous-follow-up",
+      "prompt": "Which one of those strengths would be most relevant to an AI product role, and why?",
+      "status": "fail",
+      "reason": "The request included prior response history (5 messages), but the assistant returned the same generic evidence-insufficient fallback and did not answer the follow-up. HTTP 200; elapsed 2130 ms.",
+      "httpStatus": 200,
+      "terminal": {
+        "type": "done"
+      },
+      "answer": "The available public evidence is insufficient to answer that reliably. Please ask about a documented project, career entry, or public contact option.",
+      "citations": [],
+      "correlationId": "8b54c9a0-c0d1-48d8-9d47-fb6c3e0994e6",
+      "elapsedMs": 2130,
+      "startedAt": "2026-09-13T21:29:38.428Z",
+      "endedAt": "2026-09-13T21:29:40.558Z",
+      "requestMessageCount": 5,
+      "responseFrameCount": 2,
+      "citationChecks": []
+    },
+    {
+      "id": "turkish-professional",
+      "prompt": "John Serra'nın profesyonel deneyimini ve özellikle veri/analitik projelerini Türkçe olarak, kaynak bağlantılarıyla açıklar mısın?",
+      "status": "fail",
+      "reason": "HTTP 200 and done terminal were observed, but the answer was the same English generic evidence-insufficient fallback, with no expected Turkish-language markers or citations. HTTP 200; elapsed 3528 ms.",
+      "httpStatus": 200,
+      "terminal": {
+        "type": "done"
+      },
+      "answer": "I can only confirm what is supported by the available public sources. Some requested details could not be verified, so I’m leaving them out.",
+      "citations": [],
+      "correlationId": "6a8cb596-de6c-44b9-a006-a9ebe74e694a",
+      "elapsedMs": 3528,
+      "startedAt": "2026-09-13T21:29:48.432Z",
+      "endedAt": "2026-09-13T21:29:51.960Z",
+      "requestMessageCount": 7,
+      "responseFrameCount": 2,
+      "citationChecks": []
+    },
+    {
+      "id": "unknown-factual-qualification",
+      "prompt": "Did John Serra win the 2019 Nobel Prize in Economics? If that is not supported by the public evidence, say so clearly and explain what can actually be verified.",
+      "status": "fail",
+      "reason": "HTTP 200 and done terminal were observed, but the answer did not address the Nobel-premise qualification specifically; it only gave a generic evidence-insufficient fallback. HTTP 200; elapsed 3278 ms.",
+      "httpStatus": 200,
+      "terminal": {
+        "type": "done"
+      },
+      "answer": "I can only confirm what is supported by the available public sources. Some requested details could not be verified, so I’m leaving them out.",
+      "citations": [],
+      "correlationId": "de436216-75a2-4855-b550-f1da92b04d37",
+      "elapsedMs": 3278,
+      "startedAt": "2026-09-13T21:29:58.434Z",
+      "endedAt": "2026-09-13T21:30:01.712Z",
+      "requestMessageCount": 9,
+      "responseFrameCount": 2,
+      "citationChecks": []
+    },
+    {
+      "id": "multi-tool-public-ai-product-role",
+      "prompt": "Combine the published project evidence on this site with the reviewed CV evidence to assess whether John Serra is a strong fit for an AI product role. Use multiple public sources or tools if available, cite every claim, and clearly qualify anything that cannot be verified.",
+      "status": "fail",
+      "reason": "Public multi-source/product-role answer requested; tool execution and verifier behavior are not inferred from prose. Returned no citation URLs. traceAvailable=false: browser-visible response does not prove tool calls or verifier pass. Terminal error SERVICE_UNAVAILABLE: Chat is temporarily unavailable. Please try again shortly.. HTTP 503; elapsed 5168 ms.",
+      "httpStatus": 503,
+      "terminal": {
+        "type": "error",
+        "code": "SERVICE_UNAVAILABLE",
+        "message": "Chat is temporarily unavailable. Please try again shortly."
+      },
+      "answer": "",
+      "citations": [],
+      "correlationId": "b562fb87-9de1-4fb3-a640-47bb5af6700b",
+      "elapsedMs": 5168,
+      "startedAt": "2026-09-13T21:30:08.436Z",
+      "endedAt": "2026-09-13T21:30:13.604Z",
+      "requestMessageCount": 11,
+      "responseFrameCount": 0,
+      "citationChecks": []
+    }
+  ],
+  "media": {
+    "screenshotPaths": [],
+    "videoPath": null,
+    "videoDurationSeconds": null,
+    "blocker": "Initial media collection failed; no representative screenshot or video artifact was captured."
+  },
+  "traceAvailable": false,
+  "citationChecks": []
+}

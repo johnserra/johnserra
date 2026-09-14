@@ -21,9 +21,26 @@ export const AGENT_MAX_INTERNAL_OUTPUT_TOKENS = 1_024;
 export const AGENT_MAX_RESERVED_TOKENS = 4_096;
 export const AGENT_MAX_ESTIMATED_COST_USD = 0.05;
 export const AGENT_PROVIDER_MAX_OUTPUT_TOKENS = 768;
-export const AGENT_VERIFIER_MAX_OUTPUT_TOKENS = 384;
-export const AGENT_SAFE_ANSWER = "The available public evidence is insufficient to answer that reliably. Please ask about a documented project, career entry, or public contact option.";
-export const AGENT_QUALIFIED_ANSWER = "I can only confirm what is supported by the available public sources. Some requested details could not be verified, so I’m leaving them out.";
+export const AGENT_DRAFT_MAX_OUTPUT_TOKENS = 512;
+export const AGENT_VERIFIER_MAX_OUTPUT_TOKENS = 640;
+export const AGENT_SAFE_ANSWER_BY_LOCALE = {
+  en: "The available public evidence is insufficient to answer that reliably. Please ask about a documented project, career entry, or public contact option.",
+  tr: "Mevcut kamuya açık kanıtlar bu soruyu güvenilir biçimde yanıtlamak için yeterli değil. Lütfen belgelenmiş bir proje, kariyer kaydı veya herkese açık iletişim seçeneği hakkında sorun.",
+} as const;
+export const AGENT_QUALIFIED_ANSWER_BY_LOCALE = {
+  en: "I can only confirm what is supported by the available public sources. Some requested details could not be verified, so I’m leaving them out.",
+  tr: "Yalnızca mevcut kamuya açık kaynaklarla desteklenen bilgileri doğrulayabilirim. İstenen bazı ayrıntılar doğrulanamadığı için bunları dahil etmiyorum.",
+} as const;
+// Preserve the existing English exports for consumers that only need the
+// default wording; agent-loop selects the locale-keyed variants at emission.
+export const AGENT_SAFE_ANSWER = AGENT_SAFE_ANSWER_BY_LOCALE.en;
+export const AGENT_QUALIFIED_ANSWER = AGENT_QUALIFIED_ANSWER_BY_LOCALE.en;
+export function agentSafeAnswer(locale: "en" | "tr"): string {
+  return AGENT_SAFE_ANSWER_BY_LOCALE[locale] ?? AGENT_SAFE_ANSWER_BY_LOCALE.en;
+}
+export function agentQualifiedAnswer(locale: "en" | "tr"): string {
+  return AGENT_QUALIFIED_ANSWER_BY_LOCALE[locale] ?? AGENT_QUALIFIED_ANSWER_BY_LOCALE.en;
+}
 export const CHAT_TOOL_DEADLINES_MS = {
   search_knowledge: 10_000,
   get_cv_timeline: 4_000,

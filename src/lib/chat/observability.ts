@@ -373,13 +373,18 @@ function safeStopReason(value: ChatStopReason): ChatStopReason {
 
 function safeAgentStopReason(value: unknown): AgentStopReason | null {
   const allowed: readonly AgentStopReason[] = [
-    "direct_no_tools", "supported_evidence", "qualified_completion", "insufficient_evidence",
+    "static_completion", "direct_no_tools", "supported_evidence", "qualified_completion", "insufficient_evidence",
     "all_tools_failure", "verifier_failure", "inspection_failure", "deadline_exceeded",
     "budget_exceeded", "provider_failure", "output_limit", "cancellation",
   ];
   return typeof value === "string" && allowed.includes(value as AgentStopReason)
     ? value as AgentStopReason
     : null;
+}
+
+function safeAgentUsageSource(value: unknown, stopReason: unknown): "provider" | "static" | "unknown" {
+  if (value === "provider" || value === "static" || value === "unknown") return value;
+  return stopReason === "static_completion" ? "static" : "unknown";
 }
 
 function safeEvent(event: ChatCompletionEvent): ChatCompletionEvent {
@@ -687,6 +692,7 @@ export function createChatRequestTrace(options: ChatRequestTraceOptions = {}): C
             tokenCount: finiteNonNegativeInteger(value.usage?.tokenCount) ?? null,
             costUsd: finiteNonNegative(value.usage?.costUsd),
             completeness: value.usage?.completeness === "complete" || value.usage?.completeness === "partial" ? value.usage.completeness : "unknown",
+            source: safeAgentUsageSource(value.usage?.source, value.stopReason),
           },
           durationMs: finiteNonNegative(value.durationMs) ?? 0,
           latencyBucket: ["lt_1s", "1_to_5s", "5_to_15s", "15_to_45s", "over_45s"].includes(value.latencyBucket) ? value.latencyBucket : "over_45s",

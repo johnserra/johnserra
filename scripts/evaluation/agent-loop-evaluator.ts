@@ -51,7 +51,7 @@ function reportCase(item: AgentLoopCase): AgentLoopCaseReport {
     completion: item.expectedCompletion,
     expectedStopReason: item.expectedStopReason,
     stopReasonCorrect: true,
-    shortestPathCorrect: item.expectedShortestPath ? item.expectedStopReason === "direct_no_tools" : null,
+    shortestPathCorrect: item.expectedShortestPath ? item.expectedStopReason === "static_completion" : null,
     acceptedToolExecutions: fixture.acceptedToolExecutions,
     retrievalRounds: fixture.retrievalRounds,
     verificationPasses: fixture.verificationPasses,

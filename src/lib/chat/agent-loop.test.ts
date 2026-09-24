@@ -74,36 +74,37 @@ function verifier(request: GenerationRequest, response: string): AsyncIterable<C
   return (async function* () { yield { text: "Internal draft with [CareerTalkLab](https://johnserra.com/projects/careertalklab)." }; })();
 }
 
-test("greetings take the zero-tool direct path and emit one terminal stop reason", async () => {
+test("greetings complete statically with zero provider usage and one terminal stop reason", async () => {
   let providerCalls = 0;
   const traces: AgentTraceSummary[] = [];
   const result = await collect(streamBoundedEvidenceAgent(
     [{ role: "user", content: "Hello!" }], "en",
     deps(async function* (request) {
       providerCalls += 1;
-      assert.equal(request.config.tools, undefined);
-      yield { text: "Hello there!" };
+      void request;
+      throw new Error("static greeting must not call provider");
     }), registry(), new AbortController().signal,
     { correlationId, onAgentTrace: (trace) => traces.push(trace) },
   ));
-  assert.equal(providerCalls, 1);
-  assert.equal(answer(result), "Hello there!");
-  assert.deepEqual(traces.map((trace) => trace.stopReason), ["direct_no_tools"]);
+  assert.equal(providerCalls, 0);
+  assert.equal(answer(result), "Hi! I can help with John’s projects, published work, or documented experience.");
+  assert.deepEqual(traces.map((trace) => trace.stopReason), ["static_completion"]);
   assert.equal(traces[0].acceptedToolExecutions, 0);
+  assert.deepEqual(traces[0].usage, { tokenCount: 0, costUsd: 0, completeness: "complete", source: "static" });
 });
 
-test("capability greetings take the direct path while mixed factual requests still require evidence", async () => {
+test("capability greetings complete statically while mixed factual requests still require evidence", async () => {
   let directCalls = 0;
   const direct = await collect(streamBoundedEvidenceAgent(
     [{ role: "user", content: "Hello — what can you help me learn about John Serra?" }], "en",
     deps(async function* (request) {
       directCalls += 1;
-      assert.equal(request.config.tools, undefined);
-      yield { text: "I can help with documented projects, career entries, and public contact options." };
+      void request;
+      throw new Error("static capability greeting must not call provider");
     }), registry(), new AbortController().signal, { correlationId },
   ));
-  assert.equal(directCalls, 1);
-  assert.match(answer(direct), /documented projects/u);
+  assert.equal(directCalls, 0);
+  assert.equal(answer(direct), "I can help with John’s projects, published work, or documented experience.");
 
   let selectionRequest: GenerationRequest | undefined;
   const mixed = await collect(streamBoundedEvidenceAgent(
@@ -117,19 +118,156 @@ test("capability greetings take the direct path while mixed factual requests sti
   assert.match(answer(mixed), /available public evidence/u);
 });
 
+test("bounded English and Turkish social cases make zero provider, embedding, retrieval, and tool calls", async () => {
+  const cases = [
+    ["OK Thanks", "en", "acknowledgment"],
+    ["Okay, thank you!!!", "en", "acknowledgment"],
+    ["Got it, thanks.", "en", "acknowledgment"],
+    ["TEŞEKKÜR EDERİM!", "tr", "acknowledgment"],
+    ["SELAM — BANA NASIL YARDIMCI OLABİLİRSİN?", "tr", "capability"],
+    ["Hello", "en", "greeting"],
+  ] as const;
+  for (const [message, locale, intent] of cases) {
+    const calls = { provider: 0, embedding: 0, retrieval: 0, tool: 0 };
+    const result = await collect(streamBoundedEvidenceAgent(
+      [{ role: "user", content: message }], locale,
+      {
+        async embedQuery() { calls.embedding += 1; throw new Error("unexpected embedding"); },
+        async matchCareerContext() { calls.retrieval += 1; throw new Error("unexpected retrieval"); },
+        async generateContentStream() { calls.provider += 1; throw new Error("unexpected provider"); },
+      },
+      registry({
+        async searchKnowledge() { calls.tool += 1; throw new Error("unexpected search"); },
+        async loadCv() { calls.tool += 1; throw new Error("unexpected CV"); },
+        async getProject() { calls.tool += 1; throw new Error("unexpected project"); },
+        async listArticles() { calls.tool += 1; throw new Error("unexpected articles"); },
+        async getContactOptions() { calls.tool += 1; throw new Error("unexpected contact"); },
+      }), new AbortController().signal, { correlationId },
+    ));
+    assert.deepEqual(calls, { provider: 0, embedding: 0, retrieval: 0, tool: 0 }, message);
+    assert.equal(result.at(-1)?.toolCallCount, 0);
+    assert.equal(result.at(-1)?.usageTurn, "final");
+    assert.equal(intent === "acknowledgment" && locale === "en"
+      ? answer(result) === "You’re welcome! Feel free to ask about John’s projects, published work, or documented experience."
+      : true, true);
+  }
+});
+
 test("direct success records its trace before a consumer closes after the final chunk", async () => {
   const traces: AgentTraceSummary[] = [];
+  const order: string[] = [];
   const iterator = streamBoundedEvidenceAgent(
     [{ role: "user", content: "Hello!" }], "en",
-    deps(async function* () { yield { text: "Hello there!" }; }), registry(), new AbortController().signal,
-    { correlationId, onAgentTrace: (trace) => traces.push(trace) },
+    deps(async function* () { throw new Error("static greeting must not call provider"); }), registry(), new AbortController().signal,
+    { correlationId, onAgentTrace: (trace) => { traces.push(trace); order.push("trace"); } },
   );
   const first = await iterator.next();
+  order.push("yield");
   assert.equal(first.done, false);
-  assert.equal(first.value?.text, "Hello there!");
+  assert.equal(first.value?.text, "Hi! I can help with John’s projects, published work, or documented experience.");
   await iterator.return(undefined);
+  assert.deepEqual(order, ["trace", "yield"]);
   assert.equal(traces.length, 1);
-  assert.equal(traces[0].stopReason, "direct_no_tools");
+  assert.equal(traces[0].stopReason, "static_completion");
+});
+
+test("a reconstructed factual conversation can end in static OK Thanks without reusing prior answer text", async () => {
+  let sourceCalls = 0;
+  const factualMessages = [
+    { role: "user" as const, content: "Tell me about CareerTalkLab." },
+    { role: "assistant" as const, content: "The public project page documents a project." },
+    { role: "user" as const, content: "What documented project evidence supports that?" },
+  ];
+  const factual = await collect(streamBoundedEvidenceAgent(
+    factualMessages, "en",
+    deps((request) => verifier(request, JSON.stringify({
+      decision: "accept", finalAnswer: "The project is documented in the public evidence [CareerTalkLab](https://johnserra.com/projects/careertalklab).",
+      supportedClaims: 1, qualifiedClaims: 0, removedClaims: 0,
+    }))),
+    registry({ async searchKnowledge() {
+      sourceCalls += 1;
+      return [{ title: "CareerTalkLab", excerpt: "A documented public project.", url: "https://johnserra.com/projects/careertalklab" }];
+    } }), new AbortController().signal, { correlationId },
+  ));
+  assert.match(answer(factual), /CareerTalkLab/u);
+  assert.equal(sourceCalls, 1);
+
+  // The issue supplies only the final phrase, so this is a reconstructed shape,
+  // not a claim that the original transcript is known.
+  const calls = { provider: 0, embedding: 0, retrieval: 0, tool: 0 };
+  const acknowledgement = await collect(streamBoundedEvidenceAgent(
+    [...factualMessages, { role: "assistant", content: answer(factual) }, { role: "user", content: "OK Thanks" }], "en",
+    {
+      async embedQuery() { calls.embedding += 1; throw new Error("unexpected embedding"); },
+      async matchCareerContext() { calls.retrieval += 1; throw new Error("unexpected retrieval"); },
+      async generateContentStream() { calls.provider += 1; throw new Error("unexpected provider"); },
+    },
+    registry({ async searchKnowledge() { calls.tool += 1; throw new Error("unexpected tool"); } }),
+    new AbortController().signal, { correlationId },
+  ));
+  assert.equal(answer(acknowledgement), "You’re welcome! Feel free to ask about John’s projects, published work, or documented experience.");
+  assert.deepEqual(calls, { provider: 0, embedding: 0, retrieval: 0, tool: 0 });
+});
+
+test("the visitor-supplied hello, teaching question, thanks transcript ends in a static acknowledgment", async () => {
+  // The panel introduction is UI copy. These four entries are the supplied chat history.
+  const messages = [
+    { role: "user" as const, content: "hello" },
+    { role: "assistant" as const, content: "Hello there! I'm an AI assistant for John Serra. How can I help you today?" },
+    { role: "user" as const, content: "does john teach" },
+    { role: "assistant" as const, content: "I can only confirm what is supported by the available public sources. Some requested details could not be verified, so I’m leaving them out." },
+    { role: "user" as const, content: "thanks" },
+  ];
+  const calls = { provider: 0, embedding: 0, retrieval: 0, tool: 0 };
+  const traces: AgentTraceSummary[] = [];
+  const result = await collect(streamBoundedEvidenceAgent(messages, "en", {
+    async embedQuery() { calls.embedding += 1; throw new Error("unexpected embedding"); },
+    async matchCareerContext() { calls.retrieval += 1; throw new Error("unexpected retrieval"); },
+    async generateContentStream() { calls.provider += 1; throw new Error("unexpected provider"); },
+  }, registry({
+    async searchKnowledge() { calls.tool += 1; throw new Error("unexpected tool"); },
+  }), new AbortController().signal, { correlationId, onAgentTrace: (trace) => traces.push(trace) }));
+  assert.equal(answer(result), "You’re welcome! Feel free to ask about John’s projects, published work, or documented experience.");
+  assert.deepEqual(calls, { provider: 0, embedding: 0, retrieval: 0, tool: 0 });
+  assert.deepEqual(traces.map((trace) => trace.stopReason), ["static_completion"]);
+});
+
+test("mixed acknowledgments and factual follow-ups still enter the evidence path", async () => {
+  for (const [content, locale] of [
+    ["Thanks — what projects has John built?", "en"],
+    ["Teşekkürler — John hangi projeleri yaptı?", "tr"],
+  ] as const) {
+    let selection: GenerationRequest | undefined;
+    await collect(streamBoundedEvidenceAgent(
+      [{ role: "user", content }], locale,
+      deps((request) => {
+        selection ??= request;
+        return (async function* () {})();
+      }), registry(), new AbortController().signal, { correlationId },
+    ));
+    assert.ok(selection?.config.tools, content);
+  }
+
+  let sourceCalls = 0;
+  const messages = [
+    { role: "user" as const, content: "thanks" },
+    { role: "assistant" as const, content: "You’re welcome! Feel free to ask about John’s projects, published work, or documented experience." },
+    { role: "user" as const, content: "What projects has John built?" },
+  ];
+  const traces: AgentTraceSummary[] = [];
+  const result = await collect(streamBoundedEvidenceAgent(messages, "en",
+    deps((request) => verifier(request, JSON.stringify({
+      decision: "accept", finalAnswer: "[CareerTalkLab](https://johnserra.com/projects/careertalklab) is a documented project.",
+      supportedClaims: 1, qualifiedClaims: 0, removedClaims: 0,
+    }))),
+    registry({ async searchKnowledge() {
+      sourceCalls += 1;
+      return [{ title: "CareerTalkLab", excerpt: "A documented public project.", url: "https://johnserra.com/projects/careertalklab" }];
+    } }), new AbortController().signal, { correlationId, onAgentTrace: (trace) => traces.push(trace) },
+  ));
+  assert.equal(sourceCalls, 1);
+  assert.match(answer(result), /CareerTalkLab/u);
+  assert.deepEqual(traces.map((trace) => trace.stopReason), ["supported_evidence"]);
 });
 
 test("retrieval selection preserves the bounded planner instruction when applying tool config", async () => {
@@ -535,7 +673,7 @@ test("partial usage survives a direct provider error without swallowing the orig
   const providerFailure = new Error("direct provider marker");
   const traces: AgentTraceSummary[] = [];
   const result = streamBoundedEvidenceAgent(
-    [{ role: "user", content: "Hello!" }], "en",
+    [{ role: "user", content: "Need evidence." }], "en",
     deps(async function* () {
       yield { usageMetadata: { promptTokenCount: 40, candidatesTokenCount: 8, totalTokenCount: 90 } };
       throw providerFailure;
@@ -682,14 +820,16 @@ test("raw batches exceeding the remaining cap fail before dispatch", async () =>
 test("cancellation propagates and records exactly one terminal cancellation trace", async () => {
   const controller = new AbortController();
   controller.abort();
+  let providerCalls = 0;
   const traces: AgentTraceSummary[] = [];
   await assert.rejects(
     collect(streamBoundedEvidenceAgent(
-      [{ role: "user", content: "cancel" }], "en",
-      deps(async function* () { yield { text: "not emitted" }; }), registry(), controller.signal,
+      [{ role: "user", content: "OK Thanks" }], "en",
+      deps(async function* () { providerCalls += 1; yield { text: "not emitted" }; }), registry(), controller.signal,
       { correlationId, onAgentTrace: (trace) => traces.push(trace) },
     )),
   );
+  assert.equal(providerCalls, 0);
   assert.deepEqual(traces.map((trace) => trace.stopReason), ["cancellation"]);
 });
 

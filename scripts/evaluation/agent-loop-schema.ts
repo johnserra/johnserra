@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 
 export const AGENT_LOOP_SCHEMA_VERSION = 1;
 export const AGENT_STOP_REASONS = [
-  "direct_no_tools", "supported_evidence", "qualified_completion", "insufficient_evidence",
+  "static_completion", "direct_no_tools", "supported_evidence", "qualified_completion", "insufficient_evidence",
   "all_tools_failure", "verifier_failure", "inspection_failure", "deadline_exceeded",
   "budget_exceeded", "provider_failure", "output_limit", "cancellation",
 ] as const;
@@ -85,8 +85,8 @@ function validateCase(value: unknown, index: number): AgentLoopCase {
     },
   };
   if (result.fixture.citationSupport > result.fixture.supportedClaims) throw new Error(`${entry.id} has more citation support than supported claims.`);
-  if (result.expectedShortestPath !== (result.expectedStopReason === "direct_no_tools")) throw new Error(`${entry.id} shortest-path expectation is inconsistent.`);
-  if (result.fixture.verificationPasses > 0 && result.expectedStopReason === "direct_no_tools") throw new Error(`${entry.id} direct path cannot verify.`);
+  if (result.expectedShortestPath !== (result.expectedStopReason === "static_completion")) throw new Error(`${entry.id} shortest-path expectation is inconsistent.`);
+  if (result.fixture.verificationPasses > 0 && result.expectedStopReason === "static_completion") throw new Error(`${entry.id} static path cannot verify.`);
   return result;
 }
 

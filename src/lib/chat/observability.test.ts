@@ -350,3 +350,25 @@ test("agent traces are exact-once, sanitized, and connect their stop reason to c
   assert.equal(JSON.stringify(JSON.parse(agentLines[0])).includes("provider_failure"), false);
   assert.equal(event.agentStopReason, "qualified_completion");
 });
+
+test("static completion is a distinct sanitized terminal reason with honest local usage", () => {
+  const lines: string[] = [];
+  const trace = createChatRequestTrace({ correlationId, logger: { info(line) { lines.push(line); } } });
+  trace.recordAgentTrace({
+    event: "chat_agent_trace", schemaVersion: 1, correlationId, stopReason: "static_completion",
+    stageSequence: ["interpret", "stop"], stepCount: 1, selectedCallCount: 0, acceptedToolExecutions: 0,
+    duplicateCallCount: 0, retrievalRounds: 0, verificationPasses: 0, toolFailureCount: 0,
+    evidenceAvailable: false, draftCreated: false, revisionApplied: false,
+    claimTotals: { supported: 0, qualified: 0, removed: 0 },
+    usage: { tokenCount: 0, costUsd: 0, completeness: "complete", source: "static" },
+    durationMs: 1, latencyBucket: "lt_1s",
+  });
+  const event = trace.complete({ httpStatus: 200, outcome: "success", failureCategory: null });
+  assert.equal(event.agentStopReason, "static_completion");
+  const agentEvent = JSON.parse(lines.find((line) => line.includes("chat_agent_trace"))!) as {
+    usage: unknown;
+    acceptedToolExecutions: number;
+  };
+  assert.deepEqual(agentEvent.usage, { tokenCount: 0, costUsd: 0, completeness: "complete", source: "static" });
+  assert.equal(agentEvent.acceptedToolExecutions, 0);
+});

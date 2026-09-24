@@ -106,7 +106,7 @@ The 45-second value is the agent's model deadline, including its bounded turns. 
 
 The verifier is a model review of the draft against the accepted evidence packet. It can accept, return a complete revised answer with unsupported claims removed or qualified, or reject the draft. It is not a semantic proof system, fact-checking oracle, or guarantee that a source is true. The fail-closed contract is narrower: every professional, biographical, project, and citation claim in an accepted answer must be grounded in the packet or explicitly qualified.
 
-Agent terminal reasons include `direct_no_tools`, `supported_evidence`, `qualified_completion`, `insufficient_evidence`, `all_tools_failure`, `verifier_failure`, `inspection_failure`, `deadline_exceeded`, `budget_exceeded`, `provider_failure`, `output_limit`, and `cancellation`. These reasons are operational outcomes, not quality scores.
+Agent terminal reasons include `static_completion`, `direct_no_tools`, `supported_evidence`, `qualified_completion`, `insufficient_evidence`, `all_tools_failure`, `verifier_failure`, `inspection_failure`, `deadline_exceeded`, `budget_exceeded`, `provider_failure`, `output_limit`, and `cancellation`. `static_completion` is the deterministic zero-provider path for bounded EN/TR social messages; it is an operational outcome, not a quality score or provider completion.
 
 ## WordPress and CV indexing
 

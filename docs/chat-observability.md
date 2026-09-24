@@ -34,7 +34,7 @@ The event name is `chat_request_completed`, schema version `1`. The following is
 }
 ```
 
-The full event also carries sanitized `diagnostics`, usage/cost fields, and the route's normalized failure category. Unreached stages and unavailable metrics are `null`; zero means a reached value whose true count is zero. `stopReason` is the normalized provider finish reason. `agentStopReason` is the finite agent outcome and is no longer an always-null field. Possible agent reasons are `direct_no_tools`, `supported_evidence`, `qualified_completion`, `insufficient_evidence`, `all_tools_failure`, `verifier_failure`, `inspection_failure`, `deadline_exceeded`, `budget_exceeded`, `provider_failure`, `output_limit`, and `cancellation`.
+The full event also carries sanitized `diagnostics`, usage/cost fields, and the route's normalized failure category. Unreached stages and unavailable metrics are `null`; zero means a reached value whose true count is zero. `stopReason` is the normalized provider finish reason. `agentStopReason` is the finite agent outcome and is no longer an always-null field. Possible agent reasons are `static_completion`, `direct_no_tools`, `supported_evidence`, `qualified_completion`, `insufficient_evidence`, `all_tools_failure`, `verifier_failure`, `inspection_failure`, `deadline_exceeded`, `budget_exceeded`, `provider_failure`, `output_limit`, and `cancellation`. Static social completion has no provider finish reason or provider generation usage; its agent trace records source `static` with known zero local usage.
 
 The 45-second agent/model deadline should be interpreted separately from HTTP transport behavior. A client disconnect or platform timeout can end the stream before the agent completes, and a successful HTTP status does not establish that the answer was supported.
 
@@ -60,7 +60,7 @@ The terminal `chat_agent_trace` is correlated by the same UUID and contains only
   "draftCreated": true,
   "revisionApplied": false,
   "claimTotals": { "supported": 3, "qualified": 0, "removed": 0 },
-  "usage": { "tokenCount": 1900, "costUsd": 0.005, "completeness": "complete" }
+  "usage": { "tokenCount": 1900, "costUsd": 0.005, "completeness": "complete", "source": "provider" }
 }
 ```
 

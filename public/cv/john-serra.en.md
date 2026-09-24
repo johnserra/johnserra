@@ -2,7 +2,7 @@
 
 ## Professional summary
 
-Business development and operations professional with experience across manufacturing, international sales, language education, and urban mobility. Combines client relationship management, team leadership, and process improvement with hands-on development of software and automation tools.
+Business development and operations professional with experience across manufacturing, international sales, language education, and urban mobility. Combines client relationship management, team leadership, and process improvement with hands-on development of software and automation tools. His experience also includes teaching.
 
 ## Professional experience
 

@@ -1,0 +1,7 @@
+# Professional inquiries in the Digital Assistant
+
+For a question such as “Does John teach?”, the assistant should retrieve published experience and public contact options. John's reviewed CV now records his confirmed past teaching experience without attaching an undocumented subject, date, or current role. A grounded answer can cite the CV, state that current teaching availability is unconfirmed, and invite the visitor to ask John through the public contact page. The invitation is a visitor choice; the chat has not contacted or booked John.
+
+The same distinction applies to other professional service and availability questions. An unknown current status does not erase documented historical experience. The assistant still needs fresh evidence and normal answer verification; unsupported experience receives no invented positive answer. English and Turkish share the rule and use their respective public contact routes.
+
+The registered CV and its generated Markdown have been updated locally. A deployed application must include the new source before `get_cv_timeline` can expose it. Refreshing indexed CV knowledge requires the separate reviewed digest and live indexing workflow in [cv-knowledge.md](cv-knowledge.md). The offline tests exercise the registered CV, tools, and agent stages with controlled provider output; they do not prove a live model will always phrase the answer correctly.

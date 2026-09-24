@@ -146,6 +146,10 @@ export function renderContent(content: string): React.ReactNode {
   return parts.length > 0 ? parts : content;
 }
 
+export function scrollChatMessages(viewport: Pick<HTMLElement, "scrollTop" | "scrollHeight"> | null): void {
+  if (viewport) viewport.scrollTop = viewport.scrollHeight;
+}
+
 export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
   const t = useTranslations("Chat");
   const locale = useLocale();
@@ -155,7 +159,7 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesViewportRef = useRef<HTMLDivElement>(null);
   const requestAbortRef = useRef<AbortController | null>(null);
   const activeRequestRef = useRef<ActiveRequest | null>(null);
 
@@ -188,7 +192,7 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
 
   useEffect(() => {
     if (isOpen) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      scrollChatMessages(messagesViewportRef.current);
     }
   }, [isOpen, messages]);
 
@@ -309,7 +313,7 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
         aria-modal="true"
         aria-labelledby="ai-chat-title"
         className={cn(
-          "fixed bottom-4 right-4 z-50 w-[90vw] md:w-96 h-[600px] rounded-card flex flex-col overflow-hidden",
+          "fixed bottom-4 right-4 z-50 w-[90vw] md:w-96 h-[600px] rounded-card flex flex-col overflow-clip",
           "bg-panel text-ink border border-hair"
         )}
       >
@@ -341,7 +345,7 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
           {t("disclosure")}
         </p>
 
-        <div className="flex-1 p-4 overflow-y-auto bg-transparent flex flex-col gap-3">
+        <div ref={messagesViewportRef} className="min-h-0 flex-1 p-4 overflow-y-auto bg-transparent flex flex-col gap-3">
           {messages.map((message) => (
             <div
               key={message.id}
@@ -363,7 +367,6 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
               )}
             </div>
           ))}
-          <div ref={messagesEndRef} />
         </div>
 
         {faqShortcuts.length > 0 && (

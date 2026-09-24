@@ -4,7 +4,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { NextIntlClientProvider } from "next-intl";
 import enMessages from "../../../messages/en.json";
 import trMessages from "../../../messages/tr.json";
-import { AIChatPanel, filterChatHistory } from "./AIChatPanel";
+import { AIChatPanel, filterChatHistory, scrollChatMessages } from "./AIChatPanel";
 import { createFaqExchange, getFaqShortcuts } from "@/lib/chat/faq-shortcuts";
 
 for (const [locale, messages, expectedLabel, expectedPrompt] of [
@@ -37,4 +37,13 @@ test("shortcut pair remains in follow-up history", () => {
     { role: "assistant", content: shortcut.answer },
     { role: "user", content: "What about its auth?" },
   ]);
+});
+
+test("auto-scroll targets only the message viewport, not the dialog", () => {
+  const viewport = { scrollTop: 0, scrollHeight: 956 };
+  const dialog = { scrollTop: 0 };
+  scrollChatMessages(viewport);
+  assert.equal(viewport.scrollTop, 956);
+  assert.equal(dialog.scrollTop, 0);
+  scrollChatMessages(null);
 });

@@ -81,13 +81,14 @@ export async function getSiteContentBySlug(
   slug: string,
   locale: Locale,
 ): Promise<SiteContentItem | null> {
-  if (!usesWordPress()) {
+  // Privacy notices are versioned with the frontend so policy text cannot lag a deployment.
+  if (!usesWordPress() || type === "privacy-policy") {
     const item = getFileContentBySlug(type, slug, locale);
     return item ? { ...item, format: "mdx" } : null;
   }
 
   const preview = (await draftMode()).isEnabled;
-  const singleton = type === "about" || type === "privacy-policy";
+  const singleton = type === "about";
   const item = singleton
     ? await getWordPressItemByLegacyKey("pages", `${locale}/${type}/index`, locale, preview)
     : await getWordPressItemBySlug(

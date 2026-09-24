@@ -304,7 +304,8 @@
     },
     "openChat": "Yapay Zeka Sohbetini Aç",
     "closeChat": "Sohbeti kapat",
-    "sendMessage": "Mesaj gönder"
+    "sendMessage": "Mesaj gönder",
+    "faqShortcuts": "Hızlı sorular"
   },
   "NotFound": {
     "title": "Sayfa bulunamadı",

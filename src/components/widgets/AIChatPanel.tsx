@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { IconButton } from "@/components/ui/IconButton";
 import { NdjsonChatParser } from "@/lib/chat/protocol";
+import { createFaqExchange, getFaqShortcuts } from "@/lib/chat/faq-shortcuts";
 
 interface Message {
   id: string;
@@ -148,6 +149,7 @@ export function renderContent(content: string): React.ReactNode {
 export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
   const t = useTranslations("Chat");
   const locale = useLocale();
+  const faqShortcuts = getFaqShortcuts(locale);
   const [messages, setMessages] = useState<Message[]>(() => [
     { id: "welcome", role: "assistant", content: t("welcome") },
   ]);
@@ -282,6 +284,22 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
     onClose();
   }
 
+  function handleFaqShortcut(shortcut: { id: string; prompt: string; answer: string }) {
+    if (isLoading || activeRequestRef.current) return;
+    setMessages((prev) => [
+      ...prev,
+      ...createFaqExchange(shortcut, crypto.randomUUID(), crypto.randomUUID()),
+    ]);
+    const analyticsWindow = window as Window & {
+      gtag?: (command: "event", name: string, values: Record<string, string>) => void;
+    };
+    analyticsWindow.gtag?.("event", "chat_faq_shortcut", {
+      shortcut_id: shortcut.id,
+      locale,
+      outcome: "shown",
+    });
+  }
+
   if (!isOpen) return null;
 
   return (
@@ -347,6 +365,30 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
           ))}
           <div ref={messagesEndRef} />
         </div>
+
+        {faqShortcuts.length > 0 && (
+          <div
+            role="group"
+            aria-label={t("faqShortcuts")}
+            className="border-t border-hair bg-ground-2 px-4 py-3"
+          >
+            <p className="mb-2 font-mono text-xs text-muted">{t("faqShortcuts")}</p>
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              {faqShortcuts.map((shortcut) => (
+                <button
+                  key={shortcut.id}
+                  type="button"
+                  onClick={() => handleFaqShortcut(shortcut)}
+                  disabled={isLoading}
+                  aria-label={shortcut.prompt}
+                  className="shrink-0 max-w-[75vw] rounded-pill border border-hair bg-panel px-3 py-1.5 text-left text-xs text-ink-soft hover:border-accent hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50 md:max-w-[18rem]"
+                >
+                  {shortcut.prompt}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         <form
           onSubmit={handleSubmit}

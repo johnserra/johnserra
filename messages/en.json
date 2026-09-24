@@ -320,7 +320,8 @@
     },
     "openChat": "Open AI Chat",
     "closeChat": "Close chat",
-    "sendMessage": "Send message"
+    "sendMessage": "Send message",
+    "faqShortcuts": "Quick questions"
   },
   "NotFound": {
     "title": "Page not found",

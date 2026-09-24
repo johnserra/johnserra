@@ -312,7 +312,8 @@
     "description": "Aradığınız sayfa mevcut değil veya taşınmış."
   },
   "Footer": {
-    "copyright": "Copyright"
+    "copyright": "Copyright",
+    "privacyPolicy": "Gizlilik Politikası"
   },
   "Common": {
     "toggleMenu": "Menüyü aç/kapat"

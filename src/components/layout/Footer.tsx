@@ -1,7 +1,12 @@
 import { LogoLinkedin, Email } from "@carbon/icons-react";
+import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
+import { privacyPolicyPath } from "@/lib/routes";
 
-export function Footer() {
+export async function Footer() {
   const currentYear = new Date().getFullYear();
+  const locale = await getLocale();
+  const t = await getTranslations("Footer");
 
   return (
     <footer className="w-full border-t border-hair bg-ground font-sans">
@@ -27,10 +32,15 @@ export function Footer() {
             </a>
           </div>
 
-          {/* Copyright */}
-          <p className="font-mono text-xs text-faint">
-            Copyright &copy; {currentYear}
-          </p>
+          <div className="flex items-center gap-6 font-mono text-xs text-faint">
+            <Link
+              href={`${locale === "tr" ? "/tr" : ""}${privacyPolicyPath(locale)}`}
+              className="transition-colors hover:text-accent"
+            >
+              {t("privacyPolicy")}
+            </Link>
+            <p>Copyright &copy; {currentYear}</p>
+          </div>
         </div>
       </div>
     </footer>

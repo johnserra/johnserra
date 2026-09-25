@@ -35,7 +35,7 @@ The assistant does not make commitments on John's behalf. It never claims that J
 
 The public assistant supports English and Turkish responses. Turkish retrieval can include Turkish WordPress evidence and the reviewed English CV; the assistant still answers in Turkish, and no Turkish CV translation is claimed. Evidence availability and citation routes remain locale-sensitive.
 
-Chat content currently remains only in React component memory for the mounted page/panel. It is sent per request for generation, is not intentionally persisted in `localStorage`, `sessionStorage`, or an application conversation database, and disappears on reload or unmount. The random session rate-limit identifier stored in `sessionStorage` is not chat content.
+Chat content stays in React memory unless a visitor explicitly enables “Save conversations on this browser.” That opt-in keeps only bounded, completed exchanges in a versioned `localStorage` record for the same browser profile, with a rolling 30-day expiry, controls to delete one or all conversations, and no server-side transcript archive. The random session rate-limit identifier in `sessionStorage` is separate from chat content. See the approved [local persistence decision](chat-local-persistence-decision.md) for the exact fields, limits, data flow, access, and failure behavior.
 
 This application boundary is distinct from external provider processing. The site does not claim that Gemini or any other provider retains nothing. Provider handling, retention, and deletion are governed by the applicable provider terms and privacy terms; visitors should consult those terms and the site's applicable privacy notice for the relevant processing context. The application description above is not a guarantee about external providers.
 
@@ -43,7 +43,7 @@ Chat completion observability is limited to privacy-safe Vercel runtime logs: a 
 
 ## Decision gate before future chat storage
 
-No future feature may add chat-content storage until the repository documents and reviews all of the following:
+The browser-local opt-in in issue #39 has passed this gate through the approved [local persistence decision](chat-local-persistence-decision.md). Any broader future chat-content storage must again document and review all of the following:
 
 1. The specific purpose and lawful basis, including visitor disclosure or consent where applicable.
 2. The exact fields to be stored, including whether message text, metadata, identifiers, or derived data are included.

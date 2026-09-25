@@ -7,6 +7,20 @@ import { cn } from "@/lib/utils";
 import { IconButton } from "@/components/ui/IconButton";
 import { NdjsonChatParser } from "@/lib/chat/protocol";
 import { createFaqExchange, getFaqShortcuts } from "@/lib/chat/faq-shortcuts";
+import {
+  boundedApiHistory,
+  deleteSavedConversation,
+  disableChatSaving,
+  enableChatSaving,
+  localeConversations,
+  readSavedChats,
+  saveCompletedExchange,
+  selectSavedConversation,
+  startSavedConversation,
+  type ChatLocale,
+  type ChatStorage,
+  type SavedChatState,
+} from "@/lib/chat/local-persistence";
 
 interface Message {
   id: string;
@@ -150,18 +164,111 @@ export function scrollChatMessages(viewport: Pick<HTMLElement, "scrollTop" | "sc
   if (viewport) viewport.scrollTop = viewport.scrollHeight;
 }
 
+function browserStorage(): ChatStorage | null {
+  try {
+    return window.localStorage;
+  } catch {
+    return null;
+  }
+}
+
+function restoredMessages(welcome: string, saved: SavedChatState | null, locale: ChatLocale) {
+  const conversation = saved?.conversations.find((item) => item.id === saved.activeConversationId && item.locale === locale)
+    ?? (saved ? localeConversations(saved, locale)[0] : undefined);
+  return {
+    conversationId: conversation?.id ?? crypto.randomUUID(),
+    messages: [
+      { id: "welcome", role: "assistant" as const, content: welcome },
+      ...(conversation?.messages.map((item) => ({ ...item, id: crypto.randomUUID() })) ?? []),
+    ],
+  };
+}
+
 export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
   const t = useTranslations("Chat");
   const locale = useLocale();
   const faqShortcuts = getFaqShortcuts(locale);
-  const [messages, setMessages] = useState<Message[]>(() => [
-    { id: "welcome", role: "assistant", content: t("welcome") },
-  ]);
+  const [initial] = useState(() => {
+    const result = typeof window === "undefined" ? null : readSavedChats(browserStorage());
+    const saved = result?.ok ? result.value : null;
+    return { ...restoredMessages(t("welcome"), saved, locale as ChatLocale), saved, storageError: result !== null && !result.ok };
+  });
+  const [messages, setMessages] = useState<Message[]>(initial.messages);
+  const [conversationId, setConversationId] = useState(initial.conversationId);
+  const [savedChats, setSavedChats] = useState<SavedChatState | null>(initial.saved);
+  const [storageError, setStorageError] = useState(initial.storageError);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesViewportRef = useRef<HTMLDivElement>(null);
   const requestAbortRef = useRef<AbortController | null>(null);
   const activeRequestRef = useRef<ActiveRequest | null>(null);
+
+  function applyStorageResult(result: ReturnType<typeof saveCompletedExchange>) {
+    if (result.ok) {
+      setSavedChats(result.value);
+      setStorageError(false);
+      return true;
+    }
+    setStorageError(true);
+    return false;
+  }
+
+  function handleSavingChange() {
+    if (isLoading) return;
+    const storage = browserStorage();
+    if (savedChats) {
+      const result = disableChatSaving(storage);
+      if (result.ok) {
+        setSavedChats(null);
+        setStorageError(false);
+        setConversationId(crypto.randomUUID());
+        setMessages([{ id: "welcome", role: "assistant", content: t("welcome") }]);
+        setInput("");
+      } else setStorageError(true);
+      return;
+    }
+    const result = enableChatSaving(storage);
+    if (!applyStorageResult(result)) return;
+    let next = startSavedConversation(storage, conversationId);
+    if (!applyStorageResult(next)) return;
+    const history = filterChatHistory(messages);
+    for (let index = 0; index + 1 < history.length; index += 2) {
+      next = saveCompletedExchange(storage, conversationId, locale as ChatLocale, history[index].content, history[index + 1].content);
+      if (!applyStorageResult(next)) return;
+    }
+  }
+
+  function handleNewConversation() {
+    if (isLoading) return;
+    const nextId = crypto.randomUUID();
+    if (savedChats && !applyStorageResult(startSavedConversation(browserStorage(), nextId))) return;
+    setConversationId(nextId);
+    setMessages([{ id: "welcome", role: "assistant", content: t("welcome") }]);
+    setInput("");
+  }
+
+  function handleSelectConversation(id: string) {
+    if (isLoading || !savedChats) return;
+    const result = selectSavedConversation(browserStorage(), id, locale as ChatLocale);
+    if (!result.ok) {
+      applyStorageResult(result);
+      return;
+    }
+    applyStorageResult(result);
+    const restored = restoredMessages(t("welcome"), result.value, locale as ChatLocale);
+    setConversationId(restored.conversationId);
+    setMessages(restored.messages);
+    setInput("");
+  }
+
+  function handleDeleteCurrent() {
+    if (isLoading || !savedChats) return;
+    const result = deleteSavedConversation(browserStorage(), conversationId);
+    if (!applyStorageResult(result)) return;
+    setConversationId(crypto.randomUUID());
+    setMessages([{ id: "welcome", role: "assistant", content: t("welcome") }]);
+    setInput("");
+  }
 
   const cancelActiveRequest = useCallback(() => {
     const activeRequest = activeRequestRef.current;
@@ -213,7 +320,8 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
     activeRequestRef.current = { controller: requestAbort, userId: userMsg.id, assistantId };
 
     try {
-      const history = filterChatHistory([...messages, userMsg]);
+      const history = boundedApiHistory(filterChatHistory([...messages, userMsg]));
+      if (!history) throw new Error("INPUT_TOO_LARGE");
 
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -264,6 +372,9 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
       if (!completed && !failed) {
         throw new Error("SERVICE_UNAVAILABLE");
       }
+      if (completed && !failed && accumulated.trim() && savedChats) {
+        applyStorageResult(saveCompletedExchange(browserStorage(), conversationId, locale as ChatLocale, text, accumulated));
+      }
     } catch (error) {
       if (error instanceof Error && error.name === "AbortError") return;
       const code = error instanceof Error ? error.message : "SERVICE_UNAVAILABLE";
@@ -294,6 +405,9 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
       ...prev,
       ...createFaqExchange(shortcut, crypto.randomUUID(), crypto.randomUUID()),
     ]);
+    if (savedChats) {
+      applyStorageResult(saveCompletedExchange(browserStorage(), conversationId, locale as ChatLocale, shortcut.prompt, shortcut.answer));
+    }
     const analyticsWindow = window as Window & {
       gtag?: (command: "event", name: string, values: Record<string, string>) => void;
     };
@@ -313,7 +427,7 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
         aria-modal="true"
         aria-labelledby="ai-chat-title"
         className={cn(
-          "fixed bottom-4 right-4 z-50 w-[90vw] md:w-96 h-[600px] rounded-card flex flex-col overflow-clip",
+          "fixed bottom-4 right-4 z-50 w-[90vw] md:w-96 h-[min(680px,calc(100vh-2rem))] rounded-card flex flex-col overflow-clip",
           "bg-panel text-ink border border-hair"
         )}
       >
@@ -344,6 +458,37 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
         >
           {t("disclosure")}
         </p>
+
+        <div className="border-b border-hair bg-ground-2 px-4 py-2 text-xs text-muted">
+          <label className="flex cursor-pointer items-start gap-2 text-ink-soft">
+            <input type="checkbox" checked={Boolean(savedChats)} onChange={handleSavingChange} disabled={isLoading}
+              className="mt-0.5 accent-accent" />
+            <span>{t("saveOnBrowser")}</span>
+          </label>
+          <p className="mt-1 leading-snug">{t("savingNotice")}</p>
+          {storageError && <p role="alert" className="mt-1 text-red-600">{t("storageError")}</p>}
+          <div className="mt-1 flex items-center gap-3">
+            <button type="button" onClick={handleNewConversation} disabled={isLoading} className="underline hover:text-ink disabled:opacity-50">{t("newConversation")}</button>
+            {savedChats && <details className="relative min-w-0">
+              <summary className="cursor-pointer underline hover:text-ink">{t("manageSaved")}</summary>
+              <div className="absolute right-0 top-full z-10 mt-1 flex w-56 flex-col items-start gap-2 rounded-card border border-hair bg-panel p-3 shadow-lg">
+                {localeConversations(savedChats, locale as ChatLocale).length > 0 && (
+              <select value={savedChats.conversations.some((item) => item.id === conversationId) ? conversationId : ""}
+                onChange={(event) => handleSelectConversation(event.target.value)} disabled={isLoading}
+                aria-label={t("savedConversations")}
+                className="w-full rounded-field border border-hair bg-panel px-2 py-1 text-ink-soft">
+                <option value="">{t("savedConversations")}</option>
+                {localeConversations(savedChats, locale as ChatLocale).map((item) => (
+                  <option key={item.id} value={item.id}>{item.messages[0]?.content.slice(0, 36) ?? t("newConversation")}</option>
+                ))}
+              </select>
+                )}
+                <button type="button" onClick={handleDeleteCurrent} disabled={isLoading || !savedChats.conversations.some((item) => item.id === conversationId)} className="underline hover:text-ink disabled:opacity-50">{t("deleteCurrent")}</button>
+                <button type="button" onClick={handleSavingChange} disabled={isLoading} className="underline hover:text-ink disabled:opacity-50">{t("deleteAllTurnOff")}</button>
+              </div>
+            </details>}
+          </div>
+        </div>
 
         <div ref={messagesViewportRef} className="min-h-0 flex-1 p-4 overflow-y-auto bg-transparent flex flex-col gap-3">
           {messages.map((message) => (

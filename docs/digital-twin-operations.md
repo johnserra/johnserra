@@ -11,6 +11,8 @@ This runbook documents setup, deployment verification, indexing, inspection, and
 - Stop live evaluation on credential or quota errors; retain the failure category and do not retry blindly.
 - A deployment in `READY` state is not proof of a supported chat answer. Verify behavior separately.
 
+For the opt-in same-browser history, verify consent-off by default, reload restore only after opt-in, English/Turkish separation, 30-day expiry, and delete-current/delete-all behavior in a browser profile. Browser storage failures must leave chat usable without claiming a save or deletion succeeded. This feature creates no server transcript, WordPress record, or database migration; do not copy chat text into incident logs. See the [approved local persistence decision](chat-local-persistence-decision.md).
+
 ## Prerequisites and local setup
 
 Use Node.js 20 and npm. From the repository root, install dependencies with `npm ci`, then configure `.env.local` from the variable table in [README.md](../README.md). Required server-side capabilities depend on the task:

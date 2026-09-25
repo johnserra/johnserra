@@ -136,6 +136,8 @@ The application keeps provider keys, WordPress credentials, and the Supabase ser
 
 Runtime logs contain stable, sanitized event metadata and a correlation UUID. They exclude prompts, conversation history, generated text, retrieved content, URLs, internal IDs, query text, tool arguments, provider error text, secrets, IP addresses, session IDs, and stack traces. See the [chat observability runbook](chat-observability.md) and [persona/privacy guardrails](persona-privacy-guardrails.md).
 
+The optional same-browser chat history is client-only: after explicit visitor opt-in, the widget stores a versioned, bounded set of completed exchanges in that browser's `localStorage` and restores it locally. The browser sends selected history to the existing chat API for a new answer; the server still validates message and byte limits and does not persist transcripts. New, delete-current, and delete-all/turn-off controls are browser-local. See the [approved local persistence decision](chat-local-persistence-decision.md).
+
 ## Known limitations
 
 - The model verifier is bounded review, not semantic proof; source correctness and answer usefulness still need human evaluation.

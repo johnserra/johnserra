@@ -49,8 +49,10 @@ body {
   font-family: var(--font-sans);
 }
 
-a {
-  color: var(--color-accent);
+@layer base {
+  a {
+    color: var(--color-accent);
+  }
 }
 
 html {

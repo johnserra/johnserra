@@ -57,24 +57,24 @@ export function ProjectBox({
           sizes={PROJECT_IMAGE_SIZES[span] ?? PROJECT_IMAGE_SIZES[4]}
           loading={priority ? "eager" : "lazy"}
           fetchPriority={priority ? "high" : undefined}
-          className="object-cover transition-transform duration-300 group-hover:scale-105"
+          className="object-cover transition-transform duration-300 group-hover:scale-105 group-focus-visible:scale-105"
         />
       )}
 
       {/* Overlay */}
-      <div className="absolute inset-0 bg-ground/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+      <div className="absolute inset-0 bg-ground/90 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-300 flex items-end p-6">
         <div>
           <h2 className="text-xl font-medium tracking-tight text-ink mb-2 flex items-center gap-2">
             {title}
-            <ArrowUpRight size={20} className="text-muted transition-colors group-hover:text-accent" />
+            <ArrowUpRight size={20} className="text-muted transition-colors group-hover:text-accent group-focus-visible:text-accent" />
           </h2>
           <p className="text-sm text-ink-soft">{description}</p>
         </div>
       </div>
 
       {/* Title visible by default (on bottom) */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 bg-ground/80 group-hover:opacity-0 transition-opacity">
-        <span aria-hidden="true" className="text-lg font-medium tracking-tight text-ink">
+      <div className="absolute bottom-0 left-0 right-0 border-t-[3px] border-brand bg-ground px-6 py-4 group-hover:opacity-0 group-focus-visible:opacity-0 transition-opacity">
+        <span aria-hidden="true" className="text-lg font-medium tracking-[-0.01em] text-accent">
           {title}
         </span>
       </div>

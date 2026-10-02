@@ -7,16 +7,13 @@ export function HeroBox() {
   const t = useTranslations("Hero");
 
   return (
-    <div className="relative overflow-hidden rounded-card bg-transparent p-8 md:p-12 col-span-1 md:col-span-6 lg:col-span-8 min-h-[400px] flex items-center">
+    <div className="relative overflow-hidden rounded-card bg-transparent px-0 py-8 col-span-1 md:col-span-6 lg:col-span-8 min-h-[400px] flex items-center">
       <div className="w-full">
-        <h1
-          className="font-display uppercase leading-[0.95] tracking-tight origin-left [transform:scaleX(1.04)]"
-          style={{ fontSize: "clamp(1.9rem, 4.6vw, 4rem)" }}
-        >
+        <h1 className="font-display text-[clamp(2.5rem,5vw,4rem)] font-semibold uppercase leading-[0.95] tracking-[-0.01em]">
           <span className="block text-ink">{t("headlineLine1")}</span>
           <span className="block text-brand">{t("headlineLine2")}</span>
         </h1>
-        <p className="mt-5 max-w-2xl text-lg text-ink-soft mb-8 leading-relaxed">
+        <p className="mt-5 mb-8 max-w-[640px] text-lg leading-[1.65] text-pretty text-ink-soft">
           {t("introduction")}
         </p>
         <Button

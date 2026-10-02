@@ -18,14 +18,14 @@ export async function Footer() {
               href="https://linkedin.com/in/johnserra"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted transition-colors hover:text-accent"
+              className="text-accent transition-colors hover:text-accent-dim"
               aria-label="LinkedIn"
             >
               <LogoLinkedin size={20} />
             </a>
             <a
               href="mailto:john@serra.us"
-              className="text-muted transition-colors hover:text-accent"
+              className="text-accent transition-colors hover:text-accent-dim"
               aria-label="Email"
             >
               <Email size={20} />
@@ -35,7 +35,7 @@ export async function Footer() {
           <div className="flex items-center gap-6 font-mono text-xs text-faint">
             <Link
               href={`${locale === "tr" ? "/tr" : ""}${privacyPolicyPath(locale)}`}
-              className="transition-colors hover:text-accent"
+              className="text-accent transition-colors hover:underline"
             >
               {t("privacyPolicy")}
             </Link>
@@ -43,6 +43,7 @@ export async function Footer() {
           </div>
         </div>
       </div>
+      <div className="h-1.5 bg-brand" />
     </footer>
   );
 }

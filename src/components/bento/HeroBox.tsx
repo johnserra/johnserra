@@ -14,7 +14,7 @@ export function HeroBox() {
           style={{ fontSize: "clamp(1.9rem, 4.6vw, 4rem)" }}
         >
           <span className="block text-ink">{t("headlineLine1")}</span>
-          <span className="block text-accent">{t("headlineLine2")}</span>
+          <span className="block text-brand">{t("headlineLine2")}</span>
         </h1>
         <p className="mt-5 max-w-2xl text-lg text-ink-soft mb-8 leading-relaxed">
           {t("introduction")}

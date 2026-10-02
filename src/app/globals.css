@@ -1,27 +1,28 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
-@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-ground: #0c0c0e;
-  --color-ground-2: #161618;
-  --color-ground-3: #1a1a1d;
-  --color-panel: #1c1c1f;
-  --color-panel-2: #222226;
-  --color-ink: #eae6df;
-  --color-ink-soft: #c2bfb8;
-  --color-muted: #96938c;
-  --color-faint: #8c8982;
-  --color-accent: #18c1e8;
-  --color-accent-dim: #0f7e98;
-  --color-on-accent: #06232b;
-  --color-good: #3ae88d;
-  --color-warn: #ffdf43;
-  --color-bad: #f2453d;
+  --color-ground: #ffffff;
+  --color-ground-2: #f7f7f7;
+  --color-ground-3: #f7f7f7;
+  --color-panel: #ffffff;
+  --color-panel-2: #f2f2f2;
+  --color-ink: #222222;
+  --color-ink-soft: #222222;
+  --color-muted: #545454;
+  --color-faint: #545454;
+  --color-brand: #0099cc;
+  --color-nav: #7a8f9e;
+  --color-accent: #007aa3;
+  --color-accent-dim: #006283;
+  --color-on-accent: #ffffff;
+  --color-good: #1a7f4b;
+  --color-warn: #8a6500;
+  --color-bad: #c62828;
   --color-indigo: #443bf4;
-  --color-hair: #242528;
-  --color-line: #2c2d31;
-  --color-line-strong: #3a3b41;
+  --color-hair: #cccccc;
+  --color-line: #cccccc;
+  --color-line-strong: #545454;
   --radius-card: 8px;
   --radius-field: 6px;
   --radius-pill: 99px;
@@ -34,8 +35,8 @@
 }
 
 :root {
-  --background: #0c0c0e;
-  --foreground: #eae6df;
+  --background: #ffffff;
+  --foreground: #222222;
   --spacing-bento-gap: 1.5rem;
   --spacing-bento-gap-mobile: 1.5rem;
   --radius-bento: 8px;
@@ -48,13 +49,8 @@ body {
   font-family: var(--font-sans);
 }
 
-.grain {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  pointer-events: none;
-  opacity: .05;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+a {
+  color: var(--color-accent);
 }
 
 html {
@@ -70,10 +66,10 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2c2d31;
+  background: #cccccc;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a3b41;
+  background: #545454;
 }

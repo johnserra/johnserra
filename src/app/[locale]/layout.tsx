@@ -64,11 +64,10 @@ export default async function LocaleLayout({ children, params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <html lang={locale} className="dark">
+    <html lang={locale}>
       <body
         className={`${geist.variable} ${geistMono.variable} ${barlowCondensed.variable} antialiased`}
       >
-        <div className="grain" aria-hidden="true" />
         <GoogleAnalytics />
         <NextIntlClientProvider>
           {children}

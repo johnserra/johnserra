@@ -16,9 +16,9 @@ export function Button({
 }: ButtonProps) {
   const variantClasses = {
     primary:
-      "bg-accent text-on-accent hover:bg-accent-dim border border-transparent",
+      "bg-brand text-on-accent font-semibold hover:bg-accent border border-transparent",
     secondary:
-      "bg-transparent border border-line text-ink hover:border-line-strong",
+      "bg-transparent border border-line-strong text-ink hover:bg-panel-2",
     ghost:
       "bg-transparent text-muted hover:text-ink border border-transparent",
   };

@@ -51,8 +51,6 @@ export function Header({ alternateLocalePath }: { alternateLocalePath?: string }
 
   return (
     <header className="sticky top-0 z-50 w-full bg-ground">
-      <div className="h-1.5 bg-brand" />
-
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
         <div className="flex items-center justify-between py-3.5">
           <Link
@@ -79,7 +77,7 @@ export function Header({ alternateLocalePath }: { alternateLocalePath?: string }
         </div>
       </div>
 
-      <nav className="bg-nav">
+      <nav className="min-h-[18px] bg-nav">
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8 min-h-11">
@@ -88,7 +86,7 @@ export function Header({ alternateLocalePath }: { alternateLocalePath?: string }
                 key={link.href}
                 href={hrefFor(link.key, link.href)}
                 className={cn(
-                  "py-3 border-b-[3px] border-transparent font-mono text-xs font-medium uppercase tracking-[0.1em] text-white no-underline transition-colors hover:border-white/60",
+                  "py-3 border-b-[3px] border-transparent font-mono text-xs font-medium uppercase tracking-[0.1em] text-white no-underline transition-colors hover:border-white/60 focus:text-white",
                   pathname === link.href && "border-white"
                 )}
               >
@@ -111,7 +109,7 @@ export function Header({ alternateLocalePath }: { alternateLocalePath?: string }
                   href={hrefFor(link.key, link.href)}
                   onClick={() => setMobileMenuOpen(false)}
                   className={cn(
-                    "font-mono text-xs font-medium uppercase tracking-[0.1em] text-white no-underline",
+                    "font-mono text-xs font-medium uppercase tracking-[0.1em] text-white no-underline focus:text-white",
                     pathname === link.href && "underline underline-offset-4"
                   )}
                 >
@@ -122,6 +120,7 @@ export function Header({ alternateLocalePath }: { alternateLocalePath?: string }
           </div>
         </div>
       </nav>
+      <div aria-hidden="true" className="h-[18px] border-t border-white bg-nav-band" />
     </header>
   );
 }

@@ -105,6 +105,14 @@ function cleanPlainText(value: string, maxLength: number): string {
     .slice(0, maxLength);
 }
 
+function removeWordPressChunkScaffolding(value: string): string {
+  return value
+    .split(/\r?\n/u)
+    .filter((line) => !/^(?:Document|Section path):/u.test(line))
+    .map((line) => line.replace(/^(?:Heading|Paragraph|List item)(?: \(continued\))?:\s*/u, ""))
+    .join("\n");
+}
+
 export function canonicalProjectDiscoveryUrl(value: unknown): string | null {
   if (typeof value !== "string") return null;
   let parsed: URL;
@@ -131,7 +139,7 @@ export function sanitizeProjectDiscoverySources(value: unknown): ProjectDiscover
     const url = canonicalProjectDiscoveryUrl(item.url);
     if (!url || seen.has(url) || typeof item.title !== "string" || typeof item.excerpt !== "string") continue;
     const title = cleanPlainText(item.title, 200);
-    const snippet = cleanPlainText(item.excerpt, 350);
+    const snippet = cleanPlainText(removeWordPressChunkScaffolding(item.excerpt), 350);
     if (!title || !snippet) continue;
     seen.add(url);
     related.push({ title, snippet, url });

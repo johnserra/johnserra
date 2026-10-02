@@ -46,3 +46,9 @@ Offline tests use injected fake retrieval and rate limiting. They cover malforme
 ### Rollback
 
 Remove the two entry buttons and `ProjectDiscoveryFlow` integration from `AIChatPanel`, remove the `/api/project-discovery` route and its dedicated discovery modules/tests, and remove the `Chat.projectDiscovery` translations. The existing `/api/chat` request/pipeline, FAQ shortcuts, persistence behavior, and contact form require no rollback because this feature does not change them.
+
+### Preview verification — 2026-10-02
+
+Commit `6a82cfe` passed 164 offline tests, targeted lint, TypeScript checking, and the webpack production build after the Ringer check budget was raised above 60 seconds. The live English preview required validation across all three steps; Skip cleared nonempty constraints, the edited summary matched the clipboard exactly, and opening the contact form produced an empty form with no query string while closing chat. The Turkish 390 px preview preserved the unknown-current choice through all three steps and constraints, returned a fresh canonical CareerTalkLab source, and had no horizontal overflow. No contact form was submitted and no production release was performed.
+
+The source-excerpt scaffold cleanup still awaits verification on a redeployed preview. Comprehensive release verification remains separate under issue #42.

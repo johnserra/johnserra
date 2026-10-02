@@ -64,9 +64,9 @@ export function ProjectBox({
       {/* Overlay */}
       <div className="absolute inset-0 bg-ground/90 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-300 flex items-end p-6">
         <div>
-          <h2 className="text-xl font-medium tracking-tight text-ink mb-2 flex items-center gap-2">
+          <h2 className="text-xl font-medium tracking-tight text-accent transition-colors group-hover:text-accent-dim group-focus-visible:text-accent-dim mb-2 flex items-center gap-2">
             {title}
-            <ArrowUpRight size={20} className="text-muted transition-colors group-hover:text-accent group-focus-visible:text-accent" />
+            <ArrowUpRight size={20} />
           </h2>
           <p className="text-sm text-ink-soft">{description}</p>
         </div>

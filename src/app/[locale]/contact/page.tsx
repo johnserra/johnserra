@@ -64,10 +64,10 @@ export default async function ContactPage({ params }: Props) {
                 className="group flex flex-1 items-center gap-4 rounded-card border border-hair bg-panel p-6 transition-colors hover:border-line-strong"
               >
                 <div className="rounded-card bg-ground-3 p-3 transition-colors group-hover:bg-accent/10">
-                  <Icon size={20} className="text-muted transition-colors group-hover:text-accent" />
+                  <Icon size={20} className="text-accent transition-colors group-hover:text-accent-dim group-focus-visible:text-accent-dim" />
                 </div>
                 <div>
-                  <p className="font-mono text-xs uppercase tracking-[0.1em] text-ink">{label}</p>
+                  <p className="font-mono text-xs uppercase tracking-[0.1em] text-accent transition-colors group-hover:text-accent-dim group-focus-visible:text-accent-dim">{label}</p>
                   <p className="text-sm text-ink-soft">{description}</p>
                 </div>
               </a>

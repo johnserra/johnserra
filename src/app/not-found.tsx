@@ -15,7 +15,7 @@ export default function NotFound() {
             <p className="mb-8 text-lg text-ink-soft">
               The page you&apos;re looking for doesn&apos;t exist or has been moved.
             </p>
-            <Link href="/" className="font-mono text-xs uppercase tracking-[0.1em] text-muted transition-colors hover:text-accent">
+            <Link href="/" className="font-mono text-xs uppercase tracking-[0.1em] text-accent transition-colors hover:text-accent-dim focus-visible:text-accent-dim">
               Home
             </Link>
           </div>

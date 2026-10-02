@@ -75,7 +75,7 @@ export default async function BlogPostPage({ params }: Props) {
           {/* Back link */}
           <Link
             href="/blog"
-            className="mb-10 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.1em] text-muted transition-colors hover:text-accent"
+            className="mb-10 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.1em] text-accent transition-colors hover:text-accent-dim focus-visible:text-accent-dim"
           >
             <ArrowLeft size={16} />
             {t("backToBlog")}

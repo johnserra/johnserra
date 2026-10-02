@@ -75,7 +75,7 @@ export default async function BlogPage({ params, searchParams }: Props) {
                     ))}
                   </div>
                 )}
-                <h2 className="mb-2 text-xl font-bold text-ink transition-colors group-hover:text-accent">
+                <h2 className="mb-2 text-xl font-bold text-accent transition-colors group-hover:text-accent-dim group-focus-visible:text-accent-dim">
                   {post.frontmatter.title}
                 </h2>
                 {post.frontmatter.description && (

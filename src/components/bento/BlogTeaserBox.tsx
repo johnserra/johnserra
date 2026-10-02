@@ -24,7 +24,7 @@ export async function BlogTeaserBox({ locale }: BlogTeaserBoxProps) {
               href={`/blog/${post.slug}`}
               className="group flex flex-col gap-0.5"
             >
-              <span className="text-sm font-medium tracking-tight text-ink group-hover:text-accent transition-colors leading-snug">
+              <span className="text-sm font-medium tracking-tight text-accent group-hover:text-accent-dim group-focus-visible:text-accent-dim transition-colors leading-snug">
                 {post.frontmatter.title}
               </span>
               {post.frontmatter.date && (
@@ -43,7 +43,7 @@ export async function BlogTeaserBox({ locale }: BlogTeaserBoxProps) {
 
       <Link
         href="/blog"
-        className="inline-flex items-center gap-1.5 text-sm font-medium text-muted hover:text-accent transition-colors"
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent-dim focus-visible:text-accent-dim transition-colors"
       >
         {t("readMore")}
         <ArrowRight size={14} />

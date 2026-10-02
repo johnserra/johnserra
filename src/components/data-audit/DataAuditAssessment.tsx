@@ -585,7 +585,7 @@ function DataAuditAssessmentState({ hydrated }: { hydrated: boolean }) {
           <a
             href="mailto:john@serra.us"
             onClick={() => trackAssessmentEvent("secondary_cta_clicked", { cta_route: result.ctaRoute })}
-            className="inline-flex items-center rounded-pill border border-line px-6 py-3 font-medium text-ink transition-colors hover:border-line-strong focus:outline-none focus-visible:ring-2 focus-visible:ring-accent motion-reduce:transition-none"
+            className="inline-flex items-center rounded-pill border border-line px-6 py-3 font-medium text-accent transition-colors hover:border-line-strong hover:text-accent-dim focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:text-accent-dim motion-reduce:transition-none"
           >
             {t("plan.secondaryCta")}
           </a>

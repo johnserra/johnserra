@@ -60,10 +60,10 @@ export default async function ProjectsPage({ params }: Props) {
                   </div>
                   <ArrowUpRight
                     size={20}
-                    className="shrink-0 text-faint transition-colors group-hover:text-accent"
+                    className="shrink-0 text-accent transition-colors group-hover:text-accent-dim group-focus-visible:text-accent-dim"
                   />
                 </div>
-                <h2 className="mb-3 text-xl font-bold text-ink">
+                <h2 className="mb-3 text-xl font-bold text-accent transition-colors group-hover:text-accent-dim group-focus-visible:text-accent-dim">
                   {project.frontmatter.title}
                 </h2>
                 <p className="leading-relaxed text-ink-soft">

@@ -5,6 +5,7 @@ import { Chat, Close, SendAlt } from "@carbon/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { IconButton } from "@/components/ui/IconButton";
+import { ProjectDiscoveryFlow } from "@/components/widgets/ProjectDiscoveryFlow";
 import { NdjsonChatParser } from "@/lib/chat/protocol";
 import { createFaqExchange, getFaqShortcuts } from "@/lib/chat/faq-shortcuts";
 import {
@@ -199,7 +200,9 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
   const [storageError, setStorageError] = useState(initial.storageError);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [mode, setMode] = useState<"chat" | "discovery">("chat");
   const messagesViewportRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const requestAbortRef = useRef<AbortController | null>(null);
   const activeRequestRef = useRef<ActiveRequest | null>(null);
 
@@ -245,6 +248,7 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
     setConversationId(nextId);
     setMessages([{ id: "welcome", role: "assistant", content: t("welcome") }]);
     setInput("");
+    setMode("chat");
   }
 
   function handleSelectConversation(id: string) {
@@ -259,6 +263,7 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
     setConversationId(restored.conversationId);
     setMessages(restored.messages);
     setInput("");
+    setMode("chat");
   }
 
   function handleDeleteCurrent() {
@@ -268,6 +273,7 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
     setConversationId(crypto.randomUUID());
     setMessages([{ id: "welcome", role: "assistant", content: t("welcome") }]);
     setInput("");
+    setMode("chat");
   }
 
   const cancelActiveRequest = useCallback(() => {
@@ -396,7 +402,18 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
 
   function handleClose() {
     cancelActiveRequest();
+    setMode("chat");
     onClose();
+  }
+
+  function handleDiscussProject() {
+    cancelActiveRequest();
+    setMode("discovery");
+  }
+
+  function handleAskAboutJohn() {
+    setMode("chat");
+    requestAnimationFrame(() => inputRef.current?.focus());
   }
 
   function handleFaqShortcut(shortcut: { id: string; prompt: string; answer: string }) {
@@ -459,7 +476,7 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
           {t("disclosure")}
         </p>
 
-        <div className="border-b border-hair bg-ground-2 px-4 py-2 text-xs text-muted">
+        {mode === "chat" && <div className="border-b border-hair bg-ground-2 px-4 py-2 text-xs text-muted">
           <label className="flex cursor-pointer items-start gap-2 text-ink-soft">
             <input type="checkbox" checked={Boolean(savedChats)} onChange={handleSavingChange} disabled={isLoading}
               className="mt-0.5 accent-accent" />
@@ -488,10 +505,19 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
               </div>
             </details>}
           </div>
-        </div>
+        </div>}
 
         <div ref={messagesViewportRef} className="min-h-0 flex-1 p-4 overflow-y-auto bg-transparent flex flex-col gap-3">
-          {messages.map((message) => (
+          {mode === "discovery" ? (
+            <ProjectDiscoveryFlow
+              key={locale}
+              locale={locale as ChatLocale}
+              contactHref={locale === "tr" ? "/tr/contact" : "/contact"}
+              getSessionId={sessionId}
+              onReturn={() => setMode("chat")}
+              onContact={handleClose}
+            />
+          ) : messages.map((message) => (
             <div
               key={message.id}
               className={cn(
@@ -514,7 +540,30 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
           ))}
         </div>
 
-        {faqShortcuts.length > 0 && (
+        {mode === "chat" && (
+          <div role="group" aria-label={t("entryChoices")} className="border-t border-hair bg-ground-2 px-4 py-3">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <button
+                type="button"
+                onClick={handleDiscussProject}
+                disabled={isLoading}
+                className="rounded-field border border-accent bg-accent/10 px-3 py-2 text-sm font-semibold text-ink hover:bg-accent/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50"
+              >
+                {t("discussProject")}
+              </button>
+              <button
+                type="button"
+                onClick={handleAskAboutJohn}
+                disabled={isLoading}
+                className="rounded-field border border-hair bg-panel px-3 py-2 text-sm font-semibold text-ink hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50"
+              >
+                {t("askAboutJohn")}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {mode === "chat" && faqShortcuts.length > 0 && (
           <div
             role="group"
             aria-label={t("faqShortcuts")}
@@ -538,12 +587,13 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
           </div>
         )}
 
-        <form
+        {mode === "chat" && <form
           onSubmit={handleSubmit}
           className="p-4 border-t border-hair bg-ground-2 text-ink"
         >
           <div className="flex gap-2">
             <input
+              ref={inputRef}
               type="text"
               value={input}
               onChange={(event) => setInput(event.target.value)}
@@ -569,7 +619,7 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
               <SendAlt size={18} />
             </IconButton>
           </div>
-        </form>
+        </form>}
       </div>
 
       <div

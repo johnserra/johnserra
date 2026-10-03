@@ -7,17 +7,20 @@ import trMessages from "../../../messages/tr.json";
 import { AIChatPanel, filterChatHistory, scrollChatMessages } from "./AIChatPanel";
 import { createFaqExchange, getFaqShortcuts } from "@/lib/chat/faq-shortcuts";
 
-for (const [locale, messages, expectedLabel, expectedPrompt] of [
-  ["en", enMessages, "Quick questions", "How does John use Supabase?"],
-  ["tr", trMessages, "Hızlı sorular", "John Supabase'i nasıl kullanıyor?"],
+for (const [locale, messages, expectedWelcome, expectedLabel, expectedPrompt, discussProject, askAboutJohn] of [
+  ["en", enMessages, "Hi, I’m John’s AI Assistant.", "Quick questions", "How does John use Supabase?", "Discuss a project", "Ask about John"],
+  ["tr", trMessages, "Merhaba, ben John’un yapay zekâ asistanıyım.", "Hızlı sorular", "John Supabase'i nasıl kullanıyor?", "Projenizi konuşalım", "John hakkında soru sorun"],
 ] as const) {
-  test(`${locale} panel renders keyboard-operable FAQ buttons alongside free text`, () => {
+  test(`${locale} panel renders the approved welcome, entry choices, FAQ buttons, and free text`, () => {
     const html = renderToStaticMarkup(
       <NextIntlClientProvider locale={locale} messages={messages}>
         <AIChatPanel isOpen onClose={() => {}} onReady={() => {}} />
       </NextIntlClientProvider>,
     );
+    assert.match(html, new RegExp(expectedWelcome));
     assert.match(html, new RegExp(expectedLabel));
+    assert.match(html, new RegExp(discussProject));
+    assert.match(html, new RegExp(askAboutJohn));
     assert.ok(html.includes(`aria-label="${expectedPrompt.replaceAll("'", "&#x27;")}"`));
     assert.match(html, /type="button"/);
     assert.match(html, /type="text"/);

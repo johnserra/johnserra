@@ -115,6 +115,7 @@ export function ProjectDiscoveryReview({
       <div aria-live="polite" className="min-h-5 text-xs text-ink-soft">
         {copyStatus === "success" ? t("copySuccess") : copyStatus === "failure" ? t("copyFailure") : null}
       </div>
+      <p className="text-sm leading-relaxed text-ink-soft">{t("contactHelp")}</p>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         <button type="button" onClick={onCopy} className={primaryButtonClass} aria-label={t("copySummary")}>{t("copySummary")}</button>
         <Link href={contactHref} onClick={onContact} className={`${secondaryButtonClass} text-center`} aria-label={t("openContact")}>{t("openContact")}</Link>

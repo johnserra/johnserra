@@ -1,0 +1,14 @@
+/* Native editor and plugin settings retain their own styling. */
+#wpbody-content .js-studio-links { display: flex; flex-wrap: wrap; gap: 12px; }
+#js-studio-work, #js-studio-translations, #js-studio-publishing { border-top: 3px solid #0099cc; }
+.js-studio-work li { padding: 10px 0; border-bottom: 1px solid #eee; }
+.js-studio-work li:last-child { border-bottom: 0; }
+.js-studio-work span { color: #545454; font-size: 12px; }
+.js-studio-attention { color: #8a6500; }
+.column-js_language { width: 8%; }
+.column-js_translation { width: 15%; }
+.column-js_summary { width: 20%; }
+.column-js_image { width: 12%; }
+@media (max-width: 782px) {
+ .column-js_language, .column-js_translation, .column-js_summary, .column-js_image { width: auto; }
+}

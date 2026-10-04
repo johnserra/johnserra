@@ -46,6 +46,36 @@ These checks validate the JSON and expected hooks but do not replace PHP linting
 - Featured images use WordPress featured media.
 - ACF fields provide locale, summary, migration identity, recipe metadata, project metadata, and translation relationships.
 
+## Content Studio (0.2.0)
+
+The native admin now puts Articles, Projects, Pages, and Media first. Administrators can
+reach Appearance, Plugins, Users, Tools, Settings, and ACF through **System**. Comments
+are hidden from the sidebar; content types and user capabilities are not changed.
+
+Content lists show language, linked translation status, summary, and featured-image
+coverage. Filter by language or **Needs published translation**. That filter includes
+unpaired records, linked drafts, and ambiguous published matches. Translation pairing
+still uses the existing ACF **Translation Peer** field; the editor sidebar links to the
+paired record when the user can edit it.
+
+The dashboard shows drafts/review work, the translation backlog, and—for administrators—
+publishing connection configuration and the last webhook delivery. A successful delivery
+means the frontend accepted the update, not that background search indexing completed.
+Only delivery time and success/failure are stored; no credentials or response bodies.
+
+Published-content actions use locale-aware frontend URLs. About and privacy pages are
+mapped by their migration identity; unknown pages do not receive invented public links.
+Existing signed preview links, REST endpoints, and publishing hooks remain in use.
+
+Update the existing plugin with a ZIP containing the `johnserra-core/` directory through
+**Plugins → Add Plugin → Upload Plugin → Replace current with uploaded**. This update is
+for the WordPress host; pushing the Next.js repository does not install it on WordPress.
+Rollback by uploading the previous plugin ZIP. No content/schema migration is required.
+
+Run `tests/admin-studio-integration.php` only in a disposable WordPress instance after
+defining `JOHNSERRA_STUDIO_TEST_SITE=true` and `WP_ADMIN=true`. It creates fixture posts
+and tests draft/published/ambiguous translation groups, frontend URLs, and dashboard output.
+
 ## Translation workflow
 
 1. Create both content records and set their locales.

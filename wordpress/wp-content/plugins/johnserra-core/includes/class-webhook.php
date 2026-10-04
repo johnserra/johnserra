@@ -112,6 +112,15 @@ final class Webhook {
 			)
 		);
 
+		update_option(
+			'johnserra_last_webhook_delivery',
+			array(
+				'time' => time(),
+				'accepted' => ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) >= 200 && wp_remote_retrieve_response_code( $response ) < 300,
+			),
+			false
+		);
+
 		if ( is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) >= 300 ) {
 			$message = is_wp_error( $response ) ? $response->get_error_message() : 'HTTP ' . wp_remote_retrieve_response_code( $response );
 			error_log( sprintf( 'John Serra webhook failed for post %d: %s', $post->ID, $message ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log

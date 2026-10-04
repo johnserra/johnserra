@@ -15,6 +15,7 @@ import { Tag } from "@/components/ui/Tag";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { getBlogPostSchema } from "@/lib/schema";
+import { getBlogMetadata } from "@/lib/blog-metadata";
 import type { Metadata } from "next";
 import type { Locale } from "@/types";
 
@@ -37,10 +38,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const content = await getSiteContentBySlug("blog", slug, locale as Locale);
   if (!content) return {};
-  return {
-    title: `${content.frontmatter.title} — John Serra`,
-    description: content.frontmatter.description,
-  };
+  const targetLocale = (locale === "en" ? "tr" : "en") as Locale;
+  const translatedSlug = await getSiteTranslationSlug(
+    "blog",
+    content,
+    locale as Locale,
+    targetLocale,
+  );
+  return getBlogMetadata(locale as Locale, slug, content.frontmatter, translatedSlug);
 }
 
 export default async function BlogPostPage({ params }: Props) {

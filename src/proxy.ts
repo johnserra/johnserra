@@ -17,7 +17,13 @@ export default function proxy(request: NextRequest) {
     return NextResponse.redirect(url, 308);
   }
 
-  return intlMiddleware(request);
+  const response = intlMiddleware(request);
+  // Article metadata resolves published translations, including their actual slugs.
+  // next-intl otherwise advertises the same slug in every locale, even for missing posts.
+  if (/^\/(?:en\/|tr\/)?blog\/[^/]+\/?$/.test(request.nextUrl.pathname)) {
+    response.headers.delete("link");
+  }
+  return response;
 }
 
 export const config = {

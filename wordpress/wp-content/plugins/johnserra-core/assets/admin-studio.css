@@ -5,10 +5,15 @@
 .js-studio-work li:last-child { border-bottom: 0; }
 .js-studio-work span { color: #545454; font-size: 12px; }
 .js-studio-attention { color: #8a6500; }
-.column-js_language { width: 8%; }
-.column-js_translation { width: 15%; }
-.column-js_summary { width: 20%; }
-.column-js_image { width: 12%; }
-@media (max-width: 782px) {
- .column-js_language, .column-js_translation, .column-js_summary, .column-js_image { width: auto; }
+@media (min-width: 783px) {
+ body:is(.post-type-post, .post-type-page, .post-type-js_project) .wp-list-table .column-title { width: 24%; }
+ body:is(.post-type-post, .post-type-page, .post-type-js_project) .wp-list-table .column-author { width: 6%; }
+ body:is(.post-type-post, .post-type-page, .post-type-js_project) .wp-list-table .column-categories { width: 7%; }
+ body:is(.post-type-post, .post-type-page, .post-type-js_project) .wp-list-table .column-tags { width: 9%; }
+ body:is(.post-type-post, .post-type-page, .post-type-js_project) .wp-list-table .column-comments { width: 3%; }
+ body:is(.post-type-post, .post-type-page, .post-type-js_project) .wp-list-table .column-date { width: 10%; }
+ .column-js_language { width: 6%; }
+ .column-js_translation { width: 10%; }
+ .column-js_summary { width: 15%; }
+ .column-js_image { width: 7%; }
 }

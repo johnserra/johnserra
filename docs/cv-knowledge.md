@@ -1,6 +1,8 @@
 # Reviewed public CV knowledge
 
-This feature adds a sanitized English CV as a registered, first-class retrieval source. Production rollout completed on September 10, 2026: migration `00002` was applied, all 18 reviewed sections were indexed with canonical approval digest `a8c652af5a1dd8ee2fb513c81548a9e4342fe8240f43b352832bc41b8fc2f013`, and the bounded live retrieval evaluation passed all 12 English and Turkish cases. The evaluation verifies retrieval and current-source identity; it does not evaluate generated answer quality.
+This feature adds a reviewed English CV as a registered, first-class retrieval source. A prior production rollout completed on September 10, 2026 with 18 reviewed sections and the then-current approval digest. An October 13, 2026 anonymization candidate was superseded before publication: the canonical CV again names Premium Parking as the current employer while continuing to omit the regional-location paragraph. The historical approval must not be reused or treated as approval of this revised source. The earlier bounded evaluation verified retrieval and source identity at that time, not the revised content or generated-answer quality.
+
+The current offline-generated candidate digest is `fc886f716d7ce40bfd617957855c34422872b38b16ff106a2a87e59026030f86`. Recording it here identifies the review candidate; it does not approve or enqueue it.
 
 ## Source and artifact
 
@@ -43,7 +45,7 @@ The prompt treats all retrieved text as evidence, never instructions. For profes
 
 ## Evaluation
 
-`evals/cv/cases.json` contains 12 bounded EN/TR retrieval cases. Every case asserts a specific section source identity rather than accepting a whole-document match. Coverage includes Premium Parking dates, export technical-sales liaison work, Sunwell independent-contractor and INPAK TS-800 distinctions, Pakiş's descriptive title, Pagysa lot traceability/ISO 9001/HACCP, unknown degree details, languages without invented levels, CareerTalkLab's work-in-progress/planned analytics, and bounded BD automation dates.
+`evals/cv/cases.json` contains bounded EN/TR retrieval cases. Every case asserts a specific section source identity rather than accepting a whole-document match. Active English and Turkish retrieval fixtures use the stable Premium Parking employment-history identity; other coverage includes export technical-sales liaison work, Sunwell independent-contractor and INPAK TS-800 distinctions, Pakiş's descriptive title, Pagysa lot traceability/ISO 9001/HACCP, unknown degree details, languages without invented levels, CareerTalkLab's work-in-progress/planned analytics, and bounded BD automation dates. These fixture changes do not establish new live retrieval results, prove generated-answer compliance, or alter historical receipts. Employer-specific SMB analytics and current or prospective location details remain outside the public-content boundary even though the reviewed CV may name the employer and documented role, dates, and duties.
 
 ```bash
 # Schema, case identity, and source coverage only; no external calls.

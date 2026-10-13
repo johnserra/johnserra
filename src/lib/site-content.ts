@@ -26,6 +26,7 @@ export interface SiteContentItem {
   frontmatter: Frontmatter;
   content: string;
   format: "mdx" | "html";
+  modified?: string;
 }
 
 function usesWordPress(): boolean {
@@ -44,11 +45,13 @@ function fromWordPress(item: WordPressContentItem): SiteContentItem {
     slug: item.slug,
     format: "html",
     content: item.contentHtml,
+    modified: item.modified,
     frontmatter: {
       title: item.title,
       description: item.summary,
       date: item.date,
       tags: item.tags.map((tag) => tag.name),
+      categories: item.categories.map((category) => category.name),
       coverImage: item.featuredImage?.url,
       coverImageAlt: item.featuredImage?.alt,
       translationGroupId: item.translationGroupId,
@@ -70,7 +73,11 @@ export async function getAllSiteContent(
   locale: Locale,
 ): Promise<SiteContentItem[]> {
   if (!usesWordPress()) {
-    return getAllFileContent(type, locale).map((item) => ({ ...item, format: "mdx" as const }));
+    return getAllFileContent(type, locale).map((item) => ({
+      ...item,
+      format: "mdx" as const,
+      modified: typeof item.frontmatter.modified === "string" ? item.frontmatter.modified : undefined,
+    }));
   }
 
   return (await getAllWordPressContent(collectionFor(type), locale)).map(fromWordPress);
@@ -84,7 +91,11 @@ export async function getSiteContentBySlug(
   // Privacy notices are versioned with the frontend so policy text cannot lag a deployment.
   if (!usesWordPress() || type === "privacy-policy") {
     const item = getFileContentBySlug(type, slug, locale);
-    return item ? { ...item, format: "mdx" } : null;
+    return item ? {
+      ...item,
+      format: "mdx",
+      modified: typeof item.frontmatter.modified === "string" ? item.frontmatter.modified : undefined,
+    } : null;
   }
 
   const preview = (await draftMode()).isEnabled;

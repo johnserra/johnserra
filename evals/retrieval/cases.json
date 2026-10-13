@@ -150,6 +150,17 @@
       "localeNote": "TR can retrieve reviewed English CV; source_locale remains en."
     },
     {
+      "id": "premium-parking-role-tr",
+      "locale": "tr",
+      "categories": ["locale", "cv", "role"],
+      "conversation": [
+        { "role": "user", "content": "John'un Premium Parking'deki müşteri yöneticisi rolünde yaptığı işler neler?" }
+      ],
+      "expectedSourceIds": ["cv/john-serra/en/experience-premium-parking-account-manager"],
+      "queryTerms": ["Premium Parking", "müşteri yöneticisi", "operasyonel hazırlık"],
+      "localeNote": "TR can retrieve the reviewed English CV employment history; source_locale remains en. This fixture does not authorize employer-specific analytics or location disclosure."
+    },
+    {
       "id": "exact-name-turkish-post-tr",
       "locale": "tr",
       "categories": ["exact", "name"],

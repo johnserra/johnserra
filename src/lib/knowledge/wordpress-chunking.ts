@@ -5,9 +5,11 @@ export const WORDPRESS_MAX_CHUNK_OVERLAP_CHARACTERS = 300;
 export const WORDPRESS_MAX_CHUNKS_PER_DOCUMENT = 100;
 
 export interface WordPressStructureBlock {
-  kind: "heading" | "paragraph" | "list-item";
+  kind: "heading" | "paragraph" | "list-item" | "table";
   text: string;
   level?: number;
+  headers?: string[];
+  rows?: string[][];
 }
 
 export interface WordPressSection {
@@ -21,7 +23,7 @@ export interface WordPressChunk {
   sectionPath: string[];
 }
 
-const BLOCK_TAGS = new Set(["address", "article", "blockquote", "div", "figure", "footer", "header", "main", "pre", "section", "table", "td", "th", "tr"]);
+const BLOCK_TAGS = new Set(["address", "article", "blockquote", "div", "figure", "footer", "header", "main", "pre", "section"]);
 
 function normalizeText(value: string): string {
   return decodeHtmlEntities(value).replace(/\s+/g, " ").trim();
@@ -39,7 +41,22 @@ function addLooseText(blocks: WordPressStructureBlock[], value: string): void {
  * Inline markup is deliberately ignored while headings, paragraphs, and list
  * items remain separate. Text without block markup is treated as paragraphs.
  */
-export function parseWordPressHtml(html: string): WordPressStructureBlock[] {
+function plainCellText(html: string): string {
+  return normalizeText(html.replace(/<br\b[^>]*>/gi, " ").replace(/<[^>]+>/g, " "));
+}
+
+function parseTable(html: string): WordPressStructureBlock {
+  const parsedRows = [...html.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)].map((row) => {
+    const cells = [...row[1].matchAll(/<(th|td)\b[^>]*>([\s\S]*?)<\/\1>/gi)];
+    return { cells: cells.map((cell) => plainCellText(cell[2])), header: cells.length > 0 && cells.every((cell) => cell[1].toLowerCase() === "th") };
+  }).filter((row) => row.cells.length > 0);
+  const headerIndex = parsedRows.findIndex((row) => row.header);
+  const headers = headerIndex >= 0 ? parsedRows[headerIndex].cells : [];
+  const rows = parsedRows.filter((_, index) => index !== headerIndex).map((row) => row.cells);
+  return { kind: "table", text: "", headers, rows };
+}
+
+function parseNonTableHtml(html: string): WordPressStructureBlock[] {
   const blocks: WordPressStructureBlock[] = [];
   const sanitized = html
     .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
@@ -101,6 +118,21 @@ export function parseWordPressHtml(html: string): WordPressStructureBlock[] {
   flushActive();
   flushLoose();
   return blocks.map(({ kind, text, level }) => ({ kind, text, ...(level ? { level } : {}) }));
+}
+
+export function parseWordPressHtml(html: string): WordPressStructureBlock[] {
+  const sanitizedHtml = html
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ");
+  const blocks: WordPressStructureBlock[] = [];
+  let cursor = 0;
+  for (const table of sanitizedHtml.matchAll(/<table\b[^>]*>[\s\S]*?<\/table>/gi)) {
+    const index = table.index ?? cursor;
+    blocks.push(...parseNonTableHtml(sanitizedHtml.slice(cursor, index)), parseTable(table[0]));
+    cursor = index + table[0].length;
+  }
+  blocks.push(...parseNonTableHtml(sanitizedHtml.slice(cursor)));
+  return blocks;
 }
 
 export function structureWordPressBlocks(blocks: WordPressStructureBlock[]): WordPressSection[] {
@@ -170,7 +202,41 @@ function overlapTail(text: string, maxCharacters = WORDPRESS_MAX_CHUNK_OVERLAP_C
 function blockLabel(block: WordPressStructureBlock): string {
   if (block.kind === "heading") return "Heading";
   if (block.kind === "list-item") return "List item";
+  if (block.kind === "table") return "Table";
   return "Paragraph";
+}
+
+function pipeCell(value: string): string {
+  return value.replace(/\\/g, "\\\\").replace(/\|/g, "\\|");
+}
+
+function tableHeader(headers: string[], tableNumber: number): string {
+  return headers.length
+    ? `Table ${tableNumber} headers: ${headers.map(pipeCell).join(" | ")}`
+    : `Table ${tableNumber} headers: (none)`;
+}
+
+function tableUnits(block: WordPressStructureBlock, tableNumber: number, capacity: number): Array<{ text: string; header: string }> {
+  const headers = block.headers ?? [];
+  const header = tableHeader(headers, tableNumber);
+  if (header.length > capacity) throw new Error("WordPress table header cannot fit within the configured chunk limit.");
+  const rows = block.rows ?? [];
+  if (!rows.length) return [{ text: `Table ${tableNumber} row: (no data)`, header }];
+  return rows.flatMap((row, rowIndex) => {
+    const rowText = `Table ${tableNumber} row ${rowIndex + 1}: ${row.map(pipeCell).join(" | ")}`;
+    if (header.length + 1 + rowText.length <= capacity) return [{ text: rowText, header }];
+    return row.flatMap((cell, columnIndex) => {
+      const column = headers[columnIndex] || `column ${columnIndex + 1}`;
+      const prefix = `Table ${tableNumber} row ${rowIndex + 1}, ${pipeCell(column)} (continued): `;
+      const available = capacity - header.length - 1 - prefix.length - 24;
+      if (available < 1) throw new Error("WordPress table row context cannot fit within the configured chunk limit.");
+      const pieces = splitWords(pipeCell(cell), available);
+      return (pieces.length ? pieces : [""]).map((piece, partIndex) => ({
+        text: `${prefix.slice(0, -2)}, part ${partIndex + 1}: ${piece}`,
+        header,
+      }));
+    });
+  });
 }
 
 function sectionPrefix(title: string, sectionPath: string[]): string {
@@ -185,7 +251,12 @@ function sectionChunks(title: string, section: WordPressSection): WordPressChunk
   const capacity = WORDPRESS_MAX_CHUNK_CHARACTERS - prefix.length - 1;
   if (capacity < 1) throw new Error("WordPress section context exceeds the configured chunk limit.");
 
-  const units = section.blocks.flatMap((block) => {
+  let tableNumber = 0;
+  const units = section.blocks.flatMap((block): Array<{ text: string; tableHeader?: string }> => {
+    if (block.kind === "table") {
+      tableNumber += 1;
+      return tableUnits(block, tableNumber, capacity).map((unit) => ({ text: unit.text, tableHeader: unit.header }));
+    }
     const initialLabel = `${blockLabel(block)}: `;
     const continuationLabel = `${blockLabel(block)} (continued): `;
     const labelLength = Math.max(initialLabel.length, continuationLabel.length);
@@ -199,12 +270,13 @@ function sectionChunks(title: string, section: WordPressSection): WordPressChunk
         `WordPress ${blockLabel(block).toLowerCase()} context for section ${section.sectionPath.join(" > ") || "(document body)"} cannot fit within the configured chunk limit.`,
       );
     }
-    return splitWords(block.text, textCapacity).map((part, index) => `${index ? `${blockLabel(block)} (continued)` : blockLabel(block)}: ${part}`);
+    return splitWords(block.text, textCapacity).map((part, index) => ({ text: `${index ? `${blockLabel(block)} (continued)` : blockLabel(block)}: ${part}` }));
   });
   if (!units.length) return [];
 
   const output: WordPressChunk[] = [];
   let body = "";
+  let bodyContainsTable = false;
   const emit = () => {
     if (!body) return;
     output.push({
@@ -215,15 +287,22 @@ function sectionChunks(title: string, section: WordPressSection): WordPressChunk
   };
 
   for (const unit of units) {
-    const candidate = body ? `${body}\n${unit}` : unit;
+    const tableText = unit.tableHeader ? `${unit.tableHeader}\n${unit.text}` : unit.text;
+    const candidate = body
+      ? `${body}\n${unit.tableHeader && !body.includes(unit.tableHeader) ? `${unit.tableHeader}\n` : ""}${unit.text}`
+      : tableText;
     if (candidate.length <= capacity) {
       body = candidate;
+      bodyContainsTable ||= Boolean(unit.tableHeader);
       continue;
     }
     emit();
-    const roomForOverlap = capacity - unit.length - 1;
-    const overlap = roomForOverlap > 0 ? overlapTail(body, Math.min(roomForOverlap, WORDPRESS_MAX_CHUNK_OVERLAP_CHARACTERS)) : "";
-    body = overlap ? `${overlap}\n${unit}` : unit;
+    const roomForOverlap = capacity - tableText.length - 1;
+    const overlap = !bodyContainsTable && !unit.tableHeader && roomForOverlap > 0
+      ? overlapTail(body, Math.min(roomForOverlap, WORDPRESS_MAX_CHUNK_OVERLAP_CHARACTERS))
+      : "";
+    body = overlap ? `${overlap}\n${tableText}` : tableText;
+    bodyContainsTable = Boolean(unit.tableHeader);
   }
   emit();
   return output;
@@ -251,7 +330,12 @@ export function chunkUnstructuredText(title: string, text: string): WordPressChu
 
 export function htmlToStructuredPlainText(html: string): string {
   return structureWordPressBlocks(parseWordPressHtml(html))
-    .flatMap((section) => section.blocks.map((block) => `${block.kind === "list-item" ? "- " : ""}${block.text}`))
+    .flatMap((section) => section.blocks.flatMap((block) => block.kind === "table"
+      ? [
+          (block.headers?.length ?? 0) ? `Table headers: ${block.headers!.map(pipeCell).join(" | ")}` : "Table headers: (none)",
+          ...(block.rows ?? []).map((row) => `Table row: ${row.map(pipeCell).join(" | ")}`),
+        ]
+      : [`${block.kind === "list-item" ? "- " : ""}${block.text}`]))
     .join("\n")
     .trim();
 }

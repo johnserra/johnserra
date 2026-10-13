@@ -23,6 +23,9 @@ test("structure-aware migration, atomic replacement, and CV compatibility", asyn
     const migration = await sql("supabase/migrations/00003_wordpress_structure_aware.sql");
     await db.exec(migration);
     await db.exec(migration); // Reapplication must not rename the wrapper again.
+    const tableMigration = await sql("supabase/migrations/00006_wordpress_table_chunking.sql");
+    await db.exec(tableMigration);
+    await db.exec(tableMigration); // Additive compatibility migration is idempotent.
     await db.exec((await sql("supabase/tests/structure-aware-regression.sql")).replace(/^\\set.*$/gm, ""));
 
     const embedding = Array.from({ length: 768 }, (_, i) => i === 0 ? 1 : 0);

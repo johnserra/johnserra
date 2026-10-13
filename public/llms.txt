@@ -1,6 +1,6 @@
 # John Serra
 
-John Serra is a data-driven problem solver whose work spans manufacturing, education, urban mobility, business development, and process automation. He helps organizations find clarity in complex situations, build practical systems, and turn data into measurable growth.
+John Serra is a data-driven problem solver whose work spans manufacturing, education, urban mobility, business development, and process automation. CareerTalkLab's existing product is an English-learning LMS; he is preparing the Grain First public learning series, with broader data and software career-learning integration planned.
 
 - [Home](https://johnserra.com/)
 - [About](https://johnserra.com/about)

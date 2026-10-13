@@ -10,8 +10,6 @@ Business development and operations professional with experience across manufact
 
 November 2022–present
 
-Location: Rochester, New York, United States.
-
 - Pursue regional market opportunities and develop strategic partnerships within the local business community.
 - Lead recruitment, hiring, and training to support service quality and operational performance.
 - Maintain regular client communication to align operations with service expectations.

@@ -86,6 +86,7 @@ export interface WordPressContentItem {
   modified?: string;
   contentHtml: string;
   tags: ContentTag[];
+  categories: ContentTag[];
   featuredImage?: ContentImage;
   translationGroupId?: string;
   legacySourceKey?: string;

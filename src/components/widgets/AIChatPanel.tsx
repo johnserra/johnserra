@@ -22,6 +22,7 @@ import {
   type ChatStorage,
   type SavedChatState,
 } from "@/lib/chat/local-persistence";
+import { isRestrictedPublicConversation } from "@/lib/chat/public-boundaries";
 
 interface Message {
   id: string;
@@ -201,6 +202,7 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [mode, setMode] = useState<"chat" | "discovery">("chat");
+  const restrictedConversation = isRestrictedPublicConversation(messages);
   const messagesViewportRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const requestAbortRef = useRef<AbortController | null>(null);
@@ -543,14 +545,14 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
         {mode === "chat" && (
           <div role="group" aria-label={t("entryChoices")} className="border-t border-hair bg-ground-2 px-4 py-3">
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-              <button
+              {!restrictedConversation ? <button
                 type="button"
                 onClick={handleDiscussProject}
                 disabled={isLoading}
                 className="rounded-field border border-accent bg-accent/10 px-3 py-2 text-sm font-semibold text-ink hover:bg-accent/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50"
               >
                 {t("discussProject")}
-              </button>
+              </button> : null}
               <button
                 type="button"
                 onClick={handleAskAboutJohn}

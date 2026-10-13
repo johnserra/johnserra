@@ -10,7 +10,9 @@ export interface Frontmatter {
   title: string;
   description?: string;
   date?: string;
+  modified?: string;
   tags?: string[];
+  categories?: string[];
   status?: string;
   coverImage?: string;
   githubUrl?: string;

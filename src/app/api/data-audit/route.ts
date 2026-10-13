@@ -21,6 +21,7 @@ import {
 } from "@/lib/data-audit";
 import enMessages from "../../../../messages/en.json";
 import trMessages from "../../../../messages/tr.json";
+import { formatAttributionLines, parseInquiryAttribution } from "@/lib/inquiry-attribution";
 
 type JsonRecord = Record<string, unknown>;
 
@@ -152,7 +153,8 @@ export async function POST(request: NextRequest) {
   const company = cleanString(body.company, 120);
   const website = cleanOptionalString(body.website, 240);
   const locale = body.locale === "tr" ? "tr" : body.locale === "en" ? "en" : null;
-  if (!firstName || !email || !company || !locale || body.consent !== true
+  const attribution = parseInquiryAttribution(body.attribution);
+  if (!firstName || !email || !company || !locale || (body.attribution !== undefined && (!attribution || attribution.source !== "data-audit")) || body.consent !== true
     || !isValidEmail(email) || !isValidWebsite(website)
     || !isBusinessContext(body.context) || !hasValidSubmittedResultShape(body.result)) {
     return NextResponse.json({ error: "invalid_request" }, { status: 400 });
@@ -176,6 +178,7 @@ export async function POST(request: NextRequest) {
     `Pillars: ${PILLARS.map((pillar) => `${pillar} ${Math.round(recomputed.pillarScores[pillar])}`).join(", ")}`,
     `Triggered flags: ${recomputed.triggeredFlagIds.length ? recomputed.triggeredFlagIds.join(", ") : "none"}`,
     `Actions: ${recomputed.actionIds.join(", ")}`,
+    ...(attribution ? formatAttributionLines(attribution) : []),
   ].filter((line): line is string => Boolean(line)).join("\n");
 
   const supabase = createAdminClient();

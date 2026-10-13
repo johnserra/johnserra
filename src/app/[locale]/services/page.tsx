@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { ServicesInquiryForm } from "@/components/services/ServicesInquiryForm";
 import { Link } from "@/i18n/navigation";
 import { dataAuditPath, servicesPath } from "@/lib/routes";
+import { AIChatWidget } from "@/components/widgets/AIChatWidget";
 
 interface Props { params: Promise<{ locale: string }> }
 
@@ -108,6 +109,7 @@ export default async function ServicesPage({ params }: Props) {
         </section>
       </main>
       <Footer />
+      <AIChatWidget />
     </>
   );
 }

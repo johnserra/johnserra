@@ -5,6 +5,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { GoogleAnalytics } from "@/components/google-analytics";
+import { InquiryAttributionTracker } from "@/components/InquiryAttributionTracker";
 import "../globals.css";
 
 const geist = Geist({
@@ -69,6 +70,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         className={`${geist.variable} ${geistMono.variable} ${barlowCondensed.variable} antialiased`}
       >
         <GoogleAnalytics />
+        <InquiryAttributionTracker />
         <NextIntlClientProvider>
           {children}
         </NextIntlClientProvider>

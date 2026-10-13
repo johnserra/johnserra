@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase";
 import { Resend } from "resend";
+import { formatAttributionLines, parseInquiryAttribution } from "@/lib/inquiry-attribution";
 
 type ContactRequest = {
   name?: string;
@@ -11,6 +12,7 @@ type ContactRequest = {
   budget?: string;
   timeline?: string;
   source?: string;
+  attribution?: unknown;
 };
 
 function splitName(name: string) {
@@ -50,8 +52,10 @@ export async function POST(req: NextRequest) {
   const resend = new Resend(process.env.RESEND_API_KEY);
   const data = (await req.json()) as ContactRequest;
   const { name, email, message } = data;
+  const attribution = parseInquiryAttribution(data.attribution);
+  const expectedSource = data.source === "services" ? "services" : "contact";
 
-  if (!name || !email || !message) {
+  if (!name || !email || !message || (data.attribution !== undefined && (!attribution || attribution.source !== expectedSource))) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
 
@@ -65,6 +69,7 @@ export async function POST(req: NextRequest) {
     data.budget && `Budget: ${data.budget}`,
     data.timeline && `Timeline: ${data.timeline}`,
     `Message: ${message}`,
+    ...(attribution ? formatAttributionLines(attribution) : []),
   ].filter(Boolean).join("\n");
 
   const supabase = createAdminClient();

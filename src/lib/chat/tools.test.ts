@@ -9,7 +9,7 @@ import {
   validateToolArguments,
   type ChatToolDataSources,
 } from "./tools";
-import { CHAT_MAX_TOOL_CALLS, utf8ByteLength } from "./limits";
+import { CHAT_MAX_TOOL_CALLS, CHAT_TOOL_RESULT_BYTES, utf8ByteLength } from "./limits";
 import { withToolDeadline, ChatToolDeadlineError } from "./deadline";
 
 const sources: ChatToolDataSources = {
@@ -156,6 +156,105 @@ test("unknown, missing, extra, and wrong-type arguments reject without dispatch"
     );
   }
   assert.equal(calls, 0);
+});
+
+test("list_articles validates legacy and bounded pagination arguments", () => {
+  assert.deepEqual(validateToolArguments("list_articles", { locale: "en" }), { locale: "en" });
+  assert.deepEqual(validateToolArguments("list_articles", { locale: "tr", limit: 7, offset: 2 }), { locale: "tr", limit: 7, offset: 2 });
+  assert.deepEqual(validateToolArguments("list_articles", { locale: "en", limit: 3, cursor: "v1.YXJ0aWNsZS0wMDk" }), { locale: "en", limit: 3, cursor: "v1.YXJ0aWNsZS0wMDk" });
+  for (const args of [
+    { locale: "en", limit: 0 },
+    { locale: "en", limit: 51 },
+    { locale: "en", offset: -1 },
+    { locale: "en", offset: 10_001 },
+    { locale: "en", cursor: "bad cursor" },
+    { locale: "en", cursor: "article", offset: 0 },
+    { locale: "en", extra: true },
+  ]) assert.equal(validateToolArguments("list_articles", args), null);
+});
+
+test("list_articles traverses a large catalog without omissions or duplicates", async () => {
+  const catalog = Array.from({ length: 123 }, (_, index) => ({
+    slug: `article-${String(index).padStart(3, "0")}`,
+    format: "mdx" as const,
+    content: "Private body is not returned.",
+    frontmatter: { title: `Article ${index}`, description: `Summary ${index}`, date: "2026-01-01" },
+  })).reverse();
+  const registry = createChatToolRegistry({ ...sources, async listArticles() { return catalog; } });
+  const seen: string[] = [];
+  let cursor: string | null = null;
+  do {
+    const accepted = await dispatchToolCall(registry, {
+      name: "list_articles",
+      args: { locale: "en", limit: 17, ...(cursor ? { cursor } : {}) },
+    }, context());
+    const page = accepted.result;
+    assert.equal(page.kind, "list_articles");
+    if (page.kind !== "list_articles") throw new Error("unexpected result");
+    assert.equal(page.total, catalog.length);
+    assert.deepEqual(page.citations, page.articles.map((article) => article.citation));
+    seen.push(...page.articles.map((article) => article.slug));
+    cursor = page.nextCursor;
+  } while (cursor);
+  assert.equal(new Set(seen).size, catalog.length);
+  assert.deepEqual(seen, [...catalog].sort((a, b) => a.slug.localeCompare(b.slug)).map((item) => item.slug));
+});
+
+test("list_articles returns empty/final pages and update-stable keyset continuation", async () => {
+  let catalog = ["bravo", "delta", "foxtrot"].map((slug) => ({
+    slug, format: "mdx" as const, content: "", frontmatter: { title: slug },
+  }));
+  const registry = createChatToolRegistry({ ...sources, async listArticles() { return catalog; } });
+  const first = await dispatchToolCall(registry, { name: "list_articles", args: { locale: "en", limit: 2 } }, context());
+  assert.equal(first.result.kind, "list_articles");
+  if (first.result.kind !== "list_articles") throw new Error("unexpected result");
+  assert.equal(first.result.nextCursor, "v1.ZGVsdGE");
+  catalog = [{ slug: "alpha", format: "mdx" as const, content: "", frontmatter: { title: "alpha" } }, ...catalog];
+  const final = await dispatchToolCall(registry, { name: "list_articles", args: { locale: "en", cursor: "v1.ZGVsdGE" } }, context());
+  assert.equal(final.result.kind, "list_articles");
+  if (final.result.kind !== "list_articles") throw new Error("unexpected result");
+  assert.deepEqual(final.result.articles.map((article) => article.slug), ["foxtrot"]);
+  assert.equal(final.result.nextCursor, null);
+  const empty = await dispatchToolCall(registry, { name: "list_articles", args: { locale: "en", offset: 99 } }, context());
+  assert.equal(empty.result.kind, "list_articles");
+  if (empty.result.kind !== "list_articles") throw new Error("unexpected result");
+  assert.deepEqual(empty.result.articles, []);
+  assert.equal(empty.result.nextCursor, null);
+});
+
+test("list_articles cursors round-trip Unicode and percent-encoded slugs", async () => {
+  const catalog = ["alpha", "makine-öğrenmesi", "percent%2Fencoded", "中文-文章"].map((slug) => ({
+    slug, format: "mdx" as const, content: "", frontmatter: { title: slug },
+  }));
+  const registry = createChatToolRegistry({ ...sources, async listArticles() { return catalog; } });
+  const seen: string[] = [];
+  let cursor: string | null = null;
+  do {
+    const page = await dispatchToolCall(registry, { name: "list_articles", args: { locale: "en", limit: 1, ...(cursor ? { cursor } : {}) } }, context());
+    assert.equal(page.result.kind, "list_articles");
+    if (page.result.kind !== "list_articles") throw new Error("unexpected result");
+    seen.push(...page.result.articles.map((article) => article.slug));
+    cursor = page.result.nextCursor;
+  } while (cursor);
+  assert.deepEqual(seen, [...catalog].sort((a, b) => a.slug < b.slug ? -1 : a.slug > b.slug ? 1 : 0).map((item) => item.slug));
+  assert.equal(validateToolArguments("list_articles", { locale: "en", cursor: "v1.not canonical!" }), null);
+});
+
+test("list_articles compacts multibyte metadata and paginates within the dispatch budget", async () => {
+  const catalog = Array.from({ length: 60 }, (_, index) => ({
+    slug: `long-${String(index).padStart(3, "0")}`,
+    format: "mdx" as const,
+    content: "",
+    frontmatter: { title: `🙂${"界".repeat(800)}`, description: `ö${"🙂".repeat(2_000)}` },
+  }));
+  const registry = createChatToolRegistry({ ...sources, async listArticles() { return catalog; } });
+  const accepted = await dispatchToolCall(registry, { name: "list_articles", args: { locale: "en", limit: 50 } }, context());
+  assert.equal(accepted.result.kind, "list_articles");
+  if (accepted.result.kind !== "list_articles") throw new Error("unexpected result");
+  assert.ok(accepted.result.articles.length > 0 && accepted.result.articles.length < 50);
+  assert.ok(accepted.result.nextCursor);
+  assert.ok(accepted.outputBytes <= CHAT_TOOL_RESULT_BYTES.list_articles);
+  assert.ok(accepted.result.articles.every((article) => !article.title.includes("\uFFFD") && !article.summary?.includes("\uFFFD")));
 });
 
 test("tool execution logs contain stable metadata only", async () => {

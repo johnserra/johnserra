@@ -42,11 +42,21 @@ function assertApiItem(value: WordPressApiItem, allowUnpublished: boolean): void
   }
 }
 
-function tags(item: WordPressApiItem): ContentTag[] {
+function terms(item: WordPressApiItem, taxonomy: "post_tag" | "category"): ContentTag[] {
   return (item._embedded?.["wp:term"] ?? [])
     .flat()
-    .filter((term) => term.taxonomy === "post_tag")
+    .filter((term) => term.taxonomy === taxonomy)
     .map((term) => ({ id: term.id, name: decodeHtmlEntities(term.name), slug: term.slug }));
+}
+
+function wordpressUtcTimestamp(value: unknown): string | undefined {
+  const text = optionalText(value);
+  if (!text) return undefined;
+  const explicitUtc = /(?:z|[+-]\d{2}:\d{2})$/i.test(text) ? text : `${text}Z`;
+  const match = text.match(/^(\d{4})-(\d{2})-(\d{2})T/u);
+  if (!match || new Date(`${match[1]}-${match[2]}-${match[3]}T12:00:00Z`).toISOString().slice(0, 10) !== `${match[1]}-${match[2]}-${match[3]}`) return undefined;
+  const timestamp = Date.parse(explicitUtc);
+  return Number.isFinite(timestamp) ? new Date(timestamp).toISOString() : undefined;
 }
 
 function featuredImage(item: WordPressApiItem): WordPressMedia | undefined {
@@ -102,9 +112,10 @@ export function normalizeWordPressItem(
     title: decodeHtmlEntities(item.title.rendered),
     summary: optionalPlainText(acf.summary) ?? optionalPlainText(item.excerpt?.rendered),
     date: optionalText(item.date_gmt),
-    modified: optionalText(item.modified_gmt),
+    modified: wordpressUtcTimestamp(item.modified_gmt),
     contentHtml: item.content.rendered,
-    tags: tags(item),
+    tags: terms(item, "post_tag"),
+    categories: terms(item, "category"),
     featuredImage: media
       ? {
           id: media.id,

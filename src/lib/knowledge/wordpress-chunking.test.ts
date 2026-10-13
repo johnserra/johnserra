@@ -6,6 +6,7 @@ import {
   chunkWordPressHtml,
   chunkUnstructuredText,
   parseWordPressHtml,
+  htmlToStructuredPlainText,
   structureWordPressBlocks,
 } from "./wordpress-chunking";
 
@@ -98,4 +99,63 @@ test("near-limit title and path keep long content bounded", () => {
   const chunks = chunkWordPressHtml(title, `<h2>${heading}</h2><p>${content}</p>`);
   assert.ok(chunks.length > 1);
   assert.ok(chunks.every((chunk) => chunk.content.length <= WORDPRESS_MAX_CHUNK_CHARACTERS));
+});
+
+test("tables preserve headers, empty cells, inline HTML, entities, and literal pipes", () => {
+  const chunks = chunkWordPressHtml("Data", `
+    <h2>Metrics</h2><p>Before table.</p>
+    <table><thead><tr><th>Name</th><th>Value</th><th>Note</th></tr></thead><tbody>
+      <tr><td><p>Alpha <strong>&amp;</strong> Beta</p></td><td></td><td>A | B</td></tr>
+      <tr><td>Gamma</td><td><em>42</em></td><td>Done</td></tr>
+    </tbody></table><p>After table.</p>`);
+  const content = chunks.map((chunk) => chunk.content).join("\n");
+  assert.match(content, /Table 1 headers: Name \| Value \| Note/);
+  assert.match(content, /Table 1 row 1: Alpha & Beta \|  \| A \\\| B/);
+  assert.match(content, /Table 1 row 2: Gamma \| 42 \| Done/);
+  assert.match(content, /Paragraph: Before table\./);
+  assert.match(content, /Paragraph: After table\./);
+});
+
+test("structured plain text retains table-only and mixed prose while stripping scripts and styles", () => {
+  const tableOnly = htmlToStructuredPlainText("<script><table><tr><td>secret</td></tr></table></script><table><tr><th>A</th><th>B</th></tr><tr><td>x</td><td>y | z</td></tr></table>");
+  assert.equal(tableOnly, "Table headers: A | B\nTable row: x | y \\| z");
+  const mixed = htmlToStructuredPlainText("<p>Before.</p><table><tr><td>Cell<style>hidden</style></td></tr></table><p>After.</p>");
+  assert.match(mixed, /^Before\.\nTable headers: \(none\)\nTable row: Cell\nAfter\.$/u);
+  assert.doesNotMatch(`${tableOnly}\n${mixed}`, /secret|hidden/u);
+});
+
+test("split tables repeat headers and keep every short row intact", () => {
+  const rows = Array.from({ length: 80 }, (_, index) => `<tr><td>row-${index}</td><td>${"value ".repeat(5)}${index}</td></tr>`).join("");
+  const chunks = chunkWordPressHtml("Large table", `<h2>Rows</h2><table><tr><th>ID</th><th>Value</th></tr>${rows}</table>`);
+  assert.ok(chunks.length > 1);
+  assert.ok(chunks.every((chunk) => chunk.content.length <= WORDPRESS_MAX_CHUNK_CHARACTERS));
+  assert.ok(chunks.every((chunk) => chunk.content.includes("Table 1 headers: ID | Value")));
+  const combined = chunks.map((chunk) => chunk.content).join("\n");
+  for (let index = 0; index < 80; index += 1) {
+    assert.equal((combined.match(new RegExp(`Table 1 row ${index + 1}: row-${index} \\|`, "g")) ?? []).length, 1);
+  }
+});
+
+test("headerless and multiple tables retain independent row relationships", () => {
+  const content = chunkWordPressHtml("Tables", `
+    <table><tr><td>A</td><td></td><td>C</td></tr></table>
+    <p>Between.</p>
+    <table><tr><th>Left</th><th>Right</th></tr><tr><td>L</td><td>R</td></tr></table>`)
+    .map((chunk) => chunk.content).join("\n");
+  assert.match(content, /Table 1 headers: \(none\)/);
+  assert.match(content, /Table 1 row 1: A \|  \| C/);
+  assert.match(content, /Paragraph: Between\./);
+  assert.match(content, /Table 2 headers: Left \| Right/);
+  assert.match(content, /Table 2 row 1: L \| R/);
+});
+
+test("oversized table rows use bounded labeled cell continuations without loss", () => {
+  const longCell = Array.from({ length: 900 }, (_, index) => `token-${index}`).join(" ");
+  const chunks = chunkWordPressHtml("Oversized", `<table><tr><th>ID</th><th>Description</th></tr><tr><td>one</td><td>${longCell}</td></tr></table>`);
+  assert.ok(chunks.length > 1);
+  assert.ok(chunks.every((chunk) => chunk.content.length <= WORDPRESS_MAX_CHUNK_CHARACTERS));
+  assert.ok(chunks.every((chunk) => chunk.content.includes("Table 1 headers: ID | Description")));
+  const content = chunks.map((chunk) => chunk.content).join("\n");
+  assert.match(content, /Table 1 row 1, Description \(continued\), part 1:/);
+  for (let index = 0; index < 900; index += 1) assert.ok(content.includes(`token-${index}`));
 });

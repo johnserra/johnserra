@@ -39,6 +39,16 @@ const FILTERED_REQUEST: RetrievalRequest = {
   filter_visibility: "public",
 };
 
+test("system prompt applies the parking/property public boundary to every entry point", () => {
+  const prompt = buildSystemPrompt("", "en");
+  assert.match(prompt, /employment-history answers may name Premium Parking/iu);
+  assert.match(prompt, /SMB analytics articles, tutorials, examples, and answers must not name the company/iu);
+  assert.match(prompt, /current or prospective locations/iu);
+  assert.match(prompt, /anonymized industry or synthetic examples/iu);
+  assert.match(prompt, /educational only/iu);
+  assert.match(prompt, /do not offer consulting or audits/iu);
+});
+
 test("filtered retrieval falls back only for PGRST202 with four legacy arguments and the same abort signal", async () => {
   const controller = new AbortController();
   const calls: Array<{ name: string; args: unknown; signal?: AbortSignal }> = [];

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { TextArea } from "@/components/ui/TextArea";
 import { TextInput } from "@/components/ui/TextInput";
 import { InlineNotification } from "@/components/ui/InlineNotification";
+import { browserInquiryAttribution, trackInquiryCompletion } from "@/lib/inquiry-attribution";
 
 type FormState = "idle" | "submitting" | "success" | "error";
 
@@ -20,16 +21,18 @@ export function ServicesInquiryForm() {
     const form = event.currentTarget;
     const formData = new FormData(form);
     const payload = Object.fromEntries(formData.entries());
+    const attribution = browserInquiryAttribution("services");
 
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...payload, source: "services" }),
+        body: JSON.stringify({ ...payload, source: "services", attribution }),
       });
       if (!response.ok) throw new Error("Request failed");
       form.reset();
       setState("success");
+      trackInquiryCompletion(attribution);
     } catch {
       setState("error");
     }

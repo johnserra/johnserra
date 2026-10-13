@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { TextInput } from "@/components/ui/TextInput";
 import { TextArea } from "@/components/ui/TextArea";
 import { InlineNotification } from "@/components/ui/InlineNotification";
+import { browserInquiryAttribution, trackInquiryCompletion } from "@/lib/inquiry-attribution";
 
 type FormState = "idle" | "submitting" | "success" | "error";
 
@@ -18,10 +19,12 @@ export function ContactForm() {
     setState("submitting");
 
     const form = e.currentTarget;
+    const attribution = browserInquiryAttribution("contact");
     const data = {
       name: (form.elements.namedItem("name") as HTMLInputElement).value,
       email: (form.elements.namedItem("email") as HTMLInputElement).value,
       message: (form.elements.namedItem("message") as HTMLTextAreaElement).value,
+      attribution,
     };
 
     try {
@@ -33,6 +36,7 @@ export function ContactForm() {
       if (!res.ok) throw new Error("Failed to send");
       setState("success");
       form.reset();
+      trackInquiryCompletion(attribution);
     } catch {
       setState("error");
     }

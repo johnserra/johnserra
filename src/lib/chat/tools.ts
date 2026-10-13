@@ -1,4 +1,5 @@
 import type { FunctionCall, FunctionDeclaration } from "@google/genai";
+import { Buffer } from "node:buffer";
 import type { Locale } from "@/types";
 import { projectsPath } from "@/lib/routes";
 import type { SiteContentItem } from "@/lib/site-content";
@@ -82,6 +83,8 @@ export interface ArticleListResult {
   kind: "list_articles";
   articles: ArticleSummary[];
   citations: ToolCitation[];
+  total: number;
+  nextCursor: string | null;
 }
 
 export interface ContactOption {
@@ -123,6 +126,7 @@ export interface ToolRegistry {
 export type ToolArguments =
   | { query: string; locale: Locale }
   | { locale: Locale }
+  | { locale: Locale; limit?: number; offset?: number; cursor?: string }
   | { slug: string; locale: Locale };
 
 export type ToolFailureCategory =
@@ -285,8 +289,10 @@ const ARTICLES_RESULT_SCHEMA = {
     kind: { type: "string", enum: ["list_articles"] },
     articles: { type: "array", items: ARTICLE_SCHEMA },
     citations: { type: "array", items: CITATION_SCHEMA },
+    total: { type: "integer", minimum: 0 },
+    nextCursor: { type: ["string", "null"], maxLength: 512 },
   },
-  required: ["kind", "articles", "citations"],
+  required: ["kind", "articles", "citations", "total", "nextCursor"],
   additionalProperties: false,
 };
 
@@ -353,8 +359,13 @@ export const CHAT_TOOL_DECLARATIONS: readonly FunctionDeclaration[] = [
   },
   {
     name: "list_articles",
-    description: "List bounded summaries and canonical URLs for published public articles in the selected locale.",
-    parametersJsonSchema: exactObject({ locale: localeSchema }, ["locale"]),
+    description: "List one deterministically slug-ordered page of published public articles. The first page may not contain every article: follow nextCursor until it is null. The opaque cursor continues monotonically through the current ordering; restart to see newly inserted earlier slugs. Offset is available for bounded random access and cannot be combined with cursor.",
+    parametersJsonSchema: exactObject({
+      locale: localeSchema,
+      limit: { type: "integer", minimum: 1, maximum: 50 },
+      offset: { type: "integer", minimum: 0, maximum: 10_000 },
+      cursor: { type: "string", pattern: "^v1\.[A-Za-z0-9_-]+$", minLength: 4, maxLength: 512 },
+    }, ["locale"]),
     responseJsonSchema: ARTICLES_RESULT_SCHEMA,
   },
   {
@@ -383,6 +394,20 @@ function locale(value: unknown): Locale | null {
 
 function nonEmptyString(value: unknown, maxLength: number): value is string {
   return typeof value === "string" && value.trim().length > 0 && value.length <= maxLength;
+}
+
+function encodeArticleCursor(slug: string): string {
+  return `v1.${Buffer.from(slug, "utf8").toString("base64url")}`;
+}
+
+function decodeArticleCursor(cursor: string): string | null {
+  if (!/^v1\.[A-Za-z0-9_-]+$/u.test(cursor) || cursor.length > 512) return null;
+  try {
+    const decoded = Buffer.from(cursor.slice(3), "base64url").toString("utf8");
+    return decoded && encodeArticleCursor(decoded) === cursor ? decoded : null;
+  } catch {
+    return null;
+  }
 }
 
 function nullableString(value: unknown, maxLength: number): value is string | null {
@@ -460,6 +485,14 @@ function isArticle(value: unknown): value is ArticleSummary {
     && isCitation(value.citation);
 }
 
+function citationsMatchArticles(citations: unknown, articles: unknown): boolean {
+  if (!Array.isArray(citations) || !Array.isArray(articles) || citations.length !== articles.length) return false;
+  return citations.every((citation, index) => isCitation(citation)
+    && isArticle(articles[index])
+    && citation.title === articles[index].citation.title
+    && citation.url === articles[index].citation.url);
+}
+
 function isContactOption(value: unknown): value is ContactOption {
   return isRecord(value)
     && exactKeys(value, ["label", "url", "description"])
@@ -499,12 +532,15 @@ export function validateChatToolResult(name: ChatToolName, value: unknown): Chat
     return value as unknown as ProjectDetailsResult;
   }
   if (name === "list_articles"
-    && exactKeys(value, ["kind", "articles", "citations"])
+    && exactKeys(value, ["kind", "articles", "citations", "total", "nextCursor"])
     && value.kind === name
     && Array.isArray(value.articles)
     && value.articles.length <= 50
     && value.articles.every(isArticle)
-    && isCitationArray(value.citations)) {
+    && isCitationArray(value.citations)
+    && citationsMatchArticles(value.citations, value.articles)
+    && Number.isInteger(value.total) && (value.total as number) >= value.articles.length
+    && (value.nextCursor === null || (typeof value.nextCursor === "string" && decodeArticleCursor(value.nextCursor) !== null))) {
     return value as unknown as ArticleListResult;
   }
   if (name === "get_contact_options"
@@ -533,7 +569,26 @@ export function validateToolArguments(name: string, value: unknown): ToolArgumen
       ? { slug: value.slug, locale: selectedLocale }
       : null;
   }
-  if ((name === "get_cv_timeline" || name === "list_articles" || name === "get_contact_options") && exactKeys(value, ["locale"])) {
+  if (name === "list_articles") {
+    const keys = Object.keys(value);
+    if (!keys.every((key) => ["locale", "limit", "offset", "cursor"].includes(key)) || !keys.includes("locale")) return null;
+    const selectedLocale = locale(value.locale);
+    const limit = value.limit === undefined ? undefined : value.limit;
+    const offset = value.offset === undefined ? undefined : value.offset;
+    const cursor = value.cursor === undefined ? undefined : value.cursor;
+    if (!selectedLocale
+      || (limit !== undefined && (!Number.isInteger(limit) || (limit as number) < 1 || (limit as number) > 50))
+      || (offset !== undefined && (!Number.isInteger(offset) || (offset as number) < 0 || (offset as number) > 10_000))
+      || (cursor !== undefined && (typeof cursor !== "string" || decodeArticleCursor(cursor) === null))
+      || (offset !== undefined && cursor !== undefined)) return null;
+    return {
+      locale: selectedLocale,
+      ...(limit !== undefined ? { limit: limit as number } : {}),
+      ...(offset !== undefined ? { offset: offset as number } : {}),
+      ...(cursor !== undefined ? { cursor } : {}),
+    };
+  }
+  if ((name === "get_cv_timeline" || name === "get_contact_options") && exactKeys(value, ["locale"])) {
     const selectedLocale = locale(value.locale);
     return selectedLocale ? { locale: selectedLocale } : null;
   }
@@ -578,6 +633,29 @@ function summaryFor(item: SiteContentItem): string | null {
   return typeof item.frontmatter.description === "string" && item.frontmatter.description.trim()
     ? item.frontmatter.description.trim()
     : null;
+}
+
+function truncateCodePoints(value: string, maximum: number): string {
+  const points = [...value];
+  if (points.length <= maximum) return value;
+  return `${points.slice(0, Math.max(0, maximum - 1)).join("")}…`;
+}
+
+function compactArticle(item: SiteContentItem, selectedLocale: Locale): ArticleSummary {
+  const title = truncateCodePoints(titleFor(item), 120);
+  const citation = { title, url: canonicalSiteUrl(selectedLocale, "blog", item.slug) };
+  const summary = summaryFor(item);
+  return {
+    title,
+    slug: item.slug,
+    summary: summary === null ? null : truncateCodePoints(summary, 240),
+    date: typeof item.frontmatter.date === "string" ? truncateCodePoints(item.frontmatter.date, 100) : null,
+    citation,
+  };
+}
+
+function articleResult(articles: ArticleSummary[], total: number, nextCursor: string | null): ArticleListResult {
+  return { kind: "list_articles", articles, citations: articles.map((article) => article.citation), total, nextCursor };
 }
 
 export function createChatToolRegistry(sources: ChatToolDataSources): ToolRegistry {
@@ -628,15 +706,27 @@ export function createChatToolRegistry(sources: ChatToolDataSources): ToolRegist
       };
     },
     async list_articles(args, signal) {
-      const items = (await sources.listArticles(args.locale, signal)).slice(0, 50);
-      const articles = items.map((item) => ({
-        title: titleFor(item),
-        slug: item.slug,
-        summary: summaryFor(item),
-        date: typeof item.frontmatter.date === "string" ? item.frontmatter.date : null,
-        citation: { title: titleFor(item), url: canonicalSiteUrl(args.locale, "blog", item.slug) },
-      }));
-      return { kind: "list_articles", articles, citations: articles.map((article) => article.citation) };
+      const pagination = args as { locale: Locale; limit?: number; offset?: number; cursor?: string };
+      const items = [...await sources.listArticles(args.locale, signal)]
+        .sort((left, right) => left.slug < right.slug ? -1 : left.slug > right.slug ? 1 : 0);
+      const total = items.length;
+      const decodedCursor = pagination.cursor === undefined ? undefined : decodeArticleCursor(pagination.cursor);
+      const start = decodedCursor === undefined
+        ? (pagination.offset ?? 0)
+        : items.findIndex((item) => item.slug > decodedCursor!);
+      const boundedStart = start < 0 ? total : start;
+      const requested = items.slice(boundedStart, boundedStart + (pagination.limit ?? 50));
+      const articles: ArticleSummary[] = [];
+      for (const item of requested) {
+        const candidate = [...articles, compactArticle(item, args.locale)];
+        const hasMore = boundedStart + candidate.length < total;
+        const result = articleResult(candidate, total, hasMore ? encodeArticleCursor(candidate.at(-1)!.slug) : null);
+        if (utf8ByteLength(JSON.stringify(result)) > CHAT_TOOL_RESULT_BYTES.list_articles) break;
+        articles.push(candidate.at(-1)!);
+      }
+      if (requested.length > 0 && articles.length === 0) throw new ToolDispatchError("result_too_large");
+      const hasMore = boundedStart + articles.length < total;
+      return articleResult(articles, total, hasMore && articles.length ? encodeArticleCursor(articles.at(-1)!.slug) : null);
     },
     async get_contact_options(args, signal) {
       const options = await sources.getContactOptions(args.locale, signal);

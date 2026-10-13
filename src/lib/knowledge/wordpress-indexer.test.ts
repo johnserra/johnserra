@@ -45,7 +45,7 @@ test("replacement rows carry section, public URL, authority, locale, and config 
     authority: "project_page",
     section_path: ["Project"],
     indexing_config: "wordpress-indexing-v2",
-    chunking_config: "structure-aware-v1",
+    chunking_config: "structure-aware-v2",
     source_version: "2026-09-10T10:00:00.000Z",
     embedding_config: "gemini-embedding-2:768:v1",
   });

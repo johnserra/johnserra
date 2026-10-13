@@ -31,6 +31,7 @@ import {
   isScoredResponse,
   scoreAssessment,
 } from "@/lib/data-audit";
+import { browserInquiryAttribution, completionAnalyticsPayload } from "@/lib/inquiry-attribution";
 
 const STORAGE_KEY = ASSESSMENT_VERSION;
 const ASSESSMENT_STEPS = ["context", ...PILLARS, "flags"] as const;
@@ -53,13 +54,17 @@ type AnalyticsEvent =
 
 function trackAssessmentEvent(
   event: AnalyticsEvent,
-  parameters: Partial<Record<"pillar" | "maturity" | "cta_route", string>> = {},
+  parameters: Partial<Record<"pillar" | "maturity" | "cta_route" | "form_kind" | "landing_path_class" | "submission_path_class" | "page_location" | "page_referrer", string>> = {},
 ) {
   if (typeof window === "undefined") return;
   const analyticsWindow = window as Window & {
     gtag?: (command: "event", name: string, values: Record<string, string>) => void;
   };
-  analyticsWindow.gtag?.("event", event, parameters);
+  try {
+    analyticsWindow.gtag?.("event", event, parameters);
+  } catch {
+    // Measurement is best-effort and never changes the assessment flow.
+  }
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -304,6 +309,7 @@ function DataAuditAssessmentState({ hydrated }: { hydrated: boolean }) {
     }
     const form = event.currentTarget;
     const formData = new FormData(form);
+    const attribution = browserInquiryAttribution("data-audit", result.ctaRoute);
     setSubmissionState("submitting");
     try {
       const response = await fetch("/api/data-audit", {
@@ -318,11 +324,12 @@ function DataAuditAssessmentState({ hydrated }: { hydrated: boolean }) {
           locale,
           context,
           result: { ...result, answers, redFlags },
+          attribution,
         }),
       });
       if (!response.ok) throw new Error("submission_failed");
       setSubmissionState("idle");
-      trackAssessmentEvent("lead_submitted", { maturity: result.displayedMaturity });
+      trackAssessmentEvent("lead_submitted", { maturity: result.displayedMaturity, ...completionAnalyticsPayload(attribution) });
       setScreen("plan");
     } catch {
       setSubmissionState("error");

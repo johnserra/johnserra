@@ -52,7 +52,7 @@
     },
     "careerTalkLab": {
       "title": "CareerTalkLab",
-      "description": "Türk profesyoneller için hibrit bir LMS — yapay zeka destekli geri bildirim, ters yüz sınıf modeli, Next.js ve Supabase ile geliştirildi."
+      "description": "Mevcut bir İngilizce öğrenme LMS'i; veri ve yazılım kariyer öğrenimine yönelik daha geniş yön ise planlanmaktadır."
     }
   },
   "About": {
@@ -73,19 +73,6 @@
     "subtitle": "İş geliştirme, dijital dönüşüm ve veri odaklı problem çözme alanlarında vaka çalışmaları.",
     "backToPortfolio": "Tüm Projeler",
     "viewOnGithub": "GitHub'da Görüntüle"
-  },
-  "Recipes": {
-    "title": "Tarifler",
-    "metaTitle": "Tarifler — John Serra",
-    "metaDescription": "John Serra'nın mutfağından tarifler koleksiyonu.",
-    "subtitle": "Pişirdiğim şeyler. Çoğunlukla İtalyan, bazen değil.",
-    "backToRecipes": "Tüm Tarifler",
-    "cuisine": "Mutfak",
-    "serves": "Porsiyon",
-    "prep": "Hazırlık",
-    "cook": "Pişirme",
-    "total": "Toplam",
-    "servings": "{count} porsiyon"
   },
   "Contact": {
     "title": "İletişime Geçin",

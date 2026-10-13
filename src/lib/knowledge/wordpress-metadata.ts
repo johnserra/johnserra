@@ -2,7 +2,7 @@ import type { WordPressApiItem, WordPressContentType } from "@/lib/wordpress/typ
 import type { Locale } from "@/types";
 
 export const WORDPRESS_INDEXING_CONFIG_VERSION = "wordpress-indexing-v2";
-export const WORDPRESS_CHUNKING_CONFIG_VERSION = "structure-aware-v1";
+export const WORDPRESS_CHUNKING_CONFIG_VERSION = "structure-aware-v2";
 export const WORDPRESS_DOCUMENT_TYPE = "wordpress" as const;
 
 export type WordPressAuthority = "authored_post" | "project_page" | "site_page";

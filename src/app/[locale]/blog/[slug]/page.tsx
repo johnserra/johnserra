@@ -18,6 +18,8 @@ import { getBlogPostSchema } from "@/lib/schema";
 import { getBlogMetadata } from "@/lib/blog-metadata";
 import type { Metadata } from "next";
 import type { Locale } from "@/types";
+import { AIChatWidget } from "@/components/widgets/AIChatWidget";
+import { isChatEligibleArticle } from "@/lib/chat/public-boundaries";
 
 interface Props {
   params: Promise<{ locale: string; slug: string }>;
@@ -150,6 +152,13 @@ export default async function BlogPostPage({ params }: Props) {
         </div>
       </main>
       <Footer />
+      {isChatEligibleArticle({
+        categories: frontmatter.categories,
+        tags: frontmatter.tags,
+        slug,
+        title: frontmatter.title,
+        restricted: frontmatter.chatRestricted === true,
+      }) ? <AIChatWidget /> : null}
     </>
   );
 }

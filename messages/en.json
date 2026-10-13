@@ -52,7 +52,7 @@
     },
     "careerTalkLab": {
       "title": "CareerTalkLab",
-      "description": "A hybrid LMS for Turkish professionals learning English — AI-assisted feedback, flipped classroom model, built with Next.js and Supabase."
+      "description": "An existing English-learning LMS, with a wider data and software career-learning direction planned."
     }
   },
   "About": {
@@ -63,7 +63,7 @@
     "title": "Blog",
     "metaTitle": "Blog — John Serra",
     "metaDescription": "Personal and technical writing on data, operations, technology, and more.",
-    "subtitle": "Personal and technical writing — on data, operations, technology, food, and life.",
+    "subtitle": "Personal and technical writing on data, operations, technology, and learning.",
     "backToBlog": "Back to Blog"
   },
   "Portfolio": {
@@ -73,19 +73,6 @@
     "subtitle": "Case studies in business development, digital transformation, and data-driven problem solving.",
     "backToPortfolio": "All Projects",
     "viewOnGithub": "View on GitHub"
-  },
-  "Recipes": {
-    "title": "Recipes",
-    "metaTitle": "Recipes — John Serra",
-    "metaDescription": "A collection of recipes from John Serra's kitchen.",
-    "subtitle": "Things I cook. Mostly Italian, occasionally not.",
-    "backToRecipes": "All Recipes",
-    "cuisine": "Cuisine",
-    "serves": "Serves",
-    "prep": "Prep",
-    "cook": "Cook",
-    "total": "Total",
-    "servings": "{count} servings"
   },
   "Contact": {
     "title": "Get in Touch",

@@ -34,6 +34,23 @@ test("registered structured CV and public Markdown are in deterministic parity",
   assert.equal(new Set(document.sections.map((section) => section.id)).size, document.sections.length);
 });
 
+test("current Premium Parking role keeps its reviewed identity without a regional paragraph", async () => {
+  const document = await loadRegisteredCv();
+  const markdown = renderCvMarkdown(document);
+  const publicArtifact = await readFile(CV_PUBLIC_RELATIVE_PATH, "utf8");
+  const role = document.sections.find((section) => section.id === "experience-premium-parking-account-manager");
+  assert.ok(role);
+  assert.equal(role.title, "Account Manager — Premium Parking");
+  assert.equal(role.organization, "Premium Parking");
+  assert.deepEqual(role.dates, { kind: "interval", start: { value: "2022-11", precision: "month" }, end: null, ongoing: true, start_unknown: false, end_unknown: false });
+  assert.deepEqual(role.paragraphs, []);
+  assert.match(publicArtifact, /### Account Manager — Premium Parking/);
+  assert.match(publicArtifact, /November 2022–present/);
+  assert.doesNotMatch(publicArtifact, /Location: Rochester|Syracuse|Central New York|\bCNY\b/i);
+  assert.equal(publicArtifact, markdown);
+  assert.notEqual(cvApprovalDigest(document), "a8c652af5a1dd8ee2fb513c81548a9e4342fe8240f43b352832bc41b8fc2f013");
+});
+
 test("registered CV loading is independent of the runtime working directory", async () => {
   const originalDirectory = process.cwd();
   process.chdir("/tmp");
@@ -136,7 +153,7 @@ test("approval binds every canonical field even when the readable Markdown is un
   const approval = cvApprovalDigest(base);
   const markdownDigest = cvMarkdownSha256(renderCvMarkdown(base));
   const organizationOnly = clone(base);
-  organizationOnly.sections[1].organization = "Premium Parking (reviewed variant)";
+  organizationOnly.sections[1].organization = "Anonymous parking operator";
   assert.equal(cvMarkdownSha256(renderCvMarkdown(organizationOnly)), markdownDigest);
   assert.notEqual(cvApprovalDigest(organizationOnly), approval);
 
@@ -153,7 +170,7 @@ test("organization, role, section ID, date semantics, title, and paragraphs inva
   const base = await loadRegisteredCv();
   const approval = cvApprovalDigest(base);
   const mutations: Array<(document: typeof base) => void> = [
-    (document) => { document.sections[1].organization = "Premium Parking (reviewed variant)"; },
+    (document) => { document.sections[1].organization = "Anonymous parking operator"; },
     (document) => { document.sections[1].role = "Account Manager (reviewed variant)"; },
     (document) => { document.sections[1].id = "experience-premium-parking-account-manager-reviewed"; },
     (document) => { document.sections.find((section) => section.id === "project-business-development-automation")!.dates.start!.precision = "month"; },

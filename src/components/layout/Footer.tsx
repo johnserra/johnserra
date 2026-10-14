@@ -43,7 +43,17 @@ export async function Footer() {
           </div>
         </div>
       </div>
-      <div className="h-1.5 bg-brand" />
+      {/* ArsDigita double-bar footer bookend */}
+      <div
+        aria-hidden="true"
+        className="h-2 bg-nav md:bg-[linear-gradient(to_right,var(--color-nav-split)_0%,var(--color-nav-split)_50%,var(--color-nav)_50%,var(--color-nav)_100%)]"
+      >
+        <div className="max-w-7xl mx-auto h-full px-4 md:px-6 lg:px-8 hidden md:flex">
+          <div className="w-44 lg:w-52 shrink-0 bg-nav-split border-r border-white" />
+          <div className="flex-1 bg-nav" />
+        </div>
+      </div>
+      <div aria-hidden="true" className="h-2.5 border-t border-white bg-nav-band" />
     </footer>
   );
 }

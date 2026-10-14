@@ -82,7 +82,7 @@ export default async function ProjectCaseStudy({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Header alternateLocalePath={alternatePath} />
+      <Header alternateLocalePath={alternatePath} breadcrumbTitle={content.frontmatter.title} />
       <main className="min-h-screen bg-ground py-16 text-ink">
         <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
           {/* Back link */}

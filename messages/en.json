@@ -9,7 +9,10 @@
     "blog": "Blog",
     "portfolio": "Projects",
     "services": "Services",
-    "contact": "Contact"
+    "contact": "Contact",
+    "dataAudit": "Analytics Assessment",
+    "privacyPolicy": "Privacy Policy",
+    "tagline": "SMB Data Analytics · Systems & Operations · AI Engineering"
   },
   "Hero": {
     "headline": "Decades of Experience. A Modern, Data-Driven Approach.",

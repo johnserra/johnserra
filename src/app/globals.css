@@ -11,11 +11,12 @@
   --color-ink-soft: #222222;
   --color-muted: #545454;
   --color-faint: #545454;
-  --color-brand: #0099cc;
+  --color-brand: #0085c0;
   --color-nav: #666666;
-  --color-nav-band: #0085c0;
-  --color-accent: #007aa3;
-  --color-accent-dim: #006283;
+  --color-nav-split: #999999;
+  --color-nav-band: #0077ad;
+  --color-accent: #006b9e;
+  --color-accent-dim: #00527a;
   --color-on-accent: #ffffff;
   --color-good: #1a7f4b;
   --color-warn: #8a6500;

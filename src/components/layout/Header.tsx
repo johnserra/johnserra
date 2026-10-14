@@ -162,48 +162,42 @@ export function Header({
         </div>
       </div>
 
-      {/* Upper stripe: ArsDigita #999999 left split + 1px white vertical keyline + #666666 main navigation */}
+      {/* Upper stripe: ArsDigita #999999 left gutter + 1px white keyline aligned with logo/body + #666666 main navigation */}
       <nav
         aria-label="Primary"
-        className="bg-nav md:bg-[linear-gradient(to_right,var(--color-nav-split)_0%,var(--color-nav-split)_50%,var(--color-nav)_50%,var(--color-nav)_100%)]"
+        className="bg-[linear-gradient(to_right,var(--color-nav-split)_0%,var(--color-nav-split)_50%,var(--color-nav)_50%,var(--color-nav)_100%)]"
       >
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-stretch min-h-9">
-            <div
-              aria-hidden="true"
-              className="w-44 lg:w-52 shrink-0 bg-nav-split border-r border-white"
-            />
-            <div className="flex flex-1 items-stretch bg-nav pl-2">
-              {NAV_LINK_HREFS.map((link) => {
-                const active = isLinkActive(link.key, link.href);
-                return (
-                  <Link
-                    key={link.href}
-                    href={hrefFor(link.key, link.href)}
-                    aria-current={active ? "page" : undefined}
-                    className={cn(
-                      "flex items-center px-4 font-mono text-xs uppercase tracking-[0.1em] text-white no-underline transition-colors focus:text-white",
-                      active
-                        ? "bg-nav-split font-semibold border-x border-white/60"
-                        : "font-medium hover:bg-white/15"
-                    )}
-                  >
-                    {t(link.key)}
-                  </Link>
-                );
-              })}
-            </div>
+          <div className="hidden md:flex items-stretch h-8 bg-nav border-l border-white">
+            {NAV_LINK_HREFS.map((link) => {
+              const active = isLinkActive(link.key, link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={hrefFor(link.key, link.href)}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "flex items-center px-4 font-mono text-xs uppercase tracking-[0.1em] text-white no-underline transition-colors focus:text-white",
+                    active
+                      ? "bg-nav-split font-semibold border-r border-white/60 first:border-l-0 border-l"
+                      : "font-medium hover:bg-white/15"
+                  )}
+                >
+                  {t(link.key)}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Mobile Navigation */}
           <div
             className={cn(
-              "overflow-hidden transition-all duration-300 ease-in-out md:hidden",
-              mobileMenuOpen ? "max-h-72 py-3" : "max-h-0"
+              "bg-nav border-l border-white overflow-hidden transition-all duration-300 ease-in-out md:hidden",
+              mobileMenuOpen ? "max-h-72 py-3 px-2" : "h-8"
             )}
           >
-            <div className="flex flex-col gap-1">
+            <div className={cn("flex flex-col gap-1", !mobileMenuOpen && "hidden")}>
               {NAV_LINK_HREFS.map((link) => {
                 const active = isLinkActive(link.key, link.href);
                 return (
@@ -226,8 +220,8 @@ export function Header({
         </div>
       </nav>
 
-      {/* Lower stripe: 1px white separator + #0085C0 / --color-nav-band contextual breadcrumb bar */}
-      <div className="h-6 border-t border-white bg-nav-band text-white">
+      {/* Lower stripe: 1px white separator + #0085C0 / --color-nav-band contextual breadcrumb bar (same h-8 height) */}
+      <div className="h-8 border-t border-white bg-nav-band text-white">
         <div className="max-w-7xl mx-auto h-full px-4 md:px-6 lg:px-8 flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.08em] overflow-hidden whitespace-nowrap">
           {breadcrumbs.length === 0 ? (
             <span className="truncate text-white/95">{t("tagline")}</span>

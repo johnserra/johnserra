@@ -67,29 +67,6 @@ export function Header({
           ? servicesPath(locale)
           : href;
 
-  const isLinkActive = (key: string, href: string) => {
-    const resolved = hrefFor(key, href);
-    if (key === "home") return pathname === "/";
-    if (key === "portfolio") {
-      return (
-        pathname === "/projects" ||
-        pathname.startsWith("/projects/") ||
-        pathname === "/projeler" ||
-        pathname.startsWith("/projeler/")
-      );
-    }
-    if (key === "blog") {
-      return pathname === "/blog" || pathname.startsWith("/blog/");
-    }
-    if (key === "about") {
-      return pathname === "/about" || pathname === "/hakkimda";
-    }
-    if (key === "services") {
-      return pathname === "/services" || pathname === "/hizmetler";
-    }
-    return pathname === resolved || pathname.startsWith(`${resolved}/`);
-  };
-
   const breadcrumbs = (() => {
     if (!pathname || pathname === "/") return [];
     const segments = pathname.split("/").filter(Boolean);
@@ -170,24 +147,15 @@ export function Header({
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-stretch h-8 bg-nav border-l border-white">
-            {NAV_LINK_HREFS.map((link) => {
-              const active = isLinkActive(link.key, link.href);
-              return (
-                <Link
-                  key={link.href}
-                  href={hrefFor(link.key, link.href)}
-                  aria-current={active ? "page" : undefined}
-                  className={cn(
-                    "flex items-center px-4 font-mono text-xs uppercase tracking-[0.1em] text-white no-underline transition-colors focus:text-white",
-                    active
-                      ? "bg-nav-split font-semibold border-r border-white/60 first:border-l-0 border-l"
-                      : "font-medium hover:bg-white/15"
-                  )}
-                >
-                  {t(link.key)}
-                </Link>
-              );
-            })}
+            {NAV_LINK_HREFS.map((link) => (
+              <Link
+                key={link.href}
+                href={hrefFor(link.key, link.href)}
+                className="flex items-center px-4 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-white no-underline transition-colors hover:bg-white/15 focus:text-white"
+              >
+                {t(link.key)}
+              </Link>
+            ))}
           </div>
 
           {/* Mobile Navigation */}
@@ -198,23 +166,16 @@ export function Header({
             )}
           >
             <div className={cn("flex flex-col gap-1", !mobileMenuOpen && "hidden")}>
-              {NAV_LINK_HREFS.map((link) => {
-                const active = isLinkActive(link.key, link.href);
-                return (
-                  <Link
-                    key={link.href}
-                    href={hrefFor(link.key, link.href)}
-                    onClick={() => setMobileMenuOpen(false)}
-                    aria-current={active ? "page" : undefined}
-                    className={cn(
-                      "px-2.5 py-1.5 font-mono text-xs uppercase tracking-[0.1em] text-white no-underline focus:text-white",
-                      active ? "bg-nav-split font-semibold" : "font-medium"
-                    )}
-                  >
-                    {t(link.key)}
-                  </Link>
-                );
-              })}
+              {NAV_LINK_HREFS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={hrefFor(link.key, link.href)}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-2.5 py-1.5 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-white no-underline transition-colors hover:bg-white/15 focus:text-white"
+                >
+                  {t(link.key)}
+                </Link>
+              ))}
             </div>
           </div>
         </div>

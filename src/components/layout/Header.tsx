@@ -185,14 +185,14 @@ export function Header({
       <div className="h-8 border-t border-white bg-nav-band text-white">
         <div className="max-w-7xl mx-auto h-full px-4 md:px-6 lg:px-8 flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.08em] overflow-hidden whitespace-nowrap">
           {breadcrumbs.length === 0 ? (
-            <span className="truncate text-white/95">{t("tagline")}</span>
+            <span className="truncate text-white">{t("tagline")}</span>
           ) : (
             <nav aria-label="Breadcrumb" className="min-w-0 flex-1 overflow-hidden">
               <ol className="flex items-center gap-2 min-w-0 overflow-hidden">
                 <li className="shrink-0">
                   <Link
                     href="/"
-                    className="text-white/90 no-underline transition-colors hover:text-white hover:underline"
+                    className="text-white no-underline transition-colors hover:underline"
                   >
                     {t("home")}
                   </Link>
@@ -207,7 +207,7 @@ export function Header({
                         isLast ? "min-w-0 overflow-hidden" : "shrink-0"
                       )}
                     >
-                      <span aria-hidden="true" className="text-white/60">
+                      <span aria-hidden="true" className="text-white/75">
                         /
                       </span>
                       {isLast ? (
@@ -220,7 +220,7 @@ export function Header({
                       ) : (
                         <Link
                           href={crumb.href}
-                          className="text-white/90 no-underline transition-colors hover:text-white hover:underline"
+                          className="text-white no-underline transition-colors hover:underline"
                         >
                           {crumb.label}
                         </Link>

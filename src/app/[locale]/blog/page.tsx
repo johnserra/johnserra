@@ -145,13 +145,24 @@ export default async function BlogPage({ params, searchParams }: Props) {
                     {t("ctlBannerBody")}
                   </p>
                 </div>
-                <Link
-                  href={projectsPath(locale, "careertalklab")}
-                  className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-accent px-4 py-2.5 font-mono text-xs font-semibold uppercase tracking-wider text-on-accent hover:bg-accent-dim no-underline transition-colors"
-                >
-                  <span>{t("ctlBannerCta")}</span>
-                  <ArrowRight size={14} />
-                </Link>
+                <div className="flex shrink-0 flex-col gap-2.5">
+                  <Link
+                    href={projectsPath(locale, "careertalklab")}
+                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2.5 font-mono text-xs font-semibold uppercase tracking-wider text-on-accent hover:bg-accent-dim no-underline transition-colors"
+                  >
+                    <span>{t("ctlBannerCta")}</span>
+                    <ArrowRight size={14} />
+                  </Link>
+                  <a
+                    href={locale === "tr" ? "https://careertalklab.com/tr" : "https://careertalklab.com"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-accent/30 bg-ground px-4 py-2.5 font-mono text-xs font-semibold uppercase tracking-wider text-accent hover:bg-accent/10 no-underline transition-colors"
+                  >
+                    <span>{t("ctlBannerLiveCta")}</span>
+                    <ArrowRight size={14} />
+                  </a>
+                </div>
               </div>
             </div>
           )}

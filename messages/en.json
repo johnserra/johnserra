@@ -124,7 +124,8 @@
     "trackCtl": "CareerTalkLab & Building with AI",
     "ctlBannerTitle": "CareerTalkLab & AI Engineering Section",
     "ctlBannerBody": "All long-form essays on CareerTalkLab, Errorless Teaching (Prompt → Echo → Distractor → Transfer), and building with LLMs are published here.",
-    "ctlBannerCta": "Explore CareerTalkLab Case Study"
+    "ctlBannerCta": "Explore CareerTalkLab Case Study",
+    "ctlBannerLiveCta": "Visit CareerTalkLab.com"
   },
   "Portfolio": {
     "eyebrow": "Portfolio & Case Studies",

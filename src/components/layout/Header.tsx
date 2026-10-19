@@ -122,7 +122,7 @@ export function Header({
           >
             <Image src="/logo.png" alt="" width={32} height={32} priority />
             <span className="font-sans text-lg font-medium tracking-tight text-ink">
-              John <span className="font-serif text-accent">Serra</span>
+              John Serra
             </span>
           </Link>
 

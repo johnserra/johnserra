@@ -14,7 +14,7 @@ export async function Footer() {
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div>
             <p className="font-sans text-sm font-semibold tracking-wide text-ink">
-              John <span className="font-serif text-accent">Serra</span>
+              John Serra
             </p>
             <p className="font-sans text-xs text-muted mt-1">
               {t("tagline")}

@@ -17,7 +17,7 @@ export function BentoBox({
   return (
     <div
       className={cn(
-        "rounded-card p-6 transition-colors duration-200",
+        "rounded-xl p-6 md:p-8 shadow-sm transition-all duration-200",
         "col-span-1",
         span === 3 && "md:col-span-3 lg:col-span-3",
         span === 4 && "md:col-span-3 lg:col-span-4",
@@ -27,7 +27,7 @@ export function BentoBox({
         span === 12 && "md:col-span-6 lg:col-span-12",
         rowSpan === 2 && "row-span-2",
         variantClasses[variant],
-        "hover:border-line-strong",
+        "hover:border-accent/50",
         className
       )}
     >

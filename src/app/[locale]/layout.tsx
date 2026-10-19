@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Barlow_Condensed } from "next/font/google";
+import { Geist, Geist_Mono, Barlow_Condensed, Instrument_Serif } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -16,6 +16,12 @@ const geist = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin", "latin-ext"],
+});
+
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument-serif",
+  subsets: ["latin"],
+  weight: ["400"],
 });
 
 const barlowCondensed = Barlow_Condensed({
@@ -67,7 +73,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     <html lang={locale}>
       <body
-        className={`${geist.variable} ${geistMono.variable} ${barlowCondensed.variable} antialiased`}
+        className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable} ${barlowCondensed.variable} antialiased`}
       >
         <GoogleAnalytics />
         <InquiryAttributionTracker />

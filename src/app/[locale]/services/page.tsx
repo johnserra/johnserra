@@ -28,68 +28,81 @@ export default async function ServicesPage({ params }: Props) {
   ] as const;
 
   return (
-    <>
+    <div className="bg-ground text-ink">
       <Header alternateLocalePath={servicesPath(locale === "en" ? "tr" : "en")} />
-      <main className="bg-ground text-ink">
-        <section className="border-b border-hair">
-          <div className="mx-auto grid max-w-7xl gap-10 px-4 py-20 md:px-6 lg:grid-cols-[1.4fr_.6fr] lg:px-8 lg:py-28">
+      <main>
+        <section className="relative overflow-hidden border-b border-hair">
+          <div
+            className="pointer-events-none absolute inset-0 opacity-25"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 80% 20%, rgba(0, 133, 192, 0.14), transparent 55%), radial-gradient(circle at 15% 80%, rgba(34, 197, 94, 0.08), transparent 45%)",
+            }}
+            aria-hidden="true"
+          />
+          <div className="relative z-10 mx-auto grid max-w-6xl gap-10 px-4 py-16 md:px-6 lg:grid-cols-[1.35fr_.65fr] lg:py-24">
             <div>
-              <p className="mb-5 font-mono text-xs uppercase tracking-[0.16em] text-accent">{t("eyebrow")}</p>
-              <h1 className="max-w-4xl font-display text-5xl uppercase leading-[.95] tracking-tight sm:text-6xl lg:text-7xl">{t("title")}</h1>
-              <p className="mt-7 max-w-2xl text-lg leading-relaxed text-ink-soft">{t("intro")}</p>
-              <Link href="#inquiry" className="mt-8 inline-flex items-center gap-2 rounded-pill bg-accent px-7 py-3 font-medium text-on-accent transition-colors hover:bg-accent-dim">
+              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent/10 px-3.5 py-1">
+                <span className="h-2 w-2 rounded-full bg-[#22c55e]" />
+                <span className="font-mono text-xs font-medium uppercase tracking-wider text-accent">{t("eyebrow")}</span>
+              </div>
+              <h1 className="max-w-4xl font-serif text-4xl leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">{t("title")}</h1>
+              <p className="mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-muted">{t("intro")}</p>
+              <Link href="#inquiry" className="mt-8 inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3.5 font-medium text-on-accent shadow-sm transition-colors hover:bg-accent-dim no-underline">
                 {t("cta")} <ArrowRight size={18} />
               </Link>
             </div>
-            <div className="self-end rounded-card border border-hair bg-panel p-6">
-              <p className="font-mono text-xs uppercase tracking-[0.1em] text-muted">{t("fitLabel")}</p>
-              <p className="mt-3 text-xl leading-snug">{t("fit")}</p>
+            <div className="self-end rounded-xl border border-hair bg-panel p-6 md:p-8 shadow-sm">
+              <p className="font-mono text-xs uppercase tracking-[0.1em] text-accent font-semibold">{t("fitLabel")}</p>
+              <p className="mt-3 font-serif text-2xl leading-snug text-ink">{t("fit")}</p>
             </div>
           </div>
         </section>
 
-        <section className="border-b border-hair bg-ground-2">
-          <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 py-12 md:px-6 lg:grid-cols-[1fr_auto] lg:px-8">
+        <section className="border-b border-hair bg-ground-2/60">
+          <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 py-12 md:px-6 lg:grid-cols-[1fr_auto]">
             <div>
-              <p className="font-mono text-xs uppercase tracking-[0.16em] text-accent">{t("assessmentEyebrow")}</p>
-              <h2 className="mt-3 font-display text-3xl uppercase tracking-tight sm:text-4xl">{t("assessmentTitle")}</h2>
-              <p className="mt-3 max-w-3xl leading-relaxed text-ink-soft">{t("assessmentDescription")}</p>
+              <div className="inline-flex items-center rounded-full border border-accent/25 bg-accent/10 px-3 py-1 font-mono text-xs font-medium uppercase tracking-wider text-accent">{t("assessmentEyebrow")}</div>
+              <h2 className="mt-3 font-serif text-3xl tracking-tight sm:text-4xl">{t("assessmentTitle")}</h2>
+              <p className="mt-3 max-w-3xl leading-relaxed text-muted">{t("assessmentDescription")}</p>
             </div>
-            <Link href={dataAuditPath(locale)} className="inline-flex items-center justify-center gap-2 rounded-pill border border-accent px-6 py-3 font-medium text-accent transition-colors hover:bg-accent hover:text-on-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+            <Link href={dataAuditPath(locale)} className="inline-flex items-center justify-center gap-2 rounded-lg border border-accent bg-ground px-6 py-3.5 font-medium text-accent transition-colors hover:bg-accent hover:text-on-accent no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-accent">
               {t("assessmentButton")} <ArrowRight size={18} />
             </Link>
           </div>
         </section>
 
-        <section className="mx-auto max-w-7xl px-4 py-20 md:px-6 lg:px-8">
-          <div className="mb-10 max-w-2xl">
-            <p className="font-mono text-xs uppercase tracking-[0.16em] text-accent">{t("servicesEyebrow")}</p>
-            <h2 className="mt-4 font-display text-4xl uppercase tracking-tight sm:text-5xl">{t("servicesTitle")}</h2>
+        <section className="mx-auto max-w-6xl px-4 py-16 md:px-6 md:py-24">
+          <div className="mb-12 max-w-2xl">
+            <div className="inline-flex items-center rounded-full border border-accent/25 bg-accent/10 px-3 py-1 font-mono text-xs font-medium uppercase tracking-wider text-accent">{t("servicesEyebrow")}</div>
+            <h2 className="mt-4 font-serif text-3xl tracking-tight sm:text-4xl md:text-5xl">{t("servicesTitle")}</h2>
           </div>
-          <div className="grid gap-px overflow-hidden rounded-card border border-hair bg-hair md:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-2">
             {services.map(({ key, icon: Icon }, index) => (
-              <article key={key} className="bg-panel p-7 sm:p-9">
-                <div className="mb-8 flex items-center justify-between">
-                  <Icon size={28} className="text-accent" />
+              <article key={key} className="rounded-xl border border-hair bg-panel p-7 sm:p-8 shadow-sm transition-all hover:border-accent/50">
+                <div className="mb-6 flex items-center justify-between">
+                  <div className="rounded-lg bg-accent/10 p-2.5">
+                    <Icon size={24} className="text-accent" />
+                  </div>
                   <span className="font-mono text-xs text-faint">0{index + 1}</span>
                 </div>
-                <h3 className="text-xl font-medium">{t(`${key}.title`)}</h3>
-                <p className="mt-3 leading-relaxed text-ink-soft">{t(`${key}.description`)}</p>
-                <p className="mt-6 font-mono text-xs uppercase tracking-[0.1em] text-muted">{t(`${key}.deliverable`)}</p>
+                <h3 className="font-serif text-2xl text-ink">{t(`${key}.title`)}</h3>
+                <p className="mt-3 leading-relaxed text-muted">{t(`${key}.description`)}</p>
+                <p className="mt-6 pt-4 border-t border-hair/70 font-mono text-xs uppercase tracking-[0.1em] text-accent">{t(`${key}.deliverable`)}</p>
               </article>
             ))}
           </div>
         </section>
 
-        <section className="border-y border-hair bg-ground-2">
-          <div className="mx-auto max-w-7xl px-4 py-20 md:px-6 lg:px-8">
-            <p className="font-mono text-xs uppercase tracking-[0.16em] text-accent">{t("processEyebrow")}</p>
-            <div className="mt-8 grid gap-8 md:grid-cols-3">
+        <section className="border-y border-hair bg-ground-2/60">
+          <div className="mx-auto max-w-6xl px-4 py-16 md:px-6 md:py-20">
+            <div className="inline-flex items-center rounded-full border border-accent/25 bg-accent/10 px-3 py-1 font-mono text-xs font-medium uppercase tracking-wider text-accent">{t("processEyebrow")}</div>
+            <div className="mt-8 grid gap-6 md:grid-cols-3">
               {["discover", "build", "deliver"].map((step, index) => (
-                <div key={step}>
-                  <span className="font-mono text-xs text-faint">0{index + 1}</span>
-                  <h3 className="mt-3 text-xl font-medium">{t(`process.${step}.title`)}</h3>
-                  <p className="mt-2 leading-relaxed text-ink-soft">{t(`process.${step}.description`)}</p>
+                <div key={step} className="rounded-xl border border-hair bg-ground p-6 shadow-xs">
+                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-accent/15 font-mono text-xs font-bold text-accent">0{index + 1}</span>
+                  <h3 className="mt-4 font-serif text-2xl text-ink">{t(`process.${step}.title`)}</h3>
+                  <p className="mt-2 leading-relaxed text-muted text-sm sm:text-base">{t(`process.${step}.description`)}</p>
                 </div>
               ))}
             </div>
@@ -97,19 +110,19 @@ export default async function ServicesPage({ params }: Props) {
         </section>
 
         <section id="inquiry" className="scroll-mt-24">
-          <div className="mx-auto grid max-w-7xl gap-12 px-4 py-20 md:px-6 lg:grid-cols-[.75fr_1.25fr] lg:px-8 lg:py-24">
+          <div className="mx-auto grid max-w-6xl gap-12 px-4 py-16 md:px-6 lg:grid-cols-[.75fr_1.25fr] lg:py-24">
             <div>
-              <p className="font-mono text-xs uppercase tracking-[0.16em] text-accent">{t("inquiryEyebrow")}</p>
-              <h2 className="mt-4 font-display text-4xl uppercase tracking-tight sm:text-5xl">{t("inquiryTitle")}</h2>
-              <p className="mt-5 leading-relaxed text-ink-soft">{t("inquiryIntro")}</p>
+              <div className="inline-flex items-center rounded-full border border-accent/25 bg-accent/10 px-3 py-1 font-mono text-xs font-medium uppercase tracking-wider text-accent">{t("inquiryEyebrow")}</div>
+              <h2 className="mt-4 font-serif text-3xl tracking-tight sm:text-4xl">{t("inquiryTitle")}</h2>
+              <p className="mt-5 leading-relaxed text-muted">{t("inquiryIntro")}</p>
               <p className="mt-6 font-mono text-xs uppercase tracking-[0.1em] text-muted">{t("responseTime")}</p>
             </div>
-            <div className="rounded-card border border-hair bg-panel p-6 sm:p-8"><ServicesInquiryForm /></div>
+            <div className="rounded-xl border border-hair bg-panel p-6 sm:p-8 shadow-sm"><ServicesInquiryForm /></div>
           </div>
         </section>
       </main>
       <Footer />
       <AIChatWidget />
-    </>
+    </div>
   );
 }

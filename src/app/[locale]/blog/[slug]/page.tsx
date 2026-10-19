@@ -100,12 +100,12 @@ export default async function BlogPostPage({ params }: Props) {
           )}
 
           {/* Title */}
-          <h1 className="mb-3 text-4xl font-bold tracking-tight text-ink">
+          <h1 className="mb-3 font-serif text-4xl sm:text-5xl tracking-tight text-ink leading-tight">
             {frontmatter.title}
           </h1>
 
           {frontmatter.description && (
-            <p className="mb-4 text-xl leading-relaxed text-ink-soft">
+            <p className="mb-4 text-lg sm:text-xl leading-relaxed text-muted">
               {frontmatter.description}
             </p>
           )}
@@ -121,7 +121,7 @@ export default async function BlogPostPage({ params }: Props) {
           )}
 
           {frontmatter.coverImage && (
-            <div className="relative mb-10 aspect-[16/9] w-full overflow-hidden rounded-card border border-hair">
+            <div className="relative mb-10 aspect-[16/9] w-full overflow-hidden rounded-xl border border-hair shadow-sm">
               <Image
                 src={frontmatter.coverImage}
                 alt={frontmatter.coverImageAlt ?? frontmatter.title}

@@ -15,20 +15,60 @@
     "tagline": "Veri Analitiği · Sistemler ve Operasyonlar · Yapay Zeka Mühendisliği"
   },
   "Hero": {
+    "badge": "Veri Analitiği · Sistemler · Yapay Zeka Mühendisliği",
     "headline": "Onlarca Yıllık Deneyim. Modern, Veri Odaklı Bir Yaklaşım.",
     "headlineLine1": "Onlarca Yıllık Deneyim.",
     "headlineLine2": "Modern, Veri Odaklı Bir Yaklaşım.",
     "introduction": "Üretim, eğitim ve kentsel mobiliteyi kapsayan bir kariyer deneyimiyle, karmaşık zorlukları çözmede uzmanlaşıyorum. Odak noktam, sektör fark etmeksizin netlik bulmak ve ölçülebilir büyümeyi sağlamak için veriyi kullanmaktır.",
-    "ctaText": "Yapay Zeka Asistanımla Sohbet Edin"
+    "ctaText": "Yapay Zeka Asistanımla Sohbet Edin",
+    "secondaryCtaText": "5 Dakikalık Analitik Değerlendirmesi",
+    "stat1Value": "Grain First",
+    "stat1Label": "Tablo Birimi ve Metrik Netliği",
+    "stat2Value": "4 Sütun",
+    "stat2Label": "Metrik · Veri · Raporlama · Sahiplik",
+    "stat3Value": "YZ + Operasyon",
+    "stat3Label": "Üretim Sistemleri ve RAG",
+    "workbenchWindowTitle": "analitik-tezgahi — Canlı Önizleme",
+    "workbenchLiveBadge": "Etkileşimli",
+    "tab1Label": "01 · Grain First",
+    "tab2Label": "02 · Sağlık Denetimi",
+    "tab3Label": "03 · CareerTalkLab",
+    "tab1Title": "Saymaya Başlamadan Önce Bir Satırın Neyi Temsil Ettiğini Tanımlayın",
+    "tab1Body": "Birbiriyle çelişen toplamlar genellikle tabloların siparişleri, kalemleri ve ödemeleri aynı görünümde karıştırmasıyla başlar. Önce tablo birimini (grain) tanımlamak tüm metriklere güven kazandırır.",
+    "tab1Code": "Birim (Grain): Tamamlanan her completed_order_id için 1 satır (iadeler hariç)",
+    "tab1Cta": "Analitik Hizmetlerini İncele",
+    "tab2Title": "5 Dakikalık KOBİ Analitik Sağlık Değerlendirmesi",
+    "tab2Body": "İletişim bilgisi paylaşmadan önce Metrikler, Veri, Raporlama ve Sahiplik alanlarındaki 20 pratik ifadeyle ve 5 acil uyarı işaretiyle işletmenizi puanlayın.",
+    "tab2Code": "Çıktı: Anında 0–100 puan + ana darboğaz + 3 adımlı eylem planı",
+    "tab2Cta": "Ücretsiz Değerlendirmeyi Başlat",
+    "tab3Title": "CareerTalkLab: Hatasız Öğretim ve Akran Topluluğu",
+    "tab3Body": "4 aşamalı Hatasız Öğretim (İpucu → Tekrar → Çeldirici → Aktarım) ve haftalık B1–C1 teknoloji analizlerini veri ve yazılım kariyer becerileriyle birleştiren açık öğrenme ortamı.",
+    "tab3Code": "İskele: 01 İpucu (%100) → 02 Tekrar (%75) → 03 Çeldirici → 04 Aktarım",
+    "tab3Cta": "CareerTalkLab Yazılarını Oku"
   },
   "AboutTeaser": {
+    "eyebrow": "Operatör ve Kurucu Bakış Açısı",
     "heading": "Hakkımda",
+    "title": "Gerçek dünya operasyonları, disiplinli veri ve yapay zeka sistemleriyle buluşuyor.",
     "content": "Uygulamalı üretim uzmanlığı, eğitim liderliği ve veri analitiği becerilerinin benzersiz bir birleşimiyle her projeye kapsamlı bir bakış açısı getiriyorum. Yaklaşımım, onlarca yıllık gerçek dünya deneyimini modern teknolojik çözümlerle birleştirerek somut sonuçlar sunmaktır.",
-    "ctaText": "Hakkımda Daha Fazla Bilgi"
+    "ctaText": "Hakkımda Daha Fazla Bilgi",
+    "metaRoleLabel": "Odak Alanları",
+    "metaRoleValue": "KOBİ Analitiği · Grain First · YZ",
+    "metaMethodLabel": "Metodoloji",
+    "metaMethodValue": "Net Tanımlar ve Sahipli Eylem",
+    "metaCommunityLabel": "Topluluk Laboratuvarı",
+    "metaCommunityValue": "CareerTalkLab (A1–C1 + Veri)"
   },
   "BlogTeaser": {
+    "eyebrow": "Yazılar ve Saha Notları",
     "heading": "Blogdan",
-    "readMore": "Blogu oku"
+    "title": "KOBİ analitiği, Grain First ve CareerTalkLab üzerine pratik yazılar.",
+    "subtitle": "Dağınık tabloları güvenilir kararlara dönüştürme notları, yapay zeka mühendisliği ve dil pedagojisi yazıları.",
+    "readMore": "Tüm yazıları incele",
+    "readArticle": "Yazıyı oku",
+    "trackAll": "Tüm Yazılar",
+    "trackAnalytics": "KOBİ Analitiği ve Veri",
+    "trackCtl": "CareerTalkLab ve YZ"
   },
   "Features": {
     "patentedProcess": {
@@ -45,15 +85,23 @@
     }
   },
   "PortfolioProjects": {
+    "eyebrow": "Vaka Çalışmaları ve Üretim Sistemleri",
+    "sectionTitle": "Operasyonel netlik ve ölçülebilir sonuçlar için kurulan sistemler.",
+    "sectionSubtitle": "İş geliştirme otomasyonu, eğitimde dijital dönüşüm ve yapay zeka destekli kariyer öğrenimi üzerine seçilmiş vaka çalışmaları.",
+    "viewAll": "Tüm projeleri gör",
+    "exploreProject": "Vaka çalışmasını oku",
     "bdAutomation": {
+      "badge": "Python · YZ Pipeline",
       "title": "İş Geliştirme Otomasyon Paketi",
       "description": "Potansiyel müşteri araştırmasından yapay zeka destekli iletişime kadar çok kanallı iş geliştirmeyi otomatikleştiren modüler bir Python pipeline'ı."
     },
     "digitalTransformation": {
+      "badge": "Operasyon · EdTech",
       "title": "Krizde Dijital Dönüşüm",
       "description": "COVID-19 sırasında bir dil okulunun çevrimiçi eğitime tam geçişini yönetmek."
     },
     "careerTalkLab": {
+      "badge": "Next.js · Supabase · YZ",
       "title": "CareerTalkLab",
       "description": "Mevcut bir İngilizce öğrenme LMS'i; veri ve yazılım kariyer öğrenimine yönelik daha geniş yön ise planlanmaktadır."
     }
@@ -63,13 +111,23 @@
     "description": "Hesap Yöneticisi, iş geliştirme stratejisti ve üretim, eğitim ve kentsel mobilite alanlarında onlarca yıllık deneyime sahip veri odaklı problem çözücü."
   },
   "Blog": {
+    "eyebrow": "Yazılar ve Saha Notları",
     "title": "Blog",
     "metaTitle": "Blog — John Serra",
     "metaDescription": "Veri, operasyonlar, teknoloji ve daha fazlası hakkında kişisel ve teknik yazılar.",
-    "subtitle": "Kişisel ve teknik yazılar — veri, operasyonlar, teknoloji ve hayat üzerine.",
-    "backToBlog": "Bloga Dön"
+    "subtitle": "KOBİ analitiği, Grain First veri modelleme, operasyonlar ve yapay zeka ile CareerTalkLab geliştirme üzerine kişisel ve teknik yazılar.",
+    "backToBlog": "Bloga Dön",
+    "readArticle": "Yazıyı oku",
+    "sectionLabel": "Bölüme Göre İncele",
+    "trackAll": "Tüm Yazılar",
+    "trackAnalytics": "KOBİ Analitiği ve Veri",
+    "trackCtl": "CareerTalkLab ve YZ ile Üretim",
+    "ctlBannerTitle": "CareerTalkLab ve Yapay Zeka Mühendisliği Bölümü",
+    "ctlBannerBody": "CareerTalkLab, Hatasız Öğretim (İpucu → Tekrar → Çeldirici → Aktarım) ve LLM ile ürün geliştirme üzerine tüm uzun kapsamlı yazılar burada yayımlanmaktadır.",
+    "ctlBannerCta": "CareerTalkLab Vaka Çalışmasını İncele"
   },
   "Portfolio": {
+    "eyebrow": "Portföy ve Vaka Çalışmaları",
     "title": "Projeler",
     "metaTitle": "Projeler — John Serra",
     "metaDescription": "İş geliştirme, dijital dönüşüm ve veri odaklı problem çözme alanlarında vaka çalışmaları.",
@@ -350,7 +408,9 @@
   },
   "Footer": {
     "copyright": "Copyright",
-    "privacyPolicy": "Gizlilik Politikası"
+    "privacyPolicy": "Gizlilik Politikası",
+    "blog": "Blog",
+    "tagline": "Veri Analitiği · Grain First · Sistemler ve Yapay Zeka Mühendisliği"
   },
   "Common": {
     "toggleMenu": "Menüyü aç/kapat"

@@ -5,6 +5,8 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 interface ProjectBoxProps extends ProjectItem {
+  badge?: string;
+  ctaLabel?: string;
   className?: string;
   priority?: boolean;
 }
@@ -23,6 +25,8 @@ export function ProjectBox({
   description,
   link,
   image,
+  badge,
+  ctaLabel,
   span = 4,
   className,
   priority = false,
@@ -31,53 +35,63 @@ export function ProjectBox({
     <Link
       href={link}
       className={cn(
-        "group relative overflow-hidden rounded-card aspect-[4/3]",
-        "bg-panel border border-hair",
-        "transition-colors duration-200",
+        "group flex flex-col justify-between overflow-hidden rounded-xl",
+        "bg-panel border border-hair shadow-sm",
+        "transition-all duration-200 no-underline",
         "focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none",
-        "hover:border-line-strong",
+        "hover:border-accent/50 hover:shadow-md",
         "col-span-1",
-        span === 3 && "md:col-span-3 lg:col-span-3",
+        span === 3 && "md:col-span-3 lg:col-span-4",
         span === 4 && "md:col-span-3 lg:col-span-4",
-        span === 5 && "md:col-span-3 lg:col-span-5",
+        span === 5 && "md:col-span-3 lg:col-span-4",
         span === 6 && "md:col-span-6 lg:col-span-6",
         span === 8 && "md:col-span-6 lg:col-span-8",
         span === 12 && "md:col-span-6 lg:col-span-12",
         className
       )}
     >
-      {/* Placeholder for image */}
-      <div className="absolute inset-0 bg-panel-2" />
+      <div>
+        {/* Image Header with 3px Brand Divider */}
+        <div className="relative aspect-[16/10] w-full overflow-hidden border-b-[3px] border-brand bg-panel-2">
+          {image && (
+            <Image
+              src={image}
+              alt={title}
+              fill
+              sizes={PROJECT_IMAGE_SIZES[span] ?? PROJECT_IMAGE_SIZES[4]}
+              loading={priority ? "eager" : "lazy"}
+              fetchPriority={priority ? "high" : undefined}
+              className="object-cover transition-transform duration-300 group-hover:scale-105 group-focus-visible:scale-105"
+            />
+          )}
+        </div>
 
-      {image && (
-        <Image
-          src={image}
-          alt={title}
-          fill
-          sizes={PROJECT_IMAGE_SIZES[span] ?? PROJECT_IMAGE_SIZES[4]}
-          loading={priority ? "eager" : "lazy"}
-          fetchPriority={priority ? "high" : undefined}
-          className="object-cover transition-transform duration-300 group-hover:scale-105 group-focus-visible:scale-105"
-        />
-      )}
+        {/* Editorial Body */}
+        <div className="p-6">
+          {badge && (
+            <div className="mb-3">
+              <span className="inline-flex items-center rounded-full border border-accent/25 bg-accent/10 px-2.5 py-0.5 font-mono text-[11px] font-medium uppercase tracking-wider text-accent">
+                {badge}
+              </span>
+            </div>
+          )}
 
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-ground/90 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-300 flex items-end p-6">
-        <div>
-          <h2 className="text-xl font-medium tracking-tight text-accent transition-colors group-hover:text-accent-dim group-focus-visible:text-accent-dim mb-2 flex items-center gap-2">
+          <h3 className="font-serif text-2xl text-ink group-hover:text-accent transition-colors leading-snug mb-2">
             {title}
-            <ArrowUpRight size={20} />
-          </h2>
-          <p className="text-sm text-ink-soft">{description}</p>
+          </h3>
+
+          <p className="text-sm text-muted leading-relaxed">
+            {description}
+          </p>
         </div>
       </div>
 
-      {/* Title visible by default (on bottom) */}
-      <div className="absolute bottom-0 left-0 right-0 border-t-[3px] border-brand bg-ground px-6 py-4 group-hover:opacity-0 group-focus-visible:opacity-0 transition-opacity">
-        <span aria-hidden="true" className="text-lg font-medium tracking-[-0.01em] text-accent">
-          {title}
-        </span>
-      </div>
+      {ctaLabel && (
+        <div className="px-6 pb-6 pt-3 border-t border-hair/70 flex items-center justify-between font-mono text-xs font-semibold uppercase tracking-wider text-accent group-hover:text-accent-dim">
+          <span>{ctaLabel}</span>
+          <ArrowUpRight size={16} />
+        </div>
+      )}
     </Link>
   );
 }

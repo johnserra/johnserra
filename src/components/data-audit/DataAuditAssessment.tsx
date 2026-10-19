@@ -178,7 +178,7 @@ function RadioQuestion<T extends string>({
   label: (key: string) => string;
 }) {
   return (
-    <fieldset className="rounded-card border border-hair bg-ground-2 p-5">
+    <fieldset className="rounded-xl border border-hair bg-ground-2/60 p-5">
       <legend className="px-1 text-base font-medium leading-relaxed text-ink">{legend}</legend>
       <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
         {options.map((option) => (
@@ -338,7 +338,7 @@ function DataAuditAssessmentState({ hydrated }: { hydrated: boolean }) {
   }
 
   const shell = (children: React.ReactNode) => (
-    <section className="mx-auto max-w-5xl px-4 py-12 md:px-6 md:py-16 lg:px-8 lg:py-20">
+    <section className="mx-auto max-w-6xl px-4 py-12 md:px-6 md:py-16 lg:py-20">
       {children}
       <p className="sr-only" aria-live="polite">{error || (submissionState === "error" ? t("lead.error") : "")}</p>
     </section>
@@ -348,9 +348,12 @@ function DataAuditAssessmentState({ hydrated }: { hydrated: boolean }) {
     return shell(
       <div className="grid items-end gap-10 lg:grid-cols-[1.35fr_.65fr]">
         <div>
-          <p className="font-mono text-xs uppercase tracking-[0.16em] text-accent">{t("landing.eyebrow")}</p>
-          <h1 className="mt-5 max-w-4xl font-display text-5xl uppercase leading-[.95] tracking-tight sm:text-6xl lg:text-7xl">{t("landing.headline")}</h1>
-          <p className="mt-7 max-w-2xl text-lg leading-relaxed text-ink-soft">{t("landing.intro")}</p>
+          <div className="inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent/10 px-3.5 py-1">
+            <span className="h-2 w-2 rounded-full bg-[#22c55e]" />
+            <span className="font-mono text-xs font-medium uppercase tracking-wider text-accent">{t("landing.eyebrow")}</span>
+          </div>
+          <h1 className="mt-5 max-w-4xl font-serif text-4xl leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">{t("landing.headline")}</h1>
+          <p className="mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-muted">{t("landing.intro")}</p>
           <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3 font-mono text-xs uppercase tracking-[0.08em] text-muted">
             <span className="flex items-center gap-2"><Checkmark className="text-good" size={18} />{t("landing.duration")}</span>
             <span className="flex items-center gap-2"><Checkmark className="text-good" size={18} />{t("landing.ungated")}</span>
@@ -359,9 +362,9 @@ function DataAuditAssessmentState({ hydrated }: { hydrated: boolean }) {
             {t("landing.start")} <ArrowRight size={18} />
           </Button>
         </div>
-        <aside className="rounded-card border border-hair bg-panel p-6">
-          <p className="font-mono text-xs uppercase tracking-[0.1em] text-muted">{t("landing.privacyLabel")}</p>
-          <p className="mt-3 leading-relaxed text-ink-soft">{t("landing.privacy")}</p>
+        <aside className="rounded-xl border border-hair bg-panel p-6 md:p-8 shadow-sm">
+          <p className="font-mono text-xs uppercase tracking-[0.1em] text-accent font-semibold">{t("landing.privacyLabel")}</p>
+          <p className="mt-3 leading-relaxed text-muted">{t("landing.privacy")}</p>
         </aside>
       </div>,
     );
@@ -372,8 +375,8 @@ function DataAuditAssessmentState({ hydrated }: { hydrated: boolean }) {
       <div className="mx-auto max-w-3xl">
         <Progress step="context" label={t} />
         <fieldset>
-          <legend className="font-display text-4xl uppercase tracking-tight sm:text-5xl">{t("context.title")}</legend>
-          <p className="mt-4 leading-relaxed text-ink-soft">{t("context.intro")}</p>
+          <legend className="font-serif text-3xl tracking-tight sm:text-4xl">{t("context.title")}</legend>
+          <p className="mt-4 leading-relaxed text-muted">{t("context.intro")}</p>
           <div className="mt-8 grid gap-6 sm:grid-cols-2">
             {([
               ["role", ROLES],
@@ -411,8 +414,8 @@ function DataAuditAssessmentState({ hydrated }: { hydrated: boolean }) {
     return shell(
       <div className="mx-auto max-w-4xl">
         <Progress step={pillar} label={t} />
-        <h1 className="font-display text-4xl uppercase tracking-tight sm:text-5xl">{t(`pillars.${pillar}.title`)}</h1>
-        <p className="mt-4 max-w-2xl leading-relaxed text-ink-soft">{t(`pillars.${pillar}.intro`)}</p>
+        <h1 className="font-serif text-3xl tracking-tight sm:text-4xl">{t(`pillars.${pillar}.title`)}</h1>
+        <p className="mt-4 max-w-2xl leading-relaxed text-muted">{t(`pillars.${pillar}.intro`)}</p>
         <div className="mt-8 space-y-5">
           {questions.map((question) => (
             <RadioQuestion
@@ -439,8 +442,8 @@ function DataAuditAssessmentState({ hydrated }: { hydrated: boolean }) {
     return shell(
       <div className="mx-auto max-w-4xl">
         <Progress step="flags" label={t} />
-        <h1 className="font-display text-4xl uppercase tracking-tight sm:text-5xl">{t("flags.title")}</h1>
-        <p className="mt-4 max-w-2xl leading-relaxed text-ink-soft">{t("flags.intro")}</p>
+        <h1 className="font-serif text-3xl tracking-tight sm:text-4xl">{t("flags.title")}</h1>
+        <p className="mt-4 max-w-2xl leading-relaxed text-muted">{t("flags.intro")}</p>
         <div className="mt-8 space-y-5">
           {FLAG_IDS.map((id) => (
             <RadioQuestion
@@ -476,47 +479,47 @@ function DataAuditAssessmentState({ hydrated }: { hydrated: boolean }) {
     return shell(
       <div>
         <Button variant="ghost" className="mb-7 gap-2" onClick={goBack}><ArrowLeft size={18} />{t("buttons.back")}</Button>
-        <p className="font-mono text-xs uppercase tracking-[0.16em] text-accent">{t("results.eyebrow")}</p>
-        <h1 className="mt-4 font-display text-5xl uppercase tracking-tight sm:text-6xl">{t("results.title")}</h1>
+        <div className="inline-flex items-center rounded-full border border-accent/25 bg-accent/10 px-3 py-1 font-mono text-xs font-medium uppercase tracking-wider text-accent">{t("results.eyebrow")}</div>
+        <h1 className="mt-4 font-serif text-4xl tracking-tight sm:text-5xl">{t("results.title")}</h1>
         <div className="mt-8 grid gap-5 lg:grid-cols-[.75fr_1.25fr]">
-          <div className="rounded-card border border-hair bg-panel p-7">
+          <div className="rounded-xl border border-hair bg-panel p-7 shadow-sm">
             <p className="font-mono text-xs uppercase tracking-[0.1em] text-muted">{t("results.scoreLabel")}</p>
-            <p className="mt-2 font-display text-7xl text-accent">{result.overallScore}<span className="text-3xl text-muted">/100</span></p>
+            <p className="mt-2 font-serif text-6xl sm:text-7xl text-accent">{result.overallScore}<span className="text-3xl text-muted">/100</span></p>
             <p className="mt-5 text-xl font-medium">{t(`maturity.${result.displayedMaturity}`)}</p>
-            <p className="mt-2 text-sm leading-relaxed text-ink-soft">{t(`profiles.${result.profile}`)}</p>
+            <p className="mt-2 text-sm leading-relaxed text-muted">{t(`profiles.${result.profile}`)}</p>
           </div>
-          <div className="rounded-card border border-hair bg-ground-2 p-7">
-            <p className="font-mono text-xs uppercase tracking-[0.1em] text-muted">
+          <div className="rounded-xl border border-hair bg-ground p-7 shadow-sm">
+            <p className="font-mono text-xs uppercase tracking-[0.1em] text-accent font-semibold">
               {t(result.opportunityKind === "growth_opportunity" ? "results.growthOpportunityLabel" : "results.barrierLabel")}
             </p>
-            <h2 className="mt-3 text-2xl font-medium">{t(`barriers.${result.barrierPillar}`)}</h2>
-            <p className="mt-3 leading-relaxed text-ink-soft">{t(`barrierDescriptions.${result.barrierPillar}`)}</p>
+            <h2 className="mt-3 font-serif text-2xl sm:text-3xl">{t(`barriers.${result.barrierPillar}`)}</h2>
+            <p className="mt-3 leading-relaxed text-muted">{t(`barrierDescriptions.${result.barrierPillar}`)}</p>
           </div>
         </div>
         {result.triggeredFlagIds.length > 0 && (
           <InlineNotification kind="warning" title={t("results.warningTitle")} subtitle={t("results.warningBody")} />
         )}
         <section className="mt-10" aria-labelledby="pillar-scores-title">
-          <h2 id="pillar-scores-title" className="font-display text-3xl uppercase tracking-tight">{t("results.pillarsTitle")}</h2>
-          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <h2 id="pillar-scores-title" className="font-serif text-3xl tracking-tight">{t("results.pillarsTitle")}</h2>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {PILLARS.map((pillar) => (
-              <div key={pillar} className="rounded-card border border-hair bg-panel p-5">
+              <div key={pillar} className="rounded-xl border border-hair bg-panel p-5 shadow-xs">
                 <p className="font-mono text-xs uppercase tracking-[0.08em] text-muted">{t(`pillars.${pillar}.title`)}</p>
-                <p className="mt-3 text-3xl font-medium">{Math.round(result.pillarScores[pillar])}</p>
+                <p className="mt-3 font-mono text-3xl font-semibold text-ink">{Math.round(result.pillarScores[pillar])}</p>
               </div>
             ))}
           </div>
         </section>
-        <section className="mt-10 rounded-card border border-accent/30 bg-accent/5 p-6 sm:p-8">
-          <p className="font-mono text-xs uppercase tracking-[0.1em] text-accent">{t("results.firstRecommendation")}</p>
-          <h2 className="mt-3 text-2xl font-medium">{t(`actions.${result.firstRecommendation}.title`)}</h2>
-          <p className="mt-3 max-w-3xl leading-relaxed text-ink-soft">{t(`actions.${result.firstRecommendation}.whatToDo`)}</p>
+        <section className="mt-10 rounded-xl border border-accent/30 bg-accent/5 p-6 sm:p-8">
+          <p className="font-mono text-xs uppercase tracking-[0.1em] text-accent font-semibold">{t("results.firstRecommendation")}</p>
+          <h2 className="mt-3 font-serif text-2xl sm:text-3xl">{t(`actions.${result.firstRecommendation}.title`)}</h2>
+          <p className="mt-3 max-w-3xl leading-relaxed text-muted">{t(`actions.${result.firstRecommendation}.whatToDo`)}</p>
         </section>
         <p className="mt-8 max-w-3xl text-sm leading-relaxed text-muted">{t("results.disclaimer")}</p>
-        <section className="mt-10 grid items-center gap-6 rounded-card border border-hair bg-panel p-6 sm:p-8 lg:grid-cols-[1fr_auto]">
+        <section className="mt-10 grid items-center gap-6 rounded-xl border border-hair bg-panel p-6 sm:p-8 shadow-sm lg:grid-cols-[1fr_auto]">
           <div>
-            <h2 className="text-2xl font-medium">{t("results.unlockTitle")}</h2>
-            <p className="mt-2 leading-relaxed text-ink-soft">{t("results.unlockBody")}</p>
+            <h2 className="font-serif text-2xl sm:text-3xl">{t("results.unlockTitle")}</h2>
+            <p className="mt-2 leading-relaxed text-muted">{t("results.unlockBody")}</p>
           </div>
           <div className="flex flex-wrap gap-3 lg:justify-end">
             <Button onClick={() => setScreen("lead")} className="gap-2">{t("results.unlockButton")}<ArrowRight size={18} /></Button>
@@ -533,16 +536,16 @@ function DataAuditAssessmentState({ hydrated }: { hydrated: boolean }) {
           <ArrowLeft size={18} />{t("lead.continueWithoutPlan")}
         </button>
         <p className="font-mono text-xs uppercase tracking-[0.16em] text-accent">{result.overallScore}/100 · {t(`maturity.${result.displayedMaturity}`)}</p>
-        <h1 className="mt-4 font-display text-5xl uppercase tracking-tight">{t("lead.title")}</h1>
-        <p className="mt-4 max-w-2xl leading-relaxed text-ink-soft">{t("lead.intro")}</p>
-        <form onSubmit={submitLead} className="mt-8 rounded-card border border-hair bg-panel p-6 sm:p-8">
+        <h1 className="mt-4 font-serif text-4xl tracking-tight sm:text-5xl">{t("lead.title")}</h1>
+        <p className="mt-4 max-w-2xl leading-relaxed text-muted">{t("lead.intro")}</p>
+        <form onSubmit={submitLead} className="mt-8 rounded-xl border border-hair bg-panel p-6 sm:p-8 shadow-sm">
           <div className="grid gap-5 sm:grid-cols-2">
             <TextInput id="audit-first-name" name="firstName" label={t("lead.firstName")} required maxLength={80} autoComplete="given-name" />
             <TextInput id="audit-email" name="email" label={t("lead.email")} type="email" required maxLength={254} autoComplete="email" />
             <TextInput id="audit-company" name="company" label={t("lead.company")} required maxLength={120} autoComplete="organization" />
             <TextInput id="audit-website" name="website" label={t("lead.website")} type="url" maxLength={240} placeholder={t("lead.websitePlaceholder")} autoComplete="url" />
           </div>
-          <label className="mt-6 flex items-start gap-3 text-sm leading-relaxed text-ink-soft">
+          <label className="mt-6 flex items-start gap-3 text-sm leading-relaxed text-muted">
             <input name="consent" type="checkbox" required className="mt-1 h-4 w-4 shrink-0 accent-[var(--color-accent)] focus-visible:ring-2 focus-visible:ring-accent" />
             <span>{t("lead.consent")}</span>
           </label>
@@ -561,38 +564,38 @@ function DataAuditAssessmentState({ hydrated }: { hydrated: boolean }) {
 
   return shell(
     <div>
-      <p className="font-mono text-xs uppercase tracking-[0.16em] text-accent">{t("plan.eyebrow")}</p>
-      <h1 className="mt-4 max-w-4xl font-display text-5xl uppercase tracking-tight sm:text-6xl">{t("plan.title")}</h1>
-      <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-soft">{t("plan.intro")}</p>
-      <div className="mt-10 grid gap-5 lg:grid-cols-3">
+      <div className="inline-flex items-center rounded-full border border-accent/25 bg-accent/10 px-3 py-1 font-mono text-xs font-medium uppercase tracking-wider text-accent">{t("plan.eyebrow")}</div>
+      <h1 className="mt-4 max-w-4xl font-serif text-4xl tracking-tight sm:text-5xl">{t("plan.title")}</h1>
+      <p className="mt-5 max-w-2xl text-base sm:text-lg leading-relaxed text-muted">{t("plan.intro")}</p>
+      <div className="mt-10 grid gap-6 lg:grid-cols-3">
         {result.actionIds.map((actionId, index) => (
-          <article key={actionId} className="rounded-card border border-hair bg-panel p-6">
-            <span className="font-mono text-xs text-accent">0{index + 1}</span>
-            <h2 className="mt-4 text-xl font-medium">{t(`actions.${actionId}.title`)}</h2>
+          <article key={actionId} className="rounded-xl border border-hair bg-panel p-6 shadow-sm">
+            <span className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-accent/15 font-mono text-xs font-bold text-accent">0{index + 1}</span>
+            <h2 className="mt-4 font-serif text-2xl">{t(`actions.${actionId}.title`)}</h2>
             <dl className="mt-6 space-y-5 text-sm leading-relaxed">
-              <div><dt className="font-mono text-xs uppercase tracking-[0.08em] text-muted">{t("plan.why")}</dt><dd className="mt-2 text-ink-soft">{t(`actions.${actionId}.why`)}</dd></div>
-              <div><dt className="font-mono text-xs uppercase tracking-[0.08em] text-muted">{t("plan.do")}</dt><dd className="mt-2 text-ink-soft">{t(`actions.${actionId}.whatToDo`)}</dd></div>
-              <div><dt className="font-mono text-xs uppercase tracking-[0.08em] text-muted">{t("plan.verify")}</dt><dd className="mt-2 text-ink-soft">{t(`actions.${actionId}.verify`)}</dd></div>
+              <div><dt className="font-mono text-xs uppercase tracking-[0.08em] text-accent font-semibold">{t("plan.why")}</dt><dd className="mt-2 text-muted">{t(`actions.${actionId}.why`)}</dd></div>
+              <div><dt className="font-mono text-xs uppercase tracking-[0.08em] text-accent font-semibold">{t("plan.do")}</dt><dd className="mt-2 text-muted">{t(`actions.${actionId}.whatToDo`)}</dd></div>
+              <div><dt className="font-mono text-xs uppercase tracking-[0.08em] text-accent font-semibold">{t("plan.verify")}</dt><dd className="mt-2 text-muted">{t(`actions.${actionId}.verify`)}</dd></div>
             </dl>
           </article>
         ))}
       </div>
-      <section className="mt-10 rounded-card border border-accent/30 bg-accent/5 p-6 sm:p-8">
-        <p className="font-mono text-xs uppercase tracking-[0.1em] text-accent">{t("plan.ctaTitle")}</p>
-        <h2 className="mt-3 text-2xl font-medium">{t(`plan.cta.${result.ctaRoute}.title`)}</h2>
-        <p className="mt-3 max-w-3xl leading-relaxed text-ink-soft">{t(`plan.cta.${result.ctaRoute}.description`)}</p>
+      <section className="mt-10 rounded-xl border border-accent/30 bg-accent/5 p-6 sm:p-8">
+        <p className="font-mono text-xs uppercase tracking-[0.1em] text-accent font-semibold">{t("plan.ctaTitle")}</p>
+        <h2 className="mt-3 font-serif text-2xl sm:text-3xl">{t(`plan.cta.${result.ctaRoute}.title`)}</h2>
+        <p className="mt-3 max-w-3xl leading-relaxed text-muted">{t(`plan.cta.${result.ctaRoute}.description`)}</p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
             href={dataAuditCtaPath(result.ctaRoute, locale)}
             onClick={() => trackAssessmentEvent("primary_cta_clicked", { cta_route: result.ctaRoute })}
-            className="inline-flex items-center gap-2 rounded-pill bg-accent px-6 py-3 font-medium text-on-accent transition-colors hover:bg-accent-dim focus:outline-none focus-visible:ring-2 focus-visible:ring-accent motion-reduce:transition-none"
+            className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3 font-medium text-on-accent transition-colors hover:bg-accent-dim no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-accent motion-reduce:transition-none"
           >
             {t(`plan.cta.${result.ctaRoute}.button`)} <ArrowRight size={18} />
           </Link>
           <a
             href="mailto:john@serra.us"
             onClick={() => trackAssessmentEvent("secondary_cta_clicked", { cta_route: result.ctaRoute })}
-            className="inline-flex items-center rounded-pill border border-line px-6 py-3 font-medium text-accent transition-colors hover:border-line-strong hover:text-accent-dim focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:text-accent-dim motion-reduce:transition-none"
+            className="inline-flex items-center rounded-lg border border-line bg-ground px-6 py-3 font-medium text-accent transition-colors hover:border-line-strong hover:text-accent-dim no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:text-accent-dim motion-reduce:transition-none"
           >
             {t("plan.secondaryCta")}
           </a>

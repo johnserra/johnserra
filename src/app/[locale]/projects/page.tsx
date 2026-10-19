@@ -30,15 +30,18 @@ export default async function ProjectsPage({ params }: Props) {
   const projects = await getAllSiteContent("projects", locale as Locale);
 
   return (
-    <>
+    <div className="bg-ground text-ink">
       <Header />
-      <main className="min-h-screen bg-ground py-16 text-ink">
-        <div className="max-w-5xl mx-auto px-4 md:px-6 lg:px-8">
-          <div className="mb-12">
-            <h1 className="mb-4 font-display text-4xl uppercase tracking-tight text-ink">
+      <main className="min-h-screen py-14 md:py-20">
+        <div className="max-w-6xl mx-auto px-4 md:px-6">
+          <div className="mb-12 max-w-3xl">
+            <div className="inline-flex items-center rounded-full border border-accent/25 bg-accent/10 px-3 py-1 mb-3 font-mono text-xs font-medium uppercase tracking-wider text-accent">
+              {t("eyebrow")}
+            </div>
+            <h1 className="mb-3 font-serif text-4xl sm:text-5xl tracking-tight text-ink leading-tight">
               {t("title")}
             </h1>
-            <p className="text-lg text-ink-soft">
+            <p className="text-base md:text-lg text-muted leading-relaxed">
               {t("subtitle")}
             </p>
           </div>
@@ -48,7 +51,7 @@ export default async function ProjectsPage({ params }: Props) {
               <Link
                 key={project.slug}
                 href={projectsPath(locale, project.slug)}
-                className="group block rounded-card border border-hair bg-panel p-8 transition-colors hover:border-line-strong"
+                className="group block rounded-xl border border-hair bg-panel p-8 shadow-sm transition-all hover:border-accent/50 hover:shadow-md no-underline"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex flex-wrap gap-2">
@@ -63,10 +66,10 @@ export default async function ProjectsPage({ params }: Props) {
                     className="shrink-0 text-accent transition-colors group-hover:text-accent-dim group-focus-visible:text-accent-dim"
                   />
                 </div>
-                <h2 className="mb-3 text-xl font-bold text-accent transition-colors group-hover:text-accent-dim group-focus-visible:text-accent-dim">
+                <h2 className="mb-3 font-serif text-2xl sm:text-3xl text-ink transition-colors group-hover:text-accent group-focus-visible:text-accent leading-snug">
                   {project.frontmatter.title}
                 </h2>
-                <p className="leading-relaxed text-ink-soft">
+                <p className="leading-relaxed text-muted">
                   {project.frontmatter.description}
                 </p>
               </Link>
@@ -75,6 +78,6 @@ export default async function ProjectsPage({ params }: Props) {
         </div>
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

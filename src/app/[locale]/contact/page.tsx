@@ -40,15 +40,15 @@ export default async function ContactPage({ params }: Props) {
   ];
 
   return (
-    <>
+    <div className="bg-ground text-ink">
       <Header />
-      <main className="min-h-screen bg-ground py-16 text-ink">
-        <div className="max-w-2xl mx-auto px-4 md:px-6 lg:px-8">
+      <main className="min-h-screen py-14 md:py-20">
+        <div className="max-w-2xl mx-auto px-4 md:px-6">
           <div className="mb-12">
-            <h1 className="mb-4 font-display text-4xl uppercase tracking-tight text-ink">
+            <h1 className="mb-3 font-serif text-4xl sm:text-5xl tracking-tight text-ink leading-tight">
               {t("title")}
             </h1>
-            <p className="text-lg leading-relaxed text-ink-soft">
+            <p className="text-base md:text-lg leading-relaxed text-muted">
               {t("subtitle")}
             </p>
           </div>
@@ -61,22 +61,22 @@ export default async function ContactPage({ params }: Props) {
                 href={href}
                 target={href.startsWith("http") ? "_blank" : undefined}
                 rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
-                className="group flex flex-1 items-center gap-4 rounded-card border border-hair bg-panel p-6 transition-colors hover:border-line-strong"
+                className="group flex flex-1 items-center gap-4 rounded-xl border border-hair bg-panel p-6 shadow-sm transition-all hover:border-accent/50 hover:shadow-md no-underline"
               >
-                <div className="rounded-card bg-ground-3 p-3 transition-colors group-hover:bg-accent/10">
+                <div className="rounded-lg bg-accent/10 p-3 transition-colors group-hover:bg-accent/15">
                   <Icon size={20} className="text-accent transition-colors group-hover:text-accent-dim group-focus-visible:text-accent-dim" />
                 </div>
                 <div>
-                  <p className="font-mono text-xs uppercase tracking-[0.1em] text-accent transition-colors group-hover:text-accent-dim group-focus-visible:text-accent-dim">{label}</p>
-                  <p className="text-sm text-ink-soft">{description}</p>
+                  <p className="font-mono text-xs uppercase tracking-[0.1em] font-semibold text-accent transition-colors group-hover:text-accent-dim group-focus-visible:text-accent-dim">{label}</p>
+                  <p className="text-sm text-muted">{description}</p>
                 </div>
               </a>
             ))}
           </div>
 
           {/* Contact form */}
-          <div className="rounded-card border border-hair bg-panel p-8">
-            <h2 className="mb-6 font-mono text-xs uppercase tracking-[0.1em] text-muted">
+          <div className="rounded-xl border border-hair bg-panel p-6 sm:p-8 shadow-sm">
+            <h2 className="mb-6 font-mono text-xs uppercase tracking-[0.1em] text-accent font-semibold">
               {t("sendMessage")}
             </h2>
             <ContactForm />
@@ -84,6 +84,6 @@ export default async function ContactPage({ params }: Props) {
         </div>
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

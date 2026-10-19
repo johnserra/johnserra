@@ -9,30 +9,43 @@ export async function Footer() {
   const t = await getTranslations("Footer");
 
   return (
-    <footer className="w-full border-t border-hair bg-ground font-sans">
-      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          {/* Social Links */}
-          <div className="flex items-center gap-6">
-            <a
-              href="https://linkedin.com/in/johnserra"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-accent transition-colors hover:text-accent-dim"
-              aria-label="LinkedIn"
-            >
-              <LogoLinkedin size={20} />
-            </a>
-            <a
-              href="mailto:john@serra.us"
-              className="text-accent transition-colors hover:text-accent-dim"
-              aria-label="Email"
-            >
-              <Email size={20} />
-            </a>
+    <footer className="w-full border-t border-hair bg-ground text-ink font-sans">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 py-8">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div>
+            <p className="font-sans text-sm font-semibold tracking-wide text-ink">
+              John Serra
+            </p>
+            <p className="font-sans text-xs text-muted mt-1">
+              {t("tagline")}
+            </p>
           </div>
 
-          <div className="flex items-center gap-6 font-mono text-xs text-faint">
+          <div className="flex flex-wrap items-center gap-6 font-mono text-xs text-faint">
+            <div className="flex items-center gap-4">
+              <a
+                href="https://linkedin.com/in/johnserra"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent transition-colors hover:text-accent-dim"
+                aria-label="LinkedIn"
+              >
+                <LogoLinkedin size={18} />
+              </a>
+              <a
+                href="mailto:john@serra.us"
+                className="text-accent transition-colors hover:text-accent-dim"
+                aria-label="Email"
+              >
+                <Email size={18} />
+              </a>
+            </div>
+            <Link
+              href={`${locale === "tr" ? "/tr" : ""}/blog`}
+              className="text-accent transition-colors hover:underline"
+            >
+              {t("blog")}
+            </Link>
             <Link
               href={`${locale === "tr" ? "/tr" : ""}${privacyPolicyPath(locale)}`}
               className="text-accent transition-colors hover:underline"
@@ -44,14 +57,7 @@ export async function Footer() {
         </div>
       </div>
       {/* ArsDigita double-bar footer bookend */}
-      <div
-        aria-hidden="true"
-        className="h-2.5 bg-[linear-gradient(to_right,var(--color-nav-split)_0%,var(--color-nav-split)_50%,var(--color-nav)_50%,var(--color-nav)_100%)]"
-      >
-        <div className="max-w-7xl mx-auto h-full px-4 md:px-6 lg:px-8">
-          <div className="h-full bg-nav border-l border-white" />
-        </div>
-      </div>
+      <div aria-hidden="true" className="h-2.5 w-full bg-nav" />
       <div aria-hidden="true" className="h-2.5 border-t border-white bg-nav-band" />
     </footer>
   );

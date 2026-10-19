@@ -4,9 +4,9 @@
 @theme {
   --color-ground: #ffffff;
   --color-ground-2: #f7f7f7;
-  --color-ground-3: #f7f7f7;
-  --color-panel: #ffffff;
-  --color-panel-2: #f2f2f2;
+  --color-ground-3: #e8e8e8;
+  --color-panel: #f7f7f7;
+  --color-panel-2: #eeeeee;
   --color-ink: #222222;
   --color-ink-soft: #222222;
   --color-muted: #545454;
@@ -25,7 +25,7 @@
   --color-hair: #cccccc;
   --color-line: #cccccc;
   --color-line-strong: #545454;
-  --radius-card: 8px;
+  --radius-card: 12px;
   --radius-field: 6px;
   --radius-pill: 99px;
 }
@@ -33,7 +33,8 @@
 @theme inline {
   --font-sans: var(--font-geist), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), monospace;
-  --font-display: var(--font-barlow-condensed), "Arial Narrow", sans-serif;
+  --font-serif: var(--font-instrument-serif), Georgia, serif;
+  --font-display: var(--font-instrument-serif), Georgia, serif;
 }
 
 :root {
@@ -41,8 +42,8 @@
   --foreground: #222222;
   --spacing-bento-gap: 1.5rem;
   --spacing-bento-gap-mobile: 1.5rem;
-  --radius-bento: 8px;
-  --radius-bento-mobile: 8px;
+  --radius-bento: 12px;
+  --radius-bento-mobile: 12px;
 }
 
 body {

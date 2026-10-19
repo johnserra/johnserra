@@ -112,19 +112,28 @@ export function Header({
   })();
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-ground">
-      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-        <div className="flex items-center justify-between py-3">
+    <header className="sticky top-0 z-50 w-full bg-ground text-ink">
+      {/* Row 1: Masthead */}
+      <div className="max-w-6xl mx-auto px-4 md:px-6">
+        <div className="flex items-center justify-between py-2.5">
           <Link
             href="/"
-            className="flex items-center gap-3.5 text-xl font-medium text-ink no-underline"
+            className="flex items-center gap-3 no-underline"
           >
-            <Image src="/logo.png" alt="" width={48} height={48} priority />
-            John Serra
+            <Image src="/logo.png" alt="" width={32} height={32} priority />
+            <span className="font-sans text-lg font-medium tracking-tight text-ink">
+              John <span className="font-serif text-accent">Serra</span>
+            </span>
           </Link>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3 sm:gap-4">
             <LanguageSwitcher alternateLocalePath={alternateLocalePath} />
+            <Link
+              href={dataAuditPath(locale)}
+              className="hidden sm:inline-flex items-center bg-accent text-on-accent hover:bg-accent-dim px-3.5 py-1.5 rounded-[6px] font-mono text-xs uppercase tracking-[0.08em] transition-colors no-underline"
+            >
+              {t("dataAudit")}
+            </Link>
             <div className="md:hidden">
               <IconButton
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -139,19 +148,16 @@ export function Header({
         </div>
       </div>
 
-      {/* Upper stripe: ArsDigita #999999 left gutter + 1px white keyline aligned with logo/body + #666666 main navigation */}
-      <nav
-        aria-label="Primary"
-        className="bg-[linear-gradient(to_right,var(--color-nav-split)_0%,var(--color-nav-split)_50%,var(--color-nav)_50%,var(--color-nav)_100%)]"
-      >
-        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+      {/* Row 2: Full-width dark gray (#666666 / bg-nav) navigation bar, narrower h-6 */}
+      <nav aria-label="Primary" className="w-full bg-nav">
+        <div className="max-w-6xl mx-auto px-4 md:px-6">
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-stretch h-8 bg-nav border-l border-white">
+          <div className="hidden md:flex items-stretch h-6">
             {NAV_LINK_HREFS.map((link) => (
               <Link
                 key={link.href}
                 href={hrefFor(link.key, link.href)}
-                className="flex items-center px-4 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-white no-underline transition-colors hover:bg-white/15 focus:text-white"
+                className="flex items-center px-3.5 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-white no-underline transition-colors hover:bg-white/15 focus:text-white"
               >
                 {t(link.key)}
               </Link>
@@ -161,8 +167,8 @@ export function Header({
           {/* Mobile Navigation */}
           <div
             className={cn(
-              "bg-nav border-l border-white overflow-hidden transition-all duration-300 ease-in-out md:hidden",
-              mobileMenuOpen ? "max-h-72 py-3 px-2" : "h-8"
+              "bg-nav overflow-hidden transition-all duration-300 ease-in-out md:hidden",
+              mobileMenuOpen ? "max-h-80 py-2.5 px-2" : "h-6"
             )}
           >
             <div className={cn("flex flex-col gap-1", !mobileMenuOpen && "hidden")}>
@@ -176,14 +182,30 @@ export function Header({
                   {t(link.key)}
                 </Link>
               ))}
+              <div className="mt-2 pt-2 border-t border-white/20 flex items-center justify-between px-2.5">
+                <Link
+                  href="/contact"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="font-mono text-[11px] uppercase tracking-[0.08em] text-white no-underline hover:underline"
+                >
+                  {t("contact")}
+                </Link>
+                <Link
+                  href={dataAuditPath(locale)}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="bg-nav-band text-white px-3 py-1 rounded-[4px] font-mono text-[11px] uppercase tracking-[0.08em] no-underline"
+                >
+                  {t("dataAudit")}
+                </Link>
+              </div>
             </div>
           </div>
         </div>
       </nav>
 
-      {/* Lower stripe: 1px white separator + #0085C0 / --color-nav-band contextual breadcrumb bar (same h-8 height) */}
-      <div className="h-8 border-t border-white bg-nav-band text-white">
-        <div className="max-w-7xl mx-auto h-full px-4 md:px-6 lg:px-8 flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.08em] overflow-hidden whitespace-nowrap">
+      {/* Row 3: 1px white separator + #0085C0 / --color-nav-band contextual bar, narrower h-6 */}
+      <div className="h-6 border-t border-white bg-nav-band text-white">
+        <div className="max-w-6xl mx-auto h-full px-4 md:px-6 flex items-center justify-between gap-4 font-mono text-[11px] uppercase tracking-[0.08em] overflow-hidden whitespace-nowrap">
           {breadcrumbs.length === 0 ? (
             <span className="truncate text-white">{t("tagline")}</span>
           ) : (

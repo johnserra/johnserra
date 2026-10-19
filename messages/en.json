@@ -15,20 +15,60 @@
     "tagline": "Data Analytics · Systems & Operations · AI Engineering"
   },
   "Hero": {
+    "badge": "Data Analytics · Systems · AI Engineering",
     "headline": "Decades of Experience. A Modern, Data-Driven Approach.",
     "headlineLine1": "Decades of Experience.",
     "headlineLine2": "A Modern, Data-Driven Approach.",
     "introduction": "Leveraging a career that spans manufacturing, education, and urban mobility, I specialize in solving complex challenges. My focus is on using data to find clarity and drive measurable growth, regardless of the industry.",
-    "ctaText": "Chat with my AI Assistant"
+    "ctaText": "Chat with my AI Assistant",
+    "secondaryCtaText": "5-Min Analytics Assessment",
+    "stat1Value": "Grain First",
+    "stat1Label": "Table & Metric Clarity",
+    "stat2Value": "4 Pillars",
+    "stat2Label": "Metrics · Data · Reporting · Ownership",
+    "stat3Value": "AI + Ops",
+    "stat3Label": "Production Systems & RAG",
+    "workbenchWindowTitle": "analytics-workbench — Live Preview",
+    "workbenchLiveBadge": "Interactive",
+    "tab1Label": "01 · Grain First",
+    "tab2Label": "02 · Health Audit",
+    "tab3Label": "03 · CareerTalkLab",
+    "tab1Title": "Define What One Row Represents Before Counting",
+    "tab1Body": "Conflicting totals usually start when spreadsheets mix orders, line items, and payments in the same view. Declaring the table grain first restores trust in every downstream metric.",
+    "tab1Code": "Grain: 1 row per completed_order_id (net of refunds, UTC close)",
+    "tab1Cta": "Explore Analytics Services",
+    "tab2Title": "5-Minute SMB Analytics Health Assessment",
+    "tab2Body": "Score your business across 20 practical statements in Metrics, Data, Reporting, and Ownership—plus 5 urgent warning signs—before sharing any contact details.",
+    "tab2Code": "Output: Ungated 0–100 score + primary bottleneck + 3-step action plan",
+    "tab2Cta": "Take the Free Assessment",
+    "tab3Title": "CareerTalkLab: Errorless Teaching & Peer Community",
+    "tab3Body": "An open learning environment pairing 4-stage Errorless Teaching (Prompt → Echo → Distractor → Transfer) and weekly B1–C1 tech briefings with data and software career skills.",
+    "tab3Code": "Scaffold: 01 Prompt (100%) → 02 Echo (75%) → 03 Distractor → 04 Transfer",
+    "tab3Cta": "Read CareerTalkLab Essays"
   },
   "AboutTeaser": {
+    "eyebrow": "Operator & Builder Perspective",
     "heading": "About Me",
+    "title": "Real-world operations meet disciplined data and AI systems.",
     "content": "With a unique blend of hands-on manufacturing expertise, educational leadership, and data analytics skills, I bring a comprehensive perspective to every project. My approach combines decades of real-world experience with modern technological solutions to deliver tangible results.",
-    "ctaText": "Learn More About Me"
+    "ctaText": "Learn More About Me",
+    "metaRoleLabel": "Focus Areas",
+    "metaRoleValue": "SMB Analytics · Grain First · AI",
+    "metaMethodLabel": "Methodology",
+    "metaMethodValue": "Clear Definitions & Owned Action",
+    "metaCommunityLabel": "Community Lab",
+    "metaCommunityValue": "CareerTalkLab (A1–C1 + Data)"
   },
   "BlogTeaser": {
+    "eyebrow": "Writing & Field Notes",
     "heading": "From the Blog",
-    "readMore": "Read the blog"
+    "title": "Practical essays on small-business analytics, Grain First, and building CareerTalkLab.",
+    "subtitle": "Field notes on turning messy spreadsheets into reliable decisions, alongside essays on AI engineering and language pedagogy.",
+    "readMore": "Browse all articles",
+    "readArticle": "Read article",
+    "trackAll": "All Writing",
+    "trackAnalytics": "Small-Business Analytics & Data",
+    "trackCtl": "CareerTalkLab & AI"
   },
   "Features": {
     "patentedProcess": {
@@ -45,15 +85,23 @@
     }
   },
   "PortfolioProjects": {
+    "eyebrow": "Case Studies & Production Systems",
+    "sectionTitle": "Systems built for operational clarity and measurable outcomes.",
+    "sectionSubtitle": "Selected case studies across business development automation, educational transformation, and AI-assisted career learning.",
+    "viewAll": "View all projects",
+    "exploreProject": "Read case study",
     "bdAutomation": {
+      "badge": "Python · AI Pipeline",
       "title": "BD Automation Suite",
       "description": "A modular Python pipeline that automates multi-stream business development, from prospect research to AI-drafted outreach."
     },
     "digitalTransformation": {
+      "badge": "Operations · EdTech",
       "title": "Digital Transformation in Crisis",
       "description": "Leading a language school's complete pivot to online learning during COVID-19."
     },
     "careerTalkLab": {
+      "badge": "Next.js · Supabase · AI",
       "title": "CareerTalkLab",
       "description": "An existing English-learning LMS, with a wider data and software career-learning direction planned."
     }
@@ -63,13 +111,23 @@
     "description": "Account Manager, business development strategist, and data-driven problem solver with decades of experience across manufacturing, education, and urban mobility."
   },
   "Blog": {
+    "eyebrow": "Writing & Field Notes",
     "title": "Blog",
     "metaTitle": "Blog — John Serra",
     "metaDescription": "Personal and technical writing on data, operations, technology, and more.",
-    "subtitle": "Personal and technical writing on data, operations, technology, and learning.",
-    "backToBlog": "Back to Blog"
+    "subtitle": "Personal and technical writing on small-business analytics, Grain First data modeling, operations, and building CareerTalkLab with AI.",
+    "backToBlog": "Back to Blog",
+    "readArticle": "Read article",
+    "sectionLabel": "Browse by Section",
+    "trackAll": "All Writing",
+    "trackAnalytics": "Small-Business Analytics & Data",
+    "trackCtl": "CareerTalkLab & Building with AI",
+    "ctlBannerTitle": "CareerTalkLab & AI Engineering Section",
+    "ctlBannerBody": "All long-form essays on CareerTalkLab, Errorless Teaching (Prompt → Echo → Distractor → Transfer), and building with LLMs are published here.",
+    "ctlBannerCta": "Explore CareerTalkLab Case Study"
   },
   "Portfolio": {
+    "eyebrow": "Portfolio & Case Studies",
     "title": "Projects",
     "metaTitle": "Projects — John Serra",
     "metaDescription": "Case studies in business development, digital transformation, and data-driven problem solving.",
@@ -366,7 +424,9 @@
   },
   "Footer": {
     "copyright": "Copyright",
-    "privacyPolicy": "Privacy Policy"
+    "privacyPolicy": "Privacy Policy",
+    "blog": "Blog",
+    "tagline": "Data Analytics · Grain First · Systems & AI Engineering"
   },
   "Common": {
     "toggleMenu": "Toggle menu"

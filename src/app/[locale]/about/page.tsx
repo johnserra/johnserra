@@ -35,9 +35,9 @@ export default async function AboutPage({ params }: Props) {
   return (
     <>
       <Header alternateLocalePath={aboutPath(locale === "en" ? "tr" : "en")} />
-      <main className="min-h-screen bg-ground py-16 text-ink">
-        <div className="max-w-3xl mx-auto px-4 md:px-6 lg:px-8">
-          <ProseLayout className="prose-h1:font-display prose-h1:uppercase prose-h1:tracking-tight prose-h1:text-ink prose-h2:font-display prose-h2:text-3xl prose-h2:uppercase prose-h2:tracking-tight prose-h2:text-ink">
+      <main className="min-h-screen bg-ground py-14 md:py-20 text-ink">
+        <div className="max-w-3xl mx-auto px-4 md:px-6">
+          <ProseLayout className="prose-h1:font-serif prose-h1:font-normal prose-h1:text-4xl sm:prose-h1:text-5xl prose-h1:tracking-tight prose-h1:text-ink prose-h2:font-serif prose-h2:font-normal prose-h2:text-3xl prose-h2:tracking-tight prose-h2:text-ink">
             {content.format === "html" ? (
               <WordPressContent html={content.content} />
             ) : (

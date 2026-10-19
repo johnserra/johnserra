@@ -106,16 +106,16 @@ export default async function ProjectCaseStudy({ params }: Props) {
           )}
 
           {/* Title */}
-          <h1 className="mb-4 text-4xl font-bold tracking-tight text-ink">
+          <h1 className="mb-4 font-serif text-4xl sm:text-5xl tracking-tight text-ink leading-tight">
             {content.frontmatter.title}
           </h1>
           {content.frontmatter.description && (
-            <p className="mb-6 text-xl leading-relaxed text-ink-soft">
+            <p className="mb-6 text-lg sm:text-xl leading-relaxed text-muted">
               {content.frontmatter.description}
             </p>
           )}
           {content.frontmatter.coverImage && (
-            <div className="relative mb-10 aspect-[16/9] w-full overflow-hidden rounded-card border border-hair">
+            <div className="relative mb-10 aspect-[16/9] w-full overflow-hidden rounded-xl border border-hair shadow-sm">
               <Image
                 src={content.frontmatter.coverImage}
                 alt={content.frontmatter.coverImageAlt ?? content.frontmatter.title}

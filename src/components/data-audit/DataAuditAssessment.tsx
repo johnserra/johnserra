@@ -113,6 +113,9 @@ function readSavedSession(): {
     }
 
     const savedScreen = typeof parsed.screen === "string" ? parsed.screen : "context";
+    if (savedScreen === "landing") {
+      return { screen: "landing", context, answers, redFlags };
+    }
     const validScreen = (["context", ...PILLARS, "flags", "results"] as string[]).includes(savedScreen)
       ? savedScreen as Exclude<Screen, "landing" | "plan" | "lead">
       : "context";

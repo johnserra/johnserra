@@ -212,17 +212,17 @@
     }
   },
   "DataAudit": {
-    "metaTitle": "SMB Analytics Health Assessment — John Serra",
-    "metaDescription": "A free five-minute assessment for small businesses to score analytics maturity, identify the biggest barrier, and get a practical action plan.",
+    "metaTitle": "SMB Analytics Self-Assessment — John Serra",
+    "metaDescription": "Assess your metrics, data, reporting, and ownership practices. Get a score out of 100 and a suggested next step before sharing contact details.",
     "landing": {
-      "eyebrow": "SMB Analytics Health Assessment",
+      "eyebrow": "SMB Analytics Self-Assessment",
       "headline": "Can you trust the numbers running your business?",
-      "intro": "Find out whether your metrics, data, reporting, and ownership practices are strong enough to support confident decisions.",
+      "intro": "Review how your business manages metrics, data, reporting, and ownership. Based on your answers, get a score out of 100 and a suggested next step before sharing contact details.",
       "duration": "About five minutes",
-      "ungated": "Top-line result before contact details",
-      "start": "Start the assessment",
-      "privacyLabel": "What you will not be asked for",
-      "privacy": "Do not share source exports, credentials, customer data, or other sensitive information. This assessment only asks about your business context and working practices."
+      "ungated": "See your score and next step before sharing contact details",
+      "start": "Start the self-assessment",
+      "privacyLabel": "Before you start",
+      "privacy": "This is a directional self-assessment based on your answers, not an independent audit. It asks about your business and working practices. You can choose “Prefer not to say” for annual revenue. Do not share spreadsheets, credentials, customer records, or other sensitive information."
     },
     "progress": {
       "label": "Assessment step {current} of {total}",

@@ -7,6 +7,7 @@ import { getSiteContentBySlug } from "@/lib/site-content";
 import { aboutPath } from "@/lib/routes";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { AIChatWidget } from "@/components/widgets/AIChatWidget";
 import { ProseLayout } from "@/components/ui/ProseLayout";
 import { Callout } from "@/components/ui/Callout";
 import { WordPressContent } from "@/components/ui/WordPressContent";
@@ -56,6 +57,7 @@ export default async function AboutPage({ params }: Props) {
         </div>
       </main>
       <Footer />
+      <AIChatWidget />
     </>
   );
 }

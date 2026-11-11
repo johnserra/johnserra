@@ -52,3 +52,18 @@ alter table public.career_context enable row level security;
 -- the reviewed CV schema, atomic replacement, and separately named filtered
 -- retrieval without changing the four-argument RPC. Its contract-version RPC
 -- proves SQL availability only; it does not identify the deployed app version.
+
+
+-- 4. Newsletter / Article Notification Subscribers ------------
+create table if not exists public.newsletter_subscribers (
+  id           bigint generated always as identity primary key,
+  email        text        not null unique,
+  locale       text        not null default 'en',
+  topic        text        not null default 'analytics',
+  source_path  text,
+  created_at   timestamptz not null default now()
+);
+
+-- Only the service role can read/write newsletter subscribers.
+alter table public.newsletter_subscribers enable row level security;
+

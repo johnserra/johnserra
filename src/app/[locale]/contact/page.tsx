@@ -1,5 +1,6 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { AIChatWidget } from "@/components/widgets/AIChatWidget";
 import { ContactForm } from "@/components/ui/ContactForm";
 import { LogoLinkedin, Email } from "@carbon/icons-react";
 import { setRequestLocale, getTranslations } from "next-intl/server";
@@ -84,6 +85,7 @@ export default async function ContactPage({ params }: Props) {
         </div>
       </main>
       <Footer />
+      <AIChatWidget />
     </div>
   );
 }

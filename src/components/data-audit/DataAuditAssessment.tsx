@@ -226,7 +226,18 @@ function DataAuditAssessmentState({ hydrated }: { hydrated: boolean }) {
   const [error, setError] = useState("");
   const [submissionState, setSubmissionState] = useState<"idle" | "submitting" | "error">("idle");
   const trackedScreens = useRef(new Set<string>());
+  const stepHeadingRef = useRef<HTMLElement | null>(null);
+  const previousScreenRef = useRef<Screen>(screen);
   const result = useMemo(() => scoreAssessment(answers, redFlags), [answers, redFlags]);
+
+  useEffect(() => {
+    if (previousScreenRef.current !== screen) {
+      previousScreenRef.current = screen;
+      requestAnimationFrame(() => {
+        stepHeadingRef.current?.focus();
+      });
+    }
+  }, [screen]);
 
   useEffect(() => {
     if (!hydrated || screen === "lead" || screen === "plan") return;
@@ -355,7 +366,7 @@ function DataAuditAssessmentState({ hydrated }: { hydrated: boolean }) {
             <span className="h-2 w-2 rounded-full bg-[#22c55e]" />
             <span className="font-mono text-xs font-medium uppercase tracking-wider text-accent">{t("landing.eyebrow")}</span>
           </div>
-          <h1 className="mt-5 max-w-4xl font-serif text-4xl leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">{t("landing.headline")}</h1>
+          <h1 ref={(node) => { stepHeadingRef.current = node; }} tabIndex={-1} className="mt-5 max-w-4xl font-serif text-4xl leading-[1.1] tracking-tight text-balance focus:outline-none sm:text-5xl lg:text-6xl">{t("landing.headline")}</h1>
           <p className="mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-muted">{t("landing.intro")}</p>
           <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3 font-mono text-xs uppercase tracking-[0.08em] text-muted">
             <span className="flex items-center gap-2"><Checkmark className="text-good" size={18} />{t("landing.duration")}</span>
@@ -378,7 +389,7 @@ function DataAuditAssessmentState({ hydrated }: { hydrated: boolean }) {
       <div className="mx-auto max-w-3xl">
         <Progress step="context" label={t} />
         <fieldset>
-          <legend className="font-serif text-3xl tracking-tight sm:text-4xl">{t("context.title")}</legend>
+          <legend ref={(node) => { stepHeadingRef.current = node; }} tabIndex={-1} className="font-serif text-3xl tracking-tight text-balance focus:outline-none sm:text-4xl">{t("context.title")}</legend>
           <p className="mt-4 leading-relaxed text-muted">{t("context.intro")}</p>
           <div className="mt-8 grid gap-6 sm:grid-cols-2">
             {([
@@ -417,7 +428,7 @@ function DataAuditAssessmentState({ hydrated }: { hydrated: boolean }) {
     return shell(
       <div className="mx-auto max-w-4xl">
         <Progress step={pillar} label={t} />
-        <h1 className="font-serif text-3xl tracking-tight sm:text-4xl">{t(`pillars.${pillar}.title`)}</h1>
+        <h1 ref={(node) => { stepHeadingRef.current = node; }} tabIndex={-1} className="font-serif text-3xl tracking-tight text-balance focus:outline-none sm:text-4xl">{t(`pillars.${pillar}.title`)}</h1>
         <p className="mt-4 max-w-2xl leading-relaxed text-muted">{t(`pillars.${pillar}.intro`)}</p>
         <div className="mt-8 space-y-5">
           {questions.map((question) => (
@@ -445,7 +456,7 @@ function DataAuditAssessmentState({ hydrated }: { hydrated: boolean }) {
     return shell(
       <div className="mx-auto max-w-4xl">
         <Progress step="flags" label={t} />
-        <h1 className="font-serif text-3xl tracking-tight sm:text-4xl">{t("flags.title")}</h1>
+        <h1 ref={(node) => { stepHeadingRef.current = node; }} tabIndex={-1} className="font-serif text-3xl tracking-tight text-balance focus:outline-none sm:text-4xl">{t("flags.title")}</h1>
         <p className="mt-4 max-w-2xl leading-relaxed text-muted">{t("flags.intro")}</p>
         <div className="mt-8 space-y-5">
           {FLAG_IDS.map((id) => (
@@ -483,7 +494,7 @@ function DataAuditAssessmentState({ hydrated }: { hydrated: boolean }) {
       <div>
         <Button variant="ghost" className="mb-7 gap-2" onClick={goBack}><ArrowLeft size={18} />{t("buttons.back")}</Button>
         <div className="inline-flex items-center rounded-full border border-accent/25 bg-accent/10 px-3 py-1 font-mono text-xs font-medium uppercase tracking-wider text-accent">{t("results.eyebrow")}</div>
-        <h1 className="mt-4 font-serif text-4xl tracking-tight sm:text-5xl">{t("results.title")}</h1>
+        <h1 ref={(node) => { stepHeadingRef.current = node; }} tabIndex={-1} className="mt-4 font-serif text-4xl tracking-tight text-balance focus:outline-none sm:text-5xl">{t("results.title")}</h1>
         <div className="mt-8 grid gap-5 lg:grid-cols-[.75fr_1.25fr]">
           <div className="rounded-xl border border-hair bg-panel p-7 shadow-sm">
             <p className="font-mono text-xs uppercase tracking-[0.1em] text-muted">{t("results.scoreLabel")}</p>
@@ -539,7 +550,7 @@ function DataAuditAssessmentState({ hydrated }: { hydrated: boolean }) {
           <ArrowLeft size={18} />{t("lead.continueWithoutPlan")}
         </button>
         <p className="font-mono text-xs uppercase tracking-[0.16em] text-accent">{result.overallScore}/100 · {t(`maturity.${result.displayedMaturity}`)}</p>
-        <h1 className="mt-4 font-serif text-4xl tracking-tight sm:text-5xl">{t("lead.title")}</h1>
+        <h1 ref={(node) => { stepHeadingRef.current = node; }} tabIndex={-1} className="mt-4 font-serif text-4xl tracking-tight text-balance focus:outline-none sm:text-5xl">{t("lead.title")}</h1>
         <p className="mt-4 max-w-2xl leading-relaxed text-muted">{t("lead.intro")}</p>
         <form onSubmit={submitLead} className="mt-8 rounded-xl border border-hair bg-panel p-6 sm:p-8 shadow-sm">
           <div className="grid gap-5 sm:grid-cols-2">
@@ -568,7 +579,7 @@ function DataAuditAssessmentState({ hydrated }: { hydrated: boolean }) {
   return shell(
     <div>
       <div className="inline-flex items-center rounded-full border border-accent/25 bg-accent/10 px-3 py-1 font-mono text-xs font-medium uppercase tracking-wider text-accent">{t("plan.eyebrow")}</div>
-      <h1 className="mt-4 max-w-4xl font-serif text-4xl tracking-tight sm:text-5xl">{t("plan.title")}</h1>
+      <h1 ref={(node) => { stepHeadingRef.current = node; }} tabIndex={-1} className="mt-4 max-w-4xl font-serif text-4xl tracking-tight text-balance focus:outline-none sm:text-5xl">{t("plan.title")}</h1>
       <p className="mt-5 max-w-2xl text-base sm:text-lg leading-relaxed text-muted">{t("plan.intro")}</p>
       <div className="mt-10 grid gap-6 lg:grid-cols-3">
         {result.actionIds.map((actionId, index) => (

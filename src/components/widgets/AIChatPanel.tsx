@@ -308,8 +308,11 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
   useEffect(() => {
     if (isOpen) {
       scrollChatMessages(messagesViewportRef.current);
+      if (mode === "chat") {
+        requestAnimationFrame(() => inputRef.current?.focus());
+      }
     }
-  }, [isOpen, messages]);
+  }, [isOpen, messages, mode]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -532,10 +535,10 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
               {message.content ? (
                 renderContent(message.content)
               ) : (
-                <span className="flex gap-1 items-center py-1">
-                  <span className="w-1.5 h-1.5 bg-ink/40 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                  <span className="w-1.5 h-1.5 bg-ink/40 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                  <span className="w-1.5 h-1.5 bg-ink/40 rounded-full animate-bounce" />
+                <span className="flex gap-1 items-center py-1" aria-hidden="true">
+                  <span className="w-1.5 h-1.5 bg-ink/40 rounded-full" />
+                  <span className="w-1.5 h-1.5 bg-ink/60 rounded-full" />
+                  <span className="w-1.5 h-1.5 bg-ink/80 rounded-full" />
                 </span>
               )}
             </div>
@@ -545,22 +548,22 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
         {mode === "chat" && (
           <div role="group" aria-label={t("entryChoices")} className="border-t border-hair bg-ground-2 px-4 py-3">
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-              {!restrictedConversation ? <button
-                type="button"
-                onClick={handleDiscussProject}
-                disabled={isLoading}
-                className="rounded-field border border-accent bg-accent/10 px-3 py-2 text-sm font-semibold text-ink hover:bg-accent/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50"
-              >
-                {t("discussProject")}
-              </button> : null}
               <button
                 type="button"
                 onClick={handleAskAboutJohn}
                 disabled={isLoading}
-                className="rounded-field border border-hair bg-panel px-3 py-2 text-sm font-semibold text-ink hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50"
+                className="rounded-field border border-accent bg-accent/10 px-3 py-2 text-sm font-semibold text-ink hover:bg-accent/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50"
               >
                 {t("askAboutJohn")}
               </button>
+              {!restrictedConversation ? <button
+                type="button"
+                onClick={handleDiscussProject}
+                disabled={isLoading}
+                className="rounded-field border border-hair bg-panel px-3 py-2 text-sm font-semibold text-ink hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50"
+              >
+                {t("discussProject")}
+              </button> : null}
             </div>
           </div>
         )}
@@ -600,6 +603,8 @@ export function AIChatPanel({ isOpen, onClose, onReady }: AIChatPanelProps) {
               value={input}
               onChange={(event) => setInput(event.target.value)}
               placeholder={t("placeholder")}
+              aria-label={t("placeholder")}
+              autoComplete="off"
               disabled={isLoading}
               className={cn(
                 "flex-1 h-10 px-4 py-2 text-sm font-sans",

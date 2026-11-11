@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Menu, Close } from "@carbon/icons-react";
+import { Menu, Close, Search } from "@carbon/icons-react";
 import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
@@ -128,16 +128,20 @@ export function Header({
 
           <div className="flex items-center gap-3 sm:gap-4">
             <LanguageSwitcher alternateLocalePath={alternateLocalePath} />
-            <Link
-              href={dataAuditPath(locale)}
-              className="hidden sm:inline-flex items-center bg-accent text-on-accent hover:bg-accent-dim px-3.5 py-1.5 rounded-[6px] font-mono text-xs uppercase tracking-[0.08em] transition-colors no-underline"
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent("openChat"))}
+              className="hidden sm:inline-flex items-center gap-1.5 bg-accent text-on-accent hover:bg-accent-dim px-3.5 py-1.5 rounded-[6px] font-mono text-xs uppercase tracking-[0.08em] transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
-              {t("dataAudit")}
-            </Link>
+              <Search size={14} aria-hidden="true" />
+              <span>{t("searchAi")}</span>
+            </button>
             <div className="md:hidden">
               <IconButton
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 description={tCommon("toggleMenu")}
+                aria-expanded={mobileMenuOpen}
+                aria-controls="mobile-navigation-drawer"
                 kind="ghost"
                 size="md"
               >
@@ -157,7 +161,7 @@ export function Header({
               <Link
                 key={link.href}
                 href={hrefFor(link.key, link.href)}
-                className="flex items-center px-3.5 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-white no-underline transition-colors hover:bg-white/15 focus:text-white"
+                className="flex items-center px-3.5 font-mono text-xs font-medium uppercase tracking-[0.08em] text-white no-underline transition-colors hover:bg-white/15 focus:text-white"
               >
                 {t(link.key)}
               </Link>
@@ -166,6 +170,7 @@ export function Header({
 
           {/* Mobile Navigation */}
           <div
+            id="mobile-navigation-drawer"
             className={cn(
               "bg-nav overflow-hidden transition-all duration-300 ease-in-out md:hidden",
               mobileMenuOpen ? "max-h-80 py-2.5 px-2" : "h-6"
@@ -177,7 +182,7 @@ export function Header({
                   key={link.href}
                   href={hrefFor(link.key, link.href)}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="px-2.5 py-1.5 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-white no-underline transition-colors hover:bg-white/15 focus:text-white"
+                  className="px-2.5 py-1.5 font-mono text-xs font-medium uppercase tracking-[0.08em] text-white no-underline transition-colors hover:bg-white/15 focus:text-white"
                 >
                   {t(link.key)}
                 </Link>
@@ -186,17 +191,21 @@ export function Header({
                 <Link
                   href="/contact"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="font-mono text-[11px] uppercase tracking-[0.08em] text-white no-underline hover:underline"
+                  className="font-mono text-xs uppercase tracking-[0.08em] text-white no-underline hover:underline"
                 >
                   {t("contact")}
                 </Link>
-                <Link
-                  href={dataAuditPath(locale)}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="bg-nav-band text-white px-3 py-1 rounded-[4px] font-mono text-[11px] uppercase tracking-[0.08em] no-underline"
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    window.dispatchEvent(new CustomEvent("openChat"));
+                  }}
+                  className="inline-flex items-center gap-1.5 bg-nav-band text-white px-3 py-1 rounded-[4px] font-mono text-xs uppercase tracking-[0.08em] cursor-pointer"
                 >
-                  {t("dataAudit")}
-                </Link>
+                  <Search size={12} aria-hidden="true" />
+                  <span>{t("searchAi")}</span>
+                </button>
               </div>
             </div>
           </div>
@@ -205,7 +214,7 @@ export function Header({
 
       {/* Row 3: 1px white separator + #0085C0 / --color-nav-band contextual bar, narrower h-6 */}
       <div className="h-6 border-t border-white bg-nav-band text-white">
-        <div className="max-w-6xl mx-auto h-full px-4 md:px-6 flex items-center justify-between gap-4 font-mono text-[11px] uppercase tracking-[0.08em] overflow-hidden whitespace-nowrap">
+        <div className="max-w-6xl mx-auto h-full px-4 md:px-6 flex items-center justify-between gap-4 font-mono text-xs uppercase tracking-[0.08em] overflow-hidden whitespace-nowrap">
           {breadcrumbs.length === 0 ? (
             <span className="truncate text-white">{t("tagline")}</span>
           ) : (

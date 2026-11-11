@@ -51,6 +51,7 @@ export function ContactForm() {
             id="contact-name"
             name="name"
             placeholder={t("namePlaceholder")}
+            autoComplete="name"
             required
             disabled={state === "submitting" || state === "success"}
           />
@@ -60,6 +61,10 @@ export function ContactForm() {
             name="email"
             type="email"
             placeholder={t("emailPlaceholder")}
+            autoComplete="email"
+            autoCorrect="off"
+            autoCapitalize="none"
+            spellCheck={false}
             required
             disabled={state === "submitting" || state === "success"}
           />
@@ -86,7 +91,7 @@ export function ContactForm() {
       {state === "success" && (
         <InlineNotification
           kind="success"
-          title="Success"
+          title={t("successTitle")}
           subtitle={t("success")}
           onClose={() => setState("idle")}
         />
@@ -94,7 +99,7 @@ export function ContactForm() {
       {state === "error" && (
         <InlineNotification
           kind="error"
-          title="Error"
+          title={t("errorTitle")}
           subtitle={t("error")}
           onClose={() => setState("idle")}
         />

@@ -70,13 +70,13 @@ export function ProjectBox({
         <div className="p-6">
           {badge && (
             <div className="mb-3">
-              <span className="inline-flex items-center rounded-full border border-accent/25 bg-accent/10 px-2.5 py-0.5 font-mono text-[11px] font-medium uppercase tracking-wider text-accent">
+              <span className="inline-flex items-center rounded-full border border-accent/25 bg-accent/10 px-2.5 py-0.5 font-mono text-xs font-medium uppercase tracking-wider text-accent">
                 {badge}
               </span>
             </div>
           )}
 
-          <h3 className="font-serif text-2xl text-ink group-hover:text-accent transition-colors leading-snug mb-2">
+          <h3 className="font-serif text-2xl text-ink group-hover:text-accent transition-colors leading-snug text-balance mb-2">
             {title}
           </h3>
 

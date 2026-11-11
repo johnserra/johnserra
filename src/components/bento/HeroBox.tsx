@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { ArrowRight, Chat, ChartLineData, Education, CheckmarkOutline } from "@carbon/icons-react";
+import { useRef, useState } from "react";
+import { ArrowRight, Search, Education, CheckmarkOutline } from "@carbon/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { dataAuditPath, servicesPath } from "@/lib/routes";
+import { dataAuditPath } from "@/lib/routes";
 
 type WorkbenchTab = "grain" | "audit" | "ctl";
 
@@ -12,6 +12,11 @@ export function HeroBox() {
   const t = useTranslations("Hero");
   const locale = useLocale();
   const [activeTab, setActiveTab] = useState<WorkbenchTab>("grain");
+  const tabRefs = useRef<Record<WorkbenchTab, HTMLButtonElement | null>>({
+    grain: null,
+    audit: null,
+    ctl: null,
+  });
 
   const tabs: Array<{
     id: WorkbenchTab;
@@ -29,7 +34,7 @@ export function HeroBox() {
       body: t("tab1Body"),
       code: t("tab1Code"),
       cta: t("tab1Cta"),
-      href: servicesPath(locale),
+      href: "/blog?section=analytics",
     },
     {
       id: "audit",
@@ -52,6 +57,29 @@ export function HeroBox() {
   ];
 
   const currentTab = tabs.find((item) => item.id === activeTab) ?? tabs[0];
+
+  function handleTabKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    const currentIndex = tabs.findIndex((item) => item.id === activeTab);
+    if (currentIndex === -1) return;
+
+    let nextIndex: number | null = null;
+    if (event.key === "ArrowRight") {
+      nextIndex = (currentIndex + 1) % tabs.length;
+    } else if (event.key === "ArrowLeft") {
+      nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+    } else if (event.key === "Home") {
+      nextIndex = 0;
+    } else if (event.key === "End") {
+      nextIndex = tabs.length - 1;
+    }
+
+    if (nextIndex !== null) {
+      event.preventDefault();
+      const nextTab = tabs[nextIndex];
+      setActiveTab(nextTab.id);
+      tabRefs.current[nextTab.id]?.focus();
+    }
+  }
 
   return (
     <section className="relative overflow-hidden border-b border-hair bg-ground px-4 py-12 md:px-6 md:py-20 lg:py-24">
@@ -76,7 +104,7 @@ export function HeroBox() {
               </span>
             </div>
 
-            <h1 className="font-serif text-4xl sm:text-5xl lg:text-[3.35rem] text-ink tracking-tight leading-[1.1] mb-6">
+            <h1 className="font-serif text-4xl sm:text-5xl lg:text-[3.2rem] text-ink tracking-tight leading-[1.1] text-balance mb-6">
               {t("headlineLine1")}{" "}
               <span className="block mt-1 text-brand">
                 {t("headlineLine2")}
@@ -89,21 +117,21 @@ export function HeroBox() {
 
             {/* Primary & Secondary CTAs */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 mb-8">
+              <Link
+                href="/blog?section=analytics"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-accent text-on-accent font-medium text-sm sm:text-base rounded-lg hover:bg-accent-dim transition-all shadow-sm no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              >
+                <span>{t("ctaText")}</span>
+                <ArrowRight size={18} className="shrink-0" />
+              </Link>
               <button
                 type="button"
                 onClick={() => window.dispatchEvent(new CustomEvent("openChat"))}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-accent text-on-accent font-medium text-sm sm:text-base rounded-lg hover:bg-accent-dim transition-all shadow-sm cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 border border-hair bg-panel text-ink font-medium text-sm sm:text-base rounded-lg hover:bg-panel-2 transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               >
-                <Chat size={18} className="shrink-0" />
-                <span>{t("ctaText")}</span>
-              </button>
-              <Link
-                href={dataAuditPath(locale)}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 border border-hair bg-panel text-ink font-medium text-sm sm:text-base rounded-lg hover:bg-panel-2 transition-all no-underline"
-              >
-                <ChartLineData size={18} className="text-accent shrink-0" />
+                <Search size={18} className="text-accent shrink-0" />
                 <span>{t("secondaryCtaText")}</span>
-              </Link>
+              </button>
             </div>
 
             {/* Telemetry Strip */}
@@ -112,7 +140,7 @@ export function HeroBox() {
                 <p className="font-mono text-xl sm:text-2xl font-bold text-ink">
                   {t("stat1Value")}
                 </p>
-                <p className="font-mono text-[11px] text-muted mt-0.5">
+                <p className="font-mono text-xs text-muted mt-0.5">
                   {t("stat1Label")}
                 </p>
               </div>
@@ -120,7 +148,7 @@ export function HeroBox() {
                 <p className="font-mono text-xl sm:text-2xl font-bold text-accent">
                   {t("stat2Value")}
                 </p>
-                <p className="font-mono text-[11px] text-muted mt-0.5">
+                <p className="font-mono text-xs text-muted mt-0.5">
                   {t("stat2Label")}
                 </p>
               </div>
@@ -128,7 +156,7 @@ export function HeroBox() {
                 <p className="font-mono text-lg sm:text-xl font-bold text-ink">
                   {t("stat3Value")}
                 </p>
-                <p className="font-mono text-[11px] text-muted mt-0.5">
+                <p className="font-mono text-xs text-muted mt-0.5">
                   {t("stat3Label")}
                 </p>
               </div>
@@ -150,12 +178,12 @@ export function HeroBox() {
                   <span className="h-2.5 w-2.5 rounded-full bg-[#ef4444]/80" />
                   <span className="h-2.5 w-2.5 rounded-full bg-[#f59e0b]/80" />
                   <span className="h-2.5 w-2.5 rounded-full bg-[#22c55e]/80" />
-                  <span className="ml-2 font-mono text-[11px] tracking-wider text-[#a8a8a8]">
+                  <span className="ml-2 font-mono text-xs tracking-wider text-[#a8a8a8]">
                     {t("workbenchWindowTitle")}
                   </span>
                 </div>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#22c55e]/30 bg-[#22c55e]/10 px-2.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-[#4ade80]">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#22c55e] animate-pulse" />
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#22c55e]/30 bg-[#22c55e]/10 px-2.5 py-0.5 font-mono text-xs font-medium uppercase tracking-wider text-[#4ade80]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#22c55e]" />
                   {t("workbenchLiveBadge")}
                 </span>
               </div>
@@ -164,6 +192,7 @@ export function HeroBox() {
               <div
                 role="tablist"
                 aria-label={t("workbenchWindowTitle")}
+                onKeyDown={handleTabKeyDown}
                 className="grid grid-cols-3 border-b border-[#262626] bg-[#191919] p-1.5 gap-1.5"
               >
                 {tabs.map((tab) => {
@@ -171,13 +200,18 @@ export function HeroBox() {
                   return (
                     <button
                       key={tab.id}
+                      ref={(node) => {
+                        tabRefs.current[tab.id] = node;
+                      }}
+                      id={`hero-workbench-tab-${tab.id}`}
                       type="button"
                       role="tab"
                       aria-selected={isActive}
+                      tabIndex={isActive ? 0 : -1}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`rounded-lg px-2.5 py-2 font-mono text-[11px] font-medium transition-all cursor-pointer text-left truncate ${
+                      className={`rounded-lg px-2.5 py-2 font-mono text-xs font-medium transition-all cursor-pointer text-left truncate focus:outline-none focus-visible:ring-2 focus-visible:ring-[#38a3d6] ${
                         isActive
-                          ? "bg-[#006b9e] text-white shadow-xs"
+                          ? "bg-[#006b9e] text-white underline decoration-[#7cc7ee] decoration-2 underline-offset-4 shadow-xs"
                           : "text-[#a8a8a8] hover:bg-[#262626] hover:text-[#f4f4f4]"
                       }`}
                     >
@@ -188,7 +222,13 @@ export function HeroBox() {
               </div>
 
               {/* Active Workbench Panel */}
-              <div className="p-5 sm:p-6 space-y-4">
+              <div
+                role="tabpanel"
+                id={`hero-workbench-panel-${currentTab.id}`}
+                aria-labelledby={`hero-workbench-tab-${currentTab.id}`}
+                tabIndex={0}
+                className="p-5 sm:p-6 space-y-4 focus:outline-none"
+              >
                 <div className="flex items-center justify-between gap-2">
                   <span className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-[#38a3d6]">
                     {activeTab === "ctl" ? (
@@ -198,12 +238,12 @@ export function HeroBox() {
                     )}
                     {currentTab.label}
                   </span>
-                  <span className="rounded bg-[#22c55e]/20 px-2 py-0.5 font-mono text-[10px] font-medium text-[#4ade80]">
+                  <span className="rounded bg-[#22c55e]/20 px-2 py-0.5 font-mono text-xs font-medium text-[#4ade80]">
                     VERIFIED
                   </span>
                 </div>
 
-                <h2 className="font-serif text-2xl text-[#f4f4f4] leading-snug">
+                <h2 className="font-serif text-2xl text-[#f4f4f4] leading-snug text-balance">
                   {currentTab.title}
                 </h2>
 

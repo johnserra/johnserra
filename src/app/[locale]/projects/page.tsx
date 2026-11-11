@@ -3,6 +3,7 @@ import { getAllSiteContent } from "@/lib/site-content";
 import { projectsPath } from "@/lib/routes";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { AIChatWidget } from "@/components/widgets/AIChatWidget";
 import { ArrowUpRight } from "@carbon/icons-react";
 import { Tag } from "@/components/ui/Tag";
 import { setRequestLocale, getTranslations } from "next-intl/server";
@@ -78,6 +79,7 @@ export default async function ProjectsPage({ params }: Props) {
         </div>
       </main>
       <Footer />
+      <AIChatWidget />
     </div>
   );
 }

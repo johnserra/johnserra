@@ -3,6 +3,8 @@ import { getAllSiteContent } from "@/lib/site-content";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { TagCloud } from "@/components/blog/TagCloud";
+import { NewsletterSignup } from "@/components/blog/NewsletterSignup";
+import { AIChatWidget } from "@/components/widgets/AIChatWidget";
 import { Tag } from "@/components/ui/Tag";
 import { ArrowRight, Blog, Education } from "@carbon/icons-react";
 import { setRequestLocale, getTranslations } from "next-intl/server";
@@ -90,7 +92,7 @@ export default async function BlogPage({ params, searchParams }: Props) {
 
           {/* Section / Category Switcher (All Writing | Small-Business Analytics | CareerTalkLab) */}
           <div className="mb-8">
-            <p className="font-mono text-[11px] uppercase tracking-wider text-muted mb-2.5">
+            <p className="font-mono text-xs uppercase tracking-wider text-muted mb-2.5">
               {t("sectionLabel")}
             </p>
             <div className="flex flex-wrap items-center gap-2.5">
@@ -212,9 +214,14 @@ export default async function BlogPage({ params, searchParams }: Props) {
               </Link>
             ))}
           </div>
+
+          <div className="mt-14">
+            <NewsletterSignup sourcePath="/blog" />
+          </div>
         </div>
       </main>
       <Footer />
+      <AIChatWidget />
     </div>
   );
 }

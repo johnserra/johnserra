@@ -25,7 +25,7 @@ export async function BlogTeaserBox({ locale }: BlogTeaserBoxProps) {
                 {t("eyebrow")}
               </span>
             </div>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-ink tracking-tight leading-tight mb-3">
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-ink tracking-tight leading-tight text-balance mb-3">
               {t("title")}
             </h2>
             <p className="text-base md:text-lg text-muted leading-relaxed">
@@ -77,12 +77,12 @@ export async function BlogTeaserBox({ locale }: BlogTeaserBoxProps) {
                 <div>
                   <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
                     {primaryTag && (
-                      <span className="inline-flex items-center rounded-full border border-accent/25 bg-accent/10 px-2.5 py-0.5 font-mono text-[11px] font-medium text-accent">
+                      <span className="inline-flex items-center rounded-full border border-accent/25 bg-accent/10 px-2.5 py-0.5 font-mono text-xs font-medium text-accent">
                         {primaryTag}
                       </span>
                     )}
                     {post.frontmatter.date && (
-                      <time className="font-mono text-[11px] text-faint">
+                      <time className="font-mono text-xs text-faint">
                         {new Date(post.frontmatter.date).toLocaleDateString(dateLocale, {
                           year: "numeric",
                           month: "short",

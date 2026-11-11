@@ -21,7 +21,7 @@ export async function AboutTeaserBox() {
           </span>
         </div>
 
-        <h2 className="font-serif text-3xl sm:text-4xl text-ink leading-tight max-w-3xl mb-6">
+        <h2 className="font-serif text-3xl sm:text-4xl text-ink leading-tight max-w-3xl text-balance mb-6">
           {t("title")}
         </h2>
 
@@ -41,11 +41,11 @@ export async function AboutTeaserBox() {
             </div>
           </div>
 
-          <div className="lg:col-span-4 rounded-xl border border-hair bg-ground p-6">
+          <div className="lg:col-span-4 border-t lg:border-t-0 lg:border-l border-hair pt-6 lg:pt-0 lg:pl-8">
             <p className="font-mono text-xs uppercase tracking-wider text-accent font-semibold mb-3">
               {t("heading")}
             </p>
-            <div className="space-y-2.5 border-t border-hair pt-4 font-mono text-[11px] text-ink">
+            <div className="space-y-2.5 border-t border-hair pt-4 font-mono text-xs text-ink">
               <div className="flex items-center justify-between gap-2">
                 <span className="text-muted">{t("metaRoleLabel")}</span>
                 <span className="text-right font-medium">{t("metaRoleValue")}</span>

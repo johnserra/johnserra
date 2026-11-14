@@ -15,26 +15,26 @@ Use [README.md](README.md) for setup and operations and [docs/digital-twin-archi
 
 ## Project Structure
 - `src/app/`: Next.js App Router pages and API routes.
-- `src/components/`: Reusable React components (UI, layout, bento-style widgets).
+- `src/components/`: Reusable React components (UI, layout including `Header.tsx` with the `Search / Ask AI` trigger, homepage bento widgets, blog components such as `NewsletterSignup.tsx`, data-audit assessment, and chat/discovery widgets).
 - `src/lib/`: Core logic, including the shared chat path (`chat/`), content-source switch (`site-content.ts`), WordPress adapter, knowledge indexing/embeddings, and Supabase clients (`supabase.ts`).
 - `content/`: Retained locale-organized Markdown/MDX content for filesystem rendering and import.
 - `scripts/`: Utility scripts, such as `seed-knowledge-base.ts` for populating the RAG system.
-- `supabase-schema.sql`: Database schema for contact messages and career context.
-- `supabase/migrations/00001_wordpress_vector_queue.sql`: Required vector, retrieval RPC, and durable queue migration; apply after the base schema.
+- `supabase-schema.sql`: Base database schema for contact messages, newsletter subscribers (`newsletter_subscribers`), and career context.
+- `supabase/migrations/00001_wordpress_vector_queue.sql`–`00006_wordpress_table_chunking.sql`: Ordered migrations for vectors and durable `pgmq` indexing (`00001`), reviewed CV knowledge (`00002`), structure-aware WordPress replacement/versioning (`00003`), hybrid semantic+lexical retrieval (`00004`), HMAC chat rate limiting (`00005`), and table-aware `structure-aware-v2` chunking (`00006`).
 
 ## Key Features & Conventions
 ### 1. Content Management
 `src/lib/site-content.ts` selects WordPress or filesystem page reads. Projects use the `projects` routes. Do not restore or create cooking/recipe content for this site. WordPress publishing sends signed cache-invalidation/indexing events. Preserve Obsidian-style `[[wiki links]]` transformation in the filesystem adapter.
 
 ### 2. AI Chat Assistant
-A RAG (Retrieval-Augmented Generation) powered chat widget (`AIChatWidget.tsx`) allows users to "talk to John."
-- **API Route:** `src/app/api/chat/route.ts` streams `gemini-2.5-flash` as raw text, not SSE.
-- **RAG System:** `gemini-embedding-2` creates a 768-dimensional query vector; `match_career_context` retrieves up to six published, locale-matching chunks at similarity threshold 0.65. No live MDX lookup or full-text search is used by chat.
-- **History:** `AIChatPanel.tsx` keeps messages in React state and sends the history each turn, while retrieval uses only the latest message. No model-selected tools or verification agent exist yet.
-- **Seeding:** `npm run seed` enqueues and indexes published WordPress posts, pages, and projects in both locales. Chat/indexing are independent of the page-content switch.
+A bounded evidence-agent chat widget (`AIChatWidget.tsx` + `AIChatPanel.tsx`) is mounted across primary pages (`/`, `/about`, `/blog`, eligible `/blog/[slug]` articles via `isChatEligibleArticle`, `/projects`, `/services`, and `/contact`) and can also be opened from the header/mobile-menu **Search / Ask AI** (`openChat`) button.
+- **API Route & Agent Loop:** `src/app/api/chat/route.ts` enforces `CHAT_RATE_LIMIT_SECRET` HMAC rate limits and streams `gemini-2.5-flash` (`CHAT_MODEL`) responses as NDJSON frames via `src/lib/chat/agent-loop.ts` (at most 3 accepted tool calls across 2 retrieval rounds, 1 buffered draft, and 1 verifier pass within 12 steps / 45s).
+- **Hybrid RAG & Tools:** `gemini-embedding-2` creates 768-dimensional embeddings; `match_career_context_hybrid` fuses semantic `pgvector` similarity (threshold `0.65`, count `6`) with `simple` full-text lexical search. The model may select only five read-only tools (`search_knowledge`, `get_cv_timeline`, `get_project_details`, `list_articles`, `get_contact_options`).
+- **Panel Modes & History:** `AIChatPanel.tsx` supports instant FAQ shortcuts, `ProjectDiscoveryFlow.tsx` (`Discuss a project`), and in-memory history by default, with optional visitor opt-in browser-local `localStorage` persistence (30-day rolling expiry; no server-side transcript storage).
+- **Indexing & Seeding:** WordPress publishing sends signed webhooks to `/api/revalidate/wordpress`, which invalidates Next.js cache tags, enqueues a durable `pgmq` job, and runs an immediate background worker attempt (backed by the daily `/api/cron/process-content-indexing` cron). `npm run seed` indexes all published EN/TR WordPress records; `npm run seed:cv` manages the separate human-approved CV source. Chat/indexing are independent of `CONTENT_SOURCE`.
 
-### 3. Bento Grid UI
-The homepage uses a bento-style layout (`src/components/bento/`) to showcase different sections of the site.
+### 3. Site Layout, Bento UI & Editorial Surfaces
+The homepage uses a bento-style layout (`src/components/bento/`), paired with the site-wide masthead/navigation (`src/components/layout/Header.tsx`), topic-aware editorial footer callouts on `/blog/[slug]`, the self-serve assessment (`/data-audit`), and email update signups (`NewsletterSignup.tsx` → `/api/newsletter`).
 
 ## Development Commands
 - `npm run dev`: Start the development server.
@@ -48,4 +48,5 @@ The homepage uses a bento-style layout (`src/components/bento/`) to showcase dif
 ## Coding Standards
 - **Strict Typing:** Always use TypeScript interfaces for data structures (see `src/types/index.ts`).
 - **Surgical Updates:** When modifying content processing, ensure `transformObsidianLinks` is respected.
-- **AI Context:** When updating the AI assistant, ensure the `systemPrompt` in the chat route remains aligned with John's persona.
+- **AI Context & Guardrails:** The assistant is transparently John's AI assistant (third-person, never impersonating John or making commitments); preserve `buildSystemPrompt` (`src/lib/chat/core.ts`), [docs/persona-privacy-guardrails.md](docs/persona-privacy-guardrails.md), and `src/lib/chat/public-boundaries.ts`.
+- **Documentation Sync:** Whenever UI surfaces, routes, environment variables, migrations, or assistant behavior change, update `README.md` and `GEMINI.md` in the same task so project documentation stays aligned with code.

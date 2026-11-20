@@ -11,21 +11,23 @@
 
 CareerTalkLab uses selective, boundary-enforced stateful agent orchestration rather than blanket LLM loops. Across four core learning and content workflows, LangGraph (`StateGraph` backed by a custom PostgREST checkpoint saver) is reserved strictly for workflows with cyclic critique-and-repair loops, multi-turn pedagogical scaffolding, or durable human-in-the-loop interrupts — while attainment math, credit ledgers, and foundational drills execute in deterministic SQL and TypeScript.
 
-A held-out **20-article live evaluation** (`gemini-2.5-flash`, `standard` tier, 3 CEFR levels per article = **60 generated lesson drafts**) revealed two high-impact production defects in the initial baseline (`$1.019399`, `5/20` accepted, `11/20` aborted on per-call timeouts) and validated targeted fixes in a full post-remediation re-run (`$0.887707`, **`17/20` accepted**, **`0/20` operational timeouts**):
+A held-out **20-article live evaluation** (`gemini-2.5-flash`, `standard` tier, 3 CEFR levels per article = **60 target CEFR drafts per evaluation pass**) revealed two high-impact production defects in the initial baseline pass (`$1.02`, `5/20` accepted runs, `11/20` aborted on per-call timeouts) and validated targeted fixes in a full post-remediation pass (`$0.89`, **`17/20` accepted runs**, **`0/20` operational timeouts**):
 
-| Metric | Pre-Remediation Baseline | Post-Remediation Run | Delta |
+| Metric (20 Articles / 60 Drafts) | Pre-Remediation Pass | Post-Remediation Pass | Delta |
 | --- | --- | --- | --- |
 | Held-out articles / target CEFR drafts | `20` / `60` | `20` / `60` | — |
 | End-to-end run acceptance (`ready_for_review`) | `5 / 20` (`25.0%`) | **`17 / 20` (`85.0%`)** | **`+60.0 pts`** (`+12` runs) |
-| Operational timeout failures (`failed_operational`) | `11 / 20` (`55.0%`) | **`0 / 20` (`0.0%`)** | **`-100%` eliminated** |
-| Deterministic validation after surgical revision | `8 / 20` runs (`27 / 60` drafts = `45.0%`) | **`19 / 20` runs (`59 / 60` drafts = `98.33%`)** | **`+53.33 pts`** (`+32` drafts) |
+| Operational timeout failures (`failed_operational`) | `11 / 20` (`55.0%`) | **`0 / 20` (`0.0%`)** | **`-11` runs** |
+| Deterministic compliance after surgical repair\* | `8 / 20` runs (`27 / 60` drafts = `45.0%`) | **`19 / 20` runs (`59 / 60` drafts = `98.33%`)** | **`+53.33 pts`** (`+32` drafts) |
 | Initial LLM Judge pass rate (evaluated / total 60) | `18 / 30` (`60.0%` eval, `30.0%` total) | **`52 / 60` (`86.67%`)** | **`+26.67 pts`** evaluated |
-| Final LLM Judge pass rate (evaluated / total 60) | `23 / 30` (`76.67%` eval, `38.33%` total) | **`57 / 60` (`95.0%`)** | **`+18.33 pts`** evaluated |
-| Final Judge mean score (out of `35`) | `33.20 / 35` (`30` evaluated) | **`33.13 / 35` (`60` evaluated)** | Maintained quality at `2x` coverage |
+| Final LLM Judge pass rate\* (evaluated / total 60) | `23 / 30` (`76.67%` eval, `38.33%` total) | **`57 / 60` (`95.0%`)** | **`+18.33 pts`** evaluated |
+| Final Judge mean score (out of `35`) | `33.20 / 35` (`30` evaluated) | **`33.13 / 35` (`60` evaluated)** | Quality held at `2x` scale |
 | Reasoning (`thoughtsTokens`) volume | `214,936` (`58.3%` of gen+thought) | **`60,327` (`20.8%` of gen+thought)** | **`-71.9%`** |
-| Total observed cost (20 runs, 172 vs 114 calls) | `$1.019399` (`$0.0504` mean budgeted) | **`$0.887707` (`$0.0444` mean/run)** | **`-12.9%` despite `1.51x` more calls** |
-| Per-run latency (`p50` / `p95`) | `161,531ms` / `255,120ms` | **`68,182ms` / `82,240ms`** | **`-57.8%` p50 / `-67.8%` p95** |
-| Total wall-clock benchmark runtime | `1,955,304ms` (`32.6 min`, concurrency `2`) | **`501,470ms` (`8.36 min`, concurrency `3`)** | **`-74.4%` (`3.9x` faster)** |
+| Total pass cost (20 runs, 172 vs 114 calls) | `$1.02` (`$0.05` mean budgeted) | **`$0.89` (`$0.04` mean/run)** | **`-12.9%` despite `1.51x` more calls** |
+| Per-run latency (`p50` / `p95`, wall-clock across slices) | `161,531ms` / `255,120ms` | **`68,182ms` / `82,240ms`** | **`-57.8%` p50 / `-67.8%` p95** |
+| Total wall-clock pass duration | `1,955,304ms` (`32.6 min`, concurrency `2`) | **`501,470ms` (`8.36 min`, concurrency `3`)** | **`-74.4%` (`3.9x` faster)** |
+
+\* *Gate note:* Every judged draft passed the deterministic validator in the round it was judged. Judged totals can exceed final compliance because a surgical repair triggered by a failing judge score can fail re-validation once `MAX_AUTO_REVISIONS = 2` is hit (one C1 draft post-remediation; three baseline drafts hit by shallow-spread field wipes).
 
 ---
 
@@ -38,7 +40,7 @@ Not every LLM or curriculum workflow benefits from a stateful agent graph. Unnec
 | **Surface A — Newsjacking Lesson Pipeline** | Convert industry news into 3 CEFR-differentiated lessons (`B1`, `B2`, `C1`) across technical and marketing tracks. | **LangGraph `StateGraph`** (11 nodes, bounded cyclic self-repair + `humanReviewInterrupt`) backed by checkpointing & lease RPCs. | Requires parallelizable per-level drafting, deterministic gatekeeping before expensive semantic judging, selective per-section JSON repair, and resumable admin sign-off. |
 | **Surface B — Attainment, Credits & Scenario Rehearsal** | Track Level 1/Level 2 mastery (`user_unit_attainment`), referral rewards, rate limits, and deterministic role-play rehearsal turns. | **Pure PostgreSQL `SECURITY DEFINER` RPCs + Deterministic TypeScript** for attainment/credits; isolated `ScenarioRehearsalGraph` for extracurricular L2 → L3 practice. | Mastery attainment, prerequisite unlocking, and credit/referral mutations demand zero-variance ACID invariants and `FOR UPDATE` row locks — never probabilistic graph routing. |
 | **Surface C — Proactive Errorless Coaching** | Guide Turkish learners through multi-turn writing refinement (`Prompt -> Echo -> Distractor -> Transfer`) with L1 interference scaffolding and optional human escalation. | **LangGraph `StateGraph`** (7 nodes, PII scrub gate, multi-turn `awaitStudentTurn` interrupt, instructor escalation interrupt). | Naturally multi-turn with conditional interruption: pauses cleanly after every student message (`awaitStudentTurn`), tracks retry streaks (`MAX_COACHING_CONSECUTIVE_RETRIES = 3`), and suspends into `/admin/inbox` (`escalateToInstructorInterrupt`) when human intervention is requested or retries cap out. |
-| **Foundational A1/A2 Drills** | High-volume free GSE-aligned onboarding lessons using `Prompt -> Echo -> Distractor -> Transfer`. | **Deterministic client/RPC progression**. | Sub-`100ms` UX, `$0` marginal inference cost, and fixed pedagogical sequencing require zero graph state overhead. |
+| **Surface D — Foundational A1/A2 Drills** | High-volume free GSE-aligned onboarding lessons using `Prompt -> Echo -> Distractor -> Transfer`. | **Deterministic client/RPC progression**. | Sub-`100ms` UX, `$0` marginal inference cost, and fixed pedagogical sequencing require zero graph state overhead. |
 
 > **Architectural Invariant (Surface B Isolation):** `ProactiveCoachingGraph` (Surface C) writes strictly to coaching session/turn tables, the student's own `submissions` record on completion/resolution, and isolated `langgraph.*` checkpoint tables. It has zero write paths into `user_unit_attainment` or referral/credit reward RPCs (verified offline in Safety Scenario 7).
 
@@ -89,7 +91,7 @@ flowchart TD
 
 Key cost-control optimizations in the graph:
 1. **Hash-Gated Selective Re-Judging:** The judge node compares each level's `draftSha256` against `lastEvaluatedHash` in prior `JudgeVerdict`s; untouched levels skip redundant judge LLM calls across surgical revision rounds.
-2. **Deterministic Gate First:** Structural rules (vocabulary count `8..12`, 5 comprehension questions following `2-2-1` Bloom's taxonomy, 3 discussion prompts, `grammar_focus` shape, and POS/article-anchoring invariants) are caught in `0ms` at `$0.00` before spending ~`6k` tokens per level on LLM judging.
+2. **Deterministic Gate First:** Structural rules (vocabulary count `8..12`, 5 comprehension questions following `2-2-1` Bloom's taxonomy, 3 discussion prompts, `grammar_focus` shape, and POS/article-anchoring invariants) are checked in `0ms` at `$0.00` before spending ~`6k` tokens per level on LLM judging. Every surgical repair loops back through the same deterministic gate before re-judging.
 
 ### 3.2 Surface C: `ProactiveCoachingGraph` (7 Nodes, Multi-Turn & Escalation Interrupts)
 
@@ -124,7 +126,7 @@ Vercel Serverless Functions enforce a `60s` execution ceiling (`MAX_DURATION_MS 
 1. **Custom PostgREST Checkpointer (`SupabaseRpcCheckpointSaver`):**
    Implements LangGraph's `BaseCheckpointSaver` over five `service_role`-only `SECURITY DEFINER` RPCs backed by isolated `langgraph.checkpoints`, `langgraph.checkpoint_writes`, and `langgraph.checkpoint_blobs` tables. Write ordering preserves LangGraph's `(task_path, task_id, idx)` tuple sorting (`__error__`, `__scheduled__`, `__interrupt__`, `__resume__`).
 2. **Cooperative Slice & Admission Budgets:**
-   - `MAX_DURATION_MS = 60_000`: Total wall-clock budget per serverless slice.
+   - `MAX_DURATION_MS = 60_000`: Total wall-clock budget per serverless slice (cumulative multi-slice article runs can span >`60s` wall-clock safely across cooperative handoffs).
    - `HARD_WORK_CUTOFF_MS = 52_000`: Slice yields cleanly `8,000ms` before the serverless ceiling so pending checkpoints flush safely.
    - `MIN_NODE_START_BUDGET_MS = 18_000`: Nodes refuse to initiate new LLM calls if insufficient headroom remains, yielding cleanly for client `/advance` or the `1`-minute `/api/cron/pipeline-reaper` worker to resume.
    - `PER_CALL_CAP_MS = 25_000`: Every `@google/genai` call binds an `AbortSignal` bounded by `min(25_000, remainingBudget)` so no hung upstream socket stalls the slice.
@@ -139,11 +141,11 @@ Vercel Serverless Functions enforce a `60s` execution ceiling (`MAX_DURATION_MS 
 
 ## 5. Human Governance Interface (Observed Production Run)
 
-Reviewers govern runs in `/admin/pipeline/runs/[runId]` without inspecting server logs. Below is a live production run (`How to Evaluate AI Agents: Grade the World, Not the Transcript`, `B1 · B2 · C1`, `6/12` slices, `63,585` tokens, `$0.0585 / $0.7500`, `79s` active) showing hash-pinned deployment links and the 7-criterion Independent Judge Rubric Scorecard (`34/35` B1, `33/35` B2, `35/35` C1):
+Reviewers govern runs in `/admin/pipeline/runs/[runId]` without inspecting server logs. Below is a live zero-revision promoted production run (`How to Evaluate AI Agents: Grade the World, Not the Transcript`, `B1 · B2 · C1`, `6/12` slices, `63,585` tokens, `$0.06 / $0.75`, `79s` active across slices) showing hash-pinned deployment links and the 7-criterion Independent Judge Rubric Scorecard (`34/35` B1, `33/35` B2, `35/35` C1):
 
 ![CareerTalkLab Pipeline Run Governance Overview showing revision/slice/budget cards, deployed level links, SHA-256 digest badge, and 7-category Independent Judge Rubric Scorecard](../public/projects/agentic-lesson-pipeline/pipeline-run-governance-overview.png)
 
-Expanding the **Stage Deltas & Curriculum Context** drawer exposes the deduplicated prior vocabulary window (`60` terms across `10` recent lessons), Turkish L1 scaffolding warnings, and all `11` chronological superstep checkpoints with per-stage latencies, draft SHA-256 hashes, token counts, and USD cost:
+Expanding the **Stage Deltas & Curriculum Context** drawer exposes the deduplicated prior vocabulary window (`60` terms across `10` recent lessons), Turkish L1 scaffolding warnings, and all `11` chronological superstep checkpoints on a clean zero-revision path (from `ingest_and_extract` through `atomic_promote`); runs that enter surgical repair append additional `surgical_revise`, re-validation, and selective re-judge deltas (such as the `15`-delta trace in §6.6):
 
 ![Stage Deltas & Curriculum Context trace showing curriculum deduplication rules and 11 chronological checkpoints from ingest_and_extract to atomic_promote](../public/projects/agentic-lesson-pipeline/pipeline-run-stage-deltas-trace.png)
 
@@ -151,9 +153,9 @@ Expanding the **Stage Deltas & Curriculum Context** drawer exposes the deduplica
 
 ## 6. Empirical Case Study: Before vs. After 20-Article `gemini-2.5-flash` Benchmark
 
-Running inside an embedded PGlite instance initialized with the full production migration chain, `20` held-out real-world articles (`8` developer, `6` marketing, `6` hospitality; `targetTrack = "executive"`, `minSourceLength = 498` chars) were evaluated under a strict `$1.50` hard cost cap.
+Running inside an embedded PGlite instance initialized with the full production migration chain, `20` held-out real-world articles (`8` developer, `6` marketing, and `6` hospitality — CareerTalkLab's third legacy industry track, retained in the corpus to test domain generalization outside software and marketing jargon; `targetTrack = "executive"`, `minSourceLength = 498` chars) were evaluated under a strict `$1.50` hard cost cap.
 
-### 6.1 What the `$1.019399` Baseline Uncovered (Root Causes)
+### 6.1 What the `$1.02` Baseline Pass Uncovered (Root Causes)
 
 Running the initial pipeline untouched against live `gemini-2.5-flash` exposed three defects invisible under mocked fast-returning tests:
 
@@ -174,16 +176,16 @@ Running the initial pipeline untouched against live `gemini-2.5-flash` exposed t
 2. **Recursive `mergeSurgicalDraftPatch(priorDraft, patch)`:**
    Deep-merges nested plain objects (`grammar_focus`, `live_session_cheat_sheet`, `speaking_class_guide`), ignores `null` / `undefined` / whitespace-only strings, and rejects accidental empty `[]` array wipes so untouched sibling fields remain intact.
 3. **Chronological Delta Sorting & Archived Baseline Comparison:**
-   Sorted stage deltas by `(created_at, revision_round, stage_rank)` and preserved the pre-fix `$1.019399` snapshot for paired delta reporting.
+   Sorted stage deltas by `(created_at, revision_round, stage_rank)` and preserved the pre-fix `$1.02` baseline snapshot for paired delta reporting.
 
-### 6.3 Post-Remediation Performance Across Segments (`N = 20`, Total Cost `$0.887707`)
+### 6.3 Post-Remediation Performance Across Segments (`N = 20`, Total Pass Cost `$0.89`)
 
-| Segment | Articles | Pass-0 Det Runs | Final Accepted (`ready_for_review`) | Final Judge Mean Score | Mean Latency | Mean Cost / Run |
+| Segment | Articles | Pass-0 Det Runs | Final Accepted (`ready_for_review`) | Final Judge Mean Score | Mean Wall-Clock Latency (Across Slices) | Mean Cost / Run |
 | --- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Developer** | `8` | `1 / 8` | **`6 / 8` (`75.0%`)** | `32.92 / 35` | `73,597ms` | `$0.046170` |
-| **Marketing** | `6` | `1 / 6` | **`6 / 6` (`100.0%`)** | `33.44 / 35` | `68,530ms` | `$0.042686` |
-| **Hospitality** | `6` | `0 / 6` | **`5 / 6` (`83.3%`)** | `33.11 / 35` | `69,109ms` | `$0.043705` |
-| **All Segments** | **`20`** | `2 / 20` (`32 / 60` drafts) | **`17 / 20` (`85.0%`)** | **`33.13 / 35` (`57 / 60` pass)** | **`70,730ms`** | **`$0.044385`** |
+| **Developer** | `8` | `1 / 8` | **`6 / 8` (`75.0%`)** | `32.92 / 35` | `73,597ms` | `$0.046` |
+| **Marketing** | `6` | `1 / 6` | **`6 / 6` (`100.0%`)** | `33.44 / 35` | `68,530ms` | `$0.043` |
+| **Hospitality** | `6` | `0 / 6` | **`5 / 6` (`83.3%`)** | `33.11 / 35` | `69,109ms` | `$0.044` |
+| **All Segments** | **`20`** | `2 / 20` (`32 / 60` drafts) | **`17 / 20` (`85.0%`)** | **`33.13 / 35` (`57 / 60` pass)** | **`70,730ms`** | **`$0.044`** |
 
 Key self-healing impact of the cyclic graph: while only `2 / 20` runs (`10.0%`) passed deterministic validation cleanly on Pass 0 (`32 / 60` level drafts), **surgical self-repair pushed deterministic compliance to `19 / 20` runs (`59 / 60` drafts = `98.33%`, `+27` drafts recovered)** and lifted **15 blocked runs** into admin-ready `ready_for_review` (`17 / 20` total; `2` clean first-pass + `15` recovered via auto-revision across `25` revision rounds in `18` runs).
 
@@ -205,25 +207,25 @@ Key self-healing impact of the cyclic graph: while only `2 / 20` runs (`10.0%`) 
 Rather than silently publishing degraded content, all 3 non-accepted runs halted cleanly at `MAX_AUTO_REVISIONS = 2` with actionable diagnostics:
 - **`bench_dev_01` (`failed_judge`, `martinfowler.com`):** Passed deterministic checks (`3/3`), failed B1 `grammar_integration = 3` because one grammar example lifted verbatim DDL syntax (`ACCESS EXCLUSIVE lock`) above B1 complexity and another omitted the taught `"when"` clause.
 - **`bench_dev_03` (`failed_judge`, `web.dev`):** Passed deterministic checks (`3/3`), failed B1 `level_appropriateness = 3` because vocabulary leaned heavily into B1+/B2 technical compounds (`data-backed`, `bottleneck`, `client-side`, `cross-functional`) exceeding the 40% B1+ ceiling.
-- **`bench_hosp_06` (`failed`, `sustainablehospitalityalliance.org`):** Halted on C1 deterministic validation after 2 revisions (`vocabulary count must be between 8 and 12 (got 13)`).
+- **`bench_hosp_06` (`failed`, `sustainablehospitalityalliance.org`):** Passed Round 1 deterministic checks (`3/3`) and reached Round 1 judging (`B1=31`, `B2=34`, `C1=29` fail), then Round 2 `auto_judge` surgical repair expanded `C1` vocabulary to `13` terms—failing Round 2 deterministic re-validation (`8..12` bound) cleanly at `MAX_AUTO_REVISIONS = 2`.
 
 ### 6.6 Chronological Redacted Execution Trace (`bench_dev_02`, `engineering.fb.com`)
 
-`bench_dev_02` (`Cutting Tail Latency with Request Hedging and Adaptive Circuit Breakers`, `82,240ms`, `48,664` tokens, `$0.051042`, `15` stage deltas, `2` surgical revisions) demonstrates both repair loops in sequence:
+`bench_dev_02` (`Cutting Tail Latency with Request Hedging and Adaptive Circuit Breakers`, `82,240ms` wall-clock across slices, `48,664` tokens, `$0.051`, **`15` stage deltas** across **`2` surgical repair rounds** prior to human promotion — compared against `11` deltas for a zero-revision promoted production run) demonstrates both repair loops in sequence:
 
 1. **Ingest & Context (`13ms`, `$0.00`):** Extracted `882` chars from `engineering.fb.com`, queried curriculum deduplication context (`0` tokens).
 2. **Plan & Draft Generation (`51,721ms` across 4 calls):**
-   - `plan_multi_level` (`3,161ms`, `953` tok, `$0.001467`)
+   - `plan_multi_level` (`3,161ms`, `953` tok, `$0.001`)
    - `generate_draft` `B1` (`13,789ms`, `4,520` tok, hash `71c376039dcb`)
    - `generate_draft` `B2` (`18,110ms`, `4,933` tok, hash `a22efc0b1105`)
    - `generate_draft` `C1` (`16,661ms`, `5,180` tok, hash `1001a3c7443d`)
 3. **Round 0 Deterministic Gate (`0ms`, `$0.00`) -> Fail (`B2`):** Flagged `B2` `discussion_prompts` count (`4` instead of required `3`).
-4. **Round 1 Surgical Revise (`auto_validate`, `3,263ms`, `3,943` tok, `$0.002664`):** Targeted only `B2` `discussion_prompts`; `B2` hash mutated `a22efc0b1105` -> `95dab1b2d7ca` while `B1` (`71c376039dcb`) and `C1` (`1001a3c7443d`) remained unchanged. Round 1 deterministic gate passed (`3/3`, `0` errors).
+4. **Round 1 Surgical Revise (`auto_validate`, `3,263ms`, `3,943` tok, `$0.003`):** Targeted only `B2` `discussion_prompts`; `B2` hash mutated `a22efc0b1105` -> `95dab1b2d7ca` while `B1` (`71c376039dcb`) and `C1` (`1001a3c7443d`) remained unchanged. Round 1 deterministic gate passed (`3/3`, `0` errors).
 5. **Round 1 Parallel-Sequential LLM Judges (`16,027ms`):**
    - `B1` (`71c376039dcb`): `29/35` — failed (`level_appropriateness = 3`)
    - `B2` (`95dab1b2d7ca`): `34/35` — **PASS**
    - `C1` (`1001a3c7443d`): `35/35` — **PASS**
-6. **Round 2 Surgical Revise (`auto_judge`, `6,112ms`, `4,361` tok, `$0.004490`):** Repaired only `B1` `["article_summary", "vocabulary"]` to reach `11` vocabulary terms (`40%` B1+ ratio); `B1` hash updated `71c376039dcb` -> `db99fb7853a2`.
+6. **Round 2 Surgical Revise (`auto_judge`, `6,112ms`, `4,361` tok, `$0.004`):** Repaired only `B1` `["article_summary", "vocabulary"]` to reach `11` vocabulary terms (`40%` B1+ ratio); `B1` hash updated `71c376039dcb` -> `db99fb7853a2`.
 7. **Round 2 Re-Validation & Selective Judge (`4,680ms`):** Deterministic validate passed (`0ms`); **only `B1` (`db99fb7853a2`) was re-judged**, rising to **`32/35`** (`level_appropriateness = 4`, `passed = true`), skipping redundant re-judging of `B2` and `C1` before interrupting in `ready_for_review`.
 
 ---
@@ -233,7 +235,7 @@ Rather than silently publishing degraded content, all 3 non-accepted runs halted
 ### 7.1 Turkish L1 Interference Scaffolding
 
 Because CareerTalkLab serves Turkish engineers, marketers, and business professionals, Surface C encodes empirically derived Turkish-to-English interference rules deterministically inside `initializeScaffoldNode`:
-- Maps SOV / suffix structures vs. English SVO copulas, definite/indefinite article omission, and pronoun transfer to concrete Stealth Cues and an initial Word Bank.
+- Scans the learner's writing draft (or falls back to the writing prompt and target expressions) for common Turkish-to-English transfer patterns—article omission, preposition errors carried over from Turkish postpositions, copula (*to be*) omission, and pronoun transfer—and injects **stealth cues** (brief prompts that model the target English pattern before the learner revises, without red-pen error labels) plus an initial Word Bank.
 - Prompts never expose linguistics jargon (`"copula"`, `"definite article"`), never assign grades or percentages (`Errorless Teaching` Zero Pass/Fail rule), and normalize student input through `scrubPII` (`[EMAIL]`, `[ID]`, `[IBAN]`, `[PHONE]`, `[Student]`) before persistence or inference.
 
 ### 7.2 Offline Safety, Governance & Concurrency Matrix

@@ -27,7 +27,7 @@ A held-out **20-article live evaluation** (`gemini-2.5-flash`, `standard` tier, 
 | Per-run latency (`p50` / `p95`, wall-clock across slices) | `161,531ms` / `255,120ms` | **`68,182ms` / `82,240ms`** | **`-57.8%` p50 / `-67.8%` p95** |
 | Total wall-clock pass duration | `1,955,304ms` (`32.6 min`, concurrency `2`) | **`501,470ms` (`8.36 min`, concurrency `3`)** | **`-74.4%` (`3.9x` faster)** |
 
-\* *Gate note:* Every judged draft passed deterministic validation in the round it was judged. Judged draft totals (`30` in baseline, `60` post-remediation) exceed final post-repair deterministic compliance (`27/60` and `59/60`) because a subsequent surgical repair triggered by a failing judge verdict loops back through the deterministic gate (`REV -> DET`) and can still fail re-validation once `MAX_AUTO_REVISIONS = 2` is exhausted (`bench_hosp_06` C1 expanded to `13` vocabulary terms post-remediation; `3` baseline drafts hit shallow-spread field wipes).
+\* *Gate note:* Every judged draft passed the deterministic validator in the round it was judged. Judged totals can exceed final compliance because a surgical repair triggered by a failing judge score can fail re-validation once `MAX_AUTO_REVISIONS = 2` is hit (one C1 draft post-remediation; three baseline drafts hit by shallow-spread field wipes).
 
 ---
 
@@ -91,7 +91,7 @@ flowchart TD
 
 Key cost-control optimizations in the graph:
 1. **Hash-Gated Selective Re-Judging:** The judge node compares each level's `draftSha256` against `lastEvaluatedHash` in prior `JudgeVerdict`s; untouched levels skip redundant judge LLM calls across surgical revision rounds.
-2. **Deterministic Gate First (and After Every Repair):** Structural rules (vocabulary count `8..12`, 5 comprehension questions following `2-2-1` Bloom's taxonomy, 3 discussion prompts, `grammar_focus` shape, and POS/article-anchoring invariants) are checked in `0ms` at `$0.00` before spending ~`6k` tokens per level on LLM judging, and every surgical repair re-enters `deterministicValidate` before any re-judge runs.
+2. **Deterministic Gate First:** Structural rules (vocabulary count `8..12`, 5 comprehension questions following `2-2-1` Bloom's taxonomy, 3 discussion prompts, `grammar_focus` shape, and POS/article-anchoring invariants) are checked in `0ms` at `$0.00` before spending ~`6k` tokens per level on LLM judging. Every surgical repair loops back through the same deterministic gate before re-judging.
 
 ### 3.2 Surface C: `ProactiveCoachingGraph` (7 Nodes, Multi-Turn & Escalation Interrupts)
 
@@ -235,7 +235,7 @@ Rather than silently publishing degraded content, all 3 non-accepted runs halted
 ### 7.1 Turkish L1 Interference Scaffolding
 
 Because CareerTalkLab serves Turkish engineers, marketers, and business professionals, Surface C encodes empirically derived Turkish-to-English interference rules deterministically inside `initializeScaffoldNode`:
-- Maps common Turkish-to-English transfer patterns—article omission, preposition errors carried over from Turkish postpositions, copula (*to be*) omission, and pronoun transfer—to concrete **stealth cues** (brief pre-writing prompts that model the target English pattern before the learner drafts, without red-pen error labels) and an initial Word Bank.
+- Scans the learner's writing draft (or falls back to the writing prompt and target expressions) for common Turkish-to-English transfer patterns—article omission, preposition errors carried over from Turkish postpositions, copula (*to be*) omission, and pronoun transfer—and injects **stealth cues** (brief prompts that model the target English pattern before the learner revises, without red-pen error labels) plus an initial Word Bank.
 - Prompts never expose linguistics jargon (`"copula"`, `"definite article"`), never assign grades or percentages (`Errorless Teaching` Zero Pass/Fail rule), and normalize student input through `scrubPII` (`[EMAIL]`, `[ID]`, `[IBAN]`, `[PHONE]`, `[Student]`) before persistence or inference.
 
 ### 7.2 Offline Safety, Governance & Concurrency Matrix

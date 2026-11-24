@@ -1,15 +1,13 @@
 import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
-import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { getAllSiteContent } from "@/lib/site-content";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { TagCloud } from "@/components/blog/TagCloud";
+import { BlogListing, type BlogListingPost } from "@/components/blog/BlogListing";
 import { NewsletterSignup } from "@/components/blog/NewsletterSignup";
 import { AIChatWidget } from "@/components/widgets/AIChatWidget";
-import { Tag } from "@/components/ui/Tag";
-import { ArrowRight, Blog, Education } from "@carbon/icons-react";
+import { Blog } from "@carbon/icons-react";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { projectsPath } from "@/lib/routes";
 import type { Metadata } from "next";
@@ -17,7 +15,6 @@ import type { Locale } from "@/types";
 
 interface Props {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ tag?: string; section?: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -30,15 +27,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-function isCtlPost(tags?: string[], categories?: string[]): boolean {
-  const combined = [...(tags ?? []), ...(categories ?? [])];
-  return combined.some((item) => item.toLowerCase() === "careertalklab");
-}
-
-export default async function BlogPage({ params, searchParams }: Props) {
+export default async function BlogPage({ params }: Props) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
-  const { tag, section } = await searchParams;
   setRequestLocale(locale);
 
   const t = await getTranslations("Blog");
@@ -56,23 +47,20 @@ export default async function BlogPage({ params, searchParams }: Props) {
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count);
 
-  const isCtlActive = tag?.toLowerCase() === "careertalklab" || section === "ctl";
-  const isAnalyticsActive = !tag && section === "analytics";
-  const isAllActive = !tag && !section;
-
-  // Filter by section or tag
-  const posts = allPosts.filter((p) => {
-    if (isCtlActive && !tag) {
-      return isCtlPost(p.frontmatter.tags, p.frontmatter.categories);
-    }
-    if (isAnalyticsActive) {
-      return !isCtlPost(p.frontmatter.tags, p.frontmatter.categories);
-    }
-    if (tag) {
-      return p.frontmatter.tags?.some((pt) => pt.toLowerCase() === tag.toLowerCase());
-    }
-    return true;
-  });
+  const listingPosts: BlogListingPost[] = allPosts.map((post) => ({
+    slug: post.slug,
+    title: post.frontmatter.title,
+    description: post.frontmatter.description,
+    formattedDate: post.frontmatter.date
+      ? new Date(post.frontmatter.date).toLocaleDateString(dateLocale, {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })
+      : undefined,
+    tags: post.frontmatter.tags,
+    categories: post.frontmatter.categories,
+  }));
 
   return (
     <div className="bg-ground text-ink">
@@ -95,130 +83,23 @@ export default async function BlogPage({ params, searchParams }: Props) {
             </p>
           </div>
 
-          {/* Section / Category Switcher (All Writing | Small-Business Analytics | CareerTalkLab) */}
-          <div className="mb-8">
-            <p className="font-mono text-xs uppercase tracking-wider text-muted mb-2.5">
-              {t("sectionLabel")}
-            </p>
-            <div className="flex flex-wrap items-center gap-2.5">
-              <Link
-                href="/blog"
-                className={`inline-flex items-center rounded-lg px-4 py-2 font-mono text-xs font-semibold no-underline transition-all ${
-                  isAllActive
-                    ? "bg-accent text-on-accent shadow-xs"
-                    : "border border-hair bg-panel text-ink hover:bg-panel-2"
-                }`}
-              >
-                {t("trackAll")}
-              </Link>
-              <Link
-                href="/blog?section=analytics"
-                className={`inline-flex items-center rounded-lg px-4 py-2 font-mono text-xs font-semibold no-underline transition-all ${
-                  isAnalyticsActive
-                    ? "bg-accent text-on-accent shadow-xs"
-                    : "border border-hair bg-panel text-ink hover:bg-panel-2"
-                }`}
-              >
-                {t("trackAnalytics")}
-              </Link>
-              <Link
-                href="/blog?tag=CareerTalkLab"
-                className={`inline-flex items-center gap-1.5 rounded-lg px-4 py-2 font-mono text-xs font-semibold no-underline transition-all ${
-                  isCtlActive
-                    ? "bg-accent text-on-accent shadow-xs"
-                    : "border border-accent/30 bg-accent/10 text-accent hover:bg-accent/20"
-                }`}
-              >
-                <span className="h-2 w-2 rounded-full bg-[#22c55e]" />
-                {t("trackCtl")}
-              </Link>
-            </div>
-          </div>
-
-          {/* CareerTalkLab Section Context Callout when viewing CareerTalkLab posts */}
-          {isCtlActive && (
-            <div className="mb-10 relative overflow-hidden rounded-xl border border-accent/30 bg-panel shadow-sm">
-              <div
-                className="h-1 w-full bg-gradient-to-r from-[#006b9e] via-[#38a3d6] to-[#22c55e]"
-                aria-hidden="true"
-              />
-              <div className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <div className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-accent mb-1">
-                    <Education size={16} />
-                    <span>{t("ctlBannerTitle")}</span>
-                  </div>
-                  <p className="text-sm text-muted leading-relaxed max-w-xl">
-                    {t("ctlBannerBody")}
-                  </p>
-                </div>
-                <div className="flex shrink-0 flex-col gap-2.5">
-                  <Link
-                    href={projectsPath(locale, "careertalklab")}
-                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2.5 font-mono text-xs font-semibold uppercase tracking-wider text-on-accent hover:bg-accent-dim no-underline transition-colors"
-                  >
-                    <span>{t("ctlBannerCta")}</span>
-                    <ArrowRight size={14} />
-                  </Link>
-                  <a
-                    href={locale === "tr" ? "https://careertalklab.com/tr" : "https://careertalklab.com"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-accent/30 bg-ground px-4 py-2.5 font-mono text-xs font-semibold uppercase tracking-wider text-accent hover:bg-accent/10 no-underline transition-colors"
-                  >
-                    <span>{t("ctlBannerLiveCta")}</span>
-                    <ArrowRight size={14} />
-                  </a>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {tags.length > 0 && <TagCloud tags={tags} />}
-
-          <div className="flex flex-col gap-6">
-            {posts.map((post) => (
-              <Link
-                key={post.slug}
-                href={`/blog/${post.slug}`}
-                className="group block rounded-xl border border-hair bg-panel p-6 md:p-8 shadow-sm transition-all hover:border-accent/50 hover:shadow-md no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                  {post.frontmatter.tags && post.frontmatter.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {post.frontmatter.tags.map((postTag) => (
-                        <Tag key={postTag} type={postTag === "CareerTalkLab" ? "blue" : "gray"}>
-                          {postTag}
-                        </Tag>
-                      ))}
-                    </div>
-                  )}
-                  {post.frontmatter.date && (
-                    <time className="font-mono text-xs uppercase tracking-[0.08em] text-faint">
-                      {new Date(post.frontmatter.date).toLocaleDateString(dateLocale, {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </time>
-                  )}
-                </div>
-
-                <h2 className="mb-2.5 font-serif text-2xl sm:text-3xl text-ink transition-colors group-hover:text-accent group-focus-visible:text-accent leading-snug">
-                  {post.frontmatter.title}
-                </h2>
-                {post.frontmatter.description && (
-                  <p className="mb-4 text-sm sm:text-base leading-relaxed text-muted">
-                    {post.frontmatter.description}
-                  </p>
-                )}
-                <div className="pt-3 border-t border-hair/70 inline-flex items-center gap-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-accent group-hover:text-accent-dim">
-                  <span>{t("readArticle")}</span>
-                  <ArrowRight size={14} />
-                </div>
-              </Link>
-            ))}
-          </div>
+          <BlogListing
+            locale={locale as Locale}
+            posts={listingPosts}
+            tags={tags}
+            ctlProjectHref={projectsPath(locale, "careertalklab")}
+            labels={{
+              sectionLabel: t("sectionLabel"),
+              trackAll: t("trackAll"),
+              trackAnalytics: t("trackAnalytics"),
+              trackCtl: t("trackCtl"),
+              ctlBannerTitle: t("ctlBannerTitle"),
+              ctlBannerBody: t("ctlBannerBody"),
+              ctlBannerCta: t("ctlBannerCta"),
+              ctlBannerLiveCta: t("ctlBannerLiveCta"),
+              readArticle: t("readArticle"),
+            }}
+          />
 
           <div className="mt-14">
             <NewsletterSignup sourcePath="/blog" />

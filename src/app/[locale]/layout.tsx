@@ -4,6 +4,8 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
+import { getLocaleLayoutMetadata } from "@/lib/site-metadata";
+import type { Locale } from "@/types";
 import { GoogleAnalytics } from "@/components/google-analytics";
 import { InquiryAttributionTracker } from "@/components/InquiryAttributionTracker";
 import "../globals.css";
@@ -50,18 +52,7 @@ export async function generateMetadata({
   }
   const t = await getTranslations({ locale, namespace: "Metadata" });
 
-  return {
-    metadataBase: new URL("https://johnserra.com"),
-    title: t("title"),
-    description: t("description"),
-    alternates: {
-      languages: {
-        en: "https://johnserra.com",
-        tr: "https://johnserra.com/tr",
-        "x-default": "https://johnserra.com",
-      },
-    },
-  };
+  return getLocaleLayoutMetadata(locale as Locale, t("title"), t("description"));
 }
 
 export default async function LocaleLayout({ children, params }: Props) {

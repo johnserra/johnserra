@@ -2,7 +2,9 @@ import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
+import { hasLocale } from "next-intl";
 import { setRequestLocale, getTranslations } from "next-intl/server";
+import { routing } from "@/i18n/routing";
 import { getSiteContentBySlug } from "@/lib/site-content";
 import { privacyPolicyPath } from "@/lib/routes";
 import { Header } from "@/components/layout/Header";
@@ -18,6 +20,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "PrivacyPolicy" });
   return {
     title: t("title"),
@@ -27,6 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PrivacyPolicyPage({ params }: Props) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
 
   const content = await getSiteContentBySlug("privacy-policy", "index", locale as Locale);

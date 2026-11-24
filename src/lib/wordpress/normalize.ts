@@ -1,7 +1,7 @@
 import type { Locale } from "@/types";
 import type {
   ContentTag,
-  WordPressApiItem,
+  WordPressApiSummaryItem,
   WordPressContentItem,
   WordPressMedia,
 } from "./types";
@@ -28,7 +28,11 @@ export function decodeHtmlEntities(value: string): string {
   });
 }
 
-function assertApiItem(value: WordPressApiItem, allowUnpublished: boolean): void {
+function assertApiItem(
+  value: WordPressApiSummaryItem,
+  allowUnpublished: boolean,
+  requireContent: boolean,
+): void {
   if (
     !value ||
     !Number.isInteger(value.id) ||
@@ -36,13 +40,13 @@ function assertApiItem(value: WordPressApiItem, allowUnpublished: boolean): void
     !value.type ||
     (!allowUnpublished && value.status !== "publish") ||
     typeof value.title?.rendered !== "string" ||
-    typeof value.content?.rendered !== "string"
+    (requireContent && typeof value.content?.rendered !== "string")
   ) {
     throw new TypeError("WordPress returned an invalid published content item.");
   }
 }
 
-function terms(item: WordPressApiItem, taxonomy: "post_tag" | "category"): ContentTag[] {
+function terms(item: WordPressApiSummaryItem, taxonomy: "post_tag" | "category"): ContentTag[] {
   return (item._embedded?.["wp:term"] ?? [])
     .flat()
     .filter((term) => term.taxonomy === taxonomy)
@@ -59,7 +63,7 @@ function wordpressUtcTimestamp(value: unknown): string | undefined {
   return Number.isFinite(timestamp) ? new Date(timestamp).toISOString() : undefined;
 }
 
-function featuredImage(item: WordPressApiItem): WordPressMedia | undefined {
+function featuredImage(item: WordPressApiSummaryItem): WordPressMedia | undefined {
   return item._embedded?.["wp:featuredmedia"]?.[0];
 }
 
@@ -80,11 +84,12 @@ function optionalNumber(value: unknown): number | undefined {
 }
 
 export function normalizeWordPressItem(
-  item: WordPressApiItem,
+  item: WordPressApiSummaryItem,
   expectedLocale: Locale,
   allowUnpublished = false,
+  requireContent = true,
 ): WordPressContentItem {
-  assertApiItem(item, allowUnpublished);
+  assertApiItem(item, allowUnpublished, requireContent);
 
   const acf = item.acf ?? {};
   const locale = acf.locale;
@@ -113,7 +118,7 @@ export function normalizeWordPressItem(
     summary: optionalPlainText(acf.summary) ?? optionalPlainText(item.excerpt?.rendered),
     date: optionalText(item.date_gmt),
     modified: wordpressUtcTimestamp(item.modified_gmt),
-    contentHtml: item.content.rendered,
+    contentHtml: item.content?.rendered ?? "",
     tags: terms(item, "post_tag"),
     categories: terms(item, "category"),
     featuredImage: media

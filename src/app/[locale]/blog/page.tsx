@@ -1,4 +1,7 @@
+import { notFound } from "next/navigation";
+import { hasLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { routing } from "@/i18n/routing";
 import { getAllSiteContent } from "@/lib/site-content";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -19,6 +22,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "Blog" });
   return {
     title: t("metaTitle"),
@@ -33,6 +37,7 @@ function isCtlPost(tags?: string[], categories?: string[]): boolean {
 
 export default async function BlogPage({ params, searchParams }: Props) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) notFound();
   const { tag, section } = await searchParams;
   setRequestLocale(locale);
 

@@ -3,7 +3,10 @@ import { Footer } from "@/components/layout/Footer";
 import { AIChatWidget } from "@/components/widgets/AIChatWidget";
 import { ContactForm } from "@/components/ui/ContactForm";
 import { LogoLinkedin, Email } from "@carbon/icons-react";
+import { notFound } from "next/navigation";
+import { hasLocale } from "next-intl";
 import { setRequestLocale, getTranslations } from "next-intl/server";
+import { routing } from "@/i18n/routing";
 import type { Metadata } from "next";
 
 interface Props {
@@ -12,6 +15,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "Contact" });
   return {
     title: t("metaTitle"),
@@ -21,6 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ContactPage({ params }: Props) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
 
   const t = await getTranslations("Contact");

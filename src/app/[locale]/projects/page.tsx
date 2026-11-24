@@ -1,4 +1,7 @@
+import { notFound } from "next/navigation";
+import { hasLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { routing } from "@/i18n/routing";
 import { getAllSiteContent } from "@/lib/site-content";
 import { projectsPath } from "@/lib/routes";
 import { Header } from "@/components/layout/Header";
@@ -16,6 +19,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "Portfolio" });
   return {
     title: t("metaTitle"),
@@ -25,6 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProjectsPage({ params }: Props) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
 
   const t = await getTranslations("Portfolio");

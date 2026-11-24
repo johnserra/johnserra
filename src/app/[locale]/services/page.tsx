@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { ArrowRight, ChartLine, DataBase, Dashboard, IbmCloudPakData } from "@carbon/icons-react";
+import { notFound } from "next/navigation";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ServicesInquiryForm } from "@/components/services/ServicesInquiryForm";
@@ -12,12 +15,14 @@ interface Props { params: Promise<{ locale: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "Services" });
   return { title: t("metaTitle"), description: t("metaDescription") };
 }
 
 export default async function ServicesPage({ params }: Props) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
   const t = await getTranslations("Services");
   const services = [

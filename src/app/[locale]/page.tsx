@@ -1,4 +1,7 @@
+import { notFound } from "next/navigation";
+import { hasLocale } from "next-intl";
 import { setRequestLocale, getTranslations } from "next-intl/server";
+import { routing } from "@/i18n/routing";
 import { ArrowRight, Layers } from "@carbon/icons-react";
 import { Link } from "@/i18n/navigation";
 import { Header } from "@/components/layout/Header";
@@ -19,6 +22,9 @@ interface Props {
 
 export default async function Home({ params }: Props) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) {
+    notFound();
+  }
   setRequestLocale(locale);
 
   const tPortfolio = await getTranslations("PortfolioProjects");

@@ -13,6 +13,7 @@ import { Callout } from "@/components/ui/Callout";
 import { WordPressContent } from "@/components/ui/WordPressContent";
 import { ArrowLeft, ArrowRight, ChartLineData, Compass, Education } from "@carbon/icons-react";
 import { Tag } from "@/components/ui/Tag";
+import { hasLocale } from "next-intl";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { getBlogPostSchema } from "@/lib/schema";
@@ -85,6 +86,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const content = await getSiteContentBySlug("blog", slug, locale as Locale);
   if (!content) return {};
   const targetLocale = (locale === "en" ? "tr" : "en") as Locale;
@@ -99,6 +101,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Props) {
   const { locale, slug } = await params;
+  if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
 
   const t = await getTranslations("Blog");

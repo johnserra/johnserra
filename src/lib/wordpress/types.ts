@@ -60,6 +60,10 @@ export interface WordPressApiItem {
   };
 }
 
+export type WordPressApiSummaryItem = Omit<WordPressApiItem, "content"> & {
+  content?: WordPressRenderedField;
+};
+
 export interface ContentTag {
   id: number;
   name: string;

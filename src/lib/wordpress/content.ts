@@ -5,11 +5,28 @@ import { wordpressFetch, wordpressFetchPage, WordPressApiError } from "./client"
 import { normalizeWordPressItem } from "./normalize";
 import type {
   WordPressApiItem,
+  WordPressApiSummaryItem,
   WordPressCollectionType,
   WordPressContentItem,
   WordPressPage,
   WordPressTranslation,
 } from "./types";
+
+// Omit full HTML `content` on collection requests so large post lists stay well under Next.js's 2 MB Data Cache cap.
+const COLLECTION_ITEM_FIELDS = [
+  "id",
+  "date_gmt",
+  "modified_gmt",
+  "slug",
+  "status",
+  "type",
+  "title",
+  "excerpt",
+  "featured_media",
+  "acf",
+  "_links",
+  "_embedded",
+].join(",");
 
 const ITEM_FIELDS = [
   "id",
@@ -59,8 +76,10 @@ export async function getWordPressCollection(
   locale: Locale,
   page = 1,
   perPage = 100,
+  options: { includeContent?: boolean } = {},
 ): Promise<WordPressPage<WordPressContentItem>> {
-  const response = await wordpressFetchPage<WordPressApiItem>(ENDPOINTS[type], {
+  const includeContent = options.includeContent ?? false;
+  const response = await wordpressFetchPage<WordPressApiSummaryItem>(ENDPOINTS[type], {
     query: {
       status: "publish",
       js_locale: locale,
@@ -69,14 +88,14 @@ export async function getWordPressCollection(
       order: "desc",
       orderby: type === "pages" ? "menu_order" : "date",
       _embed: "wp:featuredmedia,wp:term",
-      _fields: ITEM_FIELDS,
+      _fields: includeContent ? ITEM_FIELDS : COLLECTION_ITEM_FIELDS,
     },
     tags: contentCacheTags(type, locale),
   });
 
   return {
     ...response,
-    items: response.items.map((item) => normalizeWordPressItem(item, locale)),
+    items: response.items.map((item) => normalizeWordPressItem(item, locale, false, includeContent)),
   };
 }
 

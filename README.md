@@ -79,6 +79,11 @@ See the [WordPress plugin installation instructions](wordpress/wp-content/plugin
 The reviewed CV workflow is deliberately separate:
 
 ```bash
+# Offline: sync from ~/Projects/career-ops/cv.md (primary) + public supplements
+# while stripping contact info and current-employer regional location.
+npm run sync:cv
+npm run sync:cv -- --check
+
 # Offline: validate the strict JSON source, render/check Markdown, and print the
 # canonical approval digest over both validated data and the readable artifact.
 npm run seed:cv

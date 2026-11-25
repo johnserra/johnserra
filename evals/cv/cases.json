@@ -25,9 +25,9 @@
     {
       "id": "pakis-descriptive-title-en",
       "locale": "en",
-      "query": "Was General Manager, Operations your formal title at Pakiş?",
-      "expected_section_id": "experience-pakis-general-manager-operations",
-      "expected_source_id": "cv/john-serra/en/experience-pakis-general-manager-operations"
+      "query": "Was Operations Executive your formal title at Pakiş, and did you use PostgreSQL there?",
+      "expected_section_id": "experience-pakis-operations-executive",
+      "expected_source_id": "cv/john-serra/en/experience-pakis-operations-executive"
     },
     {
       "id": "pagysa-traceability-haccp-en",
@@ -37,23 +37,23 @@
       "expected_source_id": "cv/john-serra/en/experience-pagysa-operations-manager"
     },
     {
-      "id": "education-unknown-degree-en",
+      "id": "education-bogazici-degree-en",
       "locale": "en",
-      "query": "Which degree did you complete at Boğaziçi University and when?",
+      "query": "Which degree did you study at Boğaziçi University and are attendance dates listed?",
       "expected_section_id": "education-bogazici-university",
       "expected_source_id": "cv/john-serra/en/education-bogazici-university"
     },
     {
-      "id": "languages-no-levels-en",
+      "id": "languages-proficiency-en",
       "locale": "en",
       "query": "Which languages do you speak, and at what proficiency levels?",
       "expected_section_id": "languages",
       "expected_source_id": "cv/john-serra/en/languages"
     },
     {
-      "id": "careertalklab-planned-analytics-en",
+      "id": "careertalklab-platform-en",
       "locale": "en",
-      "query": "Is CareerTalkLab complete, and is its data analytics curriculum available?",
+      "query": "What is CareerTalkLab, and does it include data analytics skills?",
       "expected_section_id": "project-careertalklab",
       "expected_source_id": "cv/john-serra/en/project-careertalklab"
     },
@@ -79,9 +79,9 @@
       "expected_source_id": "cv/john-serra/en/experience-pagysa-operations-manager"
     },
     {
-      "id": "education-unknown-degree-tr",
+      "id": "education-bogazici-degree-tr",
       "locale": "tr",
-      "query": "Boğaziçi Üniversitesi'nde hangi dereceyi ne zaman tamamladınız?",
+      "query": "Boğaziçi Üniversitesi'nde hangi bölümü okudunuz ve tarihler yer alıyor mu?",
       "expected_section_id": "education-bogazici-university",
       "expected_source_id": "cv/john-serra/en/education-bogazici-university"
     }

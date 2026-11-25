@@ -71,7 +71,9 @@ for (const locale of ["en", "tr"] as const) {
       assert.match(request.config.systemInstruction, /Never claim John currently teaches/u);
     }
     const cv = await loadRegisteredCv();
-    assert.match(cv.sections.find((section) => section.id === "summary")?.paragraphs.join(" ") ?? "", /includes teaching/u);
+    assert.ok(
+      cv.sections.some((section) => /teaching|education coordinator/i.test(`${section.title} ${section.paragraphs.join(" ")} ${section.bullets.join(" ")}`)),
+    );
     assert.match(buildSystemPrompt("", locale), /If current availability is not documented/u);
   });
 }

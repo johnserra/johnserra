@@ -29,6 +29,7 @@ const DATE_POINT_KEYS = new Set(["value", "precision"]);
 const REFERENCE_KEYS = new Set(["label", "url"]);
 const CATEGORIES = new Set(["summary", "experience", "project", "education", "credential", "languages", "skills"]);
 const REGISTERED_REFERENCE_URLS = new Set([
+  "https://johnserra.com",
   "https://johnserra.com/projects/careertalklab",
   "https://johnserra.com/projects/bd-automation-suite",
 ]);

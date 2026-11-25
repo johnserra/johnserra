@@ -1,0 +1,253 @@
+{
+  "schema_version": "1.0.0",
+  "experience_overrides": [
+    {
+      "match_organization": "Premium Parking",
+      "id": "experience-premium-parking-account-manager",
+      "organization": "Premium Parking",
+      "omit_location": true
+    },
+    {
+      "match_organization": "Amerikan Kültür Dil Okulları",
+      "id": "experience-amerikan-kultur-education-coordinator",
+      "organization": "Amerikan Kültür Dil Okulları",
+      "location_paragraph": "Location: Istanbul, Türkiye."
+    },
+    {
+      "match_organization": "John Serra",
+      "id": "experience-self-employed-consultant",
+      "organization": "Self-employed",
+      "location_paragraph": "Location: Remote, Türkiye.",
+      "extra_paragraphs": [
+        "Advised small and medium-sized businesses requiring technical sales support for export markets and liaised between prospective buyers and client companies."
+      ]
+    },
+    {
+      "match_organization": "Sunwell Global Ltd",
+      "id": "experience-sunwell-global-sales-manager",
+      "organization": "Sunwell Global Ltd.",
+      "location_paragraph": "Location: Seattle, Washington, United States.",
+      "extra_paragraphs": [
+        "Engagement: Independent contractor.",
+        "Product scope: Represented Sunwell Global in introducing INPAK's TS-800 form, trim, and stack thermoforming machine to the United States and the wider Americas."
+      ]
+    },
+    {
+      "match_organization": "Pakis Ambalaj A.S",
+      "id": "experience-pakis-operations-executive",
+      "organization": "Pakiş Ambalaj A.Ş.",
+      "location_paragraph": "Location: Izmir, Türkiye.",
+      "extra_paragraphs": [
+        "Descriptive title reflecting responsibilities in a family-owned business that did not use formal titles. Worked with senior family stakeholders and directed operations."
+      ]
+    }
+  ],
+  "project_overrides": [
+    {
+      "match_title": "johnserra.com",
+      "id": "project-johnserra-com",
+      "title": "johnserra.com — Practical Analytics Publishing & Applied AI Digital Twin",
+      "organization": "johnserra.com",
+      "references": [
+        {
+          "label": "johnserra.com",
+          "url": "https://johnserra.com"
+        }
+      ]
+    },
+    {
+      "match_title": "CareerTalkLab",
+      "id": "project-careertalklab",
+      "title": "CareerTalkLab — Learner Community & AI-Assisted Skills Platform",
+      "organization": "CareerTalkLab",
+      "dates": {
+        "kind": "interval",
+        "start": { "value": "2026-03", "precision": "month" },
+        "end": null,
+        "ongoing": true,
+        "start_unknown": false,
+        "end_unknown": false
+      },
+      "references": [
+        {
+          "label": "CareerTalkLab project",
+          "url": "https://johnserra.com/projects/careertalklab"
+        }
+      ]
+    }
+  ],
+  "education_overrides": [
+    {
+      "match_institution": "Boğaziçi University",
+      "id": "education-bogazici-university",
+      "title": "Boğaziçi University",
+      "organization": "Boğaziçi University",
+      "location_paragraph": "Location: Istanbul, Türkiye.",
+      "extra_paragraphs": [
+        "Attendance and completion dates are omitted. Psychology is noted as additional coursework without asserting a separate degree, major, or minor."
+      ]
+    },
+    {
+      "match_institution": "Seattle Central Community College",
+      "id": "education-seattle-central-college",
+      "title": "Seattle Central Community College",
+      "organization": "Seattle Central Community College",
+      "location_paragraph": "Location: Seattle, Washington, United States.",
+      "extra_paragraphs": [
+        "Attendance and completion dates are omitted."
+      ]
+    }
+  ],
+  "credential_overrides": [
+    {
+      "match_title": "Teaching Practice Certificate",
+      "id": "credential-teaching-practice-certificate",
+      "title": "Teaching Practice Certificate"
+    },
+    {
+      "match_title": "Teaching of English to Students of Other Languages",
+      "id": "credential-tesol",
+      "title": "Teaching of English to Students of Other Languages (TESOL)"
+    }
+  ],
+  "append_sections": [
+    {
+      "id": "experience-pagysa-operations-manager",
+      "category": "experience",
+      "title": "Operations Manager — Pagysa A.Ş.",
+      "organization": "Pagysa A.Ş.",
+      "role": "Operations Manager",
+      "dates": {
+        "kind": "interval",
+        "start": { "value": "1995-06", "precision": "month" },
+        "end": { "value": "1998-10", "precision": "month" },
+        "ongoing": false,
+        "start_unknown": false,
+        "end_unknown": false
+      },
+      "locale": "en",
+      "visibility": "public",
+      "document_type": "cv",
+      "authority": "reviewed_public_cv",
+      "canonical_url": "https://johnserra.com/cv/john-serra.en.md",
+      "paragraphs": [
+        "Location: Türkiye.",
+        "Descriptive title reflecting oversight of purchasing, production, and satellite production facilities in a company that did not use formal titles."
+      ],
+      "bullets": [
+        "Oversaw the buying process and production activities across the company's satellite facilities.",
+        "Oversaw implementation work for ISO 9001 quality management and HACCP food safety controls as part of the company's operational transition.",
+        "Developed and implemented lot-level fruit traceability from farms in the Aegean region through processing and delivery to major food manufacturers across Europe, responding to customer requirements.",
+        "Helped turn a previously unresolved traceability challenge into a proven operational capability and a competitive advantage for the company.",
+        "Started and managed a sun-dried tomato project covering sourcing, processing, packaging, and sales to European markets."
+      ],
+      "references": []
+    },
+    {
+      "id": "project-business-development-automation",
+      "category": "project",
+      "title": "Business development automation",
+      "organization": null,
+      "role": null,
+      "dates": {
+        "kind": "interval",
+        "start": { "value": "2026-01", "precision": "documented_from" },
+        "end": null,
+        "ongoing": false,
+        "start_unknown": false,
+        "end_unknown": true
+      },
+      "locale": "en",
+      "visibility": "public",
+      "document_type": "cv",
+      "authority": "reviewed_public_cv",
+      "canonical_url": "https://johnserra.com/cv/john-serra.en.md",
+      "paragraphs": [
+        "Modular suite documented from February 2026.",
+        "Developed tools for prospect research, lead qualification, follow-up scheduling, and outreach drafting with human review."
+      ],
+      "bullets": [],
+      "references": [
+        {
+          "label": "BD Automation Suite project",
+          "url": "https://johnserra.com/projects/bd-automation-suite"
+        }
+      ]
+    },
+    {
+      "id": "credential-foundations-data",
+      "category": "credential",
+      "title": "Foundations: Data, Data, Everywhere",
+      "organization": "Coursera",
+      "role": null,
+      "dates": {
+        "kind": "issued",
+        "start": { "value": "2021-08", "precision": "month" },
+        "end": null,
+        "ongoing": false,
+        "start_unknown": false,
+        "end_unknown": false
+      },
+      "locale": "en",
+      "visibility": "public",
+      "document_type": "cv",
+      "authority": "reviewed_public_cv",
+      "canonical_url": "https://johnserra.com/cv/john-serra.en.md",
+      "paragraphs": [
+        "Listed issuer: Coursera. Issued August 2021. Listed on LinkedIn; not independently verified."
+      ],
+      "bullets": [],
+      "references": []
+    },
+    {
+      "id": "credential-ask-questions-data",
+      "category": "credential",
+      "title": "Ask Questions to Make Data-Driven Decisions",
+      "organization": "Coursera",
+      "role": null,
+      "dates": {
+        "kind": "issued",
+        "start": { "value": "2021-09", "precision": "month" },
+        "end": null,
+        "ongoing": false,
+        "start_unknown": false,
+        "end_unknown": false
+      },
+      "locale": "en",
+      "visibility": "public",
+      "document_type": "cv",
+      "authority": "reviewed_public_cv",
+      "canonical_url": "https://johnserra.com/cv/john-serra.en.md",
+      "paragraphs": [
+        "Listed issuer: Coursera. Issued September 2021. Listed on LinkedIn; not independently verified."
+      ],
+      "bullets": [],
+      "references": []
+    },
+    {
+      "id": "credential-prepare-data-exploration",
+      "category": "credential",
+      "title": "Prepare Data for Exploration",
+      "organization": "Coursera",
+      "role": null,
+      "dates": {
+        "kind": "issued",
+        "start": { "value": "2021-10", "precision": "month" },
+        "end": null,
+        "ongoing": false,
+        "start_unknown": false,
+        "end_unknown": false
+      },
+      "locale": "en",
+      "visibility": "public",
+      "document_type": "cv",
+      "authority": "reviewed_public_cv",
+      "canonical_url": "https://johnserra.com/cv/john-serra.en.md",
+      "paragraphs": [
+        "Listed issuer: Coursera. Issued October 2021. Listed on LinkedIn; not independently verified."
+      ],
+      "bullets": [],
+      "references": []
+    }
+  ]
+}

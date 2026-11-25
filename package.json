@@ -27,6 +27,7 @@
     "eval:cv": "NODE_OPTIONS=--conditions=react-server node --import tsx scripts/evaluation/cv-cli.ts",
     "seed": "NODE_OPTIONS=--conditions=react-server tsx scripts/seed-knowledge-base.ts",
     "seed:cv": "NODE_OPTIONS=--conditions=react-server node --import tsx scripts/seed-cv.ts",
+    "sync:cv": "node --import tsx scripts/sync-cv-from-career-ops.ts",
     "wordpress:import:dry": "tsx scripts/import-content-to-wordpress.ts",
     "wordpress:import": "tsx scripts/import-content-to-wordpress.ts --apply"
   },

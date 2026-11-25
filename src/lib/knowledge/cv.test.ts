@@ -30,7 +30,7 @@ test("registered structured CV and public Markdown are in deterministic parity",
   assert.equal(await readFile(CV_PUBLIC_RELATIVE_PATH, "utf8"), markdown);
   assert.equal(cvApprovalDigest(document).length, 64);
   assert.equal(cvMarkdownSha256(markdown).length, 64);
-  assert.equal(document.sections.length, 18);
+  assert.equal(document.sections.length, 19);
   assert.equal(new Set(document.sections.map((section) => section.id)).size, document.sections.length);
 });
 
@@ -46,9 +46,9 @@ test("current Premium Parking role keeps its reviewed identity without a regiona
   assert.deepEqual(role.paragraphs, []);
   assert.match(publicArtifact, /### Account Manager — Premium Parking/);
   assert.match(publicArtifact, /November 2022–present/);
-  assert.doesNotMatch(publicArtifact, /Location: Rochester|Syracuse|Central New York|\bCNY\b/i);
+  assert.doesNotMatch(publicArtifact, /Location: Rochester|Rochester|Syracuse|Central New York|\bCNY\b/i);
   assert.equal(publicArtifact, markdown);
-  assert.notEqual(cvApprovalDigest(document), "a8c652af5a1dd8ee2fb513c81548a9e4342fe8240f43b352832bc41b8fc2f013");
+  assert.notEqual(cvApprovalDigest(document), "fc886f716d7ce40bfd617957855c34422872b38b16ff106a2a87e59026030f86");
 });
 
 test("registered CV loading is independent of the runtime working directory", async () => {
@@ -57,7 +57,7 @@ test("registered CV loading is independent of the runtime working directory", as
   try {
     const document = await loadRegisteredCv();
     assert.equal(document.document_id, "john-serra");
-    assert.equal(document.sections.length, 18);
+    assert.equal(document.sections.length, 19);
   } finally {
     process.chdir(originalDirectory);
   }
@@ -87,7 +87,7 @@ test("strict schema rejects unknown/private fields, invalid visibility, URLs, da
 
 test("every short and long semantic section becomes one complete stable chunk", async () => {
   const chunks = cvChunks(await loadRegisteredCv());
-  assert.equal(chunks.length, 18);
+  assert.equal(chunks.length, 19);
   assert.ok(chunks.every((chunk) => chunk.chunk_index === 0));
   const short = chunks.find((chunk) => chunk.metadata.section_id === "credential-teaching-practice-certificate");
   assert.match(short?.content ?? "", /Teaching Practice Certificate/);
@@ -106,26 +106,32 @@ test("every short and long semantic section becomes one complete stable chunk", 
   }));
 });
 
-test("reviewed factual boundaries remain explicit in the canonical source", async () => {
+test("reviewed factual boundaries and career-ops alignment remain explicit in the canonical source", async () => {
   const markdown = renderCvMarkdown(await loadRegisteredCv());
   for (const expected of [
     "November 2022–present",
+    "Power BI dashboards",
     "May 2008–October 2022",
     "technical sales support for export markets",
-    "Liaised between prospective buyers and client companies",
     "Engagement: Independent contractor.",
     "INPAK's TS-800",
+    "Operations Executive — Pakiş Ambalaj A.Ş.",
     "Descriptive title reflecting responsibilities in a family-owned business that did not use formal titles",
+    "Used PostgreSQL to track manufacturing process data",
     "lot-level fruit traceability",
     "ISO 9001 quality management and HACCP food safety controls",
-    "data analytics curriculum planned as an additional offering",
+    "johnserra.com — Practical Analytics Publishing & Applied AI Digital Twin",
+    "practical data analytics (`Grain First`) skills",
     "Work documented from January 2026; end date unknown",
     "Modular suite documented from February 2026.",
-    "Degree designation and attendance or completion dates are omitted pending confirmation.",
-    "Proficiency levels remain to be confirmed before inclusion.",
+    "Bachelor of Arts, Business Administration (additional coursework in Psychology).",
+    "Associate of Arts, Business.",
+    "Attendance and completion dates are omitted.",
+    "English, Turkish (C2), Italian (C1), Spanish (A2).",
+    "Databases and SQL.",
     "Individual course certificates do not establish completion of a broader professional certificate program.",
   ]) assert.ok(markdown.includes(expected), `missing reviewed boundary: ${expected}`);
-  assert.doesNotMatch(markdown, /nonprofit|bachelor|master|fluent|native proficiency/i);
+  assert.doesNotMatch(markdown, /nonprofit|\bmaster(?:'s|s)?\b|General Manager, Operations|Rochester|\b\d{3}[-.\s]\d{3}[-.\s]\d{4}\b|john@serra\.us/i);
 });
 
 test("oversized semantic units are rejected rather than truncated", async () => {

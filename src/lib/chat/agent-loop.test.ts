@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { FunctionCallingConfigMode } from "@google/genai";
+import { staticSocialResponse } from "./social-intent";
 import { streamBoundedEvidenceAgent, type AgentTraceSummary } from "./agent-loop";
 import { createChatToolRegistry, type ChatToolDataSources } from "./tools";
 import type { ChatDependencies, ChatStreamChunk, GenerationRequest } from "./core";
@@ -127,7 +128,7 @@ test("greetings complete statically with zero provider usage and one terminal st
     { correlationId, onAgentTrace: (trace) => traces.push(trace) },
   ));
   assert.equal(providerCalls, 0);
-  assert.equal(answer(result), "Hi! I can help with John’s projects, published work, or documented experience.");
+  assert.equal(answer(result), staticSocialResponse("greeting", "en"));
   assert.deepEqual(traces.map((trace) => trace.stopReason), ["static_completion"]);
   assert.equal(traces[0].acceptedToolExecutions, 0);
   assert.deepEqual(traces[0].usage, { tokenCount: 0, costUsd: 0, completeness: "complete", source: "static" });
@@ -144,7 +145,7 @@ test("capability greetings complete statically while mixed factual requests stil
     }), registry(), new AbortController().signal, { correlationId },
   ));
   assert.equal(directCalls, 0);
-  assert.equal(answer(direct), "I can help with John’s projects, published work, or documented experience.");
+  assert.equal(answer(direct), staticSocialResponse("capability", "en"));
 
   let selectionRequest: GenerationRequest | undefined;
   const mixed = await collect(streamBoundedEvidenceAgent(
@@ -204,7 +205,7 @@ test("direct success records its trace before a consumer closes after the final 
   const first = await iterator.next();
   order.push("yield");
   assert.equal(first.done, false);
-  assert.equal(first.value?.text, "Hi! I can help with John’s projects, published work, or documented experience.");
+  assert.equal(first.value?.text, staticSocialResponse("greeting", "en"));
   await iterator.return(undefined);
   assert.deepEqual(order, ["trace", "yield"]);
   assert.equal(traces.length, 1);

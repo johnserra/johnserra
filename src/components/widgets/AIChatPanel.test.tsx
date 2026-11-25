@@ -4,7 +4,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { NextIntlClientProvider } from "next-intl";
 import enMessages from "../../../messages/en.json";
 import trMessages from "../../../messages/tr.json";
-import { AIChatPanel, filterChatHistory, scrollChatMessages } from "./AIChatPanel";
+import { AIChatPanel, filterChatHistory, renderContent, scrollChatMessages } from "./AIChatPanel";
 import { createFaqExchange, getFaqShortcuts } from "@/lib/chat/faq-shortcuts";
 
 for (const [locale, messages, expectedWelcome, expectedLabel, expectedPrompt, discussProject, askAboutJohn] of [
@@ -49,4 +49,19 @@ test("auto-scroll targets only the message viewport, not the dialog", () => {
   assert.equal(viewport.scrollTop, 956);
   assert.equal(dialog.scrollTop, 0);
   scrollChatMessages(null);
+});
+
+test("renderContent formats paragraphs, bullet lists, bold, inline code, and safe links while blocking unsafe URLs", () => {
+  const html = renderToStaticMarkup(
+    <div>
+      {renderContent(
+        "Intro with **bold** and `Grain First`.\n\n- Check [CV](https://johnserra.com/cv/john-serra.en.md)\n- Ignore [bad](javascript:alert(1))",
+      )}
+    </div>,
+  );
+  assert.match(html, /<strong[^>]*>bold<\/strong>/);
+  assert.match(html, /<code[^>]*>Grain First<\/code>/);
+  assert.match(html, /<ul[^>]*>.*<li[^>]*>.*<a[^>]*href="https:\/\/johnserra\.com\/cv\/john-serra\.en\.md"/);
+  assert.doesNotMatch(html, /javascript:/i);
+  assert.match(html, /Ignore bad/);
 });

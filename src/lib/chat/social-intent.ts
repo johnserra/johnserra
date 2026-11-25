@@ -7,7 +7,10 @@ export type SocialIntent = "greeting" | "acknowledgment" | "capability";
 const GREETINGS = new Set([
   "hi", "hello", "hey", "hiya", "howdy", "greetings", "hey there", "hi there", "hello there",
   "good morning", "good afternoon", "good evening",
+  "how are you", "how are you doing", "how s it going", "hows it going",
+  "nice to meet you", "good to meet you",
   "merhaba", "selam", "günaydın", "iyi günler", "iyi akşamlar", "iyi sabahlar",
+  "nasılsın", "nasılsınız", "memnun oldum",
 ]);
 
 const ACKNOWLEDGMENTS = new Set([
@@ -24,8 +27,8 @@ const ACKNOWLEDGMENTS = new Set([
   "anladım sağ ol", "anladım sağ olun", "anlaşıldı teşekkürler", "oldu teşekkürler", "iyi oldu teşekkürler",
 ]);
 
-const ENGLISH_CAPABILITY = /^(?:(?:hi|hello|hey|hiya|howdy|greetings) )?(?:what can you help me (?:with|learn)|how can you help me)(?: about john(?: serra)?)?$/u;
-const TURKISH_CAPABILITY = /^(?:(?:merhaba|selam) )?(?:(?:bana )?nasıl yardımcı olabilirsin|neler yapabilirsin|john serra hakkında (?:neler öğrenmeme yardımcı olabilirsin|bana nasıl yardımcı olabilirsin))$/u;
+const ENGLISH_CAPABILITY = /^(?:(?:hi|hello|hey|hiya|howdy|greetings) )?(?:what can you help me (?:with|learn)|how can you help me|who are you|what are you)(?: about john(?: serra)?)?$/u;
+const TURKISH_CAPABILITY = /^(?:(?:merhaba|selam) )?(?:(?:bana )?nasıl yardımcı olabilirsin|neler yapabilirsin|sen kimsin|kimsin|john serra hakkında (?:neler öğrenmeme yardımcı olabilirsin|bana nasıl yardımcı olabilirsin))$/u;
 
 function normalizedVariants(content: string): string[] {
   if (new TextEncoder().encode(content).byteLength > SOCIAL_INTENT_MAX_BYTES) return [];
@@ -64,10 +67,10 @@ export function classifySocialIntent(messages: readonly ChatMessage[]): SocialIn
 export function staticSocialResponse(intent: SocialIntent, locale: "en" | "tr"): string {
   if (locale === "tr") {
     if (intent === "acknowledgment") return "Rica ederim! John’un projeleri, yayımlanmış çalışmaları veya belgelenmiş deneyimi hakkında dilediğinizi sorabilirsiniz.";
-    if (intent === "capability") return "John’un projeleri, yayımlanmış çalışmaları veya belgelenmiş deneyimi hakkında yardımcı olabilirim.";
-    return "Merhaba! John’un projeleri, yayımlanmış çalışmaları veya belgelenmiş deneyimi hakkında nasıl yardımcı olabilirim?";
+    if (intent === "capability") return "Ben John Serra’nın yapay zekâ asistanıyım. John’un projeleri, yayımlanmış analitik yazıları veya belgelenmiş deneyimi hakkında yardımcı olabilirim—ne öğrenmek istersiniz?";
+    return "Merhaba! Ben John Serra’nın yapay zekâ asistanıyım. John’un projeleri, yayımlanmış çalışmaları veya belgelenmiş deneyimi hakkında size nasıl yardımcı olabilirim?";
   }
   if (intent === "acknowledgment") return "You’re welcome! Feel free to ask about John’s projects, published work, or documented experience.";
-  if (intent === "capability") return "I can help with John’s projects, published work, or documented experience.";
-  return "Hi! I can help with John’s projects, published work, or documented experience.";
+  if (intent === "capability") return "I’m John Serra’s AI assistant. I can help you explore John’s projects, published analytics writing, or documented experience—what would you like to know?";
+  return "Hi! I’m John Serra’s AI assistant. Happy to help with John’s projects, published articles, or documented experience—what are you curious about?";
 }

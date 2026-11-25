@@ -5,7 +5,7 @@ import { classifySocialIntent, staticSocialResponse } from "./social-intent";
 const user = (content: string) => [{ role: "user" as const, content }];
 
 test("classifies bounded whole-message English social variants", () => {
-  for (const message of ["OK Thanks", "Okay, thank you!!!", "Got it, thanks.", "  HeLLo...  ", "Hi — what can you help me learn about John Serra?"]) {
+  for (const message of ["OK Thanks", "Okay, thank you!!!", "Got it, thanks.", "  HeLLo...  ", "How are you?", "Who are you?", "Hi — what can you help me learn about John Serra?"]) {
     assert.ok(classifySocialIntent(user(message)));
   }
   assert.equal(classifySocialIntent(user("Hello — what projects has John Serra built?")), null);

@@ -16,6 +16,7 @@
     "eval:agent-loop:validate": "node --import tsx scripts/evaluation/agent-loop-cli.ts --validate-only",
     "eval:agent-loop:offline": "node --import tsx scripts/evaluation/agent-loop-cli.ts --offline",
     "test:assistant": "node --import tsx --test scripts/evaluation/*.test.ts src/lib/chat/*.test.ts",
+    "test:mcp": "node --import tsx --test src/lib/mcp/*.test.ts",
     "test:cv": "node --import tsx --test src/lib/knowledge/*.test.ts scripts/evaluation/cv.test.ts",
     "test:knowledge:sql": "node --import tsx supabase/tests/structure-aware.test.ts",
     "test:chat-rate-limit": "node --import tsx --test src/lib/chat/hardening.test.ts supabase/tests/chat-rate-limit.test.ts",
@@ -35,6 +36,7 @@
     "@anthropic-ai/sdk": "^0.78.0",
     "@carbon/icons-react": "^11.82.0",
     "@google/genai": "^2.10.0",
+    "@modelcontextprotocol/sdk": "^1.32.2",
     "@supabase/supabase-js": "^2.97.0",
     "@tailwindcss/typography": "^0.5.19",
     "clsx": "^2.1.1",
@@ -48,7 +50,8 @@
     "remark-gfm": "^4.0.1",
     "resend": "^6.1.3",
     "server-only": "^0.0.1",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "^3.4.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.8",

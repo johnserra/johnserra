@@ -32,6 +32,7 @@ jobs:
           npm run test:hybrid:sql
           npm run test:chat-rate-limit
           npm run test:assistant
+          npm run test:mcp
           npm run eval:retrieval:validate
 
       - name: Build Next.js

@@ -13,6 +13,7 @@ The [Digital Twin engineering case study](docs/digital-twin-case-study.md) is th
 - **Page content:** `CONTENT_SOURCE=wordpress` selects the WordPress REST adapter. Any other value, including an unset variable, selects the retained filesystem Markdown/MDX adapter. This setting does **not** change chat retrieval or the WordPress knowledge seeder.
 - **Other services:** contact submissions use Supabase and Resend; contact and data-audit routes can sync leads to Jetpack CRM; blog and article pages offer email update signups (`POST /api/newsletter` writing to `public.newsletter_subscribers` with `contact_messages` fallback). These integrations are separate from the assistant and are not model-callable tools.
 - **Chat operations:** privacy-safe completion and per-dispatch tool events are written as structured Vercel runtime logs. The [chat observability runbook](docs/chat-observability.md) documents correlation, metrics, retention boundaries, and investigation; [model-callable tools](docs/model-callable-tools.md) documents the registry, limits, failures, tests, and rollback.
+- **MCP server (v1, read-only):** `POST /api/mcp` exposes a public, stateless Streamable HTTP Model Context Protocol server (`@modelcontextprotocol/sdk` `WebStandardStreamableHTTPServerTransport`, `enableJsonResponse: true`) for external MCP clients (Claude, Claude Code, Codex, Cursor). v1 registers one read-only tool, `ask_digital_twin(question, locale?)` (`readOnlyHint: true`, `en` / `tr`), which invokes the same bounded evidence agent, verifier pass, reviewed CV authority, and public guardrails within a 38-second deadline and returns both Markdown text and `structuredContent` citations. It reuses `check_chat_rate_limit` with MCP-namespaced HMAC identities (`10` `ask_digital_twin` calls / 60s and `30` total MCP requests / 60s per IP), rejects `GET`/`DELETE` with `405`, and emits privacy-safe `mcp_request_completed` logs with `X-Mcp-Correlation-Id`.
 
 The current assistant uses a bounded evidence-gathering and answer-verification loop with read-only public tools and citation-bearing reviewed output. Its finite controls, stop reasons, privacy-safe trace, and offline corpus are documented in [bounded-evidence-agent.md](docs/bounded-evidence-agent.md). Verification is model review against accepted evidence, not semantic proof.
 
@@ -112,6 +113,7 @@ npm run eval:assistant:validate
 npm run eval:tool-calling:validate
 npm run eval:tool-calling:offline -- --output-dir /tmp/johnserra-tool-calling-report
 npm run test:assistant
+npm run test:mcp
 npm run test:cv
 npm run test:knowledge:sql
 npm run eval:cv -- --validate

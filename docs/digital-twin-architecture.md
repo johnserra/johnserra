@@ -153,6 +153,7 @@ The September 10 assistant baseline is preserved in [`evals/assistant/reports/ba
 Implementation references:
 
 - [Production chat route](../src/app/api/chat/route.ts)
+- [Stateless read-only MCP route (v1)](../src/app/api/mcp/route.ts) and [MCP server module](../src/lib/mcp/server.ts)
 - [Bounded agent loop](../src/lib/chat/agent-loop.ts)
 - [Agent and chat limits](../src/lib/chat/limits.ts)
 - [Tool registry and dispatch](../src/lib/chat/tools.ts)

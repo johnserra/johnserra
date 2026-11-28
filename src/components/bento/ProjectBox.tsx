@@ -1,5 +1,5 @@
 import { Link } from "@/i18n/navigation";
-import { ProjectItem } from "@/types";
+import type { Locale, ProjectItem } from "@/types";
 import { ArrowUpRight } from "@carbon/icons-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -9,6 +9,7 @@ interface ProjectBoxProps extends ProjectItem {
   ctaLabel?: string;
   className?: string;
   priority?: boolean;
+  linkLocale?: Locale;
 }
 
 const PROJECT_IMAGE_SIZES: Record<number, string> = {
@@ -30,10 +31,12 @@ export function ProjectBox({
   span = 4,
   className,
   priority = false,
+  linkLocale,
 }: ProjectBoxProps) {
   return (
     <Link
       href={link}
+      locale={linkLocale}
       className={cn(
         "group flex flex-col justify-between overflow-hidden rounded-xl",
         "bg-panel border border-hair shadow-sm",

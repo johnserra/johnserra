@@ -63,9 +63,9 @@ export function ServicesInquiryForm() {
           <select name="budget" disabled={disabled} className={selectClassName} defaultValue="">
             <option value="">{t("notSure")}</option>
             <option value="under-1k">{t("under1k")}</option>
-            <option value="1k-3k">$1,000–$3,000</option>
-            <option value="3k-7k">$3,000–$7,000</option>
-            <option value="7k-plus">$7,000+</option>
+            <option value="1k-3k">{t("budget1kTo3k")}</option>
+            <option value="3k-7k">{t("budget3kTo7k")}</option>
+            <option value="7k-plus">{t("budget7kPlus")}</option>
           </select>
         </label>
         <TextInput label={t("timeline")} name="timeline" id="inquiry-timeline" placeholder={t("timelinePlaceholder")} disabled={disabled} />

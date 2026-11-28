@@ -1,7 +1,7 @@
 import { Link } from "@/i18n/navigation";
 import { ArrowRight, Compass } from "@carbon/icons-react";
 import { getLocale, getTranslations } from "next-intl/server";
-import { aboutPath } from "@/lib/routes";
+import { aboutPath, servicesPath } from "@/lib/routes";
 
 export async function AboutTeaserBox() {
   const locale = await getLocale();
@@ -30,13 +30,20 @@ export async function AboutTeaserBox() {
             <p className="text-base md:text-lg text-muted leading-relaxed">
               {t("content")}
             </p>
-            <div>
+            <div className="flex flex-wrap items-center gap-3">
               <Link
                 href={aboutPath(locale)}
                 className="inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-3 font-sans text-sm font-medium text-on-accent transition-colors hover:bg-accent-dim no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               >
                 <span>{t("ctaText")}</span>
                 <ArrowRight size={18} />
+              </Link>
+              <Link
+                href={servicesPath(locale)}
+                className="inline-flex items-center gap-2 rounded-lg border border-hair bg-ground px-5 py-3 font-sans text-sm font-medium text-ink transition-colors hover:bg-panel-2 no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              >
+                <span>{t("servicesCtaText")}</span>
+                <ArrowRight size={18} className="text-accent" />
               </Link>
             </div>
           </div>

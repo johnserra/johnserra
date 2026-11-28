@@ -1,7 +1,7 @@
 {
   "Metadata": {
-    "title": "John Serra - Data-Driven Problem Solver",
-    "description": "Leveraging decades of experience across manufacturing, education, and urban mobility to solve complex challenges with modern, data-driven approaches."
+    "title": "John Serra - Practical Analytics & AI Systems",
+    "description": "Practical analytics, trustworthy reporting, and AI-assisted systems for small businesses—plus field notes on building CareerTalkLab."
   },
   "Nav": {
     "home": "Home",
@@ -34,16 +34,19 @@
     "tab1Label": "01 · Grain First",
     "tab2Label": "02 · Health Audit",
     "tab3Label": "03 · CareerTalkLab",
+    "tab1Status": "Example Pattern",
+    "tab2Status": "Self-Assessment",
+    "tab3Status": "Open Community",
     "tab1Title": "Define What One Row Represents Before Counting",
     "tab1Body": "Conflicting totals usually start when spreadsheets mix orders, line items, and payments in the same view. Declaring the table grain first restores trust in every downstream metric.",
     "tab1Code": "Grain: 1 row per completed_order_id (net of refunds, UTC close)",
     "tab1Cta": "Read Practical Analytics Guides",
     "tab2Title": "5-Minute SMB Analytics Health Assessment",
     "tab2Body": "Score your business across 20 practical statements in Metrics, Data, Reporting, and Ownership—plus 5 urgent warning signs—before sharing any contact details.",
-    "tab2Code": "Output: Ungated 0–100 score + primary bottleneck + 3-step action plan",
+    "tab2Code": "Output: Ungated 0–100 score + primary barrier + first step (optional email for 3-step plan)",
     "tab2Cta": "Take the Free Assessment",
     "tab3Title": "CareerTalkLab: Errorless Teaching & Peer Community",
-    "tab3Body": "An open learning environment pairing 4-stage Errorless Teaching (Prompt → Echo → Distractor → Transfer) and weekly B1–C1 tech briefings with data and software career skills.",
+    "tab3Body": "An open learning community with 4-stage Errorless Teaching (Prompt → Echo → Distractor → Transfer) and weekly B1–C1 tech briefings live today, with our Grain First data analytics track in development.",
     "tab3Code": "Scaffold: 01 Prompt (100%) → 02 Echo (75%) → 03 Distractor → 04 Transfer",
     "tab3Cta": "Read CareerTalkLab Essays"
   },
@@ -51,14 +54,15 @@
     "eyebrow": "Operator & Builder Perspective",
     "heading": "About Me",
     "title": "Real-world operations meet disciplined data and AI systems.",
-    "content": "With a unique blend of hands-on manufacturing expertise, educational leadership, and data analytics skills, I bring a comprehensive perspective to every project. My approach combines decades of real-world experience with modern technological solutions to deliver tangible results.",
+    "content": "After decades in manufacturing, education, and operations, I focus on helping small businesses make better decisions with practical analytics—clear metric definitions, reconciled spreadsheets, and AI-assisted workflows you can actually maintain.",
     "ctaText": "Learn More About Me",
+    "servicesCtaText": "Explore Analytics Services",
     "metaRoleLabel": "Focus Areas",
     "metaRoleValue": "SMB Analytics · Grain First · AI",
     "metaMethodLabel": "Methodology",
     "metaMethodValue": "Clear Definitions & Owned Action",
     "metaCommunityLabel": "Community Lab",
-    "metaCommunityValue": "CareerTalkLab (A1–C1 + Data)"
+    "metaCommunityValue": "CareerTalkLab (A1–C1 Live · Data Planned)"
   },
   "BlogTeaser": {
     "eyebrow": "Writing & Field Notes",
@@ -88,9 +92,14 @@
   "PortfolioProjects": {
     "eyebrow": "Case Studies & Production Systems",
     "sectionTitle": "Systems built for operational clarity and measurable outcomes.",
-    "sectionSubtitle": "Selected case studies across business development automation, educational transformation, and AI-assisted career learning.",
+    "sectionSubtitle": "Selected case studies across agentic AI systems, educational transformation, and AI-assisted career learning.",
     "viewAll": "View all projects",
     "exploreProject": "Read case study",
+    "agenticLessonPipeline": {
+      "badge": "LangGraph · Gemini · Next.js",
+      "title": "Agentic Lesson Pipeline & Errorless Coaching",
+      "description": "A stateful LangGraph lesson pipeline and proactive AI coach with deterministic validation, adversarial judging, and production governance."
+    },
     "bdAutomation": {
       "badge": "Python · AI Pipeline",
       "title": "BD Automation Suite",
@@ -214,7 +223,7 @@
     "dashboards": {
       "title": "Dashboards & KPI Reporting",
       "description": "A focused view of the numbers that matter, designed for the people who need to act on them.",
-      "deliverable": "Power BI · Looker Studio · Excel"
+      "deliverable": "Google Sheets · Excel · Looker Studio · Power BI"
     },
     "analysis": {
       "title": "Business & Operational Analysis",
@@ -244,7 +253,7 @@
     "form": {
       "name": "Name", "email": "Work email", "company": "Company", "service": "Primary need",
       "chooseService": "Choose a service", "dashboard": "Dashboard or KPI reporting", "analysis": "Business analysis", "automation": "Reporting automation", "dataFoundation": "Data cleanup or foundations", "other": "Not sure / other",
-      "budget": "Approximate budget", "notSure": "Not sure yet", "under1k": "Under $1,000", "timeline": "Ideal timeline", "timelinePlaceholder": "For example, within 4–6 weeks",
+      "budget": "Approximate budget", "notSure": "Not sure yet", "under1k": "Under $1,000", "budget1kTo3k": "$1,000–$3,000", "budget3kTo7k": "$3,000–$7,000", "budget7kPlus": "$7,000+", "timeline": "Ideal timeline", "timelinePlaceholder": "For example, within 4–6 weeks",
       "message": "What would you like to improve?", "messagePlaceholder": "Tell me about the decision, report, or process you need help with.",
       "submit": "Send project inquiry", "submitting": "Sending…", "successTitle": "Inquiry received", "success": "Thanks—I’ll review the details and get back to you soon.", "errorTitle": "Could not send", "error": "Please try again or email john@serra.us directly."
     }

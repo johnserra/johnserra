@@ -1,7 +1,7 @@
 {
   "Metadata": {
-    "title": "John Serra - Veri Odaklı Problem Çözücü",
-    "description": "Üretim, eğitim ve kentsel mobilite alanlarında onlarca yıllık deneyimi modern, veri odaklı yaklaşımlarla birleştirerek karmaşık sorunlara çözüm üretmek."
+    "title": "John Serra - Pratik Analitik ve Yapay Zeka Sistemleri",
+    "description": "Küçük işletmeler için pratik analitik, güvenilir raporlama ve yapay zeka destekli sistemler—ayrıca CareerTalkLab üzerine saha notları."
   },
   "Nav": {
     "home": "Ana Sayfa",
@@ -34,16 +34,19 @@
     "tab1Label": "01 · Grain First",
     "tab2Label": "02 · Sağlık Denetimi",
     "tab3Label": "03 · CareerTalkLab",
+    "tab1Status": "Örnek Kalıp",
+    "tab2Status": "Öz Değerlendirme",
+    "tab3Status": "Açık Topluluk",
     "tab1Title": "Saymaya Başlamadan Önce Bir Satırın Neyi Temsil Ettiğini Tanımlayın",
     "tab1Body": "Birbiriyle çelişen toplamlar genellikle tabloların siparişleri, kalemleri ve ödemeleri aynı görünümde karıştırmasıyla başlar. Önce tablo birimini (grain) tanımlamak tüm metriklere güven kazandırır.",
     "tab1Code": "Birim (Grain): Tamamlanan her completed_order_id için 1 satır (iadeler hariç)",
     "tab1Cta": "Pratik Analitik Rehberlerini Oku",
     "tab2Title": "5 Dakikalık KOBİ Analitik Sağlık Değerlendirmesi",
     "tab2Body": "İletişim bilgisi paylaşmadan önce Metrikler, Veri, Raporlama ve Sahiplik alanlarındaki 20 pratik ifadeyle ve 5 acil uyarı işaretiyle işletmenizi puanlayın.",
-    "tab2Code": "Çıktı: Anında 0–100 puan + ana darboğaz + 3 adımlı eylem planı",
+    "tab2Code": "Çıktı: Kayıtsız 0–100 puan + ana engel + ilk adım (3 adımlı plan için isteğe bağlı e-posta)",
     "tab2Cta": "Ücretsiz Değerlendirmeyi Başlat",
     "tab3Title": "CareerTalkLab: Hatasız Öğretim ve Akran Topluluğu",
-    "tab3Body": "4 aşamalı Hatasız Öğretim (İpucu → Tekrar → Çeldirici → Aktarım) ve haftalık B1–C1 teknoloji analizlerini veri ve yazılım kariyer becerileriyle birleştiren açık öğrenme ortamı.",
+    "tab3Body": "4 aşamalı Hatasız Öğretim (İpucu → Tekrar → Çeldirici → Aktarım) ve haftalık B1–C1 teknoloji derslerini bugün sunan açık öğrenme topluluğu; Grain First veri analitiği müfredatımız ise geliştirme aşamasında.",
     "tab3Code": "İskele: 01 İpucu (%100) → 02 Tekrar (%75) → 03 Çeldirici → 04 Aktarım",
     "tab3Cta": "CareerTalkLab Yazılarını Oku"
   },
@@ -51,14 +54,15 @@
     "eyebrow": "Operatör ve Kurucu Bakış Açısı",
     "heading": "Hakkımda",
     "title": "Gerçek dünya operasyonları, disiplinli veri ve yapay zeka sistemleriyle buluşuyor.",
-    "content": "Uygulamalı üretim uzmanlığı, eğitim liderliği ve veri analitiği becerilerinin benzersiz bir birleşimiyle her projeye kapsamlı bir bakış açısı getiriyorum. Yaklaşımım, onlarca yıllık gerçek dünya deneyimini modern teknolojik çözümlerle birleştirerek somut sonuçlar sunmaktır.",
+    "content": "Üretim, eğitim ve operasyon alanlarındaki yıllara dayanan saha deneyimimle küçük işletmelerin pratik analitikle daha iyi kararlar almasına odaklanıyorum—net metrik tanımları, mutabık tablolar ve ekibinizin sürdürebileceği yapay zeka destekli iş akışları.",
     "ctaText": "Hakkımda Daha Fazla Bilgi",
+    "servicesCtaText": "Analitik Hizmetlerini İncele",
     "metaRoleLabel": "Odak Alanları",
     "metaRoleValue": "KOBİ Analitiği · Grain First · YZ",
     "metaMethodLabel": "Metodoloji",
     "metaMethodValue": "Net Tanımlar ve Sahipli Eylem",
     "metaCommunityLabel": "Topluluk Laboratuvarı",
-    "metaCommunityValue": "CareerTalkLab (A1–C1 + Veri)"
+    "metaCommunityValue": "CareerTalkLab (A1–C1 Yayında · Veri Planlanıyor)"
   },
   "BlogTeaser": {
     "eyebrow": "Yazılar ve Saha Notları",
@@ -88,9 +92,14 @@
   "PortfolioProjects": {
     "eyebrow": "Vaka Çalışmaları ve Üretim Sistemleri",
     "sectionTitle": "Operasyonel netlik ve ölçülebilir sonuçlar için kurulan sistemler.",
-    "sectionSubtitle": "İş geliştirme otomasyonu, eğitimde dijital dönüşüm ve yapay zeka destekli kariyer öğrenimi üzerine seçilmiş vaka çalışmaları.",
+    "sectionSubtitle": "Yapay zeka ajan sistemleri, eğitimde dijital dönüşüm ve yapay zeka destekli kariyer öğrenimi üzerine seçilmiş vaka çalışmaları.",
     "viewAll": "Tüm projeleri gör",
     "exploreProject": "Vaka çalışmasını oku",
+    "agenticLessonPipeline": {
+      "badge": "LangGraph · Gemini · YZ (EN)",
+      "title": "Agentic Ders Hattı ve Hatasız Koçluk",
+      "description": "Deterministik doğrulama, bağımsız hakem değerlendirmesi ve üretim yönetişimine sahip durum korumalı LangGraph ders hattı ve proaktif yapay zeka koçu (İngilizce vaka çalışması)."
+    },
     "bdAutomation": {
       "badge": "Python · YZ Pipeline",
       "title": "İş Geliştirme Otomasyon Paketi",
@@ -211,7 +220,7 @@
     "assessmentTitle": "Analitik sağlığınızı beş dakikada ölçün.",
     "assessmentDescription": "İletişim bilgisi vermeden önce anında puanınızı görün, analitik sisteminizdeki en zayıf halkayı bulun ve ilk pratik adımı öğrenin.",
     "assessmentButton": "Ücretsiz değerlendirmeyi başlat",
-    "dashboards": { "title": "Panolar ve KPI Raporlama", "description": "Harekete geçmesi gereken kişiler için önemli rakamların odaklanmış bir görünümü.", "deliverable": "Power BI · Looker Studio · Excel" },
+    "dashboards": { "title": "Panolar ve KPI Raporlama", "description": "Harekete geçmesi gereken kişiler için önemli rakamların odaklanmış bir görünümü.", "deliverable": "Google Sheets · Excel · Looker Studio · Power BI" },
     "analysis": { "title": "İş ve Operasyon Analizi", "description": "Belirli bir iş sorusunu net analiz, kısa bulgular ve uygulanabilir önerilerle yanıtlayın.", "deliverable": "Trendler · Segmentasyon · Performans" },
     "automation": { "title": "Raporlama Otomasyonu", "description": "Tekrarlanan kopyala-yapıştır raporlamayı zaman kazandıran, hataları azaltan güvenilir bir iş akışıyla değiştirin.", "deliverable": "Python · SQL · API'ler" },
     "foundation": { "title": "Veri Temizleme ve Temeller", "description": "Tutarsız dosya ve tanımları ekibinizin gerçekten kullanabileceği güvenilir bir veri setine dönüştürün.", "deliverable": "Veri kalitesi · Modelleme · Dokümantasyon" },
@@ -228,7 +237,7 @@
     "form": {
       "name": "İsim", "email": "İş e-postası", "company": "Şirket", "service": "Ana ihtiyaç",
       "chooseService": "Bir hizmet seçin", "dashboard": "Pano veya KPI raporlama", "analysis": "İş analizi", "automation": "Raporlama otomasyonu", "dataFoundation": "Veri temizleme veya temeller", "other": "Emin değilim / diğer",
-      "budget": "Yaklaşık bütçe", "notSure": "Henüz emin değilim", "under1k": "$1.000 altı", "timeline": "İdeal zamanlama", "timelinePlaceholder": "Örneğin 4–6 hafta içinde",
+      "budget": "Yaklaşık bütçe", "notSure": "Henüz emin değilim", "under1k": "$1.000 altı", "budget1kTo3k": "$1.000–$3.000", "budget3kTo7k": "$3.000–$7.000", "budget7kPlus": "$7.000+", "timeline": "İdeal zamanlama", "timelinePlaceholder": "Örneğin 4–6 hafta içinde",
       "message": "Neyi geliştirmek istersiniz?", "messagePlaceholder": "Yardıma ihtiyaç duyduğunuz karar, rapor veya süreci anlatın.",
       "submit": "Proje talebini gönder", "submitting": "Gönderiliyor…", "successTitle": "Talebiniz alındı", "success": "Teşekkürler—ayrıntıları inceleyip en kısa sürede döneceğim.", "errorTitle": "Gönderilemedi", "error": "Lütfen tekrar deneyin veya doğrudan john@serra.us adresine e-posta gönderin."
     }
@@ -453,7 +462,7 @@
     "description": "Aradığınız sayfa mevcut değil veya taşınmış."
   },
   "Footer": {
-    "copyright": "Copyright",
+    "copyright": "Telif Hakkı",
     "privacyPolicy": "Gizlilik Politikası",
     "blog": "Blog",
     "tagline": "Veri Analitiği · Grain First · Sistemler ve Yapay Zeka Mühendisliği"

@@ -13,7 +13,7 @@ export const FEATURE_LAYOUT = [
 ] as const;
 
 export const PROJECTS_LAYOUT = [
-  { id: "careertalklab", key: "careerTalkLab", image: "/images/projects/careertalklab.avif", link: "/projects/careertalklab", span: 4 },
-  { id: "digital-transformation", key: "digitalTransformation", image: "/images/projects/digital-transformation.avif", link: "/projects/digital-transformation", span: 5 },
-  { id: "bd-automation-suite", key: "bdAutomation", image: "/images/projects/bd-automation-suite.avif", link: "/projects/bd-automation-suite", span: 3 },
+  { id: "careertalklab", key: "careerTalkLab", image: "/images/projects/careertalklab.avif", link: "/projects/careertalklab", span: 4, linkLocale: undefined },
+  { id: "digital-transformation", key: "digitalTransformation", image: "/images/projects/digital-transformation.avif", link: "/projects/digital-transformation", span: 5, linkLocale: undefined },
+  { id: "agentic-lesson-pipeline", key: "agenticLessonPipeline", image: "/images/projects/agentic-lesson-pipeline.png", link: "/projects/agentic-lesson-pipeline", span: 3, linkLocale: "en" as const },
 ] as const;

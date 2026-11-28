@@ -187,14 +187,7 @@ export function Header({
                   {t(link.key)}
                 </Link>
               ))}
-              <div className="mt-2 pt-2 border-t border-white/20 flex items-center justify-between px-2.5">
-                <Link
-                  href="/contact"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="font-mono text-xs uppercase tracking-[0.08em] text-white no-underline hover:underline"
-                >
-                  {t("contact")}
-                </Link>
+              <div className="mt-2 pt-2 border-t border-white/20 flex items-center justify-end px-2.5">
                 <button
                   type="button"
                   onClick={() => {

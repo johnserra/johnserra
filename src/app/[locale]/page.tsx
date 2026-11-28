@@ -84,7 +84,8 @@ export default async function Home({ params }: Props) {
                 description={tPortfolio(`${project.key}.description`)}
                 ctaLabel={tPortfolio("exploreProject")}
                 image={project.image}
-                link={projectsPath(locale, project.id)}
+                link={project.linkLocale ? project.link : projectsPath(locale, project.id)}
+                linkLocale={project.linkLocale}
                 span={project.span}
                 priority={index === 0}
               />

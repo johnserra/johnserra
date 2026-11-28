@@ -52,7 +52,7 @@ export async function Footer() {
             >
               {t("privacyPolicy")}
             </Link>
-            <p>Copyright &copy; {currentYear}</p>
+            <p>{t("copyright")} &copy; {currentYear}</p>
           </div>
         </div>
       </div>

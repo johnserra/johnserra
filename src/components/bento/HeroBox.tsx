@@ -21,6 +21,7 @@ export function HeroBox() {
   const tabs: Array<{
     id: WorkbenchTab;
     label: string;
+    status: string;
     title: string;
     body: string;
     code: string;
@@ -30,6 +31,7 @@ export function HeroBox() {
     {
       id: "grain",
       label: t("tab1Label"),
+      status: t("tab1Status"),
       title: t("tab1Title"),
       body: t("tab1Body"),
       code: t("tab1Code"),
@@ -39,6 +41,7 @@ export function HeroBox() {
     {
       id: "audit",
       label: t("tab2Label"),
+      status: t("tab2Status"),
       title: t("tab2Title"),
       body: t("tab2Body"),
       code: t("tab2Code"),
@@ -48,11 +51,12 @@ export function HeroBox() {
     {
       id: "ctl",
       label: t("tab3Label"),
+      status: t("tab3Status"),
       title: t("tab3Title"),
       body: t("tab3Body"),
       code: t("tab3Code"),
       cta: t("tab3Cta"),
-      href: "/blog?tag=CareerTalkLab",
+      href: "/blog?section=ctl",
     },
   ];
 
@@ -239,7 +243,7 @@ export function HeroBox() {
                     {currentTab.label}
                   </span>
                   <span className="rounded bg-[#22c55e]/20 px-2 py-0.5 font-mono text-xs font-medium text-[#4ade80]">
-                    VERIFIED
+                    {currentTab.status}
                   </span>
                 </div>
 
